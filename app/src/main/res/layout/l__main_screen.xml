@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/dusk_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="380dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="35dp"
+            android:contentDescription="@string/leadme_logo"
+            android:src="@drawable/leadme_reverse" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/room_commands_btn"
+            android:layout_width="@dimen/main_btn_width"
+            android:layout_height="@dimen/main_btn_height"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/btn_rounded_white"
+            android:elevation="3dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/room_commands"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/station_commands_btn"
+            android:layout_width="@dimen/main_btn_width"
+            android:layout_height="@dimen/main_btn_height"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/btn_rounded_white"
+            android:elevation="3dp"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/station_commands"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:gravity="bottom|center"
+        android:text="@string/powered_by"
+        android:textAlignment="center"
+        android:textColor="@color/leadme_white"
+        android:textSize="14sp"
+        app:drawableBottomCompat="@mipmap/lumination_logo_reverse" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
