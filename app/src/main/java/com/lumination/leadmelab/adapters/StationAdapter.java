@@ -68,7 +68,7 @@ public class StationAdapter extends BaseAdapter {
 
         refresh();
 
-        Log.d(TAG, "Adding " + station.getName() + " to station list, IP: " + station.getIP() + ". Now: " + mData.size());
+        Log.d(TAG, "Adding " + station.getName() + " to station list, Number: " + station.getNumber() + ". Now: " + mData.size());
     }
 
     public boolean hasConnectedStations() {
@@ -115,11 +115,11 @@ public class StationAdapter extends BaseAdapter {
             convertView.setLongClickable(true);
 
             convertView.setOnClickListener(v -> {
-                Log.d(TAG, "Clicked on " + mStation.getName() + ", " + mStation.getIP());
+                Log.d(TAG, "Clicked on " + mStation.getName() + ", " + mStation.getNumber());
                 StationManager.selected = mStation;
                 manager.mApplicationManager.showLoading(true);
                 main.setStation(mStation);
-                StationManager.executeCommand(StationManager.APPS);
+                StationManager.executeStationCommand(StationManager.APPS);
                 main.changeScreen(MainActivity.ANIM_STATION_INDEX);
             });
         }

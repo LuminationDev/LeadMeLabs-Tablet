@@ -2,6 +2,7 @@ package com.lumination.leadmelab.network;
 
 import android.util.Log;
 
+import com.lumination.leadmelab.managers.StationManager;
 import com.lumination.leadmelab.utilities.Application;
 
 import java.io.DataOutputStream;
@@ -20,7 +21,7 @@ public class Station implements Runnable {
     private final String TAG = "Station";
 
     private final String name;
-    private final String mHostIP;
+    private final String mNumber;
     private String status = "Online"; //Hard coded for now will run a check in the future
     private String running = "Nothing"; //Hard coded for now will check if steam games running in the future
     private final int port = 8080; //Hard coded for now but switch to server set in future
@@ -28,9 +29,9 @@ public class Station implements Runnable {
 
     private String mCommand;
 
-    public Station(String name, String mHostIP) {
+    public Station(String name, String number) {
         this.name = name;
-        this.mHostIP = mHostIP;
+        this.mNumber = number;
         this.applications = new ArrayList<>();
     }
 
@@ -93,8 +94,8 @@ public class Station implements Runnable {
      * Access the IP address of this station.
      * @return A String representing the IP Address of the station.
      */
-    public String getIP() {
-        return this.mHostIP;
+    public String getNumber() {
+        return this.mNumber;
     }
 
     /**
@@ -112,11 +113,11 @@ public class Station implements Runnable {
     @Override
     public void run() {
         Log.d(TAG, "Attempting to connect");
-        Log.d(TAG, "IP Address: " + mHostIP);
+        Log.d(TAG, "Station Number: " + mNumber);
         Log.d(TAG, "Port: " + port);
 
         try {
-            InetAddress serverAddress = InetAddress.getByName(mHostIP);
+            InetAddress serverAddress = InetAddress.getByName(StationManager.NUCIPAddress);
             Socket soc = new Socket(serverAddress, port);
 
             OutputStream toServer = soc.getOutputStream();

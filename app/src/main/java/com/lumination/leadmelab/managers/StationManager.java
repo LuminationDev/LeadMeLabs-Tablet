@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.lumination.leadmelab.network.Automation;
 import com.lumination.leadmelab.utilities.Application;
 import com.lumination.leadmelab.MainActivity;
 import com.lumination.leadmelab.utilities.NetworkSniffer;
@@ -42,6 +43,10 @@ public class StationManager {
     //TODO REMOVE DO NOT SEND COMMANDS OVER THE NETWORK - only for example and testing
     public static final String EXPLORER = "Station:CommandLine:TEST:explorer"; //TODO hardcoded for testing
 
+    //Messages for automation activites
+    public static final String LIGHT_ON = "Automation:Lighton";
+    public static final String LIGHT_OFF = "Automation:Lightoff";
+
     protected Context context;
     private final GridView stationGrid;
     private final TextView waitingForStations;
@@ -61,6 +66,8 @@ public class StationManager {
      * recognised.
      */
     public static HashMap<String, Station> Stations;
+
+    public static String NUCIPAddress;
 
     /**
      * The currently selected Client
@@ -116,10 +123,13 @@ public class StationManager {
         findStationsBtn.setOnClickListener(view -> startNetworkSniffer());
 
         Button verifyStationsBtn = stationManagerScreen.findViewById(R.id.core_verify_station);
-        verifyStationsBtn.setOnClickListener(view -> StationManager.executeCommand("Communication:Hello Python"));
+        verifyStationsBtn.setOnClickListener(view -> StationManager.executeStationCommand("Communication:Hello Python"));
 
         Button addStationBtn = stationManagerScreen.findViewById(R.id.core_add_station);
         addStationBtn.setOnClickListener(view -> main.getDialogManager().showNewClientDialog());
+
+        Button addNUCBtn = stationManagerScreen.findViewById(R.id.core_nuc_station);
+        addNUCBtn.setOnClickListener(view -> main.getDialogManager().showNUCDialog());
 
         ImageView backBtn = stationManagerScreen.findViewById(R.id.leadme_icon);
         backBtn.setOnClickListener(view -> main.changeScreen(MainActivity.ANIM_HOME_INDEX));
@@ -129,10 +139,10 @@ public class StationManager {
      * Set a new command message for a client and submit it to the background executor for running.
      * @param command A String representing the a message to be received by the Client.
      */
-    public static void executeCommand(String command) {
+    public static void executeStationCommand(String command) {
         Log.d(TAG, "Active threads: " + backgroundExecutor.getActiveCount());
 
-        Station current = Stations.get(selected.getIP());
+        Station current = Stations.get(selected.getNumber());
 
         if (current != null) {
             Log.d(TAG, "Client: " + current.toString() + " Command: " + command);
@@ -140,6 +150,21 @@ public class StationManager {
             current.setCommand(command);
             backgroundExecutor.submit(current);
         }
+    }
+
+    /**
+     * Start a new automation runnable and send through a command
+     * @param command A String representing the a message to be received by the NUC.
+     */
+    public static void executeAutomationCommand(String command) {
+        Log.d(TAG, "Active threads: " + backgroundExecutor.getActiveCount());
+
+        Automation current = new Automation();
+
+        Log.d(TAG, "Client: " + current.toString() + " Command: " + command);
+
+        current.setCommand(command);
+        backgroundExecutor.submit(current);
     }
 
     /**
@@ -169,7 +194,7 @@ public class StationManager {
      * @param app A ....
      */
     public static void removeApp(Application app) {
-        Stations.get(getSelected().getIP()).removeApplication(app);
+        Stations.get(getSelected().getNumber()).removeApplication(app);
     }
 
     /**

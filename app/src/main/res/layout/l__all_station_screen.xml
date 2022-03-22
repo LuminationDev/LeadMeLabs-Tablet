@@ -129,16 +129,40 @@
             android:id="@+id/core_add_station"
             android:layout_width="@dimen/pushbtn_size"
             android:layout_height="@dimen/pushbtn_size"
-            android:gravity="center"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="25dp"
             android:background="@drawable/btn_square"
             android:drawableTop="@drawable/core_add_station"
             android:drawablePadding="-15dp"
             android:elevation="15dp"
+            android:gravity="center"
             android:includeFontPadding="false"
             android:paddingTop="15dp"
             android:text="@string/add_station"
+            android:textAllCaps="false"
+            android:textColor="@color/leadme_black"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="15dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/core_nuc_station"
+            android:layout_width="@dimen/pushbtn_size"
+            android:layout_height="@dimen/pushbtn_size"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/btn_square"
+            android:drawableTop="@drawable/core_add_station"
+            android:drawablePadding="-15dp"
+            android:elevation="15dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingTop="15dp"
+            android:text="@string/set_nuc"
             android:textAllCaps="false"
             android:textColor="@color/leadme_black"
             android:textSize="12sp" />

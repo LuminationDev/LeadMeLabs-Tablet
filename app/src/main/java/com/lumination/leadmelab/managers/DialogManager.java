@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.lumination.leadmelab.R;
-import com.lumination.leadmelab.managers.StationManager;
 
 /**
  * A class to handle all dialogs that are needed while the application is running. Sets up the
@@ -19,14 +18,55 @@ public class DialogManager {
     private final StationManager manager;
     private final Context context;
 
-    private AlertDialog clientDialog;
-    private View newClientDialogView;
+    private AlertDialog clientDialog, NUCDialog;
+    private View newClientDialogView, newNUCDialogView;
 
     public DialogManager(StationManager manager, Context context) {
         this.manager = manager;
         this.context = context;
 
+        setupNUCDialog();
         setupNewClientDialog();
+    }
+
+    /**
+     * Prepare the dialog for adding the NUC's ipaddress.
+     */
+    private void setupNUCDialog() {
+        newNUCDialogView = View.inflate(context, R.layout.a__set_nuc, null);
+        EditText newNUCAddress = newNUCDialogView.findViewById(R.id.nuc_ipaddress_input);
+
+        Button addNUCBtn = newNUCDialogView.findViewById(R.id.manual_set_nuc);
+        addNUCBtn.setOnClickListener(v -> {
+            StationManager.NUCIPAddress = newNUCAddress.getText().toString();
+
+            NUCDialog.dismiss();
+        });
+
+        Button backBtn = newNUCDialogView.findViewById(R.id.manual_back);
+        backBtn.setOnClickListener(v -> NUCDialog.dismiss());
+
+        NUCDialog = new AlertDialog.Builder(context)
+                .setView(newNUCDialogView)
+                .create();
+
+        NUCDialog.setCancelable(false);
+
+        NUCDialog.setOnDismissListener(dialog -> Log.d(TAG, "Dismissed"));
+    }
+
+    /**
+     * Show the NUC dialog.
+     */
+    public void showNUCDialog() {
+        if(NUCDialog == null) {
+            setupNewClientDialog();
+        }
+
+        NUCDialog.show();
+
+        EditText newNUCAddress = newNUCDialogView.findViewById(R.id.nuc_ipaddress_input);
+        newNUCAddress.requestFocus();
     }
 
     /**
@@ -79,12 +119,12 @@ public class DialogManager {
      * static createNewClient function from the main activity to add the new client to the static
      * Clients hashmap.
      * @param name A String representing the nickname for a new client computer.
-     * @param IpAddress A String representing the IpAddress for a new client computer.
+     * @param number A String representing the number of the new client computer.
      */
-    private void addClient(String name, String IpAddress) {
+    private void addClient(String name, String number) {
         Log.d(TAG, "Name: " + name);
-        Log.d(TAG, "IP Address: " + IpAddress);
+        Log.d(TAG, "Number: " + number);
 
-        manager.createNewClient(name, IpAddress);
+        manager.createNewClient(name, number);
     }
 }

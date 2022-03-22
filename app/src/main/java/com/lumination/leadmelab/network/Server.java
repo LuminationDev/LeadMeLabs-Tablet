@@ -92,6 +92,9 @@ public class Server implements Runnable {
     private void determineAction(String message, String ID) {
         Log.d(TAG, message);
 
+        //Hard coded for now
+        ID = "1";
+
         String[] split = message.split(":");
         String action = split[1];
         String information = "none";

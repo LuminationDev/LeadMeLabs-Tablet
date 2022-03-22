@@ -6,6 +6,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.core.content.ContextCompat;
+
 import com.lumination.leadmelab.MainActivity;
 import com.lumination.leadmelab.R;
 
@@ -18,16 +20,19 @@ public class StartupManager {
 
     private final MainActivity main;
 
-    private final View stationScreen, applicationScreen;
+    private final View stationScreen, applicationScreen, roomScreen;
 
     public StartupManager(MainActivity main) {
         this.main = main;
         this.stationScreen = main.stationScreen;
         this.applicationScreen = main.applicationScreen;
+        this.roomScreen = main.roomScreen;
 
         setupActionButtons();
         setupVRSessionButtons();
         setupApplicationButtons();
+
+        setupRoomButtons();
     }
 
     /**
@@ -37,7 +42,7 @@ public class StartupManager {
         Button launchBtn = stationScreen.findViewById(R.id.launch_core_btn);
         launchBtn.setOnClickListener(view -> {
             if (checkSelection()) {
-                StationManager.executeCommand(StationManager.LAUNCH + ApplicationManager.selected.getID());
+                StationManager.executeStationCommand(StationManager.LAUNCH + ApplicationManager.selected.getID());
             }
         });
 
@@ -55,12 +60,12 @@ public class StartupManager {
 
         Button urlBtn = stationScreen.findViewById(R.id.url_core_btn);
         urlBtn.setOnClickListener(view -> {
-            StationManager.executeCommand(StationManager.URL);
+            StationManager.executeStationCommand(StationManager.URL);
         });
 
         Button expBtn = stationScreen.findViewById(R.id.explorer_core_btn);
         expBtn.setOnClickListener(view -> {
-            StationManager.executeCommand(StationManager.EXPLORER);
+            StationManager.executeStationCommand(StationManager.EXPLORER);
         });
 
         ImageView backBtn = stationScreen.findViewById(R.id.leadme_icon);
@@ -70,17 +75,17 @@ public class StartupManager {
     private void setupVRSessionButtons() {
         LinearLayout startVRBtn = stationScreen.findViewById(R.id.start_vr_btn);
         startVRBtn.setOnClickListener(view -> {
-            StationManager.executeCommand(StationManager.START_VR);
+            StationManager.executeStationCommand(StationManager.START_VR);
         });
 
         LinearLayout restartVRBtn = stationScreen.findViewById(R.id.restart_vr_btn);
         restartVRBtn.setOnClickListener(view -> {
-            StationManager.executeCommand(StationManager.RESTART_VR);
+            StationManager.executeStationCommand(StationManager.RESTART_VR);
         });
 
         LinearLayout endVRBtn = stationScreen.findViewById(R.id.end_vr_btn);
         endVRBtn.setOnClickListener(view -> {
-            StationManager.executeCommand(StationManager.STOP_VR);
+            StationManager.executeStationCommand(StationManager.STOP_VR);
         });
     }
 
@@ -91,7 +96,7 @@ public class StartupManager {
         Button installBtn = applicationScreen.findViewById(R.id.install_core_btn);
         installBtn.setOnClickListener(view -> {
             if (checkSelection()) {
-                StationManager.executeCommand(StationManager.INSTALL + ApplicationManager.selected.getID());
+                StationManager.executeStationCommand(StationManager.INSTALL + ApplicationManager.selected.getID());
             }
         });
 
@@ -99,7 +104,7 @@ public class StartupManager {
         uninstallBtn.setOnClickListener(view -> {
             if (checkSelection()) {
                 // Remove from the adapter view?
-                StationManager.executeCommand(StationManager.UNINSTALL + ApplicationManager.selected.getID());
+                StationManager.executeStationCommand(StationManager.UNINSTALL + ApplicationManager.selected.getID());
             }
         });
 
@@ -110,6 +115,28 @@ public class StartupManager {
 
         ImageView backBtn = applicationScreen.findViewById(R.id.leadme_icon);
         backBtn.setOnClickListener(view -> main.changeScreen(MainActivity.ANIM_STATION_INDEX));
+    }
+
+    boolean isOn = false;
+    /**
+     * Testing how to send the actions to the room
+     */
+    private void setupRoomButtons() {
+        Button lightBtn = roomScreen.findViewById(R.id.light_switch_btn);
+        lightBtn.setOnClickListener(view -> {
+            if(isOn) {
+                StationManager.executeAutomationCommand(StationManager.LIGHT_ON);
+                isOn = false;
+                lightBtn.setBackgroundTintList(ContextCompat.getColorStateList(main.context, R.color.leadme_purple));
+            } else {
+                StationManager.executeAutomationCommand(StationManager.LIGHT_OFF);
+                isOn = true;
+                lightBtn.setBackgroundTintList(ContextCompat.getColorStateList(main.context, R.color.leadme_white));
+            }
+        });
+
+        ImageView backBtn = roomScreen.findViewById(R.id.leadme_icon);
+        backBtn.setOnClickListener(view -> main.changeScreen(MainActivity.ANIM_HOME_INDEX));
     }
 
     private boolean checkSelection() {

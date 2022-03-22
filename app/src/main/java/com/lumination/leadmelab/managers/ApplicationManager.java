@@ -73,7 +73,7 @@ public class ApplicationManager {
         mApplicationAdapter.clearView();
 
         //Create the new images from the clients installed list
-        ArrayList<Application> apps = Objects.requireNonNull(StationManager.Stations.get(StationManager.getSelected().getIP())).getApplications();
+        ArrayList<Application> apps = Objects.requireNonNull(StationManager.Stations.get(StationManager.getSelected().getNumber())).getApplications();
 
         changeVisibility(apps);
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/manual_station_view"
+        android:id="@+id/manual_nuc_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -16,7 +16,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="@string/new_station"
+            android:text="@string/set_nuc"
             android:textColor="@color/leadme_black"
             android:textSize="35sp" />
 
@@ -26,35 +26,12 @@
             android:layout_gravity="center"
             android:layout_marginBottom="40dp"
             android:gravity="center_horizontal"
-            android:text="@string/enter_ip"
+            android:text="@string/please_enter_the_ip_address_of_the_nuc"
             android:textColor="@color/leadme_black"
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/computer_name_input"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
-            android:autofillHints="0"
-            android:background="@drawable/btn_rounded_highlight"
-            android:focusableInTouchMode="true"
-            android:gravity="start"
-            android:hint="@string/station_name"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:singleLine="true"
-            android:textColorHint="@color/leadme_medium_grey"
-            android:textSize="16sp"
-            android:visibility="visible" />
-
-        <EditText
-            android:id="@+id/computer_ipaddress_input"
+            android:id="@+id/nuc_ipaddress_input"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -66,7 +43,7 @@
             android:digits="0123456789."
             android:focusableInTouchMode="true"
             android:gravity="start"
-            android:hint="@string/_1"
+            android:hint="@string/ip_address_sample"
             android:imeOptions="actionNext"
             android:inputType="number"
             android:maxLines="1"
@@ -89,14 +66,14 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/manual_create_station"
+            android:id="@+id/manual_set_nuc"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/standard_btn_width"
             android:layout_height="@dimen/standard_btn_height"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_active"
             android:clickable="true"
-            android:text="@string/create"
+            android:text="@string/set"
             android:textAllCaps="false"
             android:textColor="@color/leadme_white"
             android:textSize="16sp"

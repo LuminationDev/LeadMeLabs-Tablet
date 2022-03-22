@@ -64,4 +64,9 @@
     <string name="open_url">Open URL</string>
     <string name="file_explorer">File Explorer</string>
     <string name="end">End</string>
+    <string name="light_switch">Light Switch</string>
+    <string name="set_nuc">Set NUC</string>
+    <string name="please_enter_the_ip_address_of_the_nuc">Please enter the IP Address of the NUC</string>
+    <string name="set">Set</string>
+    <string name="_1">1</string>
 </resources>
