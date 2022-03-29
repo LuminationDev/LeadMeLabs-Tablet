@@ -2,6 +2,7 @@ package com.lumination.leadmelabs;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Build;
@@ -14,8 +15,13 @@ import io.reactivex.rxjava3.core.*;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.nuc.NucFragment;
 import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 .commitNow();
 
         fragmentManager.beginTransaction()
-                .replace(R.id.scenes, ScenesFragment.newInstance())
+                .replace(R.id.scenes, NucFragment.newInstance())
                 .commitNow();
 
         fragmentManager.beginTransaction()
@@ -84,12 +90,20 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startNetworkService() {
         Log.d(TAG, "startService: ");
-        Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(network_intent);
-        } else {
-            startService(network_intent);
-        }
+        MainActivity main = this;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(network_intent);
+                } else {
+                    startService(network_intent);
+                }
+                NetworkService.setMain(main);
+            }
+        });
+        thread.start();
     }
 
     /**

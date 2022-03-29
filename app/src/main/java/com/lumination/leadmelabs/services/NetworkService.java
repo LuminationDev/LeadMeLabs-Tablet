@@ -11,8 +11,15 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -33,6 +40,7 @@ public class NetworkService extends Service {
     private static final String TAG = "NetworkService";
     private static final String CHANNEL_ID = "network_service";
     private static final String CHANNEL_NAME = "Network_Service";
+    private static MainActivity main;
 
     private static String NUCAddress;
     private ServerSocket mServerSocket;
@@ -58,6 +66,9 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
     }
+    public static void setMain(MainActivity main) {
+        NetworkService.main = main;
+    }
 
     /**
      * Send a message to the NUC's server.
@@ -68,25 +79,31 @@ public class NetworkService extends Service {
 
         Log.d(TAG, "Attempting to send: " + message);
 
-        try {
-            InetAddress serverAddress = InetAddress.getByName(NUCAddress);
-            Socket soc = new Socket(serverAddress, port);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InetAddress serverAddress = InetAddress.getByName(NUCAddress);
+                    Socket soc = new Socket(serverAddress, port);
 
-            OutputStream toServer = soc.getOutputStream();
-            PrintWriter output = new PrintWriter(toServer);
-            output.println(message);
-            DataOutputStream out = new DataOutputStream(toServer);
-            out.writeBytes(message);
+                    OutputStream toServer = soc.getOutputStream();
+                    PrintWriter output = new PrintWriter(toServer);
+                    output.println(message);
+                    DataOutputStream out = new DataOutputStream(toServer);
+                    out.writeBytes(message);
 
-            toServer.close();
-            output.close();
-            out.close();
-            soc.close();
+                    toServer.close();
+                    output.close();
+                    out.close();
+                    soc.close();
 
-            Log.d(TAG, "Message sent closing socket");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    Log.d(TAG, "Message sent closing socket");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
     /**
@@ -149,9 +166,25 @@ public class NetworkService extends Service {
             String ipAddress = clientSocket.getInetAddress().getHostAddress();
 
             //TODO create a function somewhere to pass the message off to
+            if (message.contains("Android:StationList:")) {
+                // TODO - this can still be a lot neater
+                String jsonString = message.substring(20, message.length());
+                JSONArray json = new JSONArray(jsonString);
+                StationsViewModel stationsViewModel = new ViewModelProvider(main).get(StationsViewModel.class);
+                main.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            stationsViewModel.setStations(json);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
             Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
 
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             Log.e(TAG, "Unable to process client request");
             e.printStackTrace();
         }
@@ -179,7 +212,13 @@ public class NetworkService extends Service {
     public void onCreate() {
         super.onCreate();
         startForeground();
-        startServer();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                startServer();
+            }
+        });
+        thread.start();
     }
 
     @Override

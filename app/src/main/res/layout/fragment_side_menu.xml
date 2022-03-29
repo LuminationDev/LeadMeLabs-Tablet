@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/side_menu"
     style="@style/SideMenuContainer"
     android:orientation="vertical">
-
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="40dp"
+        android:paddingHorizontal="70dp"
+        app:flexDirection="column">
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:flexDirection="column"
+            app:alignItems="center"
+            app:justifyContent="space_between">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_vr_white"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_controls" />
+            <ImageView
+                android:id="@+id/navigation_button_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_settings" />
+        </com.google.android.flexbox.FlexboxLayout>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:justifyContent="flex_end"
+            app:alignItems="center"
+            app:flexDirection="column"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_home" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/line_white" />
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
