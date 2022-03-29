@@ -5,7 +5,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class StationsViewModel extends ViewModel {
@@ -19,7 +24,20 @@ public class StationsViewModel extends ViewModel {
         return stations;
     }
 
+    public void setStations(JSONArray stations) throws JSONException {
+        List<Station> st = new ArrayList<>();
+        for (int i = 0; i < stations.length(); i++) {
+            Station station = new Station(stations.getJSONObject(i).getString("name"), stations.getJSONObject(i).getInt("id"));
+            st.add(station);
+        }
+        this.setStations(st);
+    }
+
+    public void setStations(List<Station> stations) {
+        this.stations.setValue(stations);
+    }
+
     private void loadStations() {
-        // Do an asynchronous operation to fetch saved stations from NUC.
+        NetworkService.sendMessage("NUC:Stations:List");
     }
 }

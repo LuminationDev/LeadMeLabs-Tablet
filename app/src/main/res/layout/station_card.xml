@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.lumination.leadmelabs.models.Station"></import>
+        <variable
+            name="station"
+            type="com.lumination.leadmelabs.models.Station" />
+    </data>
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/logo_fragment"
+        style="@style/DefaultContainer"
+        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:background="@drawable/bg_station_card_blue"
+        app:flexDirection="column"
+        app:justifyContent="flex_end"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@{station.name, default=ABC}"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Off"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

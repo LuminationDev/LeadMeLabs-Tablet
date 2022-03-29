@@ -6,4 +6,16 @@
     style="@style/StationsContainer"
     tools:context=".ui.stations.StationsFragment">
 
+    <GridView
+        android:id="@+id/stations_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:columnWidth="100dp"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:numColumns="auto_fit"
+        tools:listitem="@layout/station_card" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
