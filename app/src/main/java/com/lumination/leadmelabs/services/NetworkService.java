@@ -72,9 +72,11 @@ public class NetworkService extends Service {
 
     /**
      * Send a message to the NUC's server.
-     * @param message A string representing a command to be deciphered by the NUC.
      */
-    public static void sendMessage(String message) {
+    public static void sendMessage(String destination, String actionNamespace, String additionalData) {
+
+        String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
+
         int port = 8080;
 
         Log.d(TAG, "Attempting to send: " + message);
@@ -159,29 +161,39 @@ public class NetworkService extends Service {
 
             String message = baos.toString();
 
-            //Message has been received close the socket
-            clientSocket.close();
-
             //Get the IP address used to determine who has just connected.
             String ipAddress = clientSocket.getInetAddress().getHostAddress();
 
-            //TODO create a function somewhere to pass the message off to
-            if (message.contains("Android:StationList:")) {
-                // TODO - this can still be a lot neater
-                String jsonString = message.substring(20, message.length());
-                JSONArray json = new JSONArray(jsonString);
-                StationsViewModel stationsViewModel = new ViewModelProvider(main).get(StationsViewModel.class);
-                main.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            stationsViewModel.setStations(json);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+            //Message has been received close the socket
+            clientSocket.close();
+
+            String[] messageParts = message.split(":", 4);
+            String source = messageParts[0];
+            String destination = messageParts[1];
+            String actionNamespace = messageParts[2];
+            String additionalData = messageParts.length > 3 ? messageParts[3] : null;
+            if (!destination.equals("Android")) {
+                return;
             }
+
+            if (actionNamespace.equals("Stations")) {
+                if (additionalData.startsWith("List")) {
+                    String jsonString = additionalData.split(":", 2)[1];
+                    JSONArray json = new JSONArray(jsonString);
+                    StationsViewModel stationsViewModel = new ViewModelProvider(main).get(StationsViewModel.class);
+                    main.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                stationsViewModel.setStations(json);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+
             Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
 
         } catch (IOException | JSONException e) {

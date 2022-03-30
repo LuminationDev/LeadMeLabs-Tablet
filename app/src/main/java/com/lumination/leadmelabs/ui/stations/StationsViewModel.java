@@ -38,6 +38,6 @@ public class StationsViewModel extends ViewModel {
     }
 
     private void loadStations() {
-        NetworkService.sendMessage("NUC:Stations:List");
+        NetworkService.sendMessage("NUC", "Stations", "List");
     }
 }
