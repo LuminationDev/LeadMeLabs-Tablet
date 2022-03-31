@@ -5,25 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.StationCardBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.ArrayList;
 
 public class StationAdapter extends BaseAdapter {
 
-    private final String TAG = "CuratedContentAdapter";
+    private final String TAG = "StationAdapter";
 
     public ArrayList<Station> stationList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context context;
-    private View list_view;
+    private StationsViewModel viewModel;
 
-    StationAdapter(Context context, View list_view) {
+    StationAdapter(Context context, StationsViewModel viewModel) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
-        this.list_view = list_view;
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class StationAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return stationList.get(position).number;
+        return stationList.get(position).id;
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
@@ -55,6 +55,10 @@ public class StationAdapter extends BaseAdapter {
             binding = (StationCardBinding) result.getTag();
         }
         binding.setStation(getItem(position));
+        result.setOnClickListener(v -> {
+            viewModel.selectStation(position);
+            NetworkService.sendMessage("Station,1", "CommandLine", "StartVR");
+        });
 
         return result;
     }

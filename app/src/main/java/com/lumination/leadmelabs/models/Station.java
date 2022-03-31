@@ -4,13 +4,16 @@ import java.util.ArrayList;
 
 public class Station {
     public String name;
-    public int number;
-    public String status;
-    public String activeProcess;
-    public ArrayList<Application> applications;
+    public int id;
+    public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
 
-    public Station(String name, int number) {
+    public Station(String name, String steamapps, int id) {
         this.name = name;
-        this.number = number;
+        String[] apps = steamapps.split("/");
+        for (String app: apps) {
+            String[] appData = app.split("\\|");
+            steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
+        }
+        this.id = id;
     }
 }
