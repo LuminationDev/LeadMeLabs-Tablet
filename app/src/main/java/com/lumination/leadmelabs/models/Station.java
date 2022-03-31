@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Station {
     public String name;
     public int id;
+    public String status = null;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
 
     public Station(String name, String steamapps, int id) {

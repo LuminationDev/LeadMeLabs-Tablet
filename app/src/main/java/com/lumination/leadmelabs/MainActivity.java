@@ -14,6 +14,7 @@ import android.view.View;
 
 import io.reactivex.rxjava3.core.*;
 
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
@@ -135,6 +136,18 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    public static void updateStation(String stationId, String attribute, String value) throws JSONException {
+        MainActivity.runOnUI(() -> {
+            Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(stationId));
+            switch (attribute) {
+                case "status":
+                    station.status = value;
+                    break;
+            }
+            StationsFragment.mViewModel.updateStationById(Integer.parseInt(stationId), station);
         });
     }
 
