@@ -184,6 +184,11 @@ public class NetworkService extends Service {
                 if (additionalData.startsWith("List")) {
                     MainActivity.updateScenes(additionalData.split(":", 2)[1]);
                 }
+            } else if (actionNamespace.equals("Steam")) {
+                if (additionalData.startsWith("Status")) {
+                    String status = additionalData.split(":")[1];
+                    MainActivity.updateStation(source.split(",")[1], "status", status);
+                }
             }
 
             Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);

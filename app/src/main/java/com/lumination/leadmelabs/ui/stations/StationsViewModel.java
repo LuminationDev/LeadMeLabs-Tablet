@@ -26,6 +26,28 @@ public class StationsViewModel extends ViewModel {
         return stations;
     }
 
+    public Station getStationById(int id) {
+        List<Station> stationsData = stations.getValue();
+        stationsData.removeIf(station -> station.id != id);
+        return stationsData.get(0);
+    }
+
+    public void updateStationById(int id, Station station) {
+        List<Station> stationsData = stations.getValue();
+        int index = -1;
+        for(int i = 0; i < stationsData.size(); i++) {
+            if (stationsData.get(i).id == id) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            stationsData.set(index, station);
+            stations.setValue((stationsData));
+        }
+
+    }
+
     public LiveData<Station> selectStation(int index) {
         this.selectedStation.setValue(this.stations.getValue().get(index));
         return this.getSelectedStation();
