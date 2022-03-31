@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.lumination.leadmelabs.models.Scene" />
+        <variable
+            name="scene"
+            type="com.lumination.leadmelabs.models.Scene" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/scene_card"
+        style="@style/DefaultContainer"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:background="@drawable/bg_station_card_blue"
+        app:flexDirection="row"
+        app:alignItems="center"
+        app:justifyContent="space_between"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/scene_icon"
+            android:src="@drawable/icon_home"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@{scene.name, default=Scene_Example}" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

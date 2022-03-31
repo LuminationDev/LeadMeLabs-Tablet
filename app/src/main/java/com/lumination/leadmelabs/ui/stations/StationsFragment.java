@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class StationsFragment extends Fragment {
 
-    private StationsViewModel mViewModel;
+    public static StationsViewModel mViewModel;
     private View view;
     private StationAdapter stationAdapter;
     private SteamApplicationAdapter steamApplicationAdapter;

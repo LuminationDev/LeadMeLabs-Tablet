@@ -31,6 +31,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * A service responsible for the receiving and sending of messages.
@@ -40,10 +43,12 @@ public class NetworkService extends Service {
     private static final String TAG = "NetworkService";
     private static final String CHANNEL_ID = "network_service";
     private static final String CHANNEL_NAME = "Network_Service";
-    private static MainActivity main;
 
     private static String NUCAddress;
     private ServerSocket mServerSocket;
+
+    private final ThreadPoolExecutor serverThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    private static final ExecutorService backgroundExecutor = Executors.newCachedThreadPool();
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -66,9 +71,6 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
     }
-    public static void setMain(MainActivity main) {
-        NetworkService.main = main;
-    }
 
     /**
      * Send a message to the NUC's server.
@@ -81,31 +83,27 @@ public class NetworkService extends Service {
 
         Log.d(TAG, "Attempting to send: " + message);
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InetAddress serverAddress = InetAddress.getByName(NUCAddress);
-                    Socket soc = new Socket(serverAddress, port);
+        backgroundExecutor.submit(() -> {
+            try {
+                InetAddress serverAddress = InetAddress.getByName(NUCAddress);
+                Socket soc = new Socket(serverAddress, port);
 
-                    OutputStream toServer = soc.getOutputStream();
-                    PrintWriter output = new PrintWriter(toServer);
-                    output.println(message);
-                    DataOutputStream out = new DataOutputStream(toServer);
-                    out.writeBytes(message);
+                OutputStream toServer = soc.getOutputStream();
+                PrintWriter output = new PrintWriter(toServer);
+                output.println(message);
+                DataOutputStream out = new DataOutputStream(toServer);
+                out.writeBytes(message);
 
-                    toServer.close();
-                    output.close();
-                    out.close();
-                    soc.close();
+                toServer.close();
+                output.close();
+                out.close();
+                soc.close();
 
-                    Log.d(TAG, "Message sent closing socket");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Log.d(TAG, "Message sent closing socket");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-        thread.start();
     }
 
     /**
@@ -114,31 +112,33 @@ public class NetworkService extends Service {
     public void startServer() {
         int port = 3000;
 
-        try {
-            mServerSocket = new ServerSocket();
-            mServerSocket.setReuseAddress(true);
-            mServerSocket.bind(new InetSocketAddress(port));
+        serverThreadPool.submit(() -> {
+            try {
+                mServerSocket = new ServerSocket();
+                mServerSocket.setReuseAddress(true);
+                mServerSocket.bind(new InetSocketAddress(port));
 
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                Log.d(TAG, "ServerSocket Created, awaiting connection");
-                Socket clientSocket;
+                //noinspection InfiniteLoopStatement
+                while (true) {
+                    Log.d(TAG, "ServerSocket Created, awaiting connection");
+                    Socket clientSocket;
 
-                try {
-                    //blocks the thread until client is accepted
-                    clientSocket = mServerSocket.accept();
-                } catch (IOException e) {
-                    throw new RuntimeException("Error creating client", e);
+                    try {
+                        //blocks the thread until client is accepted
+                        clientSocket = mServerSocket.accept();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Error creating client", e);
+                    }
+
+                    Log.d(TAG, "run: client connected: " + clientSocket.toString());
+
+                    backgroundExecutor.submit(() -> receiveMessage(clientSocket));
                 }
-
-                Log.d(TAG, "run: client connected: " + clientSocket.toString());
-
-                receiveMessage(clientSocket);
+            } catch (Exception e) {
+                Log.e(TAG, "Error creating ServerSocket: ", e);
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error creating ServerSocket: ", e);
-            e.printStackTrace();
-        }
+        });
     }
 
     /**
@@ -178,19 +178,11 @@ public class NetworkService extends Service {
 
             if (actionNamespace.equals("Stations")) {
                 if (additionalData.startsWith("List")) {
-                    String jsonString = additionalData.split(":", 2)[1];
-                    JSONArray json = new JSONArray(jsonString);
-                    StationsViewModel stationsViewModel = new ViewModelProvider(main).get(StationsViewModel.class);
-                    main.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                stationsViewModel.setStations(json);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    MainActivity.updateStations(additionalData.split(":", 2)[1]);
+                }
+            } else if (actionNamespace.equals("Scenes")) {
+                if (additionalData.startsWith("List")) {
+                    MainActivity.updateScenes(additionalData.split(":", 2)[1]);
                 }
             }
 
@@ -211,6 +203,8 @@ public class NetworkService extends Service {
                 mServerSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                serverThreadPool.shutdown();
             }
         }
     }

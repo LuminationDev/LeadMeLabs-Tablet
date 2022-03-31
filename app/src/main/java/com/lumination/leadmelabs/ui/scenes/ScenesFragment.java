@@ -4,17 +4,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.models.Scene;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+
+import java.util.ArrayList;
 
 public class ScenesFragment extends Fragment {
 
-    private ScenesViewModel mViewModel;
+    public static ScenesViewModel mViewModel;
+    private View view;
+    private ScenesAdapter sceneAdapter;
 
     public static ScenesFragment newInstance() {
         return new ScenesFragment();
@@ -24,16 +34,25 @@ public class ScenesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_scenes, container, false);
+        view = inflater.inflate(R.layout.fragment_scenes, container, false);
+        GridView gridView = (GridView) view.findViewById(R.id.scene_list);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        sceneAdapter = new ScenesAdapter(getContext(), gridView);
+        sceneAdapter.sceneList = new ArrayList<>();
+        gridView.setAdapter(sceneAdapter);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(ScenesViewModel.class);
-        mViewModel.getScenes().observe(getViewLifecycleOwner(), stations -> {
-            // update UI elements
+        mViewModel = new ViewModelProvider(requireActivity()).get(ScenesViewModel.class);
+        mViewModel.getScenes().observe(getViewLifecycleOwner(), scenes -> {
+            sceneAdapter.sceneList = (ArrayList<Scene>) scenes;
+            sceneAdapter.notifyDataSetChanged();
         });
     }
 }

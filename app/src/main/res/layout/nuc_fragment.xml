@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/stations_fragment"
-    style="@style/StationsContainer"
+    style="@style/NucContainer"
     tools:context=".ui.nuc.NucFragment">
+
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +25,7 @@
             android:id="@+id/set_nuc_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set NUC Address"></Button>
+            android:text="Set NUC Address" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
