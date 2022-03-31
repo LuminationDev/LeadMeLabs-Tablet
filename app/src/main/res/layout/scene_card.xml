@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
     <data>
         <import type="com.lumination.leadmelabs.models.Scene" />
         <variable
             name="scene"
             type="com.lumination.leadmelabs.models.Scene" />
+
+        <variable
+            name="isActive"
+            type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="icon"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/scene_card"
-        style="@style/DefaultContainer"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:background="@drawable/bg_station_card_blue"
+        style="@style/SceneCardContainer"
+        android:background="@{isActive ? @drawable/bg_station_card_blue : @drawable/bg_station_card_grey}"
         app:flexDirection="row"
         app:alignItems="center"
-        app:justifyContent="space_between"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="10dp">
+        app:justifyContent="space_between">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/scene_icon"
-            android:src="@drawable/icon_home"/>
+            app:imageResource="@{icon}" />
 
         <TextView
             android:layout_width="wrap_content"

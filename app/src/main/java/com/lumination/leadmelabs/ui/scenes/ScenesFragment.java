@@ -16,7 +16,6 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Scene;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class ScenesFragment extends Fragment {
 
     public static ScenesViewModel mViewModel;
     private View view;
-    private ScenesAdapter sceneAdapter;
+    private SceneAdapter sceneAdapter;
 
     public static ScenesFragment newInstance() {
         return new ScenesFragment();
@@ -39,7 +38,7 @@ public class ScenesFragment extends Fragment {
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
-        sceneAdapter = new ScenesAdapter(getContext(), gridView);
+        sceneAdapter = new SceneAdapter(getContext(), gridView);
         sceneAdapter.sceneList = new ArrayList<>();
         gridView.setAdapter(sceneAdapter);
         return view;
