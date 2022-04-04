@@ -45,10 +45,12 @@ public class UIUpdateManager {
                         updateScenes(additionalData.split(":", 2)[1]);
                     }
                     break;
-                case "Steam":
-                    if (additionalData.startsWith("Status")) {
-                        String status = additionalData.split(":")[1];
-                        updateStation(source.split(",")[1], "status", status);
+                case "Station":
+                    if (additionalData.startsWith("SetValue")) {
+                        String[] keyValue = additionalData.split(":", 3);
+                        String key = keyValue[1];
+                        String value = keyValue[2];
+                        updateStation(source.split(",")[1], key, value);
                     }
                     break;
                 case "Automation":
@@ -84,6 +86,8 @@ public class UIUpdateManager {
                 case "status":
                     station.status = value;
                     break;
+                case "steamApplications":
+                    station.setSteamApplicationsFromJsonString(value);
             }
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(stationId), station);
         });

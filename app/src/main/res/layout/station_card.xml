@@ -28,10 +28,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:text="@{station.status}"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Off"/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_height="wrap_content"
