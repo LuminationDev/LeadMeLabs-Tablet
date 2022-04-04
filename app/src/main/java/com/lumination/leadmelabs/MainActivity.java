@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 case "status":
                     station.status = value;
                     break;
+                case "steamApplications":
+                    station.setSteamApplicationsFromJsonString(value);
             }
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(stationId), station);
         });

@@ -44,6 +44,7 @@ public class StationAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent) {
         View result = view;
         StationCardBinding binding;
+        Station station = getItem(position);
         if (result == null) {
             if (mInflater == null) {
                 mInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,10 +55,10 @@ public class StationAdapter extends BaseAdapter {
         } else {
             binding = (StationCardBinding) result.getTag();
         }
-        binding.setStation(getItem(position));
+        binding.setStation(station);
         result.setOnClickListener(v -> {
             viewModel.selectStation(position);
-            NetworkService.sendMessage("Station,1", "CommandLine", "StartVR");
+            NetworkService.sendMessage("Station," + station.id, "CommandLine", "StartVR");
         });
 
         return result;
