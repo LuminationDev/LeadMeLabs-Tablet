@@ -23,6 +23,7 @@ public class SceneAdapter extends BaseAdapter {
     public ArrayList<SceneCardBinding> sceneBindings = new ArrayList<>();
 
     public ArrayList<Scene> sceneList = new ArrayList<>();
+    public int selected;
     private LayoutInflater mInflater;
     private Context context;
     private View list_view;
@@ -53,7 +54,9 @@ public class SceneAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         View result = view;
+
         SceneCardBinding binding;
+
         if (result == null) {
             if (mInflater == null) {
                 mInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -67,8 +70,14 @@ public class SceneAdapter extends BaseAdapter {
         binding.setScene(getItem(position));
         setIcon(binding, getItemValue(position));
 
+        //Load what scene has been selected
+        if(getItemValue(position) == selected) {
+            binding.setIsActive(new MutableLiveData<>(true));
+        }
+
         result.setOnClickListener(v -> {
             binding.setIsActive(new MutableLiveData<>(true));
+            ScenesFragment.mViewModel.setCurrentValue(getItemValue(position));
 
             for(SceneCardBinding sceneBinding : sceneBindings) {
                 if(sceneBinding != binding) {
@@ -97,6 +106,15 @@ public class SceneAdapter extends BaseAdapter {
         switch(value) {
             case 0:
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
+                break;
+            case 1:
+                icon = new MutableLiveData<>(R.drawable.icon_home);
+                break;
+            case 2:
+                icon = new MutableLiveData<>(R.drawable.icon_settings);
+                break;
+            case 3:
+                icon = new MutableLiveData<>(R.drawable.icon_home);
                 break;
             default:
                 icon = new MutableLiveData<>(R.drawable.icon_home);

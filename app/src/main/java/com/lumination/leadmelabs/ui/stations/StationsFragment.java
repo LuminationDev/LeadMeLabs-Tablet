@@ -26,10 +26,6 @@ public class StationsFragment extends Fragment {
     private SteamApplicationAdapter steamApplicationAdapter;
     private FragmentStationsBinding binding;
 
-    public static StationsFragment newInstance() {
-        return new StationsFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

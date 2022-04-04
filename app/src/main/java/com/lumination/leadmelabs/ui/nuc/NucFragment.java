@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.nuc;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +22,11 @@ public class NucFragment extends Fragment {
     private View view;
     private AlertDialog nucDialog;
 
-    public static NucFragment newInstance() {
-        return new NucFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.nuc_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_nuc, container, false);
         return view;
     }
 
