@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.pages.HomeFragment;
+import com.lumination.leadmelabs.ui.pages.ControlsFragment;
+import com.lumination.leadmelabs.ui.pages.DashboardFragment;
+import com.lumination.leadmelabs.ui.pages.SessionFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsFragment;
 
 public class SideMenuFragment extends Fragment {
@@ -48,9 +50,21 @@ public class SideMenuFragment extends Fragment {
                     .commitNow();
         });
 
-        view.findViewById(R.id.home_button).setOnClickListener(v -> {
+        view.findViewById(R.id.session_button).setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, HomeFragment.class, null)
+                    .replace(R.id.main, SessionFragment.class, null)
+                    .commitNow();
+        });
+
+        view.findViewById(R.id.controls_button).setOnClickListener(v -> {
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, ControlsFragment.class, null)
+                    .commitNow();
+        });
+
+        view.findViewById(R.id.dashboard_button).setOnClickListener(v -> {
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, DashboardFragment.class, null)
                     .commitNow();
         });
     }

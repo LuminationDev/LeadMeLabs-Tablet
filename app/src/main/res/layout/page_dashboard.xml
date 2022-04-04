@@ -28,11 +28,6 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/nuc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <RelativeLayout
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
