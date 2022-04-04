@@ -11,6 +11,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.services.NetworkService;
 
+/**
+ * Only responsible for setting the address as it is saved in shared
+ * preferences afterwards which can be loaded at the application start.
+ */
 public class NucViewModel extends AndroidViewModel {
     private MutableLiveData<String> nucAddress;
 
@@ -19,10 +23,12 @@ public class NucViewModel extends AndroidViewModel {
     }
 
     public LiveData<String> getNuc() {
-        if (nucAddress == null) {
-            nucAddress = new MutableLiveData<String>();
-            loadNuc();
+        if (NetworkService.getNUCAddress().equals("")) {
+            nucAddress = new MutableLiveData<>();
+        } else {
+            nucAddress = new MutableLiveData<>(NetworkService.getNUCAddress());
         }
+
         return nucAddress;
     }
 
@@ -33,13 +39,8 @@ public class NucViewModel extends AndroidViewModel {
         editor.apply();
         NetworkService.setNUCAddress(newValue);
         nucAddress.setValue(newValue);
+        NetworkService.sendMessage("NUC", "Automation", "TriggerScene:Get");
         NetworkService.sendMessage("NUC", "Stations", "List");
         NetworkService.sendMessage("NUC", "Scenes", "List");
-    }
-
-    private void loadNuc() {
-//      TODO  consider if this should be moved out - arguably best practice doesn't include android references in the view model
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
-        setNucAddress(sharedPreferences.getString("nuc_address", ""));
     }
 }
