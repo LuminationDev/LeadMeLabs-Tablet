@@ -6,16 +6,30 @@
     style="@style/ScenesContainer"
     tools:context=".ui.scenes.ScenesFragment">
 
-    <GridView
-        android:id="@+id/scene_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:columnWidth="100dp"
-        android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"
-        android:numColumns="1"
-        tools:listitem="@layout/scene_card" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="@string/title_scenes"
+            android:textSize="30sp" />
+
+        <GridView
+            android:id="@+id/scene_list"
+            android:layout_width="wrap_content"
+            android:layout_height="370dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:columnWidth="100dp"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:numColumns="1"
+            tools:listitem="@layout/scene_card" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

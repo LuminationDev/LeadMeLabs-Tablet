@@ -16,10 +16,6 @@ public class LogoFragment extends Fragment {
 
     private LogoViewModel mViewModel;
 
-    public static LogoFragment newInstance() {
-        return new LogoFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

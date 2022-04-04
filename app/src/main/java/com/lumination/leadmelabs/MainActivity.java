@@ -2,10 +2,10 @@ package com.lumination.leadmelabs;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,24 +14,14 @@ import android.view.View;
 
 import io.reactivex.rxjava3.core.*;
 
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
-import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
-import com.lumination.leadmelabs.ui.scenes.ScenesViewModel;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.lumination.leadmelabs.ui.pages.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     public static Handler UIHandler;
-    private FragmentManager fragmentManager;
+    public static FragmentManager fragmentManager;
 
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
@@ -49,11 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             fragmentManager = getSupportFragmentManager();
-            loadFragments();
+
+            //Loading the home screen
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main, HomeFragment.class, null)
+                    .commitNow();
         }
 
         hideStatusBar();
         startNetworkService();
+        loadNuc();
 
         //Example of RXJava
         Flowable.just("Hello world").subscribe(System.out::println);
@@ -63,31 +58,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopNetworkService();
-    }
-
-    /**
-     * Load in the initial fragments for the main view.
-     */
-    private void loadFragments() {
-        fragmentManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.newInstance())
-                .commitNow();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.stations, StationsFragment.newInstance())
-                .commitNow();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.nuc, NucFragment.newInstance())
-                .commitNow();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.scenes, ScenesFragment.newInstance())
-                .commitNow();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.logo, LogoFragment.newInstance())
-                .commitNow();
     }
 
     /**
@@ -111,11 +81,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "startService: ");
 
         Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(network_intent);
-        } else {
-            startService(network_intent);
-        }
+        startForegroundService(network_intent);
     }
 
     /**
@@ -126,42 +92,16 @@ public class MainActivity extends AppCompatActivity {
         stopService(stop_network_intent);
     }
 
-    //Simplify the functions below to a generic one
-    public static void updateStations(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
+    /**
+     * Set the NUC address for the network service. Loading in the main activity so the initial
+     * network messages can be sent straight away for station/scene list and initial scene value.
+     */
+    private void loadNuc() {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
+        String address = sharedPreferences.getString("nuc_address", "");
 
-        MainActivity.runOnUI(() -> {
-            try {
-                StationsFragment.mViewModel.setStations(json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static void updateStation(String stationId, String attribute, String value) throws JSONException {
-        MainActivity.runOnUI(() -> {
-            Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(stationId));
-            switch (attribute) {
-                case "status":
-                    station.status = value;
-                    break;
-                case "steamApplications":
-                    station.setSteamApplicationsFromJsonString(value);
-            }
-            StationsFragment.mViewModel.updateStationById(Integer.parseInt(stationId), station);
-        });
-    }
-
-    public static void updateScenes(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
-
-        MainActivity.runOnUI(() -> {
-            try {
-                ScenesFragment.mViewModel.setScenes(json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
+        if(!address.equals("")) {
+            NetworkService.setNUCAddress(address);
+        }
     }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScenesViewModel extends ViewModel {
+    private MutableLiveData<Integer> currentValue;
     private MutableLiveData<List<Scene>> scenes;
 
     public LiveData<List<Scene>> getScenes() {
@@ -21,6 +22,7 @@ public class ScenesViewModel extends ViewModel {
             scenes = new MutableLiveData<>();
             loadScenes();
         }
+
         return scenes;
     }
 
@@ -28,7 +30,6 @@ public class ScenesViewModel extends ViewModel {
         List<Scene> st = new ArrayList<>();
 
         for (int i = 0; i < scenes.length(); i++) {
-            //Will need a way to set the icon
             Scene scene = new Scene(scenes.getJSONObject(i).getString("name"), scenes.getJSONObject(i).getInt("id"), scenes.getJSONObject(i).getInt("value"));
             st.add(scene);
         }
@@ -42,5 +43,23 @@ public class ScenesViewModel extends ViewModel {
 
     private void loadScenes() {
         NetworkService.sendMessage("NUC","Scenes", "List");
+    }
+
+    //Loading the current value for the selected scene
+    public LiveData<Integer> getCurrentValue() {
+        if (currentValue == null) {
+            currentValue = new MutableLiveData<>();
+            loadSelected();
+        }
+
+        return currentValue;
+    }
+
+    public void setCurrentValue(Integer value) {
+        this.currentValue.setValue(value);
+    }
+
+    private void loadSelected() {
+        NetworkService.sendMessage("NUC", "Automation", "TriggerScene:Get");
     }
 }

@@ -10,21 +10,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.ui.pages.HomeFragment;
+import com.lumination.leadmelabs.ui.pages.SettingsFragment;
 
 public class SideMenuFragment extends Fragment {
 
     private SideMenuViewModel mViewModel;
-
-    public static SideMenuFragment newInstance() {
-        return new SideMenuFragment();
-    }
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_side_menu, container, false);
+        view = inflater.inflate(R.layout.fragment_side_menu, container, false);
+        setupButtons();
+        return view;
     }
 
     @Override
@@ -34,6 +36,22 @@ public class SideMenuFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(SideMenuViewModel.class);
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements
+        });
+    }
+
+    //Really easy to set animations
+    //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+    private void setupButtons() {
+        view.findViewById(R.id.navigation_button_settings).setOnClickListener(v -> {
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, SettingsFragment.class, null)
+                    .commitNow();
+        });
+
+        view.findViewById(R.id.home_button).setOnClickListener(v -> {
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, HomeFragment.class, null)
+                    .commitNow();
         });
     }
 }

@@ -11,15 +11,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.managers.UIUpdateManager;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModelProvider;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -71,6 +66,8 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
     }
+
+    public static String getNUCAddress() { return NUCAddress; }
 
     /**
      * Send a message to the NUC's server.
@@ -167,35 +164,12 @@ public class NetworkService extends Service {
             //Message has been received close the socket
             clientSocket.close();
 
-            String[] messageParts = message.split(":", 4);
-            String source = messageParts[0];
-            String destination = messageParts[1];
-            String actionNamespace = messageParts[2];
-            String additionalData = messageParts.length > 3 ? messageParts[3] : null;
-            if (!destination.equals("Android")) {
-                return;
-            }
-
-            if (actionNamespace.equals("Stations")) {
-                if (additionalData.startsWith("List")) {
-                    MainActivity.updateStations(additionalData.split(":", 2)[1]);
-                }
-            } else if (actionNamespace.equals("Scenes")) {
-                if (additionalData.startsWith("List")) {
-                    MainActivity.updateScenes(additionalData.split(":", 2)[1]);
-                }
-            } else if (actionNamespace.equals("Station")) {
-                if (additionalData.startsWith("SetValue")) {
-                    String[] keyValue = additionalData.split(":", 3);
-                    String key = keyValue[1];
-                    String value = keyValue[2];
-                    MainActivity.updateStation(source.split(",")[1], key, value);
-                }
-            }
+            //Pass the message of to the UI updater
+            UIUpdateManager.determineUpdate(message);
 
             Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
 
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             Log.e(TAG, "Unable to process client request");
             e.printStackTrace();
         }
@@ -225,13 +199,7 @@ public class NetworkService extends Service {
     public void onCreate() {
         super.onCreate();
         startForeground();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                startServer();
-            }
-        });
-        thread.start();
+        startServer();
     }
 
     @Override

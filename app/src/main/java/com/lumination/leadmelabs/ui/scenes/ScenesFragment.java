@@ -25,10 +25,6 @@ public class ScenesFragment extends Fragment {
     private View view;
     private SceneAdapter sceneAdapter;
 
-    public static ScenesFragment newInstance() {
-        return new ScenesFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -47,8 +43,13 @@ public class ScenesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         mViewModel = new ViewModelProvider(requireActivity()).get(ScenesViewModel.class);
+
+        mViewModel.getCurrentValue().observe(getViewLifecycleOwner(), selected -> {
+            sceneAdapter.selected = selected;
+            sceneAdapter.notifyDataSetChanged();
+        });
+
         mViewModel.getScenes().observe(getViewLifecycleOwner(), scenes -> {
             sceneAdapter.sceneList = (ArrayList<Scene>) scenes;
             sceneAdapter.notifyDataSetChanged();
