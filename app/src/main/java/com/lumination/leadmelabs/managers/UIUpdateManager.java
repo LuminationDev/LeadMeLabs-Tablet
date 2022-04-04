@@ -103,13 +103,17 @@ public class UIUpdateManager {
 
     //Need cleaning up when there is access to CBUS
     private static void updateSelectedScene(String response) {
-        String requiredString = response.substring(response.indexOf("[") + 1, response.indexOf("]"));
-        Log.e(TAG, requiredString);
+        //        String requiredString = response.substring(response.indexOf("[") + 1, response.indexOf("]"));
+//        Log.e(TAG, requiredString);
+//
+//        String value = requiredString.substring(requiredString.indexOf("v") + 7, requiredString.indexOf("v") + 8);
 
-        String value = requiredString.substring(requiredString.indexOf("v") + 7, requiredString.indexOf("v") + 8);
+        String[] split = response.split(":");
+
+        Log.e(TAG, "Value:" + split[1]);
 
         MainActivity.runOnUI(() -> {
-            ScenesFragment.mViewModel.setCurrentValue(Integer.parseInt(value));
+            ScenesFragment.mViewModel.setCurrentValue(Integer.parseInt(split[1]));
         });
     }
 }

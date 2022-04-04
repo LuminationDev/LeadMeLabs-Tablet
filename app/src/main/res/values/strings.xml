@@ -3,4 +3,7 @@
     <string name="logo">Logo</string>
     <string name="scene_icon">Scene Icon</string>
     <string name="title_scenes">Scenes</string>
+    <string name="restart_session">RESTART SESSION</string>
+    <string name="end_session">END SESSION</string>
+    <string name="new_session">NEW SESSION</string>
 </resources>

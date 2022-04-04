@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/SessionContainer">
+
+    <TextView
+        android:id="@+id/start_session"
+        style="@style/SessionText"
+        android:text="@string/new_session"
+        app:drawableTopCompat="@drawable/compound_start_session" />
+
+    <TextView
+        android:id="@+id/end_session"
+        style="@style/SessionText"
+        android:text="@string/end_session"
+        app:drawableTopCompat="@drawable/compound_end_session"/>
+
+    <TextView
+        android:id="@+id/restart_session"
+        style="@style/SessionText"
+        android:text="@string/restart_session"
+        app:drawableTopCompat="@drawable/compound_restart_session"/>
+
+</LinearLayout>

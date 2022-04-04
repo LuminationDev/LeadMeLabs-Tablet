@@ -19,7 +19,7 @@
             android:layout_marginBottom="10dp"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:text="@{selectedStation.name}"></TextView>
+            android:text="@{selectedStation.name}" />
         <GridView
             android:id="@+id/steam_list"
             android:layout_width="match_parent"
