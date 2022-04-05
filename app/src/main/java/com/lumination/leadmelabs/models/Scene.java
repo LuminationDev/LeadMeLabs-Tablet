@@ -14,7 +14,7 @@ public class Scene {
         this.number = number;
         this.value = value;
 
-        icon = new MutableLiveData<>();
+        icon = new MutableLiveData<>(null);
         isActive = new MutableLiveData<>(false);
     }
 }
