@@ -1,24 +1,20 @@
 package com.lumination.leadmelabs;
 
+import static com.lumination.leadmelabs.TestUtils.getOrAwaitValue;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import static org.junit.Assert.*;
 
-import androidx.annotation.Nullable;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.lumination.leadmelabs.models.NUC;
 import com.lumination.leadmelabs.models.Scene;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Testing the creation and execution of model classes.
@@ -67,6 +63,12 @@ public class ModelUnitTest {
         assertEquals(station.steamApplications.get(0).name, "FTL");
         assertEquals(station.steamApplications.get(0).id, 212680);
         assertEquals(station.steamApplications.get(0).getImageUrl(), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+
+        String url = station.steamApplications.get(0).getImageUrl();
+        assertEquals(TestUtils.MimicHttpRequest(url), 200);
+
+        String invalid = "xyz";
+        assertEquals(TestUtils.MimicHttpRequest("https://cdn.cloudflare.steamstatic.com/steam/apps/"+ invalid +"/header.jpg"), 404);
     }
 
     @Test
@@ -76,26 +78,6 @@ public class ModelUnitTest {
         assertEquals(steamApp.name, "FTL");
         assertEquals(steamApp.id, 212680);
         assertEquals(steamApp.getImageUrl(), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
-    }
-
-    //Helper function to test LiveData attributes
-    public static <T> T getOrAwaitValue(final LiveData<T> liveData) throws InterruptedException {
-        final Object[] data = new Object[1];
-        final CountDownLatch latch = new CountDownLatch(1);
-        Observer<T> observer = new Observer<T>() {
-            @Override
-            public void onChanged(@Nullable T o) {
-                data[0] = o;
-                latch.countDown();
-                liveData.removeObserver(this);
-            }
-        };
-        liveData.observeForever(observer);
-        // Don't wait indefinitely if the LiveData is not set.
-        if (!latch.await(2, TimeUnit.SECONDS)) {
-            throw new RuntimeException("LiveData value was never set.");
-        }
-        //noinspection unchecked
-        return (T) data[0];
+        assertEquals(TestUtils.MimicHttpRequest(steamApp.getImageUrl()), 200);
     }
 }
