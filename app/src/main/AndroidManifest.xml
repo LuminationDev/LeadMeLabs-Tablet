@@ -29,6 +29,8 @@
             android:foregroundServiceType="connectedDevice"
             android:stopWithTask="true">
         </service>
+        <meta-data android:name="io.sentry.dsn" android:value="https://7ba471b56c544078860a3603911bb20b@o1189202.ingest.sentry.io/6309488" />
+        <meta-data android:name="io.sentry.traces.sample-rate" android:value="0.1" />
     </application>
 
 </manifest>
