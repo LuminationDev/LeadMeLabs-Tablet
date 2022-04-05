@@ -71,13 +71,14 @@ public class SceneAdapter extends BaseAdapter {
         setIcon(binding, getItemValue(position));
 
         //Load what scene has been selected
-        if(getItemValue(position) == selected) {
+        if(getItemValue(position) == selected
+                || getItem(position) == ScenesFragment.mViewModel.getCurrentScene().getValue()) {
             binding.setIsActive(new MutableLiveData<>(true));
         }
 
         result.setOnClickListener(v -> {
             binding.setIsActive(new MutableLiveData<>(true));
-            ScenesFragment.mViewModel.setCurrentValue(getItemValue(position));
+            ScenesFragment.mViewModel.setCurrentScene(getItem(position));
 
             for(SceneCardBinding sceneBinding : sceneBindings) {
                 if(sceneBinding != binding) {

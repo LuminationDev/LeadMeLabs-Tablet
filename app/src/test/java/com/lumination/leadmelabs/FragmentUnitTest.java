@@ -34,7 +34,7 @@ public class FragmentUnitTest {
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Before
-    public void foo() {
+    public void init() {
         scenario = activityScenarioRule.getScenario();
     }
 
