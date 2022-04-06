@@ -21,7 +21,6 @@ import com.lumination.leadmelabs.ui.pages.DashboardFragment;
 /**
  * Testing the UI elements of fragments that have been created.
  */
-
 // required to access final members on androidx.loader.content.ModernAsyncTask
 @Config(instrumentedPackages = {"androidx.loader.content"})
 @RunWith(RobolectricTestRunner.class)
@@ -31,7 +30,8 @@ public class FragmentUnitTest {
 
     //Testing area
     @Rule
-    public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> activityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
 
     @Before
     public void init() {

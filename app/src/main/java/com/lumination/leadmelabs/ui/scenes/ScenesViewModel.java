@@ -46,7 +46,9 @@ public class ScenesViewModel extends ViewModel {
         NetworkService.sendMessage("NUC","Scenes", "List");
     }
 
-    //Load the last saved scene within a session
+    /**
+     * Load the last saved scene within a session.
+     */
     public LiveData<Scene> getCurrentScene() {
         if (currentScene == null) {
             currentScene = new MutableLiveData<>();
@@ -59,8 +61,10 @@ public class ScenesViewModel extends ViewModel {
         this.currentScene.setValue(scene);
     }
 
-
-    //Loading the current value for the selected scene from a cold start
+    /**
+     * Loading the current value for the selected scene from a cold start, grabbing the current
+     * value from the CBUS system.
+     */
     public LiveData<Integer> getCurrentValue() {
         if (currentValue == null) {
             currentValue = new MutableLiveData<>();
