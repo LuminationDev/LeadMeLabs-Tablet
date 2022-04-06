@@ -23,7 +23,7 @@ public class Station {
         String[] apps = steamApplicationsJson.split("/");
         for (String app: apps) {
             String[] appData = app.split("\\|");
-            steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
+            this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
         }
     }
 }
