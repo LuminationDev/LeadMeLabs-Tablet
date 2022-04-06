@@ -9,6 +9,7 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
@@ -106,11 +107,11 @@ public class UIUpdateManager {
     }
 
     //Need cleaning up when there is access to CBUS
-    private static void updateSelectedScene(String response) {
+    private static void updateSelectedScene(String response) throws JSONException {
         String requiredString = response.substring(response.indexOf("[") + 1, response.indexOf("]"));
-        Log.e(TAG, requiredString);
+        JSONObject json = new JSONObject(requiredString);
 
-        String value = requiredString.substring(requiredString.indexOf("v") + 7, requiredString.indexOf("v") + 8);
+        String value = json.getJSONObject("data").getString("value");
 
         MainActivity.runOnUI(() -> {
             ScenesFragment.mViewModel.setCurrentValue(Integer.parseInt(value));
