@@ -15,6 +15,7 @@ import java.util.List;
 
 public class ScenesViewModel extends ViewModel {
     private MutableLiveData<Integer> currentValue;
+    private MutableLiveData<Scene> currentScene;
     private MutableLiveData<List<Scene>> scenes;
 
     public LiveData<List<Scene>> getScenes() {
@@ -45,7 +46,25 @@ public class ScenesViewModel extends ViewModel {
         NetworkService.sendMessage("NUC","Scenes", "List");
     }
 
-    //Loading the current value for the selected scene
+    /**
+     * Load the last saved scene within a session.
+     */
+    public LiveData<Scene> getCurrentScene() {
+        if (currentScene == null) {
+            currentScene = new MutableLiveData<>();
+        }
+
+        return currentScene;
+    }
+
+    public void setCurrentScene(Scene scene) {
+        this.currentScene.setValue(scene);
+    }
+
+    /**
+     * Loading the current value for the selected scene from a cold start, grabbing the current
+     * value from the CBUS system.
+     */
     public LiveData<Integer> getCurrentValue() {
         if (currentValue == null) {
             currentValue = new MutableLiveData<>();

@@ -18,7 +18,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardFragment;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "MainActivity";
+    public static String TAG = "MainActivity";
 
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;

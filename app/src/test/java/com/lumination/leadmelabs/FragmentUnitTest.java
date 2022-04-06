@@ -1,24 +1,58 @@
 package com.lumination.leadmelabs;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.*;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+
+import com.lumination.leadmelabs.ui.pages.DashboardFragment;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Testing the UI elements of fragments that have been created.
  */
-
+// required to access final members on androidx.loader.content.ModernAsyncTask
+@Config(instrumentedPackages = {"androidx.loader.content"})
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = "app/src/main/AndroidManifest.xml")
 public class FragmentUnitTest {
-    @Test
-    public void dashboard_creation() {
+    //Variables
+    private ActivityScenario<MainActivity> scenario;
 
+    //Testing area
+    @Rule
+    public ActivityScenarioRule<MainActivity> activityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
+    @Before
+    public void init() {
+        scenario = activityScenarioRule.getScenario();
+    }
+
+    @Test
+    public void test_dashboard_UI() {
+        scenario.onActivity(activity -> {
+            activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main, DashboardFragment.class, null)
+                        .commitNow();
+        });
+
+        //Can check whether each of the sub-elements have loaded in.
+        onView(withId(R.id.logo_fragment)).check(matches((isDisplayed())));
+        onView(withId(R.id.side_menu_fragment)).check(matches((isDisplayed())));
+
+        //Does not like empty rectangles - need to populate first
+        //onView(withId(R.id.stations_fragment)).check(matches((isDisplayed())));
+        //onView(withId(R.id.scenes_fragment)).check(matches((isDisplayed())));
     }
 }

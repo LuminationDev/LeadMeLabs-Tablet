@@ -30,6 +30,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -51,5 +57,8 @@ dependencies {
     testImplementation 'org.apache.httpcomponents:httpcore:4.4.10'
     testImplementation 'org.apache.httpcomponents:httpclient:4.5.6'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    debugImplementation "androidx.fragment:fragment-testing:1.4.1"
 }

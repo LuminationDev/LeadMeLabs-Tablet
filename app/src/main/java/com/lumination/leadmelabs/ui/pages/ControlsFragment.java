@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 
 public class ControlsFragment extends Fragment {
     private View view;

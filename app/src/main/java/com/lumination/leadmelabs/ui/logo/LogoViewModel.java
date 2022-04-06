@@ -11,7 +11,7 @@ public class LogoViewModel extends ViewModel {
 
     public LiveData<List<String>> getInfo() {
         if (info == null) {
-            info = new MutableLiveData<>();
+            info = new MutableLiveData<>(null);
             loadInfo();
         }
         return info;

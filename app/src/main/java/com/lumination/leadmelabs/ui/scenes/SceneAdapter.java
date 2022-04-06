@@ -71,12 +71,14 @@ public class SceneAdapter extends BaseAdapter {
         setIcon(binding, getItemValue(position));
 
         //Load what scene has been selected
-        if(getItemValue(position) == selected) {
+        if(getItemValue(position) == selected || getItem(position) == ScenesFragment.mViewModel.getCurrentScene().getValue()) {
             binding.setIsActive(new MutableLiveData<>(true));
         }
 
         result.setOnClickListener(v -> {
             binding.setIsActive(new MutableLiveData<>(true));
+            ScenesFragment.mViewModel.setCurrentScene(getItem(position));
+            //Need to override the initial value set from CBUS
             ScenesFragment.mViewModel.setCurrentValue(getItemValue(position));
 
             for(SceneCardBinding sceneBinding : sceneBindings) {
