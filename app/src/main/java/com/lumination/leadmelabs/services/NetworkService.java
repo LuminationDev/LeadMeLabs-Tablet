@@ -11,6 +11,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.lumination.leadmelabs.BuildConfig;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 
@@ -76,10 +77,12 @@ public class NetworkService extends Service {
 
         String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
 
+        message = EncryptionHelper.encrypt(message, BuildConfig.APP_KEY);
         int port = 8080;
 
         Log.d(TAG, "Attempting to send: " + message);
 
+        String finalMessage = message;
         backgroundExecutor.submit(() -> {
             try {
                 InetAddress serverAddress = InetAddress.getByName(NUCAddress);
@@ -87,9 +90,9 @@ public class NetworkService extends Service {
 
                 OutputStream toServer = soc.getOutputStream();
                 PrintWriter output = new PrintWriter(toServer);
-                output.println(message);
+                output.println(finalMessage);
                 DataOutputStream out = new DataOutputStream(toServer);
-                out.writeBytes(message);
+                out.writeBytes(finalMessage);
 
                 toServer.close();
                 output.close();
@@ -157,6 +160,7 @@ public class NetworkService extends Service {
             }
 
             String message = baos.toString();
+            message = EncryptionHelper.decrypt(message, BuildConfig.APP_KEY);
 
             //Get the IP address used to determine who has just connected.
             String ipAddress = clientSocket.getInetAddress().getHostAddress();
