@@ -88,7 +88,7 @@ public class SceneAdapter extends BaseAdapter {
             }
 
             //Disable when not connected to CBUS otherwise NUC will timeout waiting for response
-            NetworkService.sendMessage("NUC", "Automation", "Set:trigger_scene:" + getItemValue(position));
+            NetworkService.sendMessage("NUC", "Automation", "Set:scenes:" + getItemValue(position));
         });
 
         sceneBindings.add(binding);
