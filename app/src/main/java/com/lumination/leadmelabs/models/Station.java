@@ -6,15 +6,17 @@ public class Station {
     public String name;
     public int id;
     public String status;
+    public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
 
-    public Station(String name, String steamApplications, int id, String status) {
+    public Station(String name, String steamApplications, int id, String status, int volume) {
         this.name = name;
         if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("null")) {
             this.setSteamApplicationsFromJsonString(steamApplications);
         }
         this.id = id;
         this.status = status;
+        this.volume = volume;
     }
 
     public void setSteamApplicationsFromJsonString(String steamApplicationsJson)

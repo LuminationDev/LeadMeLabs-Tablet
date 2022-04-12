@@ -12,9 +12,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,23 @@ public class StationsFragment extends Fragment {
         return view;
     }
 
+    private final Slider.OnSliderTouchListener touchListener =
+            new Slider.OnSliderTouchListener() {
+                @Override
+                public void onStartTrackingTouch(Slider slider) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(Slider slider) {
+                    Station selectedStation = binding.getSelectedStation();
+                    selectedStation.volume = (int) slider.getValue();
+                    mViewModel.updateStationById(selectedStation.id, selectedStation);
+                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + String.valueOf(selectedStation.volume));
+                    System.out.println(slider.getValue());
+                }
+            };
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -49,6 +68,9 @@ public class StationsFragment extends Fragment {
         steamApplicationAdapter = new SteamApplicationAdapter(getContext());
         steamApplicationAdapter.steamApplicationList = new ArrayList<>();
         steamGridView.setAdapter(steamApplicationAdapter);
+
+        Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
+        stationVolumeSlider.addOnSliderTouchListener(touchListener);
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             stationAdapter.stationList = (ArrayList<Station>) stations;

@@ -68,7 +68,8 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("name"),
                     stationJson.getString("steamApplications"),
                     stationJson.getInt("id"),
-                    stationJson.getString("status"));
+                    stationJson.getString("status"),
+                    stationJson.getInt("volume"));
             st.add(station);
         }
         this.setStations(st);

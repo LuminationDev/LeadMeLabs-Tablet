@@ -23,7 +23,7 @@ public class NucViewModel extends AndroidViewModel {
     }
 
     public LiveData<String> getNuc() {
-        if (NetworkService.getNUCAddress().equals("")) {
+        if (NetworkService.getNUCAddress() == null || NetworkService.getNUCAddress().equals("")) {
             nucAddress = new MutableLiveData<>();
         } else {
             nucAddress = new MutableLiveData<>(NetworkService.getNUCAddress());
