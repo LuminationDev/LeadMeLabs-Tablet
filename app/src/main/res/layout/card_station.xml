@@ -9,8 +9,8 @@
             type="com.lumination.leadmelabs.models.Station" />
     </data>
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/logo_fragment"
-        style="@style/DefaultContainer"
+        android:id="@+id/station_card"
+        style="@style/StationCard"
         android:layout_height="150dp"
         android:layout_width="100dp"
         android:background="@drawable/bg_station_card_blue"

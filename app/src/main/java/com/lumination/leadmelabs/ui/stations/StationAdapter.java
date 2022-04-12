@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.lumination.leadmelabs.databinding.StationCardBinding;
+
+import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
@@ -43,17 +44,17 @@ public class StationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         View result = view;
-        StationCardBinding binding;
+        CardStationBinding binding;
         Station station = getItem(position);
         if (result == null) {
             if (mInflater == null) {
                 mInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
-            binding = StationCardBinding.inflate(mInflater, parent, false);
+            binding = CardStationBinding.inflate(mInflater, parent, false);
             result = binding.getRoot();
             result.setTag(binding);
         } else {
-            binding = (StationCardBinding) result.getTag();
+            binding = (CardStationBinding) result.getTag();
         }
         binding.setStation(station);
         result.setOnClickListener(v -> {

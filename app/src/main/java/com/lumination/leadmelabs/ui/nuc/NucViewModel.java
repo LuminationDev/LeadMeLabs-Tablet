@@ -39,7 +39,7 @@ public class NucViewModel extends AndroidViewModel {
         editor.apply();
         NetworkService.setNUCAddress(newValue);
         nucAddress.setValue(newValue);
-        NetworkService.sendMessage("NUC", "Automation", "TriggerScene:Get");
+        NetworkService.sendMessage("NUC", "Automation", "Get:trigger_scene");
         NetworkService.sendMessage("NUC", "Stations", "List");
         NetworkService.sendMessage("NUC", "Scenes", "List");
     }

@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.scenes;
+package com.lumination.leadmelabs.ui.appliance;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,26 +9,27 @@ import android.widget.BaseAdapter;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.R;
-
-import com.lumination.leadmelabs.databinding.CardSceneBinding;
-import com.lumination.leadmelabs.models.Scene;
+import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.ArrayList;
 
-public class SceneAdapter extends BaseAdapter {
-    private final String TAG = "ScenesAdapter";
+/**
+ * Use this adapter for scripts in the future.
+ */
+public class ApplianceAdapter extends BaseAdapter {
+    private final String TAG = "ApplianceAdapter";
 
     //Not sure if this is a good idea or not but handy to access for data binding UI changes
-    public ArrayList<CardSceneBinding> sceneBindings = new ArrayList<>();
+    public ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
 
-    public ArrayList<Scene> sceneList = new ArrayList<>();
-    public int selected;
+    public ArrayList<Appliance> applianceList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context context;
     private View list_view;
 
-    SceneAdapter(Context context, View list_view) {
+    ApplianceAdapter(Context context, View list_view) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.list_view = list_view;
@@ -36,62 +37,64 @@ public class SceneAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return sceneList != null ? sceneList.size() : 0;
+        return applianceList != null ? applianceList.size() : 0;
     }
 
     @Override
-    public Scene getItem(int position) {
-        return sceneList.get(position);
+    public Appliance getItem(int position) {
+        return applianceList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return sceneList.get(position).number;
+        return applianceList.get(position).id;
     }
 
-    public int getItemValue(int position) { return sceneList.get(position).value; }
+    public int getItemValue(int position) { return applianceList.get(position).value; }
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         View result = view;
 
-        CardSceneBinding binding;
+        CardApplianceBinding binding;
 
         if (result == null) {
             if (mInflater == null) {
                 mInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
-            binding = CardSceneBinding.inflate(mInflater, parent, false);
+            binding = CardApplianceBinding.inflate(mInflater, parent, false);
             result = binding.getRoot();
             result.setTag(binding);
         } else {
-            binding = (CardSceneBinding) result.getTag();
+            binding = (CardApplianceBinding) result.getTag();
         }
-        binding.setScene(getItem(position));
+        binding.setAppliance(getItem(position));
         setIcon(binding, getItemValue(position));
 
-        //Load what scene has been selected
-        if(getItemValue(position) == selected || getItem(position) == ScenesFragment.mViewModel.getCurrentScene().getValue()) {
+        //Load what scene has been selected - change this as it should be a list....
+        if(ApplianceFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
             binding.setIsActive(new MutableLiveData<>(true));
+        } else {
+            binding.setIsActive(new MutableLiveData<>(false));
         }
 
         result.setOnClickListener(v -> {
-            binding.setIsActive(new MutableLiveData<>(true));
-            ScenesFragment.mViewModel.setCurrentScene(getItem(position));
-            //Need to override the initial value set from CBUS
-            ScenesFragment.mViewModel.setCurrentValue(getItemValue(position));
+            String value;
+            if(ApplianceFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
+                binding.setIsActive(new MutableLiveData<>(false));
+                ApplianceFragment.mViewModel.activeAppliances.remove(String.valueOf(getItem(position).id));
+                value = "0";
 
-            for(CardSceneBinding sceneBinding : sceneBindings) {
-                if(sceneBinding != binding) {
-                    sceneBinding.setIsActive(new MutableLiveData<>(false));
-                }
+            } else {
+                binding.setIsActive(new MutableLiveData<>(true));
+                ApplianceFragment.mViewModel.activeAppliances.add(String.valueOf(getItem(position).id));
+                value = "255";
             }
 
-            //Disable when not connected to CBUS otherwise NUC will timeout waiting for response
-            NetworkService.sendMessage("NUC", "Automation", "Set:trigger_scene:" + getItemValue(position));
+            NetworkService.sendMessage("NUC", "Automation", "SetId:" + getItem(position).id + ":" + value);
         });
 
-        sceneBindings.add(binding);
+        applianceBindings.add(binding);
 
         return result;
     }
@@ -99,13 +102,13 @@ public class SceneAdapter extends BaseAdapter {
     /**
      * Depending on a scenes value add an icon.
      * @param binding A SceneCardBinding relating associated with the current scene.
-     * @param value An int representing what scene the card triggers on the CBUS.
+     * @param type An int representing what appliance the card triggers on the CBUS.
      */
-    private void setIcon(CardSceneBinding binding, int value) {
+    private void setIcon(CardApplianceBinding binding, int type) {
         MutableLiveData<Integer> icon;
 
         //Add to this in the future
-        switch(value) {
+        switch(type) {
             case 0:
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;

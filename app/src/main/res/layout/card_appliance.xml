@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <data>
+        <import type="com.lumination.leadmelabs.models.Appliance" />
+        <variable
+            name="appliance"
+            type="com.lumination.leadmelabs.models.Appliance" />
+
+        <variable
+            name="isActive"
+            type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="icon"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/appliance_card"
+        style="@style/ApplianceCardContainer"
+        android:background="@{isActive ? @drawable/bg_station_card_blue : @drawable/bg_station_card_grey, default=@drawable/bg_station_card_grey}"
+        app:flexDirection="column"
+        app:alignItems="center"
+        app:justifyContent="space_between">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/scene_icon"
+            app:imageResource="@{icon}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@{appliance.name, default=Scene_Example}" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>
