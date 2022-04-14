@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
 
@@ -42,6 +43,7 @@ public class ControlsFragment extends Fragment {
     private void loadFragments() {
         childManager.beginTransaction()
                 .replace(R.id.side_menu, SideMenuFragment.class, null)
+                .replace(R.id.appliances, ApplianceFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .commitNow();
     }

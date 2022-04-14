@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scenes_fragment"
-    style="@style/ScenesContainer"
-    tools:context=".ui.scenes.ScenesFragment">
+    android:id="@+id/appliance_fragment"
+    style="@style/ApplianceContainer"
+    tools:context=".ui.appliance.ApplianceFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,11 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="@string/title_scenes"
+            android:text="Appliances"
             android:textSize="30sp" />
 
         <GridView
-            android:id="@+id/scene_list"
+            android:id="@+id/appliance_list"
             android:layout_width="wrap_content"
             android:layout_height="370dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,8 +27,8 @@
             android:columnWidth="100dp"
             android:horizontalSpacing="2dp"
             android:verticalSpacing="2dp"
-            android:numColumns="1"
-            tools:listitem="@layout/card_scene" />
+            android:numColumns="auto_fit"
+            tools:listitem="@layout/card_appliance" />
 
     </LinearLayout>
 
