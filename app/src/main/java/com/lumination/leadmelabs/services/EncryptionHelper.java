@@ -131,7 +131,7 @@ public class EncryptionHelper {
             }
         }
 
-        return decrypted;
+        return trim(decrypted, '_');
     }
 
     private static String decrypt108(String cipherText, String passPhrase) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
@@ -155,5 +155,22 @@ public class EncryptionHelper {
         SecureRandom random = new SecureRandom();
         random.nextBytes(randomBytes);
         return randomBytes;
+    }
+
+    private static String trim(String value, char c) {
+
+        if (c <= 32) return value.trim();
+
+        int len = value.length();
+        int st = 0;
+        char[] val = value.toCharArray();    /* avoid getfield opcode */
+
+        while ((st < len) && (val[st] == c)) {
+            st++;
+        }
+        while ((st < len) && (val[len - 1] == c)) {
+            len--;
+        }
+        return ((st > 0) || (len < value.length())) ? value.substring(st, len) : value;
     }
 }
