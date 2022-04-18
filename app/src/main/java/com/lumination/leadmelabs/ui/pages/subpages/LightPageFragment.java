@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.pages;
+package com.lumination.leadmelabs.ui.pages.subpages;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
+import com.lumination.leadmelabs.ui.appliance.LightFragment;
 
-public class SettingsFragment extends Fragment {
+public class LightPageFragment extends Fragment {
     private View view;
     private FragmentManager childManager;
 
@@ -22,7 +21,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_settings, container, false);
+        view = inflater.inflate(R.layout.subpage_light, container, false);
         childManager = getChildFragmentManager();
         return view;
     }
@@ -41,8 +40,7 @@ public class SettingsFragment extends Fragment {
      */
     private void loadFragments() {
         childManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.class, null)
-                .replace(R.id.nuc, NucFragment.class, null)
+                .replace(R.id.appliances, LightFragment.class, null)
                 .commitNow();
     }
 }

@@ -13,7 +13,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApplianceViewModel extends ViewModel {
+public class LightViewModel extends ViewModel {
     //regular arraylist to hold the currently selected
     public ArrayList<String> activeAppliances = new ArrayList<>();
 
@@ -23,14 +23,6 @@ public class ApplianceViewModel extends ViewModel {
         if (appliances == null) {
             appliances = new MutableLiveData<>();
             loadAllAppliances();
-
-            //Update this later
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             loadAppliances();
         }
 

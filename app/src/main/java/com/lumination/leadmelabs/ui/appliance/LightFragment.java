@@ -19,22 +19,22 @@ import com.lumination.leadmelabs.models.Appliance;
 
 import java.util.ArrayList;
 
-public class ApplianceFragment extends Fragment {
+public class LightFragment extends Fragment {
 
-    public static ApplianceViewModel mViewModel;
+    public static LightViewModel mViewModel;
     private View view;
-    private ApplianceAdapter applianceAdapter;
+    private LightAdapter applianceAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_appliances, container, false);
-        GridView gridView = (GridView) view.findViewById(R.id.appliance_list);
+        view = inflater.inflate(R.layout.fragment_lights, container, false);
+        GridView gridView = (GridView) view.findViewById(R.id.light_list);
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setFlexDirection(FlexDirection.ROW);
         layoutManager.setFlexWrap(FlexWrap.WRAP);
-        applianceAdapter = new ApplianceAdapter(getContext(), gridView);
+        applianceAdapter = new LightAdapter(getContext(), gridView);
         applianceAdapter.applianceList = new ArrayList<>();
         gridView.setAdapter(applianceAdapter);
         return view;
@@ -43,7 +43,7 @@ public class ApplianceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(requireActivity()).get(ApplianceViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity()).get(LightViewModel.class);
 
         mViewModel.getAppliances().observe(getViewLifecycleOwner(), appliances -> {
             applianceAdapter.applianceList = (ArrayList<Appliance>) appliances;

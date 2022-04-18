@@ -15,7 +15,8 @@ import android.view.View;
 import io.reactivex.rxjava3.core.*;
 
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.pages.DashboardFragment;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
             //Loading the home screen
             fragmentManager.beginTransaction()
-                    .replace(R.id.main, DashboardFragment.class, null)
+                    .replace(R.id.main, DashboardPageFragment.class, null)
+                    .replace(R.id.side_menu, SideMenuFragment.class, null)
                     .commitNow();
         }
 

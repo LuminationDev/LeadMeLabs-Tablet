@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.pages;
+package com.lumination.leadmelabs.ui.pages.subpages;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,11 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
-import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
 
-public class ControlsFragment extends Fragment {
+public class BlindPageFragment extends Fragment {
     private View view;
     private FragmentManager childManager;
 
@@ -23,7 +20,7 @@ public class ControlsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_controls, container, false);
+        view = inflater.inflate(R.layout.subpage_blind, container, false);
         childManager = getChildFragmentManager();
         return view;
     }
@@ -42,9 +39,7 @@ public class ControlsFragment extends Fragment {
      */
     private void loadFragments() {
         childManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.class, null)
-                .replace(R.id.appliances, ApplianceFragment.class, null)
-                .replace(R.id.logo, LogoFragment.class, null)
+                //.replace(R.id.appliances, ApplianceFragment.class, null)
                 .commitNow();
     }
 }
