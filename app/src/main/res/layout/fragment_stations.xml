@@ -53,7 +53,7 @@
             android:horizontalSpacing="2dp"
             android:verticalSpacing="2dp"
             android:numColumns="auto_fit"
-            tools:listitem="@layout/station_card" />
+            tools:listitem="@layout/card_station" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

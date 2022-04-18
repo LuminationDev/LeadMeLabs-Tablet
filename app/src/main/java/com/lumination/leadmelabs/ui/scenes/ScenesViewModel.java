@@ -79,6 +79,6 @@ public class ScenesViewModel extends ViewModel {
     }
 
     private void loadSelected() {
-        NetworkService.sendMessage("NUC", "Automation", "TriggerScene:Get");
+        NetworkService.sendMessage("NUC", "Automation", "Get:scenes");
     }
 }

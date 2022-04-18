@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
@@ -46,6 +47,11 @@ public class UIUpdateManager {
                         updateScenes(additionalData.split(":", 2)[1]);
                     }
                     break;
+                case "Appliances":
+                    if (additionalData.startsWith("List")) {
+                        updateAppliances(additionalData.split(":", 2)[1]);
+                    }
+                    break;
                 case "Station":
                     if (additionalData.startsWith("SetValue")) {
                         String[] keyValue = additionalData.split(":", 3);
@@ -55,8 +61,12 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
-                    if (additionalData.startsWith("Response")) {
+                    if (additionalData.startsWith("trigger_scene")) {
                         updateSelectedScene(additionalData);
+                    }
+
+                    if (additionalData.startsWith("lighting")) {
+                        updateActiveAppliances(additionalData);
                     }
                     break;
             }
@@ -121,6 +131,32 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             ScenesFragment.mViewModel.setCurrentValue(Integer.parseInt(value));
+        });
+    }
+
+    private static void updateAppliances(String jsonString) throws JSONException {
+        JSONArray json = new JSONArray(jsonString);
+
+        MainActivity.runOnUI(() -> {
+            try {
+                ApplianceFragment.mViewModel.setAppliances(json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static void updateActiveAppliances(String jsonString) throws JSONException {
+        String requiredString = jsonString.substring(jsonString.indexOf("["), jsonString.indexOf("]") + 1);
+        Log.e("ALL", requiredString);
+        JSONArray json = new JSONArray(requiredString);
+
+        MainActivity.runOnUI(() -> {
+            try {
+                ApplianceFragment.mViewModel.setActiveAppliances(json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
     }
 }
