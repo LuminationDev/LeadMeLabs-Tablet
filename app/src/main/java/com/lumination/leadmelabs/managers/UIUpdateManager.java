@@ -100,6 +100,9 @@ public class UIUpdateManager {
                 case "volume":
                     station.volume = Integer.parseInt(value);
                     break;
+                case "gameName":
+                    station.gameName = value;
+                    break;
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);
             }

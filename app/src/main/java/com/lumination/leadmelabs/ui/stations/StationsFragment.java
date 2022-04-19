@@ -1,9 +1,13 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +22,9 @@ import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class StationsFragment extends Fragment {
 
@@ -71,6 +77,37 @@ public class StationsFragment extends Fragment {
 
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
+
+        Button shutdownButton = view.findViewById(R.id.station_shutdown);
+        shutdownButton.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Shutdown");
+
+            DialogInterface.OnClickListener cancelButtonFunction = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
+                }
+            };
+
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                    .setTitle("Shutting Down")
+                    .setMessage("Cancel shutdown?")
+                    .setNegativeButton("Cancel (10)", cancelButtonFunction)
+                    .setPositiveButton("Continue", null).show();
+            CountDownTimer timer = new CountDownTimer(9000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    Button cancelButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                    cancelButton.setText("Cancel (" + (l + 1000) / 1000 + ")");
+                }
+
+                @Override
+                public void onFinish() {
+                    alertDialog.dismiss();
+                }
+            }.start();
+        });
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             stationAdapter.stationList = (ArrayList<Station>) stations;
