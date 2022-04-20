@@ -33,6 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shutdown" />
+        <Button
+            android:id="@+id/station_stop_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Game" />
         <GridView
             android:id="@+id/steam_list"
             android:layout_width="match_parent"

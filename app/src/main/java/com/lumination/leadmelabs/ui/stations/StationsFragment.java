@@ -109,6 +109,12 @@ public class StationsFragment extends Fragment {
             }.start();
         });
 
+        Button stopGame = view.findViewById(R.id.station_stop_game);
+        stopGame.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+        });
+
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             stationAdapter.stationList = (ArrayList<Station>) stations;
             stationAdapter.notifyDataSetChanged();
