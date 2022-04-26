@@ -6,4 +6,9 @@
     <string name="restart_session">RESTART SESSION</string>
     <string name="end_session">END SESSION</string>
     <string name="new_session">NEW SESSION</string>
+    <string name="white_underline">White underscore line</string>
+    <string name="session_button">session_button</string>
+    <string name="dashboard_button">dashboard_button</string>
+    <string name="navigation_button_settings">navigation_button_settings</string>
+    <string name="controls_button">controls_button</string>
 </resources>

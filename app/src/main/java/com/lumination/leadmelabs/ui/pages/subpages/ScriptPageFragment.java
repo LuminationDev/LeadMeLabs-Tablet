@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.pages;
+package com.lumination.leadmelabs.ui.pages.subpages;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.menu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
-public class SessionFragment extends Fragment {
+public class ScriptPageFragment extends Fragment {
     private View view;
     private FragmentManager childManager;
 
@@ -24,8 +20,7 @@ public class SessionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_session, container, false);
-
+        view = inflater.inflate(R.layout.subpage_script, container, false);
         childManager = getChildFragmentManager();
         return view;
     }
@@ -44,10 +39,7 @@ public class SessionFragment extends Fragment {
      */
     private void loadFragments() {
         childManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.class, null)
-                .replace(R.id.stations, StationsFragment.class, null)
-                .replace(R.id.session_controls, SessionControlsFragment.class, null)
-                .replace(R.id.logo, LogoFragment.class, null)
+                //.replace(R.id.appliances, ApplianceFragment.class, null)
                 .commitNow();
     }
 }

@@ -16,7 +16,7 @@ import org.robolectric.annotation.Config;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import com.lumination.leadmelabs.ui.pages.DashboardFragment;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 
 /**
  * Testing the UI elements of fragments that have been created.
@@ -43,7 +43,7 @@ public class FragmentUnitTest {
         scenario.onActivity(activity -> {
             activity.getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main, DashboardFragment.class, null)
+                        .replace(R.id.main, DashboardPageFragment.class, null)
                         .commitNow();
         });
 

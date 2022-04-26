@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.appliance.LightFragment;
 import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
@@ -139,7 +139,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                ApplianceFragment.mViewModel.setAppliances(json);
+                LightFragment.mViewModel.setAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -153,7 +153,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                ApplianceFragment.mViewModel.setActiveAppliances(json);
+                LightFragment.mViewModel.setActiveAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

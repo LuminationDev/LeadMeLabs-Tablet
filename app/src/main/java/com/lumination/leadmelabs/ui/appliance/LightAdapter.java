@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Use this adapter for scripts in the future.
  */
-public class ApplianceAdapter extends BaseAdapter {
+public class LightAdapter extends BaseAdapter {
     private final String TAG = "ApplianceAdapter";
 
     //Not sure if this is a good idea or not but handy to access for data binding UI changes
@@ -29,7 +29,7 @@ public class ApplianceAdapter extends BaseAdapter {
     private Context context;
     private View list_view;
 
-    ApplianceAdapter(Context context, View list_view) {
+    LightAdapter(Context context, View list_view) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.list_view = list_view;
@@ -72,7 +72,7 @@ public class ApplianceAdapter extends BaseAdapter {
         setIcon(binding, getItemValue(position));
 
         //Load what scene has been selected - change this as it should be a list....
-        if(ApplianceFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
+        if(LightFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
             binding.setIsActive(new MutableLiveData<>(true));
         } else {
             binding.setIsActive(new MutableLiveData<>(false));
@@ -80,14 +80,14 @@ public class ApplianceAdapter extends BaseAdapter {
 
         result.setOnClickListener(v -> {
             String value;
-            if(ApplianceFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
+            if(LightFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
                 binding.setIsActive(new MutableLiveData<>(false));
-                ApplianceFragment.mViewModel.activeAppliances.remove(String.valueOf(getItem(position).id));
+                LightFragment.mViewModel.activeAppliances.remove(String.valueOf(getItem(position).id));
                 value = "0";
 
             } else {
                 binding.setIsActive(new MutableLiveData<>(true));
-                ApplianceFragment.mViewModel.activeAppliances.add(String.valueOf(getItem(position).id));
+                LightFragment.mViewModel.activeAppliances.add(String.valueOf(getItem(position).id));
                 value = "255";
             }
 
