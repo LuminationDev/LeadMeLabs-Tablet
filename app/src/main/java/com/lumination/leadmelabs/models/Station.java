@@ -9,6 +9,7 @@ public class Station {
     public String gameName;
     public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
+    public boolean selected = false;
 
     public Station(String name, String steamApplications, int id, String status, int volume) {
         this.name = name;
@@ -28,5 +29,15 @@ public class Station {
             String[] appData = app.split("\\|");
             this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
         }
+    }
+
+    public boolean hasSteamApplicationInstalled(int steamApplicationId)
+    {
+        for (SteamApplication steamApplication:steamApplications) {
+            if (steamApplication.id == steamApplicationId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -5,9 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.databinding.SteamTileBinding;
 import com.lumination.leadmelabs.models.SteamApplication;
 
 import com.lumination.leadmelabs.R;
@@ -23,10 +27,14 @@ public class SteamApplicationAdapter extends BaseAdapter {
     public int stationId = 0;
     private LayoutInflater mInflater;
     private Context context;
+    private boolean launchMode;
+    private StationsViewModel viewModel;
 
-    SteamApplicationAdapter(Context context) {
+    SteamApplicationAdapter(Context context, StationsViewModel viewModel, boolean launchMode) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
+        this.launchMode = launchMode;
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -45,16 +53,39 @@ public class SteamApplicationAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        SteamTileBinding binding;
         if (view == null) {
             view = mInflater.inflate(R.layout.steam_tile, null);
+            binding = SteamTileBinding.inflate(mInflater, parent, false);
+            view = binding.getRoot();
+            view.setTag(binding);
+        } else {
+            binding = (SteamTileBinding) view.getTag();
         }
 
         SteamApplication steamApplication = getItem(position);
         Glide.with(view).load(steamApplication.getImageUrl()).into((ImageView) view.findViewById(R.id.steam_image));
 
-        view.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-        });
+        binding.setSteamApplication(steamApplication);
+
+        Button playButton = view.findViewById(R.id.steam_play_button);
+
+        if (launchMode == true) {
+            playButton.setOnClickListener(v -> {
+                NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+            });
+        } else {
+            playButton.setOnClickListener(v -> {
+                viewModel.selectSelectedSteamApplication(steamApplication.id);
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.main, StationSelectionFragment.class, null)
+                        .commitNow();
+                StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                View newView = fragment.getView();
+                TextView textView = newView.findViewById(R.id.station_selection_game_name);
+                textView.setText(steamApplication.name);
+            });
+        }
 
         return view;
     }

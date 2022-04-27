@@ -27,7 +27,7 @@
             android:columnWidth="100dp"
             android:horizontalSpacing="2dp"
             android:verticalSpacing="2dp"
-            android:numColumns="1"
+            android:numColumns="auto_fit"
             tools:listitem="@layout/card_scene" />
 
     </LinearLayout>

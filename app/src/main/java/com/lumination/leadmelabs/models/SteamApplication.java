@@ -1,6 +1,6 @@
 package com.lumination.leadmelabs.models;
 
-public class SteamApplication {
+public class SteamApplication implements SteamApplicationInterface {
     public String name;
     public int id;
 
@@ -11,5 +11,10 @@ public class SteamApplication {
 
     public String getImageUrl() {
         return "https://cdn.cloudflare.steamstatic.com/steam/apps/" + this.id + "/header.jpg";
+    }
+
+    @Override
+    public boolean equals(SteamApplication steamApplication) {
+        return steamApplication.name.equals(this.name);
     }
 }
