@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -89,6 +90,11 @@ public class StationAdapter extends BaseAdapter {
                 });
             } else {
                 finalResult.setForeground(ContextCompat.getDrawable(context, R.drawable.bg_disabled));
+                if (!station.status.equals("Off")) {
+                    TextView infoText = finalResult.findViewById(R.id.card_info_text);
+                    infoText.setText("Game not installed");
+                    infoText.setVisibility(View.VISIBLE);
+                }
             }
         }
 
