@@ -24,6 +24,17 @@
             app:flexDirection="column"
             app:justifyContent="flex_end">
             <TextView
+                android:id="@+id/card_info_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_alert"
+                android:gravity="center"
+                android:drawablePadding="5dp"
+                android:textColor="@color/orange"
+                android:textSize="11dp"
+                android:text="Game not installed"
+                android:visibility="gone"/>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textFontWeight="600"
