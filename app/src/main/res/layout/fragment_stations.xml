@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_add"
                 android:background="@android:color/transparent"
-                android:textColor="@color/black"
+                android:textColor="@color/blue"
                 android:text="New Session"/>
         </com.google.android.flexbox.FlexboxLayout>
         <GridView

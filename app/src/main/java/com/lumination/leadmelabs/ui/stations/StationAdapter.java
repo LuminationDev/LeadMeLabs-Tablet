@@ -84,11 +84,6 @@ public class StationAdapter extends BaseAdapter {
             View finalResult = result;
             if (station.hasSteamApplicationInstalled(viewModel.getSelectedSteamApplicationId())) {
                 result.setOnClickListener(v -> {
-                    if (station.selected) {
-                        finalResult.setBackgroundResource(R.drawable.bg_white);
-                    } else {
-                        finalResult.setBackgroundResource(R.drawable.bg_white_border_blue);
-                    }
                     station.selected = !station.selected;
                     viewModel.updateStationById(station.id, station);
                 });

@@ -10,7 +10,8 @@
     </data>
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_card"
-        style="@style/StationCard">
+        style="@style/StationCard"
+        android:background="@{station.selected ? @drawable/bg_white_border_blue : @drawable/bg_white}">
         <ImageView
             android:id="@+id/station_vr_icon"
             android:layout_marginTop="15dp"

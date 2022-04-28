@@ -43,6 +43,15 @@
                     android:text=" on."/>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
+        <CheckBox
+            android:id="@+id/select_all_checkbox"
+            android:layout_width="wrap_content"
+            android:buttonTint="@color/blue"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:text="Select All Available" />
         <GridView
             android:id="@+id/stations_list"
             android:layout_width="match_parent"
@@ -59,11 +68,13 @@
         </GridView>
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp">
             <Button
                 android:id="@+id/select_stations"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/blue"
                 android:text="Play"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>

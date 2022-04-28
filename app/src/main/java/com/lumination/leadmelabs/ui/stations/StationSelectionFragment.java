@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
@@ -52,19 +53,45 @@ public class StationSelectionFragment extends Fragment {
             stationAdapter.notifyDataSetChanged();
         });
 
+        CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
+        selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
+            ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+            stations = (ArrayList<Station>) stations.clone();
+            for (Station station:stations) {
+                if (!station.status.equals("Off") && station.hasSteamApplicationInstalled(mViewModel.getSelectedSteamApplicationId())) {
+                    station.selected = checked;
+                    mViewModel.updateStationById(station.id, station);
+                }
+            }
+        });
+
         Button playButton = view.findViewById(R.id.select_stations);
         playButton.setOnClickListener(v -> {
             int steamGameId = mViewModel.getSelectedSteamApplicationId();
             int[] selectedIds = mViewModel.getSelectedStationIds();
-            String stationIds = "";
-            for (int id:selectedIds) {
-                stationIds += (id + ",");
+            if (selectedIds.length > 0) {
+                String stationIds = "";
+                for (int id:selectedIds) {
+                    stationIds += (id + ",");
+                }
+                stationIds = stationIds.substring(0, stationIds.length() - 1);
+                NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.main, DashboardPageFragment.class, null)
+                        .commitNow();
             }
-            stationIds = stationIds.substring(0, stationIds.length() - 1);
-            NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, DashboardPageFragment.class, null)
-                    .commitNow();
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
+        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+        stations = (ArrayList<Station>) stations.clone();
+        for (Station station:stations) {
+            station.selected = false;
+            mViewModel.updateStationById(station.id, station);
+        }
     }
 }
