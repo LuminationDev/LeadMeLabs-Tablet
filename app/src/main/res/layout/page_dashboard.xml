@@ -2,24 +2,51 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/grey"
     android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="bottom">
+        android:orientation="vertical"
+        android:layout_marginVertical="30dp">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:flexDirection="column"
+            android:layout_marginHorizontal="30dp">
+            <TextView
+                android:id="@+id/welcome_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome!"
+                android:textFontWeight="600"
+                android:textSize="40dp"/>
+            <TextView
+                android:id="@+id/date_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tuesday 26th April 2022"
+                android:textSize="20dp"/>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <RelativeLayout
             android:id="@+id/stations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <RelativeLayout
-            android:id="@+id/scenes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="30dp">
+            <RelativeLayout
+                android:id="@+id/scenes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

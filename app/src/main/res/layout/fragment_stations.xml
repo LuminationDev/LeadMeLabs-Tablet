@@ -2,61 +2,42 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <variable
-            name="selectedStation"
-            type="com.lumination.leadmelabs.models.Station" />
-    </data>
-
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/stations_fragment"
         style="@style/StationsContainer"
         tools:context=".ui.stations.StationsFragment"
         app:flexDirection="column">
-
-        <TextView
-            android:layout_marginBottom="10dp"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="@{selectedStation.name}" />
-        <com.google.android.material.slider.Slider
-            android:id="@+id/station_volume_slider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:value="@{selectedStation.volume}"
-            android:valueFrom="0.0"
-            android:stepSize="1.0"
-            android:valueTo="100.0"/>
-        <Button
-            android:id="@+id/station_shutdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shutdown" />
-        <Button
-            android:id="@+id/station_stop_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop Game" />
-        <GridView
-            android:id="@+id/steam_list"
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:columnWidth="100dp"
-            android:horizontalSpacing="2dp"
-            android:verticalSpacing="2dp"
-            android:numColumns="auto_fit"
-            tools:listitem="@layout/steam_tile">
-
-        </GridView>
-
+            android:layout_height="wrap_content"
+            app:flexDirection="row"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            android:layout_marginHorizontal="30dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Station Status"/>
+            <Button
+                android:id="@+id/new_session_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_add"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                android:text="New Session"/>
+        </com.google.android.flexbox.FlexboxLayout>
         <GridView
             android:id="@+id/stations_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnWidth="100dp"
-            android:horizontalSpacing="2dp"
-            android:verticalSpacing="2dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:columnWidth="200dp"
+            android:verticalSpacing="10dp"
+            android:clipToPadding="false"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="30dp"
             android:numColumns="auto_fit"
             tools:listitem="@layout/card_station" />
 

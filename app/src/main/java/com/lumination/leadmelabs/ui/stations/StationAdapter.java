@@ -5,7 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
+
+import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -20,11 +25,13 @@ public class StationAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private StationsViewModel viewModel;
+    private boolean launchSingleOnTouch = false;
 
-    StationAdapter(Context context, StationsViewModel viewModel) {
+    StationAdapter(Context context, StationsViewModel viewModel, boolean launchSingleOnTouch) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
+        this.launchSingleOnTouch = launchSingleOnTouch;
     }
 
     @Override
@@ -57,10 +64,38 @@ public class StationAdapter extends BaseAdapter {
             binding = (CardStationBinding) result.getTag();
         }
         binding.setStation(station);
-        result.setOnClickListener(v -> {
-            viewModel.selectStation(position);
-            NetworkService.sendMessage("Station," + station.id, "CommandLine", "StartVR");
-        });
+
+        ImageView imageView = result.findViewById(R.id.station_vr_icon);
+        if (station.status.equals("Off")) {
+            imageView.setImageResource(R.drawable.icon_vr_gray);
+        } else {
+            imageView.setImageResource(R.drawable.icon_vr);
+        }
+
+        // todo - I don't really like having the two separate flows here - can probably split out into other methods
+        if (launchSingleOnTouch == true) {
+            result.setOnClickListener(v -> {
+                viewModel.selectStation(position);
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.main, StationSingleFragment.class, null)
+                        .commitNow();
+            });
+        } else {
+            View finalResult = result;
+            if (station.hasSteamApplicationInstalled(viewModel.getSelectedSteamApplicationId())) {
+                result.setOnClickListener(v -> {
+                    if (station.selected) {
+                        finalResult.setBackgroundResource(R.drawable.bg_white);
+                    } else {
+                        finalResult.setBackgroundResource(R.drawable.bg_white_border_blue);
+                    }
+                    station.selected = !station.selected;
+                    viewModel.updateStationById(station.id, station);
+                });
+            } else {
+                finalResult.setForeground(ContextCompat.getDrawable(context, R.drawable.bg_disabled));
+            }
+        }
 
         return result;
     }

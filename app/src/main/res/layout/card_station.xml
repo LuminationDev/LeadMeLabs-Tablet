@@ -10,33 +10,32 @@
     </data>
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_card"
-        style="@style/StationCard"
-        android:layout_height="150dp"
-        android:layout_width="100dp"
-        android:background="@drawable/bg_station_card_blue"
-        app:flexDirection="column"
-        app:justifyContent="flex_end"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="10dp">
-        <TextView
+        style="@style/StationCard">
+        <ImageView
+            android:id="@+id/station_vr_icon"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@{station.name, default=ABC}"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@{station.gameName}"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@{station.status}"/>
-
+            android:src="@drawable/icon_vr"/>
         <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            app:flexDirection="column"
+            app:justifyContent="flex_end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textFontWeight="600"
+                android:textColor="@color/black"
+                android:text="@{station.name, default=Name}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{station.status}"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{station.gameName}"/>
         </com.google.android.flexbox.FlexboxLayout>
 
     </com.google.android.flexbox.FlexboxLayout>

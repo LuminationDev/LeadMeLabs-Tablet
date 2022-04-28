@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/steam_selection"
+        android:background="@color/grey"
+        tools:context=".ui.stations.SteamSelectionFragment"
+        app:flexDirection="column"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:flexDirection="column"
+            android:padding="30dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VR Library"
+                android:textFontWeight="600"
+                android:textSize="40dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick a game to play in VR"
+                android:textSize="20dp"/>
+        </com.google.android.flexbox.FlexboxLayout>
+        <GridView
+            android:id="@+id/steam_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="10dp"
+            android:verticalSpacing="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="220dp"
+            android:clipToPadding="false"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="30dp"
+            tools:listitem="@layout/steam_tile">
+        </GridView>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

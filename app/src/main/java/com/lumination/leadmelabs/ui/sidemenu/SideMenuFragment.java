@@ -19,6 +19,7 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SessionPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
+import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
 public class SideMenuFragment extends Fragment {
 
@@ -55,7 +56,7 @@ public class SideMenuFragment extends Fragment {
         session = view.findViewById(R.id.session_button_underline);
         view.findViewById(R.id.session_button).setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SessionPageFragment.class, null)
+                    .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
 
             changeSelectedIcon("session");

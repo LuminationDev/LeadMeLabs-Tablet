@@ -3,16 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <variable
+            name="steamApplication"
+            type="com.lumination.leadmelabs.models.SteamApplication" />
     </data>
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/logo_fragment"
-        android:layout_height="50dp"
-        android:layout_width="100dp"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         app:flexDirection="column"
-        app:justifyContent="flex_end">
+        app:justifyContent="flex_end"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="15dp">
         <ImageView
+            android:layout_marginBottom="15dp"
             android:id="@+id/steam_image"
-            android:layout_height="50dp"
-            android:layout_width="100dp"/>
+            android:layout_height="100dp"
+            android:layout_width="220dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="@{steamApplication.name, default=Google}"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/steam_play_button"
+            android:layout_width="wrap_content"
+            app:strokeColor="@color/blue"
+            app:strokeWidth="2dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:backgroundTint="@null"
+            app:backgroundTint="@color/white"
+            android:text="Play"/>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

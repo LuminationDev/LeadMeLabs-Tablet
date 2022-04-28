@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.Station" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/station_single_fragment"
+        android:background="@color/grey"
+        style="@style/StationsContainer"
+        tools:context=".ui.stations.StationsFragment"
+        app:flexDirection="column">
+        <Button
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_add"
+            android:text="Close"/>
+        <TextView
+            android:layout_marginBottom="10dp"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="@{selectedStation.name}" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/station_volume_slider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:value="@{selectedStation.volume}"
+            android:valueFrom="0.0"
+            android:stepSize="1.0"
+            android:valueTo="100.0"/>
+        <Button
+            android:id="@+id/station_shutdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shutdown" />
+        <Button
+            android:id="@+id/station_stop_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Game" />
+        <Button
+            android:id="@+id/station_start_vr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start VR Session" />
+        <Button
+            android:id="@+id/station_restart_vr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restart VR Session" />
+        <Button
+            android:id="@+id/station_end_vr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End VR Session" />
+        <GridView
+            android:id="@+id/steam_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="2dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="200dp"
+            tools:listitem="@layout/steam_tile">
+        </GridView>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

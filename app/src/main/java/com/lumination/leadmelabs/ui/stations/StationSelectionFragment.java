@@ -15,23 +15,24 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
+import com.lumination.leadmelabs.databinding.FragmentStationSelectionBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 
 import java.util.ArrayList;
 
-public class StationsFragment extends Fragment {
+public class StationSelectionFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
     private View view;
     private StationAdapter stationAdapter;
-    private FragmentStationsBinding binding;
-
+    private FragmentStationSelectionBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_stations, container, false);
+        view = inflater.inflate(R.layout.fragment_station_selection, container, false);
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -42,7 +43,7 @@ public class StationsFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         GridView gridView = (GridView) view.findViewById(R.id.stations_list);
-        stationAdapter = new StationAdapter(getContext(), mViewModel, true);
+        stationAdapter = new StationAdapter(getContext(), mViewModel, false);
         stationAdapter.stationList = new ArrayList<>();
         gridView.setAdapter(stationAdapter);
 
@@ -51,10 +52,18 @@ public class StationsFragment extends Fragment {
             stationAdapter.notifyDataSetChanged();
         });
 
-        Button newSession = view.findViewById(R.id.new_session_button);
-        newSession.setOnClickListener(v -> {
+        Button playButton = view.findViewById(R.id.select_stations);
+        playButton.setOnClickListener(v -> {
+            int steamGameId = mViewModel.getSelectedSteamApplicationId();
+            int[] selectedIds = mViewModel.getSelectedStationIds();
+            String stationIds = "";
+            for (int id:selectedIds) {
+                stationIds += (id + ",");
+            }
+            stationIds = stationIds.substring(0, stationIds.length() - 1);
+            NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
             MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SteamSelectionFragment.class, null)
+                    .replace(R.id.main, DashboardPageFragment.class, null)
                     .commitNow();
         });
     }
