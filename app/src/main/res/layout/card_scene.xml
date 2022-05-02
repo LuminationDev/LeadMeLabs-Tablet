@@ -18,22 +18,19 @@
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/scene_card"
-        style="@style/SceneCardContainer"
-        android:background="@{isActive ? @drawable/bg_station_card_blue : @drawable/bg_station_card_grey}"
+        android:layout_width="150dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_height="75dp"
+        android:background="@{isActive ? @drawable/bg_blue_circle_active : @drawable/bg_blue_circle}"
         app:flexDirection="row"
         app:alignItems="center"
-        app:justifyContent="space_between">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/scene_icon"
-            app:imageResource="@{icon}" />
+        app:justifyContent="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@{isActive ? @color/white : @color/blue}"
+            android:textSize="20dp"
             android:text="@{scene.name, default=Scene_Example}" />
 
     </com.google.android.flexbox.FlexboxLayout>

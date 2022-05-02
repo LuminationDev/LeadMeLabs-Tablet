@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -101,10 +102,33 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("steamApplications"),
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
-                    stationJson.getInt("volume"));
+                    stationJson.getInt("volume"),
+                    stationJson.getInt("theatreId"));
             st.add(station);
         }
         this.setStations(st);
+    }
+
+    public void setActiveTheatres(int[] theatreIds, int[] zoneTheatreIds) {
+        ArrayList<Station> stationArrayList = (ArrayList<Station>) getStations().getValue();
+        stationArrayList = (ArrayList<Station>) stationArrayList.clone();
+        for (Station s:stationArrayList) {
+            boolean containsTheatre = false;
+            for (int id:theatreIds) {
+                if (s.theatreId == id) {
+                    containsTheatre = true;
+                    s.gameName = "Theatre " + s.theatreId;
+                }
+            }
+            if (!containsTheatre && (s.gameName != null && s.gameName.startsWith("Theatre"))) {
+                for (int id:zoneTheatreIds) {
+                    if (s.theatreId == id) {
+                        s.gameName = null;
+                    }
+                }
+            }
+        }
+        setStations(stationArrayList);
     }
 
     public void setStations(List<Station> stations) {
