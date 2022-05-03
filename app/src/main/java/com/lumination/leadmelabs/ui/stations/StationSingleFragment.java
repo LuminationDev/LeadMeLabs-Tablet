@@ -4,11 +4,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,7 @@ public class StationSingleFragment extends Fragment {
     private View view;
     private SteamApplicationAdapter steamApplicationAdapter;
     private FragmentStationSingleBinding binding;
+    private androidx.appcompat.app.AlertDialog urlDialog;
 
     @Nullable
     @Override
@@ -130,11 +134,44 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");
         });
 
+        buildEnterUrlDialog();
+
+        Button button = view.findViewById(R.id.enter_url);
+        button.setOnClickListener(v -> {
+            urlDialog.show();
+        });
+
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
             steamApplicationAdapter.steamApplicationList = station.steamApplications;
             steamApplicationAdapter.stationId = station.id;
             steamApplicationAdapter.notifyDataSetChanged();
         });
+    }
+
+    private void buildEnterUrlDialog() {
+        View view = View.inflate(getContext(), R.layout.dialog_enter_url, null);
+        EditText url = view.findViewById(R.id.url_input);
+        Button submit = view.findViewById(R.id.submit_button);
+        TextView errorText = view.findViewById(R.id.error_text);
+        submit.setOnClickListener(v -> {
+            errorText.setVisibility(View.GONE);
+            String input = url.getText().toString();
+            if (Patterns.WEB_URL.matcher(input).matches()) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.gameName = input;
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
+                this.mViewModel.updateStationById(selectedStation.id, selectedStation);
+                urlDialog.dismiss();
+            } else {
+                errorText.setText("Invalid URL. Please check and try again.");
+                errorText.setVisibility(View.VISIBLE);
+            }
+        });
+        Button cancelButton = view.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(v -> {
+            urlDialog.dismiss();
+        });
+        urlDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(view).create();
     }
 }
