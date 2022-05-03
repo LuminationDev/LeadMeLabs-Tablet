@@ -5,6 +5,7 @@ import android.util.Log;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.appliance.LightFragment;
+import com.lumination.leadmelabs.ui.nuc.NucFragment;
 import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
@@ -69,6 +70,8 @@ public class UIUpdateManager {
                         updateActiveAppliances(additionalData);
                     }
                     break;
+                case "Scanner":
+                    updateNUCAddress(additionalData);
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
@@ -157,6 +160,16 @@ public class UIUpdateManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    /**
+     * Update the NUC address based on the results from the scanner.
+     * @param response A string representing the IP address of the NUC.
+     */
+    private static void updateNUCAddress(String response) {
+        MainActivity.runOnUI(() -> {
+            NucFragment.mViewModel.setNucAddress(response);
         });
     }
 }

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -192,6 +194,32 @@ public class NetworkService extends Service {
                 serverThreadPool.shutdown();
             }
         }
+    }
+
+    /**
+     * Send a broadcast to all devices on the local network looking for a response by the NUC.
+     * @param broadcastMessage A string message to be sent.
+     */
+    public static void broadcast(String broadcastMessage) {
+        broadcastMessage = EncryptionHelper.encrypt(broadcastMessage, BuildConfig.APP_KEY);
+
+        String finalBroadcastMessage = broadcastMessage;
+        backgroundExecutor.submit(() -> {
+            try {
+                DatagramSocket socket = new DatagramSocket();
+                socket.setBroadcast(true);
+
+                byte[] buffer = finalBroadcastMessage.getBytes();
+
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length,
+                        InetAddress.getByName("255.255.255.255"), 11000);
+
+                socket.send(packet);
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
