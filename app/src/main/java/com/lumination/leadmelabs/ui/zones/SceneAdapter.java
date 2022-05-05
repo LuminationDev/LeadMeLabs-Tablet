@@ -50,7 +50,7 @@ public class SceneAdapter extends RecyclerView.Adapter {
 
             binding.getRoot().setOnClickListener(v -> {
                 binding.setIsActive(new MutableLiveData<>(true));
-                ZonesFragment.mViewModel.setActiveScene(zone.automationValue, scene.value);
+                ZonesFragment.mViewModel.setActiveScene(zone.automationValue, scene.value, false);
                 for(CardSceneBinding sceneBinding : sceneBindings) {
                     if(sceneBinding != binding) {
                         sceneBinding.setIsActive(new MutableLiveData<>(false));

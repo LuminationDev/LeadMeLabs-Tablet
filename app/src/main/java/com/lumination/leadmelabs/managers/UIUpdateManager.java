@@ -124,7 +124,7 @@ public class UIUpdateManager {
     private static void updateSelectedScene(String response) throws JSONException {
         String[] values = response.split(":");
         MainActivity.runOnUI(() -> {
-            ZonesFragment.mViewModel.setActiveScene(values[1], values[2]);
+            ZonesFragment.mViewModel.setActiveScene(values[1], values[2], true);
         });
     }
 

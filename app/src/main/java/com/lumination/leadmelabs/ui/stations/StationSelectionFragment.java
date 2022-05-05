@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +24,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class StationSelectionFragment extends Fragment {
 
@@ -70,17 +73,43 @@ public class StationSelectionFragment extends Fragment {
             int steamGameId = mViewModel.getSelectedSteamApplicationId();
             int[] selectedIds = mViewModel.getSelectedStationIds();
             if (selectedIds.length > 0) {
-                String stationIds = "";
-                for (int id:selectedIds) {
-                    stationIds += (id + ",");
+                ArrayList<String> theatreStations = new ArrayList<>();
+                for (Station station:mViewModel.getSelectedStations()) {
+                    if (station.theatreText != null) {
+                        theatreStations.add(station.name);
+                    }
                 }
-                stationIds = stationIds.substring(0, stationIds.length() - 1);
-                NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
-                MainActivity.fragmentManager.beginTransaction()
-                        .replace(R.id.main, DashboardPageFragment.class, null)
-                        .commitNow();
+
+                if (theatreStations.size() > 0) {
+                    View confirmDialogView = View.inflate(getContext(), R.layout.dialog_confirm, null);
+                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
+                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
+                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
+                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
+                    headingText.setText("Exit theatre mode?");
+                    contentText.setText(String.join(", ", theatreStations) + (theatreStations.size() > 1 ? " are" : " is") +" currently in theatre mode. Are you sure you want to exit theatre mode?");
+                    AlertDialog confirmDialog = new AlertDialog.Builder(getContext()).setView(confirmDialogView).create();
+                    confirmButton.setOnClickListener(w -> confirmLaunchGame(selectedIds, steamGameId, confirmDialog));
+                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
+                    confirmDialog.show();
+                } else {
+                    confirmLaunchGame(selectedIds, steamGameId);
+                }
             }
         });
+    }
+
+    private void confirmLaunchGame(int[] selectedIds, int steamGameId) {
+        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+        NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
+        MainActivity.fragmentManager.beginTransaction()
+                .replace(R.id.main, DashboardPageFragment.class, null)
+                .commitNow();
+    }
+
+    private void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {
+        dialog.dismiss();
+        confirmLaunchGame(selectedIds, steamGameId);
     }
 
     @Override

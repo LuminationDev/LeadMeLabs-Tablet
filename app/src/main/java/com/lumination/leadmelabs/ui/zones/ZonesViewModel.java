@@ -56,8 +56,11 @@ public class ZonesViewModel extends ViewModel {
         this.zones.setValue(zones);
     }
 
-    public void setActiveScene(String zoneValue, String sceneValue) {
+    public void setActiveScene(String zoneValue, String sceneValue, boolean fromNuc) {
         ArrayList<Zone> zoneList = (ArrayList<Zone>) this.zones.getValue();
+        if (zoneList == null) {
+            return;
+        }
         for (int i = 0; i < zoneList.size(); i++) {
             if (zoneList.get(i).automationValue.equals(zoneValue)) {
                 Zone zone = zoneList.get(i);
@@ -68,7 +71,9 @@ public class ZonesViewModel extends ViewModel {
                         s.isActive.setValue(true);
                         zone.activeSceneName = s.name;
                         StationsFragment.mViewModel.setActiveTheatres(s.theatreIds, zone.zoneTheatreIds);
-                        NetworkService.sendMessage("NUC", "Automation", "Set:scenes:" + zone.automationValue + ":" + s.value);
+                        if (!fromNuc) { // don't need to tell the NUC about the change if the NUC told us about it
+                            NetworkService.sendMessage("NUC", "Automation", "Set:202:" + zone.automationValue + ":" + s.value);
+                        }
                     } else {
                         s.isActive.setValue(false);
                     }

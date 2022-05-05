@@ -39,9 +39,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public int[] getSelectedStationIds() {
-        ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
-        selectedStations = (ArrayList<Station>) selectedStations.clone();
-        selectedStations.removeIf(station -> !station.selected);
+        ArrayList<Station> selectedStations = getSelectedStations();
         int[] selectedIds = new int[selectedStations.size()];
         for (int i = 0; i < selectedStations.size(); i++) {
             selectedIds[i] = selectedStations.get(i).id;
@@ -49,11 +47,21 @@ public class StationsViewModel extends ViewModel {
         return selectedIds;
     }
 
+    public ArrayList<Station> getSelectedStations() {
+        ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
+        selectedStations = (ArrayList<Station>) selectedStations.clone();
+        selectedStations.removeIf(station -> !station.selected);
+        return selectedStations;
+    }
+
     public Station getStationById(int id) {
         ArrayList<Station> stationsData = (ArrayList<Station>) stations.getValue();
-        stationsData = (ArrayList<Station>) stationsData.clone();
-        stationsData.removeIf(station -> station.id != id);
-        return stationsData.get(0);
+        for (Station station:stationsData) {
+            if (station.id == id) {
+                return station;
+            }
+        }
+        return null;
     }
 
     public List<SteamApplication> getAllSteamApplications () {
@@ -117,13 +125,13 @@ public class StationsViewModel extends ViewModel {
             for (int id:theatreIds) {
                 if (s.theatreId == id) {
                     containsTheatre = true;
-                    s.gameName = "Theatre " + s.theatreId;
+                    s.theatreText = "Theatre " + s.theatreId;
                 }
             }
-            if (!containsTheatre && (s.gameName != null && s.gameName.startsWith("Theatre"))) {
+            if (!containsTheatre && s.theatreText != null) {
                 for (int id:zoneTheatreIds) {
                     if (s.theatreId == id) {
-                        s.gameName = null;
+                        s.theatreText = null;
                     }
                 }
             }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="com.lumination.leadmelabs.models.Station"></import>
+        <import type="android.view.View"/>
         <variable
             name="station"
             type="com.lumination.leadmelabs.models.Station" />
@@ -12,9 +13,17 @@
         android:id="@+id/station_card"
         style="@style/StationCard"
         android:background="@{station.selected ? @drawable/bg_white_border_blue : @drawable/bg_white}">
+        <TextView
+            android:id="@+id/theatre_text"
+            android:visibility="@{station.theatreText != null ? View.VISIBLE : View.INVISIBLE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textFontWeight="600"
+            android:textColor="@color/blue"
+            android:text="@{station.theatreText}"/>
         <ImageView
             android:id="@+id/station_vr_icon"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="-10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_vr"/>

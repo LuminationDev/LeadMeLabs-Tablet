@@ -46,13 +46,6 @@ public class ZonesFragment extends Fragment {
         backButton.setOnClickListener(v -> {
             binding.selectedZone.setVisibility(View.GONE);
             binding.zoneSelection.setVisibility(View.VISIBLE);
-            int childrenCount = binding.zoneList.getChildCount();
-            for (int i = 0; i < childrenCount; i++) {
-                View view = binding.zoneList.getChildAt(i);
-                Animation slide = new TranslateAnimation((-360 * i), 0, 0, 0);
-                slide.setDuration(1000);
-                view.startAnimation(slide);
-            }
         });
         return view;
     }
