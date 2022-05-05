@@ -59,6 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="End VR Session" />
+        <Button
+            android:id="@+id/enter_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Launch URL" />
         <GridView
             android:id="@+id/steam_list"
             android:layout_width="match_parent"

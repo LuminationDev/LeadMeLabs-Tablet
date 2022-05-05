@@ -15,10 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.services.NetworkService;
 
 public class NucFragment extends Fragment {
 
-    private NucViewModel mViewModel;
+    public static NucViewModel mViewModel;
     private View view;
     private AlertDialog nucDialog;
 
@@ -42,9 +43,14 @@ public class NucFragment extends Fragment {
 
         buildSetNucDialog();
 
-        Button button = view.findViewById(R.id.set_nuc_address);
-        button.setOnClickListener(v -> {
+        Button set_button = view.findViewById(R.id.set_nuc_address);
+        set_button.setOnClickListener(v -> {
             nucDialog.show();
+        });
+
+        Button scan_button = view.findViewById(R.id.scan_nuc_address);
+        scan_button.setOnClickListener(v -> {
+            NetworkService.broadcast("Android");
         });
     }
 
@@ -53,7 +59,7 @@ public class NucFragment extends Fragment {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            this.mViewModel.setNucAddress(newAddress.getText().toString());
+            mViewModel.setNucAddress(newAddress.getText().toString());
             nucDialog.dismiss();
         });
         Button cancelButton = view.findViewById(R.id.cancel_button);
