@@ -7,11 +7,13 @@ public class Station {
     public int id;
     public String status;
     public String gameName;
+    public String theatreText;
     public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
+    public int theatreId;
     public boolean selected = false;
 
-    public Station(String name, String steamApplications, int id, String status, int volume) {
+    public Station(String name, String steamApplications, int id, String status, int volume, int theatreId) {
         this.name = name;
         if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("null")) {
             this.setSteamApplicationsFromJsonString(steamApplications);
@@ -19,6 +21,7 @@ public class Station {
         this.id = id;
         this.status = status;
         this.volume = volume;
+        this.theatreId = theatreId;
     }
 
     public void setSteamApplicationsFromJsonString(String steamApplicationsJson)

@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -38,9 +39,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public int[] getSelectedStationIds() {
-        ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
-        selectedStations = (ArrayList<Station>) selectedStations.clone();
-        selectedStations.removeIf(station -> !station.selected);
+        ArrayList<Station> selectedStations = getSelectedStations();
         int[] selectedIds = new int[selectedStations.size()];
         for (int i = 0; i < selectedStations.size(); i++) {
             selectedIds[i] = selectedStations.get(i).id;
@@ -48,11 +47,21 @@ public class StationsViewModel extends ViewModel {
         return selectedIds;
     }
 
+    public ArrayList<Station> getSelectedStations() {
+        ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
+        selectedStations = (ArrayList<Station>) selectedStations.clone();
+        selectedStations.removeIf(station -> !station.selected);
+        return selectedStations;
+    }
+
     public Station getStationById(int id) {
         ArrayList<Station> stationsData = (ArrayList<Station>) stations.getValue();
-        stationsData = (ArrayList<Station>) stationsData.clone();
-        stationsData.removeIf(station -> station.id != id);
-        return stationsData.get(0);
+        for (Station station:stationsData) {
+            if (station.id == id) {
+                return station;
+            }
+        }
+        return null;
     }
 
     public List<SteamApplication> getAllSteamApplications () {
@@ -101,13 +110,36 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("steamApplications"),
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
-                    stationJson.getInt("volume"));
+                    stationJson.getInt("volume"),
+                    stationJson.getInt("theatreId"));
             if (stationJson.getString("gameName") != "null") {
                 station.gameName = stationJson.getString("gameName");
             }
             st.add(station);
         }
         this.setStations(st);
+    }
+
+    public void setActiveTheatres(int[] theatreIds, int[] zoneTheatreIds) {
+        ArrayList<Station> stationArrayList = (ArrayList<Station>) getStations().getValue();
+        stationArrayList = (ArrayList<Station>) stationArrayList.clone();
+        for (Station s:stationArrayList) {
+            boolean containsTheatre = false;
+            for (int id:theatreIds) {
+                if (s.theatreId == id) {
+                    containsTheatre = true;
+                    s.theatreText = "Theatre " + s.theatreId;
+                }
+            }
+            if (!containsTheatre && s.theatreText != null) {
+                for (int id:zoneTheatreIds) {
+                    if (s.theatreId == id) {
+                        s.theatreText = null;
+                    }
+                }
+            }
+        }
+        setStations(stationArrayList);
     }
 
     public void setStations(List<Station> stations) {

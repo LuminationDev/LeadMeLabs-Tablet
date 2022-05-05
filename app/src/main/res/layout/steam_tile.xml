@@ -15,7 +15,8 @@
         app:flexDirection="column"
         app:justifyContent="flex_end"
         android:paddingHorizontal="15dp"
-        android:paddingVertical="15dp">
+        android:paddingVertical="15dp"
+        android:elevation="10dp">
         <ImageView
             android:layout_marginBottom="15dp"
             android:id="@+id/steam_image"

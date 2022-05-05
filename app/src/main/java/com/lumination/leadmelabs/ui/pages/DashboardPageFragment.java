@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,14 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
-import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
+import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -78,7 +73,7 @@ public class DashboardPageFragment extends Fragment {
     private void loadFragments() {
         childManager.beginTransaction()
                 .replace(R.id.stations, StationsFragment.class, null)
-                .replace(R.id.scenes, ScenesFragment.class, null)
+                .replace(R.id.zones, ZonesFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .commitNow();
     }

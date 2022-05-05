@@ -9,9 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.bumptech.glide.Glide;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 
 import com.lumination.leadmelabs.R;
@@ -72,7 +75,25 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
         if (launchMode == true) {
             playButton.setOnClickListener(v -> {
-                NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                Station station = StationsFragment.mViewModel.getStationById(stationId);
+                if (station.theatreText != null) {
+                    View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
+                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
+                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
+                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
+                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
+                    headingText.setText("Exit theatre mode?");
+                    contentText.setText(station.name + " is currently in theatre mode. Are you sure you want to exit theatre mode?");
+                    AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
+                    confirmButton.setOnClickListener(w -> {
+                        NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                        confirmDialog.dismiss();
+                    });
+                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
+                    confirmDialog.show();
+                } else {
+                    NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                }
             });
         } else {
             playButton.setOnClickListener(v -> {

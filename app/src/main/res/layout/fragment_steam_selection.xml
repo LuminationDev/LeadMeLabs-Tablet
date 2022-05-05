@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:flexDirection="column"
+            app:layout_flexShrink="0"
             android:padding="30dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -28,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pick a game to play in VR"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
         </com.google.android.flexbox.FlexboxLayout>
         <GridView
             android:id="@+id/steam_list"

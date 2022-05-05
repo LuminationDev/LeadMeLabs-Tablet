@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <data>
+        <import type="com.lumination.leadmelabs.models.Zone" />
+        <variable
+            name="zone"
+            type="com.lumination.leadmelabs.models.Zone" />
+
+        <variable
+            name="isActive"
+            type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="icon"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/zone_card"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:background="@color/white"
+        app:flexDirection="column"
+        android:elevation="10dp"
+        android:layout_margin="20dp"
+        android:padding="20dp"
+        app:justifyContent="flex_end">
+
+        <TextView
+            android:id="@+id/zone_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textFontWeight="600"
+            android:text="@{zone.name, default=Zone}" />
+        <TextView
+            android:id="@+id/active_scene_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:text="@{zone.activeSceneName}" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

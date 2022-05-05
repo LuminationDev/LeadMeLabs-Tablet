@@ -5,13 +5,12 @@ import android.util.Log;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.appliance.LightFragment;
+import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.nuc.NucFragment;
-import com.lumination.leadmelabs.ui.scenes.ScenesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
@@ -43,9 +42,12 @@ public class UIUpdateManager {
                         updateStations(additionalData.split(":", 2)[1]);
                     }
                     break;
-                case "Scenes":
+                case "Zones":
                     if (additionalData.startsWith("List")) {
-                        updateScenes(additionalData.split(":", 2)[1]);
+                        updateZones(additionalData.split(":", 2)[1]);
+                    }
+                    if (additionalData.startsWith("SetScene")) {
+                        updateSelectedScene(additionalData);
                     }
                     break;
                 case "Appliances":
@@ -62,10 +64,6 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
-                    if (additionalData.startsWith("trigger_scene")) {
-                        updateSelectedScene(additionalData);
-                    }
-
                     if (additionalData.startsWith("lighting")) {
                         updateActiveAppliances(additionalData);
                     }
@@ -113,12 +111,12 @@ public class UIUpdateManager {
         });
     }
 
-    private static void updateScenes(String jsonString) throws JSONException {
+    private static void updateZones(String jsonString) throws JSONException {
         JSONArray json = new JSONArray(jsonString);
 
         MainActivity.runOnUI(() -> {
             try {
-                ScenesFragment.mViewModel.setScenes(json);
+                ZonesFragment.mViewModel.setZones(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -127,13 +125,9 @@ public class UIUpdateManager {
 
     //Need cleaning up when there is access to CBUS
     private static void updateSelectedScene(String response) throws JSONException {
-        String requiredString = response.substring(response.indexOf("[") + 1, response.indexOf("]"));
-        JSONObject json = new JSONObject(requiredString);
-
-        String value = json.getJSONObject("data").getString("value");
-
+        String[] values = response.split(":");
         MainActivity.runOnUI(() -> {
-            ScenesFragment.mViewModel.setCurrentValue(Integer.parseInt(value));
+            ZonesFragment.mViewModel.setActiveScene(values[1], values[2], true);
         });
     }
 
