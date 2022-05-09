@@ -26,7 +26,7 @@
             android:layout_marginTop="-10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_vr"/>
+            android:src="@{station.status.equals(`Off`) ? @drawable/icon_vr_gray : @drawable/icon_vr, default=@drawable/bg_station_card_grey}"/>
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -85,13 +85,19 @@ public class StationsViewModel extends ViewModel {
             stationsData.set(index, station);
             stations.setValue((stationsData));
         }
-
+        if (id == getSelectedStation().getValue().id) {
+            setSelectedStation(station);
+        }
     }
 
     public LiveData<Station> selectStation(int index) {
         this.getSelectedStation();
-        this.selectedStation.setValue(this.stations.getValue().get(index));
+        this.setSelectedStation(this.stations.getValue().get(index));
         return this.getSelectedStation();
+    }
+
+    public void setSelectedStation(Station station) {
+        this.selectedStation.setValue(station);
     }
 
     public LiveData<Station> getSelectedStation() {

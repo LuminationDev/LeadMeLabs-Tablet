@@ -10,68 +10,135 @@
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
         android:id="@+id/station_single_fragment"
         android:background="@color/grey"
+        android:layout_height="match_parent"
         style="@style/StationsContainer"
         tools:context=".ui.stations.StationsFragment"
         app:flexDirection="column">
-        <Button
-            android:id="@+id/close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/icon_add"
-            android:text="Close"/>
-        <TextView
-            android:layout_marginBottom="10dp"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:text="@{selectedStation.name}" />
-        <com.google.android.material.slider.Slider
-            android:id="@+id/station_volume_slider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:value="@{selectedStation.volume}"
-            android:valueFrom="0.0"
-            android:stepSize="1.0"
-            android:valueTo="100.0"/>
-        <Button
-            android:id="@+id/station_shutdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shutdown" />
-        <Button
-            android:id="@+id/station_stop_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop Game" />
-        <Button
-            android:id="@+id/station_start_vr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start VR Session" />
-        <Button
-            android:id="@+id/station_restart_vr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Restart VR Session" />
-        <Button
-            android:id="@+id/station_end_vr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="End VR Session" />
-        <Button
-            android:id="@+id/enter_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Launch URL" />
-        <GridView
-            android:id="@+id/steam_list"
+        <com.google.android.flexbox.FlexboxLayout
+            app:layout_flexShrink="0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="2dp"
-            android:verticalSpacing="2dp"
+            app:flexDirection="column">
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:justifyContent="space_between"
+                android:paddingRight="20dp"
+                app:alignItems="center">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column"
+                    app:layout_flexShrink="0"
+                    android:padding="30dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{selectedStation.name, default=Station}"
+                        android:textFontWeight="600"
+                        android:textSize="40dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Control an individual station"
+                        android:textSize="20sp"/>
+                </com.google.android.flexbox.FlexboxLayout>
+                <Button
+                    android:id="@+id/close_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/icon_close"
+                    app:strokeColor="@color/blue"
+                    app:strokeWidth="2dp"
+                    android:textColor="@color/blue"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@color/white"
+                    android:text="Close"/>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:alignItems="center">
+                <include
+                    android:transitionName="card_station"
+                    app:layout_flexShrink="0"
+                    layout="@layout/card_station"
+                    android:id="@+id/card_station"
+                    app:station="@{selectedStation}"/>
+                <Button
+                    android:id="@+id/station_start_vr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/compound_start_session"
+                    android:textColor="@color/blue"
+                    android:text="New Session"
+                    android:background="@android:color/transparent"/>
+                <Button
+                    android:id="@+id/station_end_vr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/compound_end_session"
+                    android:textColor="@color/blue"
+                    android:text="End Session"
+                    android:background="@android:color/transparent"/>
+                <Button
+                    android:id="@+id/station_restart_vr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/compound_restart_session"
+                    android:textColor="@color/blue"
+                    android:text="Restart Session"
+                    android:background="@android:color/transparent"/>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column">
+                    <Button
+                        android:id="@+id/station_shutdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shutdown" />
+                    <Button
+                        android:id="@+id/station_stop_game"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stop Game" />
+                    <Button
+                        android:id="@+id/enter_url"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Launch URL" />
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/station_volume_slider"
+                app:thumbColor="@color/blue"
+                app:haloColor="@color/blue"
+                app:thumbStrokeColor="@color/blue"
+                app:trackColor="@color/blue_light"
+                app:tickColor="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:value="@{selectedStation.volume}"
+                android:valueFrom="0.0"
+                android:stepSize="1.0"
+                android:valueTo="100.0"/>
+        </com.google.android.flexbox.FlexboxLayout>
+        <GridView
+            android:id="@+id/steam_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="10dp"
+            android:verticalSpacing="10dp"
             android:numColumns="auto_fit"
-            android:columnWidth="200dp"
+            android:columnWidth="220dp"
+            android:clipToPadding="false"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="20dp"
             tools:listitem="@layout/steam_tile">
         </GridView>
     </com.google.android.flexbox.FlexboxLayout>
