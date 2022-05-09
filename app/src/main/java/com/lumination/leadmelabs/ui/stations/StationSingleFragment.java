@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -143,10 +146,15 @@ public class StationSingleFragment extends Fragment {
 
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
+            binding.cardStation.setStation(station);
             steamApplicationAdapter.steamApplicationList = station.steamApplications;
             steamApplicationAdapter.stationId = station.id;
             steamApplicationAdapter.notifyDataSetChanged();
         });
+
+        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.card_transition);
+        view.findViewById(R.id.card_station).setTransitionName("card_station");
+        setSharedElementEnterTransition(transition);
     }
 
     private void buildEnterUrlDialog() {

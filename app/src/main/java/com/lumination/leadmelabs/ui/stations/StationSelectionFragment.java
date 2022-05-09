@@ -68,6 +68,14 @@ public class StationSelectionFragment extends Fragment {
             }
         });
 
+        Button backButton = view.findViewById(R.id.cancel_button);
+        backButton.setOnClickListener(v -> {
+            StationsFragment.mViewModel.selectSelectedSteamApplication(0);
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, SteamSelectionFragment.class, null)
+                    .commitNow();
+        });
+
         Button playButton = view.findViewById(R.id.select_stations);
         playButton.setOnClickListener(v -> {
             int steamGameId = mViewModel.getSelectedSteamApplicationId();

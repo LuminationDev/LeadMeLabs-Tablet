@@ -66,23 +66,18 @@ public class StationAdapter extends BaseAdapter {
         }
         binding.setStation(station);
 
-        ImageView imageView = result.findViewById(R.id.station_vr_icon);
-        if (station.status.equals("Off")) {
-            imageView.setImageResource(R.drawable.icon_vr_gray);
-        } else {
-            imageView.setImageResource(R.drawable.icon_vr);
-        }
-
         // todo - I don't really like having the two separate flows here - can probably split out into other methods
+        View finalResult = result;
         if (launchSingleOnTouch == true) {
             result.setOnClickListener(v -> {
+                finalResult.setTransitionName("card_station");
                 viewModel.selectStation(position);
                 MainActivity.fragmentManager.beginTransaction()
+                        .addSharedElement(view, "card_station")
                         .replace(R.id.main, StationSingleFragment.class, null)
                         .commitNow();
             });
         } else {
-            View finalResult = result;
             if (station.hasSteamApplicationInstalled(viewModel.getSelectedSteamApplicationId())) {
                 result.setOnClickListener(v -> {
                     station.selected = !station.selected;
