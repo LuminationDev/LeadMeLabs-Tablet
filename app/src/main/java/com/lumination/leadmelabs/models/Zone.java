@@ -8,6 +8,7 @@ public class Zone {
     public int id;
     public String automationValue;
     public String activeSceneName;
+    public String activeSceneId;
     public ArrayList<Scene> scenes;
     public int[] zoneTheatreIds;
 

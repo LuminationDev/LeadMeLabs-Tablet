@@ -85,7 +85,7 @@ public class StationsViewModel extends ViewModel {
             stationsData.set(index, station);
             stations.setValue((stationsData));
         }
-        if (id == getSelectedStation().getValue().id) {
+        if (getSelectedStation().getValue() != null && id == getSelectedStation().getValue().id) {
             setSelectedStation(station);
         }
     }

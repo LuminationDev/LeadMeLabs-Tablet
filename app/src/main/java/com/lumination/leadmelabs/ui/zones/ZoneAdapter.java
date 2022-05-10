@@ -41,14 +41,6 @@ public class ZoneAdapter extends RecyclerView.Adapter {
             binding.setZone(zone);
             View finalResult = binding.getRoot();
             finalResult.setOnClickListener(v -> {
-                binding.setIsActive(new MutableLiveData<>(true));
-
-                for(CardZoneBinding zoneBinding : zoneBindings) {
-                    if(zoneBinding != binding) {
-                        zoneBinding.setIsActive(new MutableLiveData<>(false));
-                    }
-                }
-
                 fragmentZonesBinding.activeCard.setZone(zone);
                 SceneAdapter sceneAdapter = new SceneAdapter(finalResult.getContext(), zone);
                 sceneAdapter.sceneList = zone.scenes;
