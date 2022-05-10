@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.Zone;
 import com.lumination.leadmelabs.ui.appliance.LightFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.nuc.NucFragment;
@@ -64,8 +65,13 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
+                    // todo need to handle a scene being updated from another tablet
                     if (additionalData.startsWith("lighting")) {
                         updateActiveAppliances(additionalData);
+                    }
+                    if (additionalData.startsWith("Set")) {
+                        String[] values = additionalData.split(":");
+                        ZonesFragment.mViewModel.setActiveScene(values[2], values[3], true);
                     }
                     break;
                 case "Scanner":

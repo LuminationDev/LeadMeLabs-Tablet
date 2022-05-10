@@ -6,14 +6,6 @@
         <variable
             name="zone"
             type="com.lumination.leadmelabs.models.Zone" />
-
-        <variable
-            name="isActive"
-            type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
-
-        <variable
-            name="icon"
-            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout

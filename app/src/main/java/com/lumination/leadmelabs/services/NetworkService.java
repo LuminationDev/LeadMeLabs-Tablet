@@ -68,6 +68,7 @@ public class NetworkService extends Service {
      */
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
+        NetworkService.sendMessage("NUC", "Connect", "Connect");
     }
 
     public static String getNUCAddress() { return NUCAddress; }
