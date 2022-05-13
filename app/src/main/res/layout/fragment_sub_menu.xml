@@ -29,14 +29,14 @@
                 android:id="@+id/light_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{subMenu.selectedPage.equals(`light`) ? @color/blue : @color/black, default=@color/blue}"
+                android:textColor="@{subMenu.selectedPage.equals(`lighting`) ? @color/blue : @color/black, default=@color/blue}"
                 android:text="Lights"/>
 
             <TextView
                 android:id="@+id/blind_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{subMenu.selectedPage.equals(`blind`) ? @color/blue : @color/black, default=@color/black}"
+                android:textColor="@{subMenu.selectedPage.equals(`blinds`) ? @color/blue : @color/black, default=@color/black}"
                 android:text="Blinds"/>
 
             <TextView
@@ -50,7 +50,7 @@
                 android:id="@+id/ring_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{subMenu.selectedPage.equals(`ring`) ? @color/blue : @color/black, default=@color/black}"
+                android:textColor="@{subMenu.selectedPage.equals(`rings`) ? @color/blue : @color/black, default=@color/black}"
                 android:text="LED Rings"/>
 
             <TextView

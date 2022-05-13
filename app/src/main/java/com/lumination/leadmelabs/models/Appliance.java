@@ -7,12 +7,14 @@ import androidx.lifecycle.MutableLiveData;
  */
 public class Appliance {
     public String name;
+    public String type;
     public int id;
     public int value;
     public MutableLiveData<Integer> icon;
     public MutableLiveData<Boolean> isActive;
 
-    public Appliance(String name, int id) {
+    public Appliance(String type, String name, int id) {
+        this.type = type;
         this.name = name;
         this.id = id;
 

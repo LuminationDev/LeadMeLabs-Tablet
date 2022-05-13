@@ -25,7 +25,7 @@ public class SubMenuViewModel extends ViewModel {
     //Light is the default when opening the sub menu
     public LiveData<String> getSelectedPage() {
         if (selectedPage == null) {
-            selectedPage = new MutableLiveData<>("light");
+            selectedPage = new MutableLiveData<>("lighting");
         }
         return selectedPage;
     }
