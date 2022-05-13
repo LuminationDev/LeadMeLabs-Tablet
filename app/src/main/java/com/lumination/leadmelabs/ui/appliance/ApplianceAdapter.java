@@ -18,18 +18,16 @@ import java.util.ArrayList;
 /**
  * Use this adapter for scripts in the future.
  */
-public class LightAdapter extends BaseAdapter {
+public class ApplianceAdapter extends BaseAdapter {
     private final String TAG = "ApplianceAdapter";
 
-    //Not sure if this is a good idea or not but handy to access for data binding UI changes
-    public ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
-
     public ArrayList<Appliance> applianceList = new ArrayList<>();
+    public ArrayList<String> activeApplianceList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context context;
     private View list_view;
 
-    LightAdapter(Context context, View list_view) {
+    ApplianceAdapter(Context context, View list_view) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.list_view = list_view;
@@ -50,7 +48,7 @@ public class LightAdapter extends BaseAdapter {
         return applianceList.get(position).id;
     }
 
-    public int getItemValue(int position) { return applianceList.get(position).value; }
+    public String getItemType(int position) { return applianceList.get(position).type; }
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
@@ -68,35 +66,37 @@ public class LightAdapter extends BaseAdapter {
         } else {
             binding = (CardApplianceBinding) result.getTag();
         }
-        binding.setAppliance(getItem(position));
-        setIcon(binding, getItemValue(position));
 
-        //Load what scene has been selected - change this as it should be a list....
-        if(LightFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
+        binding.setAppliance(getItem(position));
+        setIcon(binding, getItemType(position));
+
+        //Load what appliance is active or not
+        if(activeApplianceList.contains(String.valueOf(getItem(position).id))) {
             binding.setIsActive(new MutableLiveData<>(true));
         } else {
             binding.setIsActive(new MutableLiveData<>(false));
         }
 
         result.setOnClickListener(v -> {
-            String value;
-            if(LightFragment.mViewModel.activeAppliances.contains(String.valueOf(getItem(position).id))) {
-                binding.setIsActive(new MutableLiveData<>(false));
-                LightFragment.mViewModel.activeAppliances.remove(String.valueOf(getItem(position).id));
-                value = "0";
-
-            } else {
-                binding.setIsActive(new MutableLiveData<>(true));
-                LightFragment.mViewModel.activeAppliances.add(String.valueOf(getItem(position).id));
-                value = "255";
-            }
-
+            //TODO Expand this so we can load different trigger strategies
+            String value = toggleStrategy(binding, position);
             NetworkService.sendMessage("NUC", "Automation", "SetId:" + getItem(position).id + ":" + value);
         });
 
-        applianceBindings.add(binding);
-
         return result;
+    }
+
+    private String toggleStrategy(CardApplianceBinding binding, int position) {
+        if(activeApplianceList.contains(String.valueOf(getItem(position).id))) {
+            binding.setIsActive(new MutableLiveData<>(false));
+            activeApplianceList.remove(String.valueOf(getItem(position).id));
+            return "0";
+
+        } else {
+            binding.setIsActive(new MutableLiveData<>(true));
+            activeApplianceList.add(String.valueOf(getItem(position).id));
+            return "255";
+        }
     }
 
     /**
@@ -104,23 +104,27 @@ public class LightAdapter extends BaseAdapter {
      * @param binding A SceneCardBinding relating associated with the current scene.
      * @param type An int representing what appliance the card triggers on the CBUS.
      */
-    private void setIcon(CardApplianceBinding binding, int type) {
+    private void setIcon(CardApplianceBinding binding, String type) {
         MutableLiveData<Integer> icon;
 
         //Add to this in the future
         switch(type) {
-            case 0:
+            case "lighting":
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
-            case 1:
+            case "blinds":
                 icon = new MutableLiveData<>(R.drawable.icon_home);
                 break;
-            case 2:
+            case "projector":
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
-            case 3:
+            case "rings":
                 icon = new MutableLiveData<>(R.drawable.icon_home);
                 break;
+            case "source":
+                icon = new MutableLiveData<>(R.drawable.icon_home);
+                break;
+
             default:
                 icon = new MutableLiveData<>(R.drawable.icon_home);
                 break;

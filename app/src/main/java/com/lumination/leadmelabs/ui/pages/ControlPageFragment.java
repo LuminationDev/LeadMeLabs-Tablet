@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.pages.subpages.LightPageFragment;
+import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
 
 public class ControlPageFragment extends Fragment {
     private View view;
@@ -40,8 +40,13 @@ public class ControlPageFragment extends Fragment {
      * Load in the initial fragments for the main view and replace the side menu.
      */
     private void loadFragments() {
+        //Load in the lights by default
+        Bundle args = new Bundle();
+        args.putString("type", "lighting");
+        args.putString("title", "Lighting Control");
+
         childManager.beginTransaction()
-                .replace(R.id.subpage, LightPageFragment.class, null)
+                .replace(R.id.subpage, AppliancePageFragment.class, args)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .commitNow();
     }

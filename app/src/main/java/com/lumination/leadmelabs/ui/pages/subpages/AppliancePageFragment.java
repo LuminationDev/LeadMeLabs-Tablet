@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.appliance.LightFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 
-public class LightPageFragment extends Fragment {
+public class AppliancePageFragment extends Fragment {
     private View view;
     private FragmentManager childManager;
 
@@ -21,7 +21,7 @@ public class LightPageFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.subpage_light, container, false);
+        view = inflater.inflate(R.layout.subpage_appliance, container, false);
         childManager = getChildFragmentManager();
         return view;
     }
@@ -31,16 +31,17 @@ public class LightPageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
-            loadFragments();
+            Bundle info = getArguments();
+            loadFragments(info);
         }
     }
 
     /**
      * Load in the initial fragments for the main view.
      */
-    private void loadFragments() {
+    private void loadFragments(Bundle args) {
         childManager.beginTransaction()
-                .replace(R.id.appliances, LightFragment.class, null)
+                .replace(R.id.appliances, ApplianceFragment.class, args)
                 .commitNow();
     }
 }

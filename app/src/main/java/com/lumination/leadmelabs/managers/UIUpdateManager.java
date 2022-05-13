@@ -4,8 +4,7 @@ import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.Zone;
-import com.lumination.leadmelabs.ui.appliance.LightFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.nuc.NucFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -65,8 +64,8 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
-                    // todo need to handle a scene being updated from another tablet
-                    if (additionalData.startsWith("lighting")) {
+                    // todo need to handle a scene being updated from another tablets
+                    if (additionalData.startsWith("Appliances")) {
                         updateActiveAppliances(additionalData);
                     }
                     if (additionalData.startsWith("Set")) {
@@ -144,7 +143,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                LightFragment.mViewModel.setAppliances(json);
+                ApplianceFragment.mViewModel.setAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -153,12 +152,11 @@ public class UIUpdateManager {
 
     private static void updateActiveAppliances(String jsonString) throws JSONException {
         String requiredString = jsonString.substring(jsonString.indexOf("["), jsonString.indexOf("]") + 1);
-        Log.e("ALL", requiredString);
         JSONArray json = new JSONArray(requiredString);
 
         MainActivity.runOnUI(() -> {
             try {
-                LightFragment.mViewModel.setActiveAppliances(json);
+                ApplianceFragment.mViewModel.setActiveAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
