@@ -24,6 +24,7 @@ public class ZoneAdapter extends RecyclerView.Adapter {
     public ArrayList<CardZoneBinding> zoneBindings = new ArrayList<>();
 
     public ArrayList<Zone> zoneList = new ArrayList<>();
+    public SceneAdapter sceneAdapter;
     private FragmentZonesBinding fragmentZonesBinding;
 
     ZoneAdapter(FragmentZonesBinding fragmentZonesBinding) {
@@ -42,7 +43,7 @@ public class ZoneAdapter extends RecyclerView.Adapter {
             View finalResult = binding.getRoot();
             finalResult.setOnClickListener(v -> {
                 fragmentZonesBinding.activeCard.setZone(zone);
-                SceneAdapter sceneAdapter = new SceneAdapter(finalResult.getContext(), zone);
+                sceneAdapter = new SceneAdapter(finalResult.getContext(), zone);
                 sceneAdapter.sceneList = zone.scenes;
                 fragmentZonesBinding.sceneList.setAdapter(sceneAdapter);
 

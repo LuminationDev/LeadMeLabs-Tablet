@@ -50,7 +50,7 @@ public class ZonesViewModel extends ViewModel {
                 }
                 sceneList.add(scene);
             }
-            Zone zone = new Zone(zoneObject.getString("name"), zoneObject.getInt("id"), zoneObject.getString("automationId"), sceneList);
+            Zone zone = new Zone(zoneObject.getString("name"), zoneObject.getInt("id"), zoneObject.getString("automationGroup"), zoneObject.getString("automationId"), sceneList);
             zone.activeSceneId = zoneObject.getString("currentValue");
             zone.activeSceneName = activeSceneName;
             zoneList.add(zone);
@@ -63,24 +63,25 @@ public class ZonesViewModel extends ViewModel {
         this.zones.setValue(zones);
     }
 
-    public void setActiveScene(String zoneValue, String sceneValue, boolean fromNuc) {
+    public void setActiveScene(String automationGroup, String automationId, String sceneValue, boolean fromNuc) {
         ArrayList<Zone> zoneList = (ArrayList<Zone>) this.zones.getValue();
         if (zoneList == null) {
             return;
         }
         for (int i = 0; i < zoneList.size(); i++) {
-            if (zoneList.get(i).automationValue.equals(zoneValue)) {
-                Zone zone = zoneList.get(i);
+            Zone zone = zoneList.get(i);
+            if (zone.automationGroup.equals(automationGroup) && zone.automationId.equals(automationId)) {
                 zone.activeSceneId = sceneValue;
                 ArrayList<Scene> sceneList = zone.scenes;
                 sceneList = (ArrayList<Scene>) sceneList.clone();
-                for (Scene s:sceneList) {
+                for (int j = 0; j < sceneList.size(); j++) {
+                    Scene s = sceneList.get(j);
                     if (s.value.equals(zone.activeSceneId)) {
                         s.isActive.setValue(true);
                         zone.activeSceneName = s.name;
                         StationsFragment.mViewModel.setActiveTheatres(s.theatreIds, zone.zoneTheatreIds);
                         if (!fromNuc) { // don't need to tell the NUC about the change if the NUC told us about it
-                            NetworkService.sendMessage("NUC", "Automation", "Set:0:" + zone.automationValue + ":" + s.value);
+                            NetworkService.sendMessage("NUC", "Automation", "Set:0:" + zone.automationGroup + ":" + zone.automationId + ":" + s.value);
                         }
                     } else {
                         s.isActive.setValue(false);

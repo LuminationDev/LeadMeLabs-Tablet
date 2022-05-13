@@ -58,6 +58,19 @@ public class ZonesFragment extends Fragment {
         mViewModel.getZones().observe(getViewLifecycleOwner(), zones -> {
             zoneAdapter.zoneList = (ArrayList<Zone>) zones;
             zoneAdapter.notifyDataSetChanged();
+            if (zoneAdapter.sceneAdapter != null) {
+                zoneAdapter.sceneAdapter.animate = false;
+                zoneAdapter.sceneAdapter.notifyDataSetChanged();
+                new java.util.Timer().schedule( // turn animations back on after the scenes have updated
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                zoneAdapter.sceneAdapter.animate = true;
+                            }
+                        },
+                        100
+                );
+            }
         });
     }
 }
