@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SubMenuViewModel extends ViewModel {
     private MutableLiveData<List<String>> info;
-    private MutableLiveData<String> selectedIcon = new MutableLiveData<>();
+    private MutableLiveData<String> selectedPage = new MutableLiveData<>();
 
     public LiveData<List<String>> getInfo() {
         if (info == null) {
@@ -22,14 +22,13 @@ public class SubMenuViewModel extends ViewModel {
         // Do an asynchronous operation to fetch saved stations from NUC.
     }
 
-    public LiveData<String> getSelectedIcon() {
-        if (selectedIcon == null) {
-            selectedIcon = new MutableLiveData<>();
+    //Light is the default when opening the sub menu
+    public LiveData<String> getSelectedPage() {
+        if (selectedPage == null) {
+            selectedPage = new MutableLiveData<>("light");
         }
-        return selectedIcon;
+        return selectedPage;
     }
 
-    public void setSelectedIcon(String icon) {
-        selectedIcon.setValue(icon);
-    }
+    public void setSelectedPage(String page) { selectedPage.setValue(page);}
 }

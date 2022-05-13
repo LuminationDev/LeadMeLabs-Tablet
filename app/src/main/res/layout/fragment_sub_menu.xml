@@ -3,107 +3,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel" />
         <variable
-            name="selectedIcon"
-            type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
+            name="subMenu"
+            type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/side_menu_fragment"
-        style="@style/SideMenuContainer"
+        style="@style/SubMenuContainer"
         android:paddingVertical="40dp"
-        android:paddingHorizontal="70dp"
         app:flexDirection="column">
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:paddingTop="30dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_height="350dp"
             app:flexDirection="column"
-            app:alignItems="center"
-            app:justifyContent="space_between">
+            app:alignItems="flex_start"
+            app:justifyContent="space_around">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/light_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:textColor="@{subMenu.selectedPage.equals(`light`) ? @color/blue : @color/black, default=@color/blue}"
+                android:text="Lights"/>
 
-                <ImageView
-                    android:id="@+id/lights_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_controls"/>
-
-                <ImageView
-                    android:id="@+id/lights_button_underline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="visible"/>
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/blind_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:textColor="@{subMenu.selectedPage.equals(`blind`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="Blinds"/>
 
-                <ImageView
-                    android:id="@+id/blinds_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_controls" />
-
-                <ImageView
-                    android:id="@+id/blinds_button_underline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="invisible"/>
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/projector_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:textColor="@{subMenu.selectedPage.equals(`projector`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="Projector"/>
 
-                <ImageView
-                    android:id="@+id/scripts_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_controls" />
-
-                <ImageView
-                    android:id="@+id/scripts_button_underline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="invisible"/>
-            </LinearLayout>
-
-        </com.google.android.flexbox.FlexboxLayout>
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:justifyContent="flex_end"
-            app:alignItems="center"
-            app:flexDirection="column">
-
-            <ImageView
-                android:id="@+id/dashboard_button"
+            <TextView
+                android:id="@+id/ring_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_home" />
+                android:textColor="@{subMenu.selectedPage.equals(`ring`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="LED Rings"/>
 
-            <ImageView
-                android:id="@+id/dashboard_button_underline"
+            <TextView
+                android:id="@+id/source_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/line_white"
-                android:contentDescription="@string/white_underline"
-                android:visibility="invisible"/>
+                android:textColor="@{subMenu.selectedPage.equals(`source`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="Source"/>
+
+
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
