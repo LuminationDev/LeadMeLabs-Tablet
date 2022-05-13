@@ -9,29 +9,36 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-import com.lumination.leadmelabs.ui.pages.SessionPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+
+import java.util.Objects;
 
 public class SideMenuFragment extends Fragment {
 
     private SideMenuViewModel mViewModel;
     private View view;
-    private ImageView session, controls, navigation, dashboard;
+    private FragmentSideMenuBinding binding;
+
+    private ViewGroup.LayoutParams layout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_side_menu, container, false);
+        binding = DataBindingUtil.bind(view);
+        layout = view.getLayoutParams();
         setupButtons();
         return view;
     }
@@ -41,6 +48,10 @@ public class SideMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(this).get(SideMenuViewModel.class);
+        binding.setLifecycleOwner(this);
+        binding.setSideMenu(mViewModel);
+        mViewModel.setSelectedIcon("dashboard");
+
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements
         });
@@ -53,76 +64,72 @@ public class SideMenuFragment extends Fragment {
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
-        session = view.findViewById(R.id.session_button_underline);
         view.findViewById(R.id.session_button).setOnClickListener(v -> {
+            removeSubMenu();
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("session");
+            mViewModel.setSelectedIcon("session");
         });
 
-        controls = view.findViewById(R.id.controls_button_underline);
         view.findViewById(R.id.controls_button).setOnClickListener(v -> {
+            changeViewParams(150, 45);
+
             MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.side_menu, SubMenuFragment.class, null)
+                    .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                     .replace(R.id.main, ControlPageFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("controls");
+            mViewModel.setSelectedIcon("controls");
         });
 
-        navigation = view.findViewById(R.id.navigation_button_settings_underline);
         view.findViewById(R.id.navigation_button_settings).setOnClickListener(v -> {
+            removeSubMenu();
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SettingsPageFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("navigation");
+            mViewModel.setSelectedIcon("navigation");
         });
 
-        dashboard = view.findViewById(R.id.dashboard_button_underline);
         view.findViewById(R.id.dashboard_button).setOnClickListener(v -> {
+            removeSubMenu();
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, DashboardPageFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("dashboard");
+            mViewModel.setSelectedIcon("dashboard");
         });
     }
 
     /**
-     * Have not found a way for data binding to work with visibility
+     * Remove the sub menu from the view.
      */
-    private void changeSelectedIcon(String type) {
-        mViewModel.setSelectedIcon(type);
+    private void removeSubMenu() {
+        Fragment fragment = MainActivity.fragmentManager.findFragmentByTag("sub");
 
-        Log.e("TAG", type);
-        switch(type) {
-            case "session":
-                session.setVisibility(View.VISIBLE);
-                break;
-            case "controls":
-                controls.setVisibility(View.VISIBLE);
-                break;
-            case "navigation":
-                navigation.setVisibility(View.VISIBLE);
-                break;
-            default:
-                dashboard.setVisibility(View.VISIBLE);
-        }
+        if(fragment != null) {
+            MainActivity.fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitNow();
 
-        if (!type.equals("session")) {
-            session.setVisibility(View.INVISIBLE);
+            changeViewParams(200, 70);
         }
-        if (!type.equals("controls")) {
-            controls.setVisibility(View.INVISIBLE);
-        }
-        if (!type.equals("navigation")) {
-            navigation.setVisibility(View.INVISIBLE);
-        }
-        if (!type.equals("dashboard")) {
-            dashboard.setVisibility(View.INVISIBLE);
-        }
+    }
+
+    /**
+     * Change the width and padding of the side menu. Automatically converts the supplied int to
+     * the dp required based on the screen resolution.
+     * @param newWidth A integer representing the new width.
+     * @param newPadding A integer representing the new padding.
+     */
+    private void changeViewParams(int newWidth, int newPadding) {
+        final float scale = Objects.requireNonNull(getContext()).getResources().getDisplayMetrics().density;
+        layout.width = (int) (newWidth * scale + 0.5f);
+        view.setLayoutParams(layout);
+
+        int padding = (int) (newPadding * scale + 0.5f);
+        view.setPadding(padding, view.getPaddingTop(), padding, view.getPaddingBottom());
     }
 }

@@ -5,17 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.databinding.FragmentSubMenuBinding;
 import com.lumination.leadmelabs.ui.pages.subpages.BlindPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.LightPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.ScriptPageFragment;
@@ -24,13 +23,15 @@ public class SubMenuFragment extends Fragment {
 
     private SubMenuViewModel mViewModel;
     private View view;
-    private ImageView lights, blinds, scripts, dashboard;
+    private FragmentSubMenuBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sub_menu, container, false);
+        binding = DataBindingUtil.bind(view);
+
         setupButtons();
         return view;
     }
@@ -40,11 +41,15 @@ public class SubMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(this).get(SubMenuViewModel.class);
+        binding.setLifecycleOwner(this);
+        binding.setSubMenu(mViewModel);
+        mViewModel.setSelectedPage("light");
+
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements
         });
 
-        mViewModel.getSelectedIcon().observe(getViewLifecycleOwner(), selectedIcon -> {
+        mViewModel.getSelectedPage().observe(getViewLifecycleOwner(), selectedPage -> {
 
         });
     }
@@ -52,76 +57,44 @@ public class SubMenuFragment extends Fragment {
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
-        lights = view.findViewById(R.id.lights_button_underline);
-        view.findViewById(R.id.lights_button).setOnClickListener(v -> {
+        view.findViewById(R.id.light_button).setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.subpage, LightPageFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("lights");
+            mViewModel.setSelectedPage("light");
         });
 
-        blinds = view.findViewById(R.id.blinds_button_underline);
-        view.findViewById(R.id.blinds_button).setOnClickListener(v -> {
+        view.findViewById(R.id.blind_button).setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.subpage, BlindPageFragment.class, null)
                     .commitNow();
 
-            changeSelectedIcon("blinds");
+            mViewModel.setSelectedPage("blind");
         });
 
-        scripts = view.findViewById(R.id.scripts_button_underline);
-        view.findViewById(R.id.scripts_button).setOnClickListener(v -> {
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.subpage, ScriptPageFragment.class, null)
-                    .commitNow();
+        view.findViewById(R.id.projector_button).setOnClickListener(v -> {
+//            MainActivity.fragmentManager.beginTransaction()
+//                    .replace(R.id.subpage, ProjectorPageFragment.class, null)
+//                    .commitNow();
 
-            changeSelectedIcon("scripts");
+            mViewModel.setSelectedPage("projector");
         });
 
-        dashboard = view.findViewById(R.id.dashboard_button_underline);
-        view.findViewById(R.id.dashboard_button).setOnClickListener(v -> {
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.side_menu, SideMenuFragment.class, null)
-                    .replace(R.id.main, DashboardPageFragment.class, null)
-                    .commitNow();
+        view.findViewById(R.id.ring_button).setOnClickListener(v -> {
+//            MainActivity.fragmentManager.beginTransaction()
+//                    .replace(R.id.subpage, RingPageFragment.class, null)
+//                    .commitNow();
 
-            changeSelectedIcon("dashboard");
+            mViewModel.setSelectedPage("ring");
         });
-    }
 
-    /**
-     * Have not found a way for data binding to work with visibility
-     */
-    private void changeSelectedIcon(String type) {
-        mViewModel.setSelectedIcon(type);
+        view.findViewById(R.id.source_button).setOnClickListener(v -> {
+//            MainActivity.fragmentManager.beginTransaction()
+//                    .replace(R.id.subpage, SourcePageFragment.class, null)
+//                    .commitNow();
 
-        Log.e("TAG", type);
-        switch(type) {
-            case "lights":
-                lights.setVisibility(View.VISIBLE);
-                break;
-            case "blinds":
-                blinds.setVisibility(View.VISIBLE);
-                break;
-            case "scripts":
-                scripts.setVisibility(View.VISIBLE);
-                break;
-            default:
-                dashboard.setVisibility(View.VISIBLE);
-        }
-
-        if (!type.equals("lights")) {
-            lights.setVisibility(View.INVISIBLE);
-        }
-        if (!type.equals("blinds")) {
-            blinds.setVisibility(View.INVISIBLE);
-        }
-        if (!type.equals("scripts")) {
-            scripts.setVisibility(View.INVISIBLE);
-        }
-        if (!type.equals("dashboard")) {
-            dashboard.setVisibility(View.INVISIBLE);
-        }
+            mViewModel.setSelectedPage("source");
+        });
     }
 }
