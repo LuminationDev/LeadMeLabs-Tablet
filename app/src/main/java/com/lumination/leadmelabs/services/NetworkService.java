@@ -80,6 +80,7 @@ public class NetworkService extends Service {
 
         String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
 
+        Log.d(TAG, "Going to send: " + message);
         message = EncryptionHelper.encrypt(message, BuildConfig.APP_KEY);
         int port = 8080;
 

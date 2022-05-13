@@ -71,7 +71,9 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("Set")) {
                         String[] values = additionalData.split(":");
-                        ZonesFragment.mViewModel.setActiveScene(values[2], values[3], true);
+                        MainActivity.runOnUI(() -> {
+                            ZonesFragment.mViewModel.setActiveScene(values[2], values[3], values[4], true);
+                        });
                     }
                     break;
                 case "Scanner":
@@ -133,7 +135,7 @@ public class UIUpdateManager {
     private static void updateSelectedScene(String response) throws JSONException {
         String[] values = response.split(":");
         MainActivity.runOnUI(() -> {
-            ZonesFragment.mViewModel.setActiveScene(values[1], values[2], true);
+            ZonesFragment.mViewModel.setActiveScene(values[1], values[2], values[3], true);
         });
     }
 

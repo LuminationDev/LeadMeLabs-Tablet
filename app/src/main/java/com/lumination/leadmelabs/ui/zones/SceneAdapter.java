@@ -24,6 +24,7 @@ public class SceneAdapter extends RecyclerView.Adapter {
     public ArrayList<Scene> sceneList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Zone zone;
+    public boolean animate = true;
 
     SceneAdapter(Context context, Zone zone) {
         this.mInflater = LayoutInflater.from(context);
@@ -40,17 +41,17 @@ public class SceneAdapter extends RecyclerView.Adapter {
         public void bind(Scene scene, int position) {
             binding.setScene(scene);
 
-            if(scene.isActive.getValue()) {
-                binding.setIsActive(new MutableLiveData<>(true));
-            }
+            binding.setIsActive(scene.isActive);
 
-            Animation slide = new TranslateAnimation(-300 * (position + 1), 0, 0, 0);
-            slide.setDuration(1500);
-            binding.getRoot().startAnimation(slide);
+            if (animate) {
+                Animation slide = new TranslateAnimation(-300 * (position + 1), 0, 0, 0);
+                slide.setDuration(1500);
+                binding.getRoot().startAnimation(slide);
+            }
 
             binding.getRoot().setOnClickListener(v -> {
                 binding.setIsActive(new MutableLiveData<>(true));
-                ZonesFragment.mViewModel.setActiveScene(zone.automationValue, scene.value, false);
+                ZonesFragment.mViewModel.setActiveScene(zone.automationGroup, zone.automationId, scene.value, false);
                 for(CardSceneBinding sceneBinding : sceneBindings) {
                     if(sceneBinding != binding) {
                         sceneBinding.setIsActive(new MutableLiveData<>(false));
