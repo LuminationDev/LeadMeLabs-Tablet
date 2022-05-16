@@ -13,7 +13,7 @@
         tools:context=".ui.nuc.NucFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp"
+        android:layout_margin="30dp"
         app:flexDirection="column">
 
         <TextView
@@ -23,29 +23,42 @@
             android:textFontWeight="600"
             android:textSize="40dp" />
 
-
-        <Button
-            android:id="@+id/scan_nuc_address"
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:textColor="@color/text"
-            android:drawableRight="@drawable/icon_signal"
-            android:text="Auto-discover NUC Address" />
-
-        <Button
-            android:id="@+id/set_nuc_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:textColor="@color/text"
-            android:drawableRight="@drawable/icon_chevron_right"
-            android:text="Manual set NUC Address" />
-        <TextView
-            android:id="@+id/nuc_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/grey"
-            android:text=""></TextView>
+            android:layout_marginLeft="-10dp"
+            android:stretchColumns="0">
+            <TableRow android:gravity="center_vertical" android:paddingVertical="5dp">
+                <Button
+                    android:textAlignment="viewStart"
+                    android:id="@+id/set_nuc_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/text"
+                    android:textAllCaps="false"
+                    android:text="Set NUC Address" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_menu_right"/>
+            </TableRow>
+            <TableRow android:gravity="center_vertical" android:paddingVertical="5dp">
+                <Button
+                    android:textAlignment="viewStart"
+                    android:id="@+id/how_to_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/text"
+                    android:text="How to use LeadMe Labs" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_menu_right"/>
+            </TableRow>
+        </TableLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
