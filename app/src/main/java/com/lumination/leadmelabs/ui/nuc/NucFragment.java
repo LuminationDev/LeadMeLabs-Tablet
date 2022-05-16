@@ -36,10 +36,6 @@ public class NucFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(requireActivity()).get(NucViewModel.class);
-        mViewModel.getNuc().observe(getViewLifecycleOwner(), nucAddress -> {
-            TextView textView = view.findViewById(R.id.nuc_address);
-            textView.setText(nucAddress);
-        });
 
         buildSetNucDialog();
 
@@ -48,22 +44,26 @@ public class NucFragment extends Fragment {
             nucDialog.show();
         });
 
-        Button scan_button = view.findViewById(R.id.scan_nuc_address);
-        scan_button.setOnClickListener(v -> {
-            NetworkService.broadcast("Android");
+        Button how_to_button = view.findViewById(R.id.how_to_button);
+        how_to_button.setOnClickListener(v -> {
+            // todo - open the guide
         });
     }
 
     private void buildSetNucDialog() {
         View view = View.inflate(getContext(), R.layout.dialog_set_nuc, null);
+        mViewModel.getNuc().observe(getViewLifecycleOwner(), nucAddress -> {
+            TextView textView = view.findViewById(R.id.nuc_address);
+            textView.setText(nucAddress);
+        });
+        Button scan_button = view.findViewById(R.id.scan_nuc_address);
+        scan_button.setOnClickListener(v -> {
+            NetworkService.broadcast("Android");
+        });
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
             mViewModel.setNucAddress(newAddress.getText().toString());
-            nucDialog.dismiss();
-        });
-        Button cancelButton = view.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(v -> {
             nucDialog.dismiss();
         });
         nucDialog = new AlertDialog.Builder(getContext()).setView(view).create();

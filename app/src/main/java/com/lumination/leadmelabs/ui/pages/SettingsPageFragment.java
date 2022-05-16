@@ -41,7 +41,7 @@ public class SettingsPageFragment extends Fragment {
      */
     private void loadFragments() {
         childManager.beginTransaction()
-                .replace(R.id.nuc, NucFragment.class, null)
+                .replace(R.id.settings_menu, NucFragment.class, null)
                 .commitNow();
     }
 }
