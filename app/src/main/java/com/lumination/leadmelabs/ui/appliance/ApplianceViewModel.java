@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ApplianceViewModel extends ViewModel {
+    public static ArrayList<String> activeApplianceList = new ArrayList<>();
     public MutableLiveData<List<String>> activeAppliances;
     private MutableLiveData<List<Appliance>> appliances;
 

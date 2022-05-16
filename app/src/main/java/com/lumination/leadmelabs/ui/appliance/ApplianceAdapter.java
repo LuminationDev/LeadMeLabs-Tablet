@@ -22,7 +22,6 @@ public class ApplianceAdapter extends BaseAdapter {
     private final String TAG = "ApplianceAdapter";
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
-    public ArrayList<String> activeApplianceList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context context;
     private View list_view;
@@ -70,7 +69,7 @@ public class ApplianceAdapter extends BaseAdapter {
         }
         binding.setAppliance(appliance);
 
-        Boolean active = activeApplianceList.contains(id);
+        Boolean active = ApplianceViewModel.activeApplianceList.contains(id);
 
         //Load what appliance is active or not
         setIcon(binding, getItemType(position), active);
@@ -81,7 +80,7 @@ public class ApplianceAdapter extends BaseAdapter {
             String value = toggleStrategy(binding, id);
 
             //Set the new icon and send a message to the NUC
-            setIcon(binding, getItemType(position), activeApplianceList.contains(id));
+            setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(id));
             NetworkService.sendMessage("NUC", "Automation", "SetId:" + appliance.id + ":" + value);
         });
 
@@ -128,14 +127,14 @@ public class ApplianceAdapter extends BaseAdapter {
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
     private String toggleStrategy(CardApplianceBinding binding, String id) {
-        if(activeApplianceList.contains(id)) {
+        if(ApplianceViewModel.activeApplianceList.contains(id)) {
             binding.setIsActive(new MutableLiveData<>(false));
-            activeApplianceList.remove(id);
+            ApplianceViewModel.activeApplianceList.remove(id);
             return "0";
 
         } else {
             binding.setIsActive(new MutableLiveData<>(true));
-            activeApplianceList.add(id);
+            ApplianceViewModel.activeApplianceList.add(id);
             return "255";
         }
     }
