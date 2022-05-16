@@ -11,4 +11,10 @@
     <string name="dashboard_button">dashboard_button</string>
     <string name="navigation_button_settings">navigation_button_settings</string>
     <string name="controls_button">controls_button</string>
+    <string name="appliance_default_title">Appliance Default Title</string>
+    <string name="lights">Lights</string>
+    <string name="blinds">Blinds</string>
+    <string name="projector">Projector</string>
+    <string name="led_rings">LED Rings</string>
+    <string name="source">Source</string>
 </resources>

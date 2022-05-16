@@ -30,35 +30,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@{subMenu.selectedPage.equals(`lighting`) ? @color/blue : @color/black, default=@color/blue}"
-                android:text="Lights"/>
+                android:text="@string/lights"/>
 
             <TextView
                 android:id="@+id/blind_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@{subMenu.selectedPage.equals(`blinds`) ? @color/blue : @color/black, default=@color/black}"
-                android:text="Blinds"/>
+                android:text="@string/blinds"/>
 
             <TextView
                 android:id="@+id/projector_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{subMenu.selectedPage.equals(`projector`) ? @color/blue : @color/black, default=@color/black}"
-                android:text="Projector"/>
+                android:textColor="@{subMenu.selectedPage.equals(`projectors`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="@string/projector"/>
 
             <TextView
                 android:id="@+id/ring_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@{subMenu.selectedPage.equals(`rings`) ? @color/blue : @color/black, default=@color/black}"
-                android:text="LED Rings"/>
+                android:text="@string/led_rings"/>
 
             <TextView
                 android:id="@+id/source_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@{subMenu.selectedPage.equals(`source`) ? @color/blue : @color/black, default=@color/black}"
-                android:text="Source"/>
+                android:textColor="@{subMenu.selectedPage.equals(`sources`) ? @color/blue : @color/black, default=@color/black}"
+                android:text="@string/source"/>
 
 
         </com.google.android.flexbox.FlexboxLayout>
