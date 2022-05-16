@@ -64,7 +64,7 @@ public class ApplianceFragment extends Fragment {
         });
 
         mViewModel.getActiveAppliances().observe(getViewLifecycleOwner(), active -> {
-            applianceAdapter.activeApplianceList = (ArrayList<String>) active;
+            ApplianceViewModel.activeApplianceList = (ArrayList<String>) active;
             applianceAdapter.notifyDataSetChanged();
         });
     }
