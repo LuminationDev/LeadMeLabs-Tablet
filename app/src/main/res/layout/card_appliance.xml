@@ -19,9 +19,9 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/appliance_card"
         style="@style/ApplianceCardContainer"
-        android:background="@{isActive ? @drawable/bg_station_card_blue : @drawable/bg_station_card_grey, default=@drawable/bg_station_card_grey}"
+        android:background="@{isActive ? @drawable/bg_appliance_card_blue : @drawable/bg_appliance_card_grey, default=@drawable/bg_appliance_card_grey}"
         app:flexDirection="column"
-        app:alignItems="center"
+        app:alignItems="flex_start"
         app:justifyContent="space_between">
 
         <ImageView
@@ -30,11 +30,26 @@
             android:contentDescription="@string/scene_icon"
             app:imageResource="@{icon}" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@{appliance.name, default=Scene_Example}" />
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="@{appliance.name, default=Scene_Example}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/white"
+                android:text="@{appliance.type.equals(`blinds`) ? isActive ? `CLOSE` : `OPEN` : isActive ? `ON` : `OFF`}" />
+        </LinearLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

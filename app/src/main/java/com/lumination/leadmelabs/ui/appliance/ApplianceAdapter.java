@@ -55,6 +55,8 @@ public class ApplianceAdapter extends BaseAdapter {
         View result = view;
 
         CardApplianceBinding binding;
+        Appliance appliance = getItem(position);
+        String id = String.valueOf(appliance.id);
 
         if (result == null) {
             if (mInflater == null) {
@@ -66,37 +68,24 @@ public class ApplianceAdapter extends BaseAdapter {
         } else {
             binding = (CardApplianceBinding) result.getTag();
         }
+        binding.setAppliance(appliance);
 
-        binding.setAppliance(getItem(position));
-        setIcon(binding, getItemType(position));
+        Boolean active = activeApplianceList.contains(id);
 
         //Load what appliance is active or not
-        if(activeApplianceList.contains(String.valueOf(getItem(position).id))) {
-            binding.setIsActive(new MutableLiveData<>(true));
-        } else {
-            binding.setIsActive(new MutableLiveData<>(false));
-        }
+        setIcon(binding, getItemType(position), active);
+        binding.setIsActive(new MutableLiveData<>(active));
 
         result.setOnClickListener(v -> {
             //TODO Expand this so we can load different trigger strategies
-            String value = toggleStrategy(binding, position);
-            NetworkService.sendMessage("NUC", "Automation", "SetId:" + getItem(position).id + ":" + value);
+            String value = toggleStrategy(binding, id);
+
+            //Set the new icon and send a message to the NUC
+            setIcon(binding, getItemType(position), activeApplianceList.contains(id));
+            NetworkService.sendMessage("NUC", "Automation", "SetId:" + appliance.id + ":" + value);
         });
 
         return result;
-    }
-
-    private String toggleStrategy(CardApplianceBinding binding, int position) {
-        if(activeApplianceList.contains(String.valueOf(getItem(position).id))) {
-            binding.setIsActive(new MutableLiveData<>(false));
-            activeApplianceList.remove(String.valueOf(getItem(position).id));
-            return "0";
-
-        } else {
-            binding.setIsActive(new MutableLiveData<>(true));
-            activeApplianceList.add(String.valueOf(getItem(position).id));
-            return "255";
-        }
     }
 
     /**
@@ -104,32 +93,50 @@ public class ApplianceAdapter extends BaseAdapter {
      * @param binding A SceneCardBinding relating associated with the current scene.
      * @param type An int representing what appliance the card triggers on the CBUS.
      */
-    private void setIcon(CardApplianceBinding binding, String type) {
+    private void setIcon(CardApplianceBinding binding, String type, Boolean active) {
         MutableLiveData<Integer> icon;
 
         //Add to this in the future
         switch(type) {
             case "lighting":
-                icon = new MutableLiveData<>(R.drawable.icon_settings);
+                icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_on) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_off);
                 break;
             case "blinds":
-                icon = new MutableLiveData<>(R.drawable.icon_home);
+                icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_blind_on) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_blind_off);
                 break;
-            case "projector":
-                icon = new MutableLiveData<>(R.drawable.icon_settings);
+            case "projectors":
+                icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_projector_on) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_projector_off);
                 break;
             case "rings":
-                icon = new MutableLiveData<>(R.drawable.icon_home);
+                icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_ring_on) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_ring_off);
                 break;
-            case "source":
+            case "sources":
                 icon = new MutableLiveData<>(R.drawable.icon_home);
                 break;
 
             default:
-                icon = new MutableLiveData<>(R.drawable.icon_home);
+                icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
         }
 
         binding.setIcon(icon);
+    }
+
+    //Strategies to control the units on the CBUS, there should be toggle and dimmer
+    private String toggleStrategy(CardApplianceBinding binding, String id) {
+        if(activeApplianceList.contains(id)) {
+            binding.setIsActive(new MutableLiveData<>(false));
+            activeApplianceList.remove(id);
+            return "0";
+
+        } else {
+            binding.setIsActive(new MutableLiveData<>(true));
+            activeApplianceList.add(id);
+            return "255";
+        }
     }
 }

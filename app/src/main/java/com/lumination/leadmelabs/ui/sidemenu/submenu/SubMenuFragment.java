@@ -56,9 +56,9 @@ public class SubMenuFragment extends Fragment {
     private void setupButtons() {
         view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Controls", "lighting"));
         view.findViewById(R.id.blind_button).setOnClickListener(v -> loadFragment("Blind Controls", "blinds"));
-        view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projector"));
+        view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projectors"));
         view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "rings"));
-        view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "source"));
+        view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
     }
 
     /**

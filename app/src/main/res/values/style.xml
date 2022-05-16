@@ -93,10 +93,12 @@
     </style>
 
     <style name="ApplianceContainer">
-        <item name="android:layout_width">800dp</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
 
-        <item name="android:layout_marginLeft">25dp</item>
+        <item name="android:layout_marginTop">100dp</item>
+        <item name="android:layout_marginStart">80dp</item>
+        <item name="android:layout_marginEnd">80dp</item>
 
         <item name="android:paddingTop">25dp</item>
         <item name="android:paddingBottom">50dp</item>
@@ -108,8 +110,8 @@
     </style>
 
     <style name="ApplianceCardContainer">
-        <item name="android:layout_height">150dp</item>
-        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">170dp</item>
+        <item name="android:layout_width">180dp</item>
         <item name="android:background">@drawable/bg_station_card_blue</item>
         <item name="android:paddingHorizontal">15dp</item>
         <item name="android:paddingVertical">10dp</item>
