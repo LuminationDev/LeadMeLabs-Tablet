@@ -89,9 +89,10 @@ public class ApplianceAdapter extends BaseAdapter {
     }
 
     /**
-     * Depending on a scenes value add an icon.
+     * Depending on a scenes type add an icon.
      * @param binding A SceneCardBinding relating associated with the current scene.
-     * @param type An int representing what appliance the card triggers on the CBUS.
+     * @param type A string representing what appliance type the card triggers on the CBUS.
+     * @param active A Boolean representing if the appliance is currently on or off
      */
     private void setIcon(CardApplianceBinding binding, String type, Boolean active) {
         MutableLiveData<Integer> icon;
@@ -115,7 +116,8 @@ public class ApplianceAdapter extends BaseAdapter {
                         new MutableLiveData<>(R.drawable.icon_appliance_ring_off);
                 break;
             case "sources":
-                icon = new MutableLiveData<>(R.drawable.icon_home);
+                icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_source_2) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_source_1);
                 break;
 
             default:
