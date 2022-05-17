@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -72,7 +74,9 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             hashSet.addAll(station.steamApplications);
         }
-        return new ArrayList<>(hashSet);
+        ArrayList<SteamApplication> list = new ArrayList<>(hashSet);
+        Collections.sort(list, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+        return list;
     }
 
     public void updateStationById(int id, Station station) {

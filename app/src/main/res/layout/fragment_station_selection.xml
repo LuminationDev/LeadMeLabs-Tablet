@@ -52,20 +52,17 @@
             android:gravity="center"
             android:paddingTop="3dp"
             android:text="Select All Available" />
-        <GridView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stations_list"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="10dp"
-            android:stretchMode="columnWidth"
-            android:columnWidth="200dp"
-            android:verticalSpacing="10dp"
-            android:clipToPadding="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:paddingVertical="20dp"
-            android:paddingHorizontal="30dp"
-            android:numColumns="auto_fit"
-            tools:listitem="@layout/card_station">
-        </GridView>
+            android:paddingHorizontal="10dp"
+            tools:listitem="@layout/card_station" />
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
