@@ -76,7 +76,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
         if (launchMode == true) {
             playButton.setOnClickListener(v -> {
                 Station station = StationsFragment.mViewModel.getStationById(stationId);
-                if (station.theatreText != null) {
+                if (station != null && station.theatreText != null) {
                     View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
                     Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
                     Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);

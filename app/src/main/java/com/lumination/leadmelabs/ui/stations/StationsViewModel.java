@@ -56,6 +56,9 @@ public class StationsViewModel extends ViewModel {
 
     public Station getStationById(int id) {
         ArrayList<Station> stationsData = (ArrayList<Station>) stations.getValue();
+        if (stationsData == null) {
+            return null;
+        }
         for (Station station:stationsData) {
             if (station.id == id) {
                 return station;
