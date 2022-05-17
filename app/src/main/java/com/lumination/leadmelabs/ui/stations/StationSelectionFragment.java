@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -46,10 +47,10 @@ public class StationSelectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        GridView gridView = (GridView) view.findViewById(R.id.stations_list);
-        stationAdapter = new StationAdapter(getContext(), mViewModel, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
+        stationAdapter = new StationAdapter(mViewModel, false);
         stationAdapter.stationList = new ArrayList<>();
-        gridView.setAdapter(stationAdapter);
+        recyclerView.setAdapter(stationAdapter);
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             stationAdapter.stationList = (ArrayList<Station>) stations;

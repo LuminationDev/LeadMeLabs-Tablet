@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Station {
     public String name;
@@ -32,6 +33,7 @@ public class Station {
             String[] appData = app.split("\\|");
             this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
         }
+        Collections.sort(this.steamApplications, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
     }
 
     public boolean hasSteamApplicationInstalled(int steamApplicationId)
