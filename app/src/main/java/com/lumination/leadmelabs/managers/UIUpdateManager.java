@@ -101,6 +101,9 @@ public class UIUpdateManager {
     private static void updateStation(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
             Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(stationId));
+            if (station == null) {
+                return;
+            }
             switch (attribute) {
                 case "status":
                     station.status = value;
