@@ -111,6 +111,9 @@ public class UIUpdateManager {
                 case "volume":
                     station.volume = Integer.parseInt(value);
                     break;
+                case "gameId":
+                    station.gameId = value;
+                    break;
                 case "gameName":
                     station.gameName = value;
                     break;

@@ -33,7 +33,7 @@ public class ModelUnitTest {
 
     @Test
     public void scene_creation() throws InterruptedException {
-        Scene scene = new Scene("Home", 0, 1);
+        Scene scene = new Scene("Home", 0, "1", new int[0]);
 
         assertEquals(scene.name, "Home");
         assertEquals(scene.number, 0);
@@ -42,17 +42,13 @@ public class ModelUnitTest {
         assertFalse(getOrAwaitValue(scene.isActive));
         scene.isActive = new MutableLiveData<>(true);
         assertTrue(getOrAwaitValue(scene.isActive));
-
-        assertNull(getOrAwaitValue(scene.icon));
-        scene.icon = new MutableLiveData<>(R.drawable.icon_home);
-        assertNotNull(getOrAwaitValue(scene.icon));
     }
 
     @Test
     public void station_creation() {
         String apps = "212680|FTL/231324|Test";
 
-        Station station = new Station("One", apps, 0, "Online");
+        Station station = new Station("One", apps, 0, "Online", 0, 0);
 
         assertEquals(station.name, "One");
         assertEquals(station.id, 0);
@@ -62,9 +58,9 @@ public class ModelUnitTest {
         assertEquals(station.steamApplications.size(), 2);
         assertEquals(station.steamApplications.get(0).name, "FTL");
         assertEquals(station.steamApplications.get(0).id, 212680);
-        assertEquals(station.steamApplications.get(0).getImageUrl(), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+        assertEquals(SteamApplication.getImageUrl(station.steamApplications.get(0).id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
 
-        String url = station.steamApplications.get(0).getImageUrl();
+        String url = SteamApplication.getImageUrl(station.steamApplications.get(0).id);
         assertEquals(TestUtils.MimicHttpRequest(url), 200);
 
         String invalid = "xyz";
@@ -77,7 +73,7 @@ public class ModelUnitTest {
 
         assertEquals(steamApp.name, "FTL");
         assertEquals(steamApp.id, 212680);
-        assertEquals(steamApp.getImageUrl(), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
-        assertEquals(TestUtils.MimicHttpRequest(steamApp.getImageUrl()), 200);
+        assertEquals(steamApp.getImageUrl(steamApp.id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+        assertEquals(TestUtils.MimicHttpRequest(steamApp.getImageUrl(steamApp.id)), 200);
     }
 }

@@ -128,6 +128,9 @@ public class StationsViewModel extends ViewModel {
             if (stationJson.getString("gameName") != "null") {
                 station.gameName = stationJson.getString("gameName");
             }
+            if (stationJson.getString("gameId") != "null") {
+                station.gameId = stationJson.getString("gameId");
+            }
             st.add(station);
         }
         this.setStations(st);

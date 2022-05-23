@@ -11,22 +11,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 
@@ -36,7 +41,6 @@ public class StationSingleFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
     private View view;
-    private SteamApplicationAdapter steamApplicationAdapter;
     private FragmentStationSingleBinding binding;
     private androidx.appcompat.app.AlertDialog urlDialog;
 
@@ -72,44 +76,8 @@ public class StationSingleFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
 
-        GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
-        steamApplicationAdapter = new SteamApplicationAdapter(getContext(), mViewModel, true);
-        steamApplicationAdapter.steamApplicationList = new ArrayList<>();
-        steamGridView.setAdapter(steamApplicationAdapter);
-
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
-
-        Button shutdownButton = view.findViewById(R.id.station_shutdown);
-        shutdownButton.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Shutdown");
-
-            DialogInterface.OnClickListener cancelButtonFunction = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
-                }
-            };
-
-            AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                    .setTitle("Shutting Down")
-                    .setMessage("Cancel shutdown?")
-                    .setNegativeButton("Cancel (10)", cancelButtonFunction)
-                    .setPositiveButton("Continue", null).show();
-            CountDownTimer timer = new CountDownTimer(9000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    Button cancelButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                    cancelButton.setText("Cancel (" + (l + 1000) / 1000 + ")");
-                }
-
-                @Override
-                public void onFinish() {
-                    alertDialog.dismiss();
-                }
-            }.start();
-        });
 
         Button stopGame = view.findViewById(R.id.station_stop_game);
         stopGame.setOnClickListener(v -> {
@@ -117,16 +85,18 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
         });
 
-        Button closeButton = view.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(v -> {
+        Button newGame = view.findViewById(R.id.station_new_game);
+        newGame.setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, DashboardPageFragment.class, null)
+                    .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
         });
 
-        Button startVr = view.findViewById(R.id.station_start_vr);
-        startVr.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "StartVR");
+        Button newSession = view.findViewById(R.id.new_session_button);
+        newSession.setOnClickListener(v -> {
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, SteamSelectionFragment.class, null)
+                    .commitNow();
         });
         Button restartVr = view.findViewById(R.id.station_restart_vr);
         restartVr.setOnClickListener(v -> {
@@ -143,18 +113,59 @@ public class StationSingleFragment extends Fragment {
         button.setOnClickListener(v -> {
             urlDialog.show();
         });
+        ImageView gameControlImage = (ImageView) view.findViewById(R.id.game_control_image);
+
+        SwitchCompat powerSwitch = view.findViewById(R.id.power_toggle);
+        CompoundButton.OnCheckedChangeListener powerSwitchListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked) {
+                    Station selectedStation = binding.getSelectedStation();
+                    NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Shutdown");
+
+                    DialogInterface.OnClickListener cancelButtonFunction = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
+                            compoundButton.setChecked(true);
+                        }
+                    };
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                            .setTitle("Shutting Down")
+                            .setMessage("Cancel shutdown?")
+                            .setNegativeButton("Cancel (10)", cancelButtonFunction)
+                            .setPositiveButton("Continue", null).show();
+                    CountDownTimer timer = new CountDownTimer(9000, 1000) {
+                        @Override
+                        public void onTick(long l) {
+                            Button cancelButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                            cancelButton.setText("Cancel (" + (l + 1000) / 1000 + ")");
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            alertDialog.dismiss();
+                        }
+                    }.start();
+                } else {
+                    // turn the station on
+                }
+            }
+        };
+        powerSwitch.setOnCheckedChangeListener(powerSwitchListener);
 
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
-            binding.cardStation.setStation(station);
-            steamApplicationAdapter.steamApplicationList = station.steamApplications;
-            steamApplicationAdapter.stationId = station.id;
-            steamApplicationAdapter.notifyDataSetChanged();
+            powerSwitch.setOnCheckedChangeListener(null);
+            powerSwitch.setChecked(!station.status.equals("Off"));
+            powerSwitch.setOnCheckedChangeListener(powerSwitchListener);
+            if (station.gameId != null && station.gameId.length() > 0) {
+                Glide.with(view).load(SteamApplication.getImageUrl(station.gameId)).into(gameControlImage);
+            } else {
+                gameControlImage.setImageDrawable(null);
+            }
         });
-
-        Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.card_transition);
-        view.findViewById(R.id.card_station).setTransitionName("card_station");
-        setSharedElementEnterTransition(transition);
     }
 
     private void buildEnterUrlDialog() {
