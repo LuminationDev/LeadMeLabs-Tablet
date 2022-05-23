@@ -30,13 +30,11 @@ public class SteamApplicationAdapter extends BaseAdapter {
     public int stationId = 0;
     private LayoutInflater mInflater;
     private Context context;
-    private boolean launchMode;
     private StationsViewModel viewModel;
 
-    SteamApplicationAdapter(Context context, StationsViewModel viewModel, boolean launchMode) {
+    SteamApplicationAdapter(Context context, StationsViewModel viewModel) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
-        this.launchMode = launchMode;
         this.viewModel = viewModel;
     }
 
@@ -67,46 +65,22 @@ public class SteamApplicationAdapter extends BaseAdapter {
         }
 
         SteamApplication steamApplication = getItem(position);
-        Glide.with(view).load(steamApplication.getImageUrl()).into((ImageView) view.findViewById(R.id.steam_image));
+        Glide.with(view).load(SteamApplication.getImageUrl(steamApplication.id)).into((ImageView) view.findViewById(R.id.steam_image));
 
         binding.setSteamApplication(steamApplication);
 
         Button playButton = view.findViewById(R.id.steam_play_button);
 
-        if (launchMode == true) {
-            playButton.setOnClickListener(v -> {
-                Station station = StationsFragment.mViewModel.getStationById(stationId);
-                if (station != null && station.theatreText != null) {
-                    View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
-                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-                    headingText.setText("Exit theatre mode?");
-                    contentText.setText(station.name + " is currently in theatre mode. Are you sure you want to exit theatre mode?");
-                    AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
-                    confirmButton.setOnClickListener(w -> {
-                        NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-                        confirmDialog.dismiss();
-                    });
-                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-                    confirmDialog.show();
-                } else {
-                    NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-                }
-            });
-        } else {
-            playButton.setOnClickListener(v -> {
-                viewModel.selectSelectedSteamApplication(steamApplication.id);
-                MainActivity.fragmentManager.beginTransaction()
-                        .replace(R.id.main, StationSelectionFragment.class, null)
-                        .commitNow();
-                StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
-                View newView = fragment.getView();
-                TextView textView = newView.findViewById(R.id.station_selection_game_name);
-                textView.setText(steamApplication.name);
-            });
-        }
+        playButton.setOnClickListener(v -> {
+            viewModel.selectSelectedSteamApplication(steamApplication.id);
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.main, StationSelectionFragment.class, null)
+                    .commitNow();
+            StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+            View newView = fragment.getView();
+            TextView textView = newView.findViewById(R.id.station_selection_game_name);
+            textView.setText(steamApplication.name);
+        });
 
         return view;
     }

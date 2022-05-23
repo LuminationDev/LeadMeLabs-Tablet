@@ -9,8 +9,12 @@ public class SteamApplication implements SteamApplicationInterface {
         this.id = id;
     }
 
-    public String getImageUrl() {
-        return "https://cdn.cloudflare.steamstatic.com/steam/apps/" + this.id + "/header.jpg";
+    public static String getImageUrl(int id) {
+        return "https://cdn.cloudflare.steamstatic.com/steam/apps/" + id + "/header.jpg";
+    }
+
+    public static String getImageUrl(String id) {
+        return getImageUrl(Integer.parseInt(id));
     }
 
     @Override

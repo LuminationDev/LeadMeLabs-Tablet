@@ -8,6 +8,7 @@ public class Station {
     public int id;
     public String status;
     public String gameName;
+    public String gameId;
     public String theatreText;
     public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
