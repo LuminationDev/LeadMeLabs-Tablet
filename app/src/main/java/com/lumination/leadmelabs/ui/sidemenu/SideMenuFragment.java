@@ -9,18 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-import com.lumination.leadmelabs.ui.pages.QuickStartPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
 import java.util.Objects;
@@ -50,7 +46,7 @@ public class SideMenuFragment extends Fragment {
 
         binding.setLifecycleOwner(this);
         binding.setSideMenu(mViewModel);
-        mViewModel.setSelectedIcon("quickstart");
+        mViewModel.setSelectedIcon("dashboard");
 
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements
@@ -64,15 +60,6 @@ public class SideMenuFragment extends Fragment {
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
-        view.findViewById(R.id.quickstart_button).setOnClickListener(v -> {
-            removeSubMenu();
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, QuickStartPageFragment.class, null)
-                    .commitNow();
-
-            mViewModel.setSelectedIcon("quickstart");
-        });
-
         view.findViewById(R.id.session_button).setOnClickListener(v -> {
             removeSubMenu();
             MainActivity.fragmentManager.beginTransaction()
@@ -83,7 +70,7 @@ public class SideMenuFragment extends Fragment {
         });
 
         view.findViewById(R.id.controls_button).setOnClickListener(v -> {
-            changeViewParams(150, 45);
+            changeViewParams(150, 25);
 
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
@@ -123,7 +110,7 @@ public class SideMenuFragment extends Fragment {
                     .remove(fragment)
                     .commitNow();
 
-            changeViewParams(200, 70);
+            changeViewParams(200, 50);
         }
     }
 
