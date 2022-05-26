@@ -73,7 +73,13 @@
                 android:columnWidth="300dp"
                 android:clipToPadding="false"
                 android:paddingVertical="20dp"
+                android:layout_marginRight="20dp"
                 android:paddingHorizontal="30dp"
+                android:scrollbarThumbVertical="@color/blue"
+                android:scrollbarTrackVertical="@color/grey_medium"
+                android:fadeScrollbars="false"
+                android:smoothScrollbar="true"
+                android:scrollbarStyle="outsideInset"
                 tools:listitem="@layout/steam_tile">
             </GridView>
         </com.google.android.flexbox.FlexboxLayout>

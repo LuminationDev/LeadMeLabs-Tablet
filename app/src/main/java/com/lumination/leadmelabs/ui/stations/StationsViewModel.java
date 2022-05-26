@@ -79,6 +79,17 @@ public class StationsViewModel extends ViewModel {
         return list;
     }
 
+    public List<SteamApplication> getStationSteamApplications (int stationId) {
+        ArrayList<SteamApplication> list = new ArrayList<>();
+        for (Station station: stations.getValue()) {
+            if (station.id == stationId) {
+                list = new ArrayList<>(station.steamApplications);
+                Collections.sort(list, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+            }
+        }
+        return list;
+    }
+
     public void updateStationById(int id, Station station) {
         List<Station> stationsData = stations.getValue();
         int index = -1;

@@ -9,7 +9,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_selection"
         android:background="@color/grey"
-        tools:context=".ui.stations.SteamSelectionFragment"
+        tools:context=".ui.stations.StationSelectionFragment"
         app:flexDirection="column"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
