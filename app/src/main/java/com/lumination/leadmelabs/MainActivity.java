@@ -30,6 +30,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel;
+import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void preloadViewModels() {
         NucFragment.mViewModel = ViewModelProviders.of(this).get(NucViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        StationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         SteamSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
