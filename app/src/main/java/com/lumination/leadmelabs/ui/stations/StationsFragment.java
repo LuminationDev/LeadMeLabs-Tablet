@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
@@ -41,7 +40,6 @@ public class StationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, true);
         stationAdapter.stationList = new ArrayList<>();

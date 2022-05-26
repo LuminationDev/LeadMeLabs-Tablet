@@ -23,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.slider.Slider;
@@ -33,9 +32,6 @@ import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-
-import java.util.ArrayList;
 
 public class StationSingleFragment extends Fragment {
 
@@ -74,8 +70,6 @@ public class StationSingleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
 
@@ -98,10 +92,12 @@ public class StationSingleFragment extends Fragment {
                     .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
         });
+
         Button restartVr = view.findViewById(R.id.station_restart_vr);
         restartVr.setOnClickListener(v -> {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
         });
+
         Button endVr = view.findViewById(R.id.station_end_vr);
         endVr.setOnClickListener(v -> {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");

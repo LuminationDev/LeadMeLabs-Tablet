@@ -12,12 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentZonesBinding;
 import com.lumination.leadmelabs.models.Zone;
@@ -53,7 +49,6 @@ public class ZonesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(requireActivity()).get(ZonesViewModel.class);
 
         mViewModel.getZones().observe(getViewLifecycleOwner(), zones -> {
             zoneAdapter.zoneList = (ArrayList<Zone>) zones;

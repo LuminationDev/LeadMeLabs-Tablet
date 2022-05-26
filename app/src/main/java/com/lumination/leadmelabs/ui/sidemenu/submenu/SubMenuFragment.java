@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -18,7 +17,7 @@ import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
 
 public class SubMenuFragment extends Fragment {
 
-    private SubMenuViewModel mViewModel;
+    public static SubMenuViewModel mViewModel;
     private View view;
     private FragmentSubMenuBinding binding;
 
@@ -37,7 +36,6 @@ public class SubMenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = new ViewModelProvider(this).get(SubMenuViewModel.class);
         binding.setLifecycleOwner(this);
         binding.setSubMenu(mViewModel);
         mViewModel.setSelectedPage("lighting");

@@ -24,7 +24,7 @@ public class SideMenuViewModel extends ViewModel {
 
     public LiveData<String> getSelectedIcon() {
         if (selectedIcon == null) {
-            selectedIcon = new MutableLiveData<>("dashboard");
+            selectedIcon = new MutableLiveData<>("quickstart");
         }
         return selectedIcon;
     }

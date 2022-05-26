@@ -80,7 +80,7 @@ public class ApplianceViewModel extends ViewModel {
         NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
     }
 
-    private void loadAppliances() {
+    public void loadAppliances() {
         NetworkService.sendMessage("NUC", "Appliances", "List");
     }
 }

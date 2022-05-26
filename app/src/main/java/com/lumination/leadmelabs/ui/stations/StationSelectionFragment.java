@@ -46,7 +46,6 @@ public class StationSelectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, false);
         stationAdapter.stationList = new ArrayList<>();

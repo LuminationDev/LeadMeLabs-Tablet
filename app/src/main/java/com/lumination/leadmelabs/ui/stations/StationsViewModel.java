@@ -162,7 +162,7 @@ public class StationsViewModel extends ViewModel {
         this.stations.setValue(stations);
     }
 
-    private void loadStations() {
+    public void loadStations() {
         NetworkService.sendMessage("NUC", "Stations", "List");
     }
 }

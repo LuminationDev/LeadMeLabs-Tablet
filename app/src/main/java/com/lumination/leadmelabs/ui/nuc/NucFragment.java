@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -34,8 +33,6 @@ public class NucFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mViewModel = new ViewModelProvider(requireActivity()).get(NucViewModel.class);
 
         buildSetNucDialog();
 

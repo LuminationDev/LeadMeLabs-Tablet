@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
@@ -37,8 +36,6 @@ public class SteamSelectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
 
         GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
         steamApplicationAdapter = new SteamApplicationAdapter(getContext(), mViewModel);
