@@ -84,6 +84,7 @@ public class StationSingleFragment extends Fragment {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
+            SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
         Button newSession = view.findViewById(R.id.new_session_button);
@@ -91,6 +92,7 @@ public class StationSingleFragment extends Fragment {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
+            SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);

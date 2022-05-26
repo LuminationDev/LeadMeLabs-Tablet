@@ -17,6 +17,7 @@ import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
+import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
 import java.util.Objects;
@@ -65,6 +66,7 @@ public class SideMenuFragment extends Fragment {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
                     .commitNow();
+            SteamSelectionFragment.setStationId(0);
 
             mViewModel.setSelectedIcon("session");
         });

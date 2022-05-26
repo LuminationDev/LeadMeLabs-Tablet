@@ -32,9 +32,24 @@ public class SteamSelectionFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
     private View view;
-    private SteamApplicationAdapter steamApplicationAdapter;
-    private ArrayList<SteamApplication> steamApplicationList;
+    private static SteamApplicationAdapter steamApplicationAdapter;
+    private static ArrayList<SteamApplication> steamApplicationList;
+    private static int stationId = 0;
     private FragmentSteamSelectionBinding binding;
+
+    public static void setStationId (int stationId) {
+        SteamSelectionFragment.stationId = stationId;
+        if (stationId > 0) {
+            steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getStationSteamApplications(stationId);
+        } else {
+            steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getAllSteamApplications();
+        }
+        if (steamApplicationAdapter != null) {
+            steamApplicationAdapter.stationId = stationId;
+            steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
+            steamApplicationAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Nullable
     @Override
@@ -51,8 +66,13 @@ public class SteamSelectionFragment extends Fragment {
 
         GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
         steamApplicationAdapter = new SteamApplicationAdapter(getContext(), mViewModel);
-        steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getAllSteamApplications();
+        if (stationId > 0) {
+            steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getStationSteamApplications(stationId);
+        } else {
+            steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getAllSteamApplications();
+        }
         steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
+        steamApplicationAdapter.notifyDataSetChanged();
         steamGridView.setAdapter(steamApplicationAdapter);
 
 

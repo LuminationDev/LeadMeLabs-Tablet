@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.models.SteamApplication;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
     private final String TAG = "SteamApplicationAdapter";
 
     public ArrayList<SteamApplication> steamApplicationList = new ArrayList<>();
-    public int stationId = 0;
+    public static int stationId = 0;
     private LayoutInflater mInflater;
     private Context context;
     private StationsViewModel viewModel;
@@ -78,16 +79,46 @@ public class SteamApplicationAdapter extends BaseAdapter {
             inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         });
 
-        playButton.setOnClickListener(v -> {
-            viewModel.selectSelectedSteamApplication(steamApplication.id);
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, StationSelectionFragment.class, null)
-                    .commitNow();
-            StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
-            View newView = fragment.getView();
-            TextView textView = newView.findViewById(R.id.station_selection_game_name);
-            textView.setText(steamApplication.name);
-        });
+        if (stationId > 0) {
+            playButton.setOnClickListener(v -> {
+                Station station = StationsFragment.mViewModel.getStationById(stationId);
+                if (station != null && station.theatreText != null) {
+                    View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
+                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
+                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
+                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
+                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
+                    headingText.setText("Exit theatre mode?");
+                    contentText.setText(station.name + " is currently in theatre mode. Are you sure you want to exit theatre mode?");
+                    AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
+                    confirmButton.setOnClickListener(w -> {
+                        NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                        MainActivity.fragmentManager.beginTransaction()
+                                .replace(R.id.main, DashboardPageFragment.class, null)
+                                .commitNow();
+                        confirmDialog.dismiss();
+                    });
+                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
+                    confirmDialog.show();
+                } else {
+                    NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                    MainActivity.fragmentManager.beginTransaction()
+                            .replace(R.id.main, DashboardPageFragment.class, null)
+                            .commitNow();
+                }
+            });
+        } else {
+            playButton.setOnClickListener(v -> {
+                viewModel.selectSelectedSteamApplication(steamApplication.id);
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.main, StationSelectionFragment.class, null)
+                        .commitNow();
+                StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                View newView = fragment.getView();
+                TextView textView = newView.findViewById(R.id.station_selection_game_name);
+                textView.setText(steamApplication.name);
+            });
+        }
 
         return view;
     }
