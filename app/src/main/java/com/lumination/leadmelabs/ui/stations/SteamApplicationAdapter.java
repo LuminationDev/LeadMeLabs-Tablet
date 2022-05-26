@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -70,6 +71,12 @@ public class SteamApplicationAdapter extends BaseAdapter {
         binding.setSteamApplication(steamApplication);
 
         Button playButton = view.findViewById(R.id.steam_play_button);
+
+        View finalView = view;
+        view.setOnClickListener(v -> {
+            InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        });
 
         playButton.setOnClickListener(v -> {
             viewModel.selectSelectedSteamApplication(steamApplication.id);
