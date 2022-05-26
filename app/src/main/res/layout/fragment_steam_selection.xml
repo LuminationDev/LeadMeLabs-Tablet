@@ -11,38 +11,71 @@
         android:background="@color/grey"
         tools:context=".ui.stations.SteamSelectionFragment"
         app:flexDirection="column"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:flexDirection="column"
+            app:flexDirection="row"
             app:layout_flexShrink="0"
+            app:justifyContent="space_between"
+            app:alignItems="flex_end"
             android:padding="30dp">
-            <TextView
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="VR Library"
-                android:textFontWeight="600"
-                android:textSize="40dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pick a game to play in VR"
-                android:textSize="20sp"/>
+                app:flexDirection="column">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VR Library"
+                    android:textFontWeight="600"
+                    android:textSize="40dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pick a game to play in VR"
+                    android:textSize="20sp"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <EditText
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:hint="Search"
+                android:inputType="text"
+                android:background="@drawable/bg_white_curved"
+                android:paddingLeft="15dp"
+                android:id="@+id/search_input"
+                android:imeOptions="actionSearch"
+                android:drawableLeft="@drawable/icon_search"
+                android:textColorHint="@color/grey"
+                android:gravity="center_vertical"
+                android:paddingTop="2dp"
+                android:drawablePadding="10dp" />
         </com.google.android.flexbox.FlexboxLayout>
-        <GridView
-            android:id="@+id/steam_list"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/steam_list_container"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:horizontalSpacing="10dp"
-            android:verticalSpacing="10dp"
-            android:numColumns="auto_fit"
-            android:columnWidth="220dp"
-            android:clipToPadding="false"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="30dp"
-            tools:listitem="@layout/steam_tile">
-        </GridView>
+            android:layout_height="wrap_content">
+            <GridView
+                android:id="@+id/steam_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="30dp"
+                android:verticalSpacing="30dp"
+                android:numColumns="auto_fit"
+                android:columnWidth="300dp"
+                android:clipToPadding="false"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="30dp"
+                tools:listitem="@layout/steam_tile">
+            </GridView>
+        </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
