@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Appliance;
@@ -39,7 +38,6 @@ public class ApplianceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(requireActivity()).get(ApplianceViewModel.class);
 
         TextView titleView = view.findViewById(R.id.appliance_title);
         titleView.setText(title);
