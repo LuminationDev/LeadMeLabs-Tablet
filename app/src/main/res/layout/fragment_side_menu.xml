@@ -25,24 +25,6 @@
             app:alignItems="center"
             app:justifyContent="space_between">
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/quickstart_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical"-->
-<!--                android:background="@{sideMenu.selectedIcon.equals(`quickstart`) ? @drawable/bg_menu_selected : @drawable/bg_none}">-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/icon_settings"-->
-<!--                    android:contentDescription="@string/navigation_button_settings" />-->
-
-<!--                <TextView-->
-<!--                    style="@style/SideMenuLabel"-->
-<!--                    android:text="VR Session"/>-->
-<!--            </LinearLayout>-->
-
             <LinearLayout
                 style="@style/SideMenuIcon"
                 android:id="@+id/session_button"
