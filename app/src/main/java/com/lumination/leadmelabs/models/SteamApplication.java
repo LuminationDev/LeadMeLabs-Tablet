@@ -1,6 +1,8 @@
 package com.lumination.leadmelabs.models;
 
-public class SteamApplication implements SteamApplicationInterface {
+import java.util.Objects;
+
+public class SteamApplication {
     public String name;
     public int id;
 
@@ -18,7 +20,22 @@ public class SteamApplication implements SteamApplicationInterface {
     }
 
     @Override
-    public boolean equals(SteamApplication steamApplication) {
-        return steamApplication.name.equals(this.name);
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SteamApplication other = (SteamApplication) obj;
+        return Objects.equals(id, other.id);
     }
 }
