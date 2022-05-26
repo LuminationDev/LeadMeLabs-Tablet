@@ -14,8 +14,8 @@
         android:id="@+id/side_menu_fragment"
         style="@style/SideMenuContainer"
         android:layout_width="200dp"
-        android:paddingVertical="40dp"
-        android:paddingHorizontal="70dp"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="30dp"
         app:flexDirection="column">
 
         <com.google.android.flexbox.FlexboxLayout
@@ -25,84 +25,73 @@
             app:alignItems="center"
             app:justifyContent="space_between">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/quickstart_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:background="@{sideMenu.selectedIcon.equals(`quickstart`) ? @drawable/bg_menu_selected : @drawable/bg_none}">-->
 
-                <ImageView
-                    android:id="@+id/quickstart_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_settings"
-                    android:contentDescription="@string/navigation_button_settings" />
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/icon_settings"-->
+<!--                    android:contentDescription="@string/navigation_button_settings" />-->
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`quickstart`) ? View.VISIBLE : View.INVISIBLE}"/>
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    style="@style/SideMenuLabel"-->
+<!--                    android:text="VR Session"/>-->
+<!--            </LinearLayout>-->
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/SideMenuIcon"
+                android:id="@+id/session_button"
+                android:background="@{sideMenu.selectedIcon.equals(`session`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
-                    android:id="@+id/session_button"
+                    android:paddingHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_vr_white"
                     android:contentDescription="@string/session_button" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`session`) ? View.VISIBLE : View.INVISIBLE}"/>
+                <TextView
+                    style="@style/SideMenuLabel"
+                    android:text="VR Session"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/SideMenuIcon"
+                android:id="@+id/controls_button"
+                android:background="@{sideMenu.selectedIcon.equals(`controls`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
-                    android:id="@+id/controls_button"
+                    android:paddingHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_controls"
                     android:contentDescription="@string/controls_button" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? View.VISIBLE : View.INVISIBLE}"/>
+                <TextView
+                    style="@style/SideMenuLabel"
+                    android:text="Controls"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/SideMenuIcon"
+                android:id="@+id/navigation_button_settings"
+                android:background="@{sideMenu.selectedIcon.equals(`navigation`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
-                    android:id="@+id/navigation_button_settings"
+                    android:paddingHorizontal="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_settings"
                     android:contentDescription="@string/navigation_button_settings" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/line_white"
-                    android:contentDescription="@string/white_underline"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`navigation`) ? View.VISIBLE : View.INVISIBLE}"/>
+                <TextView
+                    style="@style/SideMenuLabel"
+                    android:text="Settings"/>
             </LinearLayout>
 
         </com.google.android.flexbox.FlexboxLayout>
@@ -114,19 +103,22 @@
             app:alignItems="center"
             app:flexDirection="column">
 
-            <ImageView
+            <LinearLayout
+                style="@style/SideMenuIcon"
                 android:id="@+id/dashboard_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_home"
-                android:contentDescription="@string/dashboard_button" />
+                android:background="@{sideMenu.selectedIcon.equals(`dashboard`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/line_white"
-                android:contentDescription="@string/white_underline"
-                android:visibility="@{sideMenu.selectedIcon.equals(`dashboard`) ? View.VISIBLE : View.INVISIBLE}"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/dashboard_button"
+                    android:paddingHorizontal="20dp"
+                    android:src="@drawable/icon_home" />
+
+                <TextView
+                    style="@style/SideMenuLabel"
+                    android:text="Dashboard"/>
+            </LinearLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

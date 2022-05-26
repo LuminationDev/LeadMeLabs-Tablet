@@ -52,10 +52,19 @@ public class SubMenuFragment extends Fragment {
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
+        MainActivity.feedback(view.findViewById(R.id.light_button));
         view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Controls", "lighting"));
+
+        MainActivity.feedback(view.findViewById(R.id.blind_button));
         view.findViewById(R.id.blind_button).setOnClickListener(v -> loadFragment("Blind Controls", "blinds"));
+
+        MainActivity.feedback(view.findViewById(R.id.projector_button));
         view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projectors"));
+
+        MainActivity.feedback(view.findViewById(R.id.ring_button));
         view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "rings"));
+
+        MainActivity.feedback(view.findViewById(R.id.source_button));
         view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
     }
 

@@ -1,9 +1,11 @@
 package com.lumination.leadmelabs;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,9 +13,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-
-import io.reactivex.rxjava3.core.*;
 
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -22,7 +23,7 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.nuc.NucFragment;
 import com.lumination.leadmelabs.ui.nuc.NucViewModel;
-import com.lumination.leadmelabs.ui.pages.QuickStartPageFragment;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
 import com.lumination.leadmelabs.ui.sessionControls.SessionControlsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -38,6 +39,9 @@ import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
+
+    public static MainActivity instance;
+    public static MainActivity getInstance() { return instance; }
 
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
+        instance = this;
 
         hideStatusBar();
         startNetworkService();
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
             //Loading the home screen
             fragmentManager.beginTransaction()
-                    .replace(R.id.main, QuickStartPageFragment.class, null)
+                    .replace(R.id.main, DashboardPageFragment.class, null)
                     .replace(R.id.side_menu, SideMenuFragment.class, null)
                     .commitNow();
         }
@@ -159,5 +163,31 @@ public class MainActivity extends AppCompatActivity {
         if(!address.equals("")) {
             NetworkService.setNUCAddress(address);
         }
+    }
+
+    /**
+     * Change the background of the selected view while a user is touching it.
+     * @param view A view which has an OnTouchListener added.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public static void feedback(View view) {
+        view.setOnTouchListener((v, event) -> {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setBackgroundResource(0);
+                    break;
+
+                case MotionEvent.ACTION_DOWN:
+                    v.setBackground(ResourcesCompat.getDrawable(
+                            MainActivity.getInstance().getResources(),
+                            R.drawable.icon_touch_event,
+                            null)
+                    );
+                    break;
+            }
+
+           return false;
+       });
     }
 }
