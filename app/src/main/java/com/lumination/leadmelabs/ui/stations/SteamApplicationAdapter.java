@@ -95,7 +95,8 @@ public class SteamApplicationAdapter extends BaseAdapter {
                         NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
                         MainActivity.fragmentManager.beginTransaction()
                                 .replace(R.id.main, DashboardPageFragment.class, null)
-                                .commitNow();
+                                .addToBackStack(null)
+                                .commit();
                         confirmDialog.dismiss();
                     });
                     cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
@@ -104,7 +105,8 @@ public class SteamApplicationAdapter extends BaseAdapter {
                     NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
                     MainActivity.fragmentManager.beginTransaction()
                             .replace(R.id.main, DashboardPageFragment.class, null)
-                            .commitNow();
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
         } else {
@@ -112,7 +114,10 @@ public class SteamApplicationAdapter extends BaseAdapter {
                 viewModel.selectSelectedSteamApplication(steamApplication.id);
                 MainActivity.fragmentManager.beginTransaction()
                         .replace(R.id.main, StationSelectionFragment.class, null)
-                        .commitNow();
+                        .addToBackStack(null)
+                        .commit();
+
+                MainActivity.fragmentManager.executePendingTransactions();
                 StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
                 View newView = fragment.getView();
                 TextView textView = newView.findViewById(R.id.station_selection_game_name);

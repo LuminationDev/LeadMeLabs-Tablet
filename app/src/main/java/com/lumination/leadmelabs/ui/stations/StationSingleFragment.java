@@ -83,7 +83,8 @@ public class StationSingleFragment extends Fragment {
         newGame.setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .commitNow();
+                    .addToBackStack(null)
+                    .commit();
             SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
@@ -91,7 +92,8 @@ public class StationSingleFragment extends Fragment {
         newSession.setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .commitNow();
+                    .addToBackStack(null)
+                    .commit();
             SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
