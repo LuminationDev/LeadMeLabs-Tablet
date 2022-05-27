@@ -8,6 +8,11 @@
         <variable
             name="sideMenu"
             type="com.lumination.leadmelabs.ui.sidemenu.SideMenuViewModel" />
+
+        <import type="com.lumination.leadmelabs.MainActivity"/>
+        <variable
+            name="main"
+            type="com.lumination.leadmelabs.MainActivity" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -24,6 +29,23 @@
             app:flexDirection="column"
             app:alignItems="center"
             app:justifyContent="space_between">
+
+            <LinearLayout
+                style="@style/SideMenuIcon"
+                android:id="@+id/dashboard_button"
+                android:background="@{sideMenu.selectedIcon.equals(`dashboard`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/dashboard_button"
+                    android:paddingHorizontal="20dp"
+                    android:src="@drawable/icon_home" />
+
+                <TextView
+                    style="@style/SideMenuLabel"
+                    android:text="Dashboard"/>
+            </LinearLayout>
 
             <LinearLayout
                 style="@style/SideMenuIcon"
@@ -80,26 +102,22 @@
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="500dp"
             app:justifyContent="flex_end"
             app:alignItems="center"
             app:flexDirection="column">
 
             <LinearLayout
                 style="@style/SideMenuIcon"
-                android:id="@+id/dashboard_button"
-                android:background="@{sideMenu.selectedIcon.equals(`dashboard`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
+                android:id="@+id/back_button"
+                android:visibility="@{main.fragmentCount > 1 ? View.VISIBLE : View.INVISIBLE}">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/dashboard_button"
                     android:paddingHorizontal="20dp"
-                    android:src="@drawable/icon_home" />
-
-                <TextView
-                    style="@style/SideMenuLabel"
-                    android:text="Dashboard"/>
+                    android:src="@drawable/icon_back" />
             </LinearLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>

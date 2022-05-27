@@ -58,7 +58,8 @@ public class StationAdapter extends RecyclerView.Adapter {
                     MainActivity.fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
                             .replace(R.id.main, StationSingleFragment.class, null)
-                            .commitNow();
+                            .addToBackStack(null)
+                            .commit();
                 });
             } else {
                 if (station.hasSteamApplicationInstalled(viewModel.getSelectedSteamApplicationId())) {
