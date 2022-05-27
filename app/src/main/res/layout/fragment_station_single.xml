@@ -157,6 +157,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_curved"
                         android:padding="20dp"
+                        app:alignItems="center"
                         app:flexDirection="column">
                         <Button
                             android:id="@+id/ping_station"

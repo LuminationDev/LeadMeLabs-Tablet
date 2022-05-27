@@ -76,7 +76,7 @@ public class StationSingleFragment extends Fragment {
         Button pingStation = view.findViewById(R.id.ping_station);
         pingStation.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Ping");
+            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "IdentifyStation");
         });
 
         Button stopGame = view.findViewById(R.id.station_stop_game);
