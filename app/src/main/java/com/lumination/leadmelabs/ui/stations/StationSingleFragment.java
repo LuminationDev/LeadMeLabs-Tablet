@@ -52,7 +52,7 @@ public class StationSingleFragment extends Fragment {
     private final Slider.OnSliderTouchListener touchListener =
             new Slider.OnSliderTouchListener() {
                 @Override
-                public void onStartTrackingTouch(Slider slider) {
+                public void onStartTrackingTouch(@NonNull Slider slider) {
 
                 }
 
@@ -61,7 +61,7 @@ public class StationSingleFragment extends Fragment {
                     Station selectedStation = binding.getSelectedStation();
                     selectedStation.volume = (int) slider.getValue();
                     mViewModel.updateStationById(selectedStation.id, selectedStation);
-                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + String.valueOf(selectedStation.volume));
+                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.volume);
                     System.out.println(slider.getValue());
                 }
             };
@@ -72,6 +72,12 @@ public class StationSingleFragment extends Fragment {
 
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
+
+        Button pingStation = view.findViewById(R.id.ping_station);
+        pingStation.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Ping");
+        });
 
         Button stopGame = view.findViewById(R.id.station_stop_game);
         stopGame.setOnClickListener(v -> {
@@ -98,21 +104,21 @@ public class StationSingleFragment extends Fragment {
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
-        restartVr.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
-        });
+        restartVr.setOnClickListener(v ->
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR")
+        );
 
         Button endVr = view.findViewById(R.id.station_end_vr);
-        endVr.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");
-        });
+        endVr.setOnClickListener(v ->
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR")
+        );
 
         buildEnterUrlDialog();
 
         Button button = view.findViewById(R.id.enter_url);
-        button.setOnClickListener(v -> {
-            urlDialog.show();
-        });
+        button.setOnClickListener(v ->
+                urlDialog.show()
+        );
         ImageView gameControlImage = (ImageView) view.findViewById(R.id.game_control_image);
 
         SwitchCompat powerSwitch = view.findViewById(R.id.power_toggle);
@@ -180,7 +186,7 @@ public class StationSingleFragment extends Fragment {
                 Station selectedStation = binding.getSelectedStation();
                 selectedStation.gameName = input;
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
-                this.mViewModel.updateStationById(selectedStation.id, selectedStation);
+                mViewModel.updateStationById(selectedStation.id, selectedStation);
                 urlDialog.dismiss();
             } else {
                 errorText.setText("Invalid URL. Please check and try again.");

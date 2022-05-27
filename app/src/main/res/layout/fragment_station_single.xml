@@ -133,6 +133,7 @@
                         android:layout_width="400dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_curved"
+                        android:layout_marginBottom="20dp"
                         android:padding="20dp"
                         app:flexDirection="column">
                         <TextView
@@ -150,6 +151,19 @@
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/blue"
                             android:text="@string/launch_url" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="400dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_white_curved"
+                        android:padding="20dp"
+                        app:flexDirection="column">
+                        <Button
+                            android:id="@+id/ping_station"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/blue"
+                            android:text="Identify Station" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
                 <com.google.android.flexbox.FlexboxLayout
@@ -242,6 +256,7 @@
                                 android:text="New Game"/>
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
+
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
