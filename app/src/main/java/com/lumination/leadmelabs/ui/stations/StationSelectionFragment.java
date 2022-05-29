@@ -73,7 +73,8 @@ public class StationSelectionFragment extends Fragment {
             StationsFragment.mViewModel.selectSelectedSteamApplication(0);
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .commitNow();
+                    .addToBackStack(null)
+                    .commit();
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
@@ -112,7 +113,8 @@ public class StationSelectionFragment extends Fragment {
         NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.main, DashboardPageFragment.class, null)
-                .commitNow();
+                .addToBackStack(null)
+                .commit();
         MainActivity.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId));
     }
 

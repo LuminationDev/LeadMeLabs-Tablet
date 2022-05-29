@@ -16,7 +16,7 @@ import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
 
 public class ControlPageFragment extends Fragment {
     private View view;
-    private FragmentManager childManager;
+    public static FragmentManager childManager;
 
     @Nullable
     @Override
@@ -48,6 +48,7 @@ public class ControlPageFragment extends Fragment {
         childManager.beginTransaction()
                 .replace(R.id.subpage, AppliancePageFragment.class, args)
                 .replace(R.id.logo, LogoFragment.class, null)
-                .commitNow();
+                .addToBackStack("submenu:lighting")
+                .commit();
     }
 }

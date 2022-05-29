@@ -54,7 +54,8 @@ public class StationsFragment extends Fragment {
         newSession.setOnClickListener(v -> {
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .commitNow();
+                    .addToBackStack(null)
+                    .commit();
             SteamSelectionFragment.setStationId(0);
         });
     }

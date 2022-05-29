@@ -3,6 +3,7 @@ package com.lumination.leadmelabs;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.annotation.SuppressLint;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;
+    public static MutableLiveData<Integer> fragmentCount;
 
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
@@ -78,15 +80,8 @@ public class MainActivity extends AppCompatActivity {
         preloadData();
 
         if (savedInstanceState == null) {
-            fragmentManager = getSupportFragmentManager();
-
-            //Loading the home screen
-            fragmentManager.beginTransaction()
-                    .replace(R.id.main, DashboardPageFragment.class, null)
-                    .replace(R.id.side_menu, SideMenuFragment.class, null)
-                    .commitNow();
+            setupFragmentManager();
         }
-
         //Example of RXJava
         //Flowable.just("Hello world").subscribe(System.out::println);
     }
@@ -95,6 +90,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopNetworkService();
+    }
+
+    /**
+     * Instantiate the fragment manager for the activity and the livedata counter used for the
+     * back button data binding. Finish by loading the initial fragment.
+     */
+    private void setupFragmentManager() {
+        fragmentManager = getSupportFragmentManager();
+
+        fragmentCount = new MutableLiveData<>(0);
+        fragmentManager.addOnBackStackChangedListener(() ->
+                fragmentCount.setValue(fragmentManager.getBackStackEntryCount())
+        );
+
+        //Load the side menu as a separate transaction as this is not kept on the back stack.
+        fragmentManager.beginTransaction()
+                .replace(R.id.side_menu, SideMenuFragment.class, null)
+                .commitNow();
+
+        //Loading the home screen
+        fragmentManager.beginTransaction()
+                .replace(R.id.main, DashboardPageFragment.class, null)
+                .addToBackStack("menu:dashboard")
+                .commit();
     }
 
     /**
