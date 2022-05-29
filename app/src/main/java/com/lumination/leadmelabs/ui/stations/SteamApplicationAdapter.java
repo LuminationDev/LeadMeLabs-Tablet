@@ -97,6 +97,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
                                 .replace(R.id.main, DashboardPageFragment.class, null)
                                 .commitNow();
                         confirmDialog.dismiss();
+                        MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
                     });
                     cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
                     confirmDialog.show();
@@ -105,6 +106,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
                     MainActivity.fragmentManager.beginTransaction()
                             .replace(R.id.main, DashboardPageFragment.class, null)
                             .commitNow();
+                    MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
                 }
             });
         } else {

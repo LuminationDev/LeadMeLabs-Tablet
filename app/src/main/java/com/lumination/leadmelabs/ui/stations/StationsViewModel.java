@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
@@ -32,8 +33,27 @@ public class StationsViewModel extends ViewModel {
         return stations;
     }
 
+    public List<String> getStationNames(int[] stationIds) {
+        ArrayList<Station> stations = (ArrayList<Station>) this.getStations().getValue();
+        stations = (ArrayList<Station>) stations.clone();
+        List<Integer> stationIdsList =  new ArrayList<Integer>(stationIds.length);
+        for (int i : stationIds)
+        {
+            stationIdsList.add(i);
+        }
+        stations.removeIf(station -> !stationIdsList.contains(station.id));
+        List<String> stationNames = stations.stream().map(station -> station.name).collect(Collectors.toList());
+        return stationNames;
+    }
+
     public int getSelectedSteamApplicationId() {
         return selectedSteamApplicationId.getValue();
+    }
+
+    public String getSelectedSteamApplicationName(int steamApplicationId) {
+        List<SteamApplication> steamApps = getAllSteamApplications();
+        steamApps.removeIf(steamApplication -> steamApplication.id != steamApplicationId);
+        return steamApps.get(0).name;
     }
 
     public void selectSelectedSteamApplication(int id) {

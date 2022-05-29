@@ -113,6 +113,7 @@ public class StationSelectionFragment extends Fragment {
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.main, DashboardPageFragment.class, null)
                 .commitNow();
+        MainActivity.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId));
     }
 
     private void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {

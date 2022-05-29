@@ -111,22 +111,28 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:justifyContent="space_between">
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_end_vr"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawableTop="@drawable/compound_end_session"
                                 android:textColor="@color/blue"
                                 android:text="End Session"
-                                android:background="@android:color/transparent"/>
-                            <Button
+                                android:backgroundTint="@android:color/white"
+                                android:elevation="0dp"
+                                android:stateListAnimator="@null"
+                                app:rippleColor="@color/grey"/>
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawableTop="@drawable/compound_restart_session"
                                 android:textColor="@color/blue"
                                 android:text="Restart Session"
-                                android:background="@android:color/transparent"/>
+                                android:backgroundTint="@android:color/white"
+                                android:elevation="0dp"
+                                android:stateListAnimator="@null"
+                                app:rippleColor="@color/grey"/>
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
                     <com.google.android.flexbox.FlexboxLayout
@@ -233,12 +239,15 @@
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/blue"
                                 android:text="Stop"/>
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_new_game"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/blue"
-                                android:background="@android:color/transparent"
+                                android:backgroundTint="@android:color/white"
+                                android:elevation="0dp"
+                                android:stateListAnimator="@null"
+                                app:rippleColor="@color/grey"
                                 android:text="New Game"/>
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
