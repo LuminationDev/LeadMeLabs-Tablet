@@ -58,7 +58,7 @@ public class StationAdapter extends RecyclerView.Adapter {
                     MainActivity.fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
                             .replace(R.id.main, StationSingleFragment.class, null)
-                            .addToBackStack(null)
+                            .addToBackStack("menu:dashboard")
                             .commit();
                 });
             } else {

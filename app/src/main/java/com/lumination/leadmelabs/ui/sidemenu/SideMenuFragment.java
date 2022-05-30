@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.sidemenu;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class SideMenuFragment extends Fragment {
     private View view;
     private FragmentSideMenuBinding binding;
     private ViewGroup.LayoutParams layout;
-    private String currentType;
+    private static String currentType;
 
     @Nullable
     @Override
@@ -93,12 +94,13 @@ public class SideMenuFragment extends Fragment {
      * @param fragmentClass A Fragment to be loaded in.
      * @param type A string representing the type of fragment being loaded in, i.e. dashboard.
      */
-    private void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type) {
+    public static void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type) {
         if(currentType.equals(type)) {
             return;
         }
         currentType = type;
 
+        Log.e("TAG", currentType);
         if(type.equals("dashboard")) {
             clearBackStack();
         }
@@ -110,7 +112,10 @@ public class SideMenuFragment extends Fragment {
 
         MainActivity.fragmentManager.executePendingTransactions();
 
-        mViewModel.setSelectedIcon(type);
+        //Only change the active icon if the type supplied is a menu icon.
+        if(!type.equals("notMenu")) {
+            mViewModel.setSelectedIcon(type);
+        }
     }
 
     /**
@@ -188,7 +193,7 @@ public class SideMenuFragment extends Fragment {
     /**
      * Clear the fragment managers back stack on moving to a new menu section.
      */
-    private void clearBackStack() {
+    private static void clearBackStack() {
         MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
