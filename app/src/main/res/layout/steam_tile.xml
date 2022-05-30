@@ -34,8 +34,11 @@
             app:strokeWidth="2dp"
             android:layout_height="wrap_content"
             android:textColor="@color/blue"
-            android:backgroundTint="@null"
             app:backgroundTint="@color/white"
+            android:elevation="0dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            android:backgroundTint="@android:color/white"
             android:text="Play"/>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
