@@ -7,7 +7,9 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.databinding.CardSceneBinding;
@@ -25,10 +27,12 @@ public class SceneAdapter extends RecyclerView.Adapter {
     private LayoutInflater mInflater;
     private Zone zone;
     public boolean animate = true;
+    private ZonesViewModel zonesViewModel;
 
     SceneAdapter(Context context, Zone zone) {
         this.mInflater = LayoutInflater.from(context);
         this.zone = zone;
+        zonesViewModel = ViewModelProviders.of((FragmentActivity) context).get(ZonesViewModel.class);
     }
 
     public class SceneViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +55,7 @@ public class SceneAdapter extends RecyclerView.Adapter {
 
             binding.getRoot().setOnClickListener(v -> {
                 binding.setIsActive(new MutableLiveData<>(true));
-                ZonesFragment.mViewModel.setActiveScene(zone.automationGroup, zone.automationId, scene.value, false);
+                zonesViewModel.setActiveScene(zone.automationGroup, zone.automationId, scene.value, false);
                 for(CardSceneBinding sceneBinding : sceneBindings) {
                     if(sceneBinding != binding) {
                         sceneBinding.setIsActive(new MutableLiveData<>(false));
