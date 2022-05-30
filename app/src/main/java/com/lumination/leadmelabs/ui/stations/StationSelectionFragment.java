@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.databinding.FragmentStationSelectionBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,10 +72,7 @@ public class StationSelectionFragment extends Fragment {
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
             StationsFragment.mViewModel.selectSelectedSteamApplication(0);
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
+            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
@@ -111,10 +109,7 @@ public class StationSelectionFragment extends Fragment {
     private void confirmLaunchGame(int[] selectedIds, int steamGameId) {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
-        MainActivity.fragmentManager.beginTransaction()
-                .replace(R.id.main, DashboardPageFragment.class, null)
-                .addToBackStack(null)
-                .commit();
+        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
         MainActivity.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId));
     }
 

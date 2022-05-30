@@ -26,12 +26,12 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.slider.Slider;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 public class StationSingleFragment extends Fragment {
 
@@ -87,19 +87,13 @@ public class StationSingleFragment extends Fragment {
 
         Button newGame = view.findViewById(R.id.station_new_game);
         newGame.setOnClickListener(v -> {
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
+            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
         Button newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
+            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 

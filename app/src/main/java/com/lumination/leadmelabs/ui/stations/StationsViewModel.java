@@ -91,6 +91,9 @@ public class StationsViewModel extends ViewModel {
 
     public List<SteamApplication> getAllSteamApplications () {
         HashSet<SteamApplication> hashSet = new HashSet<>();
+        if(stations.getValue() == null) {
+            return new ArrayList<>();
+        }
         for (Station station: stations.getValue()) {
             hashSet.addAll(station.steamApplications);
         }
@@ -101,6 +104,9 @@ public class StationsViewModel extends ViewModel {
 
     public List<SteamApplication> getStationSteamApplications (int stationId) {
         ArrayList<SteamApplication> list = new ArrayList<>();
+        if(stations.getValue() == null) {
+            return list;
+        }
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
                 list = new ArrayList<>(station.steamApplications);
