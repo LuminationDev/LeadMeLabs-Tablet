@@ -99,8 +99,7 @@ public class SideMenuFragment extends Fragment {
             return;
         }
         currentType = type;
-
-        Log.e("TAG", currentType);
+        
         if(type.equals("dashboard")) {
             clearBackStack();
         }
