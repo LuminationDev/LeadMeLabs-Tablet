@@ -35,7 +35,7 @@ public class SteamSelectionFragment extends Fragment {
     private static SteamApplicationAdapter steamApplicationAdapter;
     private static ArrayList<SteamApplication> steamApplicationList;
     private static int stationId = 0;
-    private FragmentSteamSelectionBinding binding;
+    private static FragmentSteamSelectionBinding binding;
 
     public static void setStationId (int stationId) {
         SteamSelectionFragment.stationId = stationId;
@@ -47,6 +47,7 @@ public class SteamSelectionFragment extends Fragment {
         if (steamApplicationAdapter != null) {
             steamApplicationAdapter.stationId = stationId;
             steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
+            binding.setSteamApplicationList(steamApplicationAdapter.steamApplicationList);
             steamApplicationAdapter.notifyDataSetChanged();
         }
     }
@@ -72,6 +73,7 @@ public class SteamSelectionFragment extends Fragment {
             steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getAllSteamApplications();
         }
         steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
+        binding.setSteamApplicationList(steamApplicationAdapter.steamApplicationList);
         steamApplicationAdapter.notifyDataSetChanged();
         steamGridView.setAdapter(steamApplicationAdapter);
 
@@ -113,6 +115,7 @@ public class SteamSelectionFragment extends Fragment {
         ArrayList<SteamApplication> filteredSteamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
         filteredSteamApplicationList.removeIf(steamApplication -> !steamApplication.name.toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
         steamApplicationAdapter.steamApplicationList = filteredSteamApplicationList;
+        binding.setSteamApplicationList(steamApplicationAdapter.steamApplicationList);
         steamApplicationAdapter.notifyDataSetChanged();
     }
 

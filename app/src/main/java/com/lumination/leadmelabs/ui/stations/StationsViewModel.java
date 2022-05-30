@@ -71,8 +71,10 @@ public class StationsViewModel extends ViewModel {
 
     public List<SteamApplication> getAllSteamApplications () {
         HashSet<SteamApplication> hashSet = new HashSet<>();
-        for (Station station: stations.getValue()) {
-            hashSet.addAll(station.steamApplications);
+        if (stations.getValue() != null) {
+            for (Station station: stations.getValue()) {
+                hashSet.addAll(station.steamApplications);
+            }
         }
         ArrayList<SteamApplication> list = new ArrayList<>(hashSet);
         Collections.sort(list, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
