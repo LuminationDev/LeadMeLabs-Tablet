@@ -6,9 +6,13 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.ui.zones.ZonesFragment;
+import com.lumination.leadmelabs.ui.nuc.NucFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.nuc.NucViewModel;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 import org.json.JSONArray;
@@ -118,6 +122,7 @@ public class UIUpdateManager {
                     break;
                 case "gameName":
                     station.gameName = value;
+                    MainActivity.gameLaunchedOnStation(station.id);
                     break;
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);

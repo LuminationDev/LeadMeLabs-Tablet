@@ -123,29 +123,34 @@ public class StationSingleFragment extends Fragment {
                     Station selectedStation = binding.getSelectedStation();
                     NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Shutdown");
 
-                    DialogInterface.OnClickListener cancelButtonFunction = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
-                            compoundButton.setChecked(true);
-                        }
-                    };
+                    View shutdownDialogView = View.inflate(getContext(), R.layout.dialog_template, null);
+                    Button confirmButton = shutdownDialogView.findViewById(R.id.confirm_button);
+                    Button cancelButton = shutdownDialogView.findViewById(R.id.cancel_button);
+                    TextView title = shutdownDialogView.findViewById(R.id.title);
+                    TextView contentText = shutdownDialogView.findViewById(R.id.content_text);
+                    title.setText("Shutting Down");
+                    contentText.setText("Cancel shutdown?");
+                    androidx.appcompat.app.AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(shutdownDialogView).create();
+                    confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
+                    cancelButton.setOnClickListener(x -> {
+                        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
+                        compoundButton.setChecked(true);
+                        confirmDialog.dismiss();
+                    });
+                    confirmButton.setText("Continue");
+                    cancelButton.setText("Cancel (10)");
+                    confirmDialog.show();
+                    confirmDialog.getWindow().setLayout(1200, 380);
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                            .setTitle("Shutting Down")
-                            .setMessage("Cancel shutdown?")
-                            .setNegativeButton("Cancel (10)", cancelButtonFunction)
-                            .setPositiveButton("Continue", null).show();
                     CountDownTimer timer = new CountDownTimer(9000, 1000) {
                         @Override
                         public void onTick(long l) {
-                            Button cancelButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                             cancelButton.setText("Cancel (" + (l + 1000) / 1000 + ")");
                         }
 
                         @Override
                         public void onFinish() {
-                            alertDialog.dismiss();
+                            confirmDialog.dismiss();
                         }
                     }.start();
                 } else {

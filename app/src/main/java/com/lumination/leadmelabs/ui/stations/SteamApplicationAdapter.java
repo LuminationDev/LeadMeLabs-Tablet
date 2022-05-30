@@ -100,12 +100,14 @@ public class SteamApplicationAdapter extends BaseAdapter {
                         NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
                         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                         confirmDialog.dismiss();
+                        MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
                     });
                     cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
                     confirmDialog.show();
                 } else {
                     NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
                     SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                    MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
                 }
             });
         } else {

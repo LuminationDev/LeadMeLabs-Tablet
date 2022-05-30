@@ -16,6 +16,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -39,6 +41,9 @@ import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
 
@@ -48,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;
     public static MutableLiveData<Integer> fragmentCount;
+
+    public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
+    public static List<Integer> gameLaunchStationIds;
 
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
@@ -210,5 +218,38 @@ public class MainActivity extends AppCompatActivity {
 
            return false;
        });
+    }
+
+    public static void awaitStationGameLaunch(int[] stationIds, String gameName)
+    {
+        View gameLaunchDialogView = View.inflate(instance, R.layout.dialog_template, null);
+        Button confirmButton = gameLaunchDialogView.findViewById(R.id.confirm_button);
+        Button cancelButton = gameLaunchDialogView.findViewById(R.id.cancel_button);
+        TextView title = gameLaunchDialogView.findViewById(R.id.title);
+        TextView contentText = gameLaunchDialogView.findViewById(R.id.content_text);
+        title.setText("Launching Game");
+        contentText.setText("Launching " + gameName + " on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
+        gameLaunchDialog = new androidx.appcompat.app.AlertDialog.Builder(instance).setView(gameLaunchDialogView).create();
+        gameLaunchStationIds =  new ArrayList<Integer>(stationIds.length);
+        for (int i : stationIds)
+        {
+            gameLaunchStationIds.add(i);
+        }
+        confirmButton.setOnClickListener(w -> gameLaunchDialog.dismiss());
+        cancelButton.setVisibility(View.GONE);
+        confirmButton.setText("Dismiss");
+        gameLaunchDialog.show();
+        gameLaunchDialog.getWindow().setLayout(1200, 380);
+    }
+
+    public static void gameLaunchedOnStation(int stationId) {
+        if (gameLaunchStationIds != null) {
+            gameLaunchStationIds.removeIf(id -> id == stationId);
+            if (gameLaunchStationIds.size() == 0) {
+                if (gameLaunchDialog != null) {
+                    gameLaunchDialog.dismiss();
+                }
+            }
+        }
     }
 }

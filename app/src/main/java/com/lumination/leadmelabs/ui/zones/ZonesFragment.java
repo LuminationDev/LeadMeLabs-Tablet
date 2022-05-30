@@ -36,6 +36,7 @@ public class ZonesFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.zone_list);
         zoneAdapter = new ZoneAdapter(binding);
         zoneAdapter.zoneList = new ArrayList<>();
+        binding.setZoneList(zoneAdapter.zoneList);
         recyclerView.setAdapter(zoneAdapter);
 
         Button backButton = view.findViewById(R.id.back_button);
@@ -52,6 +53,7 @@ public class ZonesFragment extends Fragment {
 
         mViewModel.getZones().observe(getViewLifecycleOwner(), zones -> {
             zoneAdapter.zoneList = (ArrayList<Zone>) zones;
+            binding.setZoneList(zoneAdapter.zoneList);
             zoneAdapter.notifyDataSetChanged();
             if (zoneAdapter.sceneAdapter != null) {
                 zoneAdapter.sceneAdapter.animate = false;

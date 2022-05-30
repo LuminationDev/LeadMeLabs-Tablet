@@ -43,11 +43,13 @@ public class StationsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, true);
         stationAdapter.stationList = new ArrayList<>();
+        binding.setStationList(stationAdapter.stationList);
         recyclerView.setAdapter(stationAdapter);
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             stationAdapter.stationList = (ArrayList<Station>) stations;
             stationAdapter.notifyDataSetChanged();
+            binding.setStationList(stationAdapter.stationList);
         });
 
         Button newSession = view.findViewById(R.id.new_session_button);
