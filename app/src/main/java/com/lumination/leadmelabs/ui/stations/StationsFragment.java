@@ -13,10 +13,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 
@@ -54,10 +54,7 @@ public class StationsFragment extends Fragment {
 
         Button newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            MainActivity.fragmentManager.beginTransaction()
-                    .replace(R.id.main, SteamSelectionFragment.class, null)
-                    .addToBackStack(null)
-                    .commit();
+            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(0);
         });
     }

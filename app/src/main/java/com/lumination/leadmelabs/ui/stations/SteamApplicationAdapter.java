@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 
@@ -93,31 +94,21 @@ public class SteamApplicationAdapter extends BaseAdapter {
                     AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
                     confirmButton.setOnClickListener(w -> {
                         NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-                        MainActivity.fragmentManager.beginTransaction()
-                                .replace(R.id.main, DashboardPageFragment.class, null)
-                                .addToBackStack(null)
-                                .commit();
+                        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                         confirmDialog.dismiss();
                     });
                     cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
                     confirmDialog.show();
                 } else {
                     NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-                    MainActivity.fragmentManager.beginTransaction()
-                            .replace(R.id.main, DashboardPageFragment.class, null)
-                            .addToBackStack(null)
-                            .commit();
+                    SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                 }
             });
         } else {
             playButton.setOnClickListener(v -> {
                 viewModel.selectSelectedSteamApplication(steamApplication.id);
-                MainActivity.fragmentManager.beginTransaction()
-                        .replace(R.id.main, StationSelectionFragment.class, null)
-                        .addToBackStack(null)
-                        .commit();
+                SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
 
-                MainActivity.fragmentManager.executePendingTransactions();
                 StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
                 View newView = fragment.getView();
                 TextView textView = newView.findViewById(R.id.station_selection_game_name);
