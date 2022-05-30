@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.lumination.leadmelabs.MainActivity;
@@ -34,11 +36,13 @@ public class SteamApplicationAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private Context context;
     private StationsViewModel viewModel;
+    private StationsViewModel stationsViewModel;
 
     SteamApplicationAdapter(Context context, StationsViewModel viewModel) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
+        stationsViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
 
     @Override
@@ -82,7 +86,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
         if (stationId > 0) {
             playButton.setOnClickListener(v -> {
-                Station station = StationsFragment.mViewModel.getStationById(stationId);
+                Station station = stationsViewModel.getStationById(stationId);
                 if (station != null && station.theatreText != null) {
                     View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
                     Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);

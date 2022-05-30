@@ -2,12 +2,14 @@ package com.lumination.leadmelabs.managers;
 
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.nuc.NucViewModel;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,7 +73,7 @@ public class UIUpdateManager {
                     if (additionalData.startsWith("Set")) {
                         String[] values = additionalData.split(":");
                         MainActivity.runOnUI(() -> {
-                            ZonesFragment.mViewModel.setActiveScene(values[2], values[3], values[4], true);
+                            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[2], values[3], values[4], true);
                         });
                     }
                     break;
@@ -91,7 +93,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                StationsFragment.mViewModel.setStations(json);
+                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStations(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -100,7 +102,7 @@ public class UIUpdateManager {
 
     private static void updateStation(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
-            Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(stationId));
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
             if (station == null) {
                 return;
             }
@@ -120,7 +122,7 @@ public class UIUpdateManager {
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);
             }
-            StationsFragment.mViewModel.updateStationById(Integer.parseInt(stationId), station);
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });
     }
 
@@ -129,7 +131,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                ZonesFragment.mViewModel.setZones(json);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setZones(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -140,7 +142,7 @@ public class UIUpdateManager {
     private static void updateSelectedScene(String response) throws JSONException {
         String[] values = response.split(":");
         MainActivity.runOnUI(() -> {
-            ZonesFragment.mViewModel.setActiveScene(values[1], values[2], values[3], true);
+            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[1], values[2], values[3], true);
         });
     }
 
@@ -149,7 +151,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                ApplianceFragment.mViewModel.setAppliances(json);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -162,7 +164,7 @@ public class UIUpdateManager {
 
         MainActivity.runOnUI(() -> {
             try {
-                ApplianceFragment.mViewModel.setActiveAppliances(json);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setActiveAppliances(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -175,7 +177,7 @@ public class UIUpdateManager {
      */
     private static void updateNUCAddress(String response) {
         MainActivity.runOnUI(() -> {
-            NucFragment.mViewModel.setNucAddress(response);
+            ViewModelProviders.of(MainActivity.getInstance()).get(NucViewModel.class).setNucAddress(response);
         });
     }
 }

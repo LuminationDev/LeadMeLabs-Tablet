@@ -70,7 +70,7 @@ public class StationSelectionFragment extends Fragment {
 
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
-            StationsFragment.mViewModel.selectSelectedSteamApplication(0);
+            mViewModel.selectSelectedSteamApplication(0);
             SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
         });
 
