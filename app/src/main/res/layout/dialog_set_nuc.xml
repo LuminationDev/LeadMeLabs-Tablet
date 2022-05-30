@@ -29,14 +29,16 @@
         android:layout_height="wrap_content"
         android:text="Set NUC Address">
     </TextView>
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/scan_nuc_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:strokeColor="@color/blue"
         app:strokeWidth="2dp"
         android:textColor="@color/blue"
-        android:backgroundTint="@null"
+        android:backgroundTint="@android:color/white"
+        app:rippleColor="@color/grey"
+        android:stateListAnimator="@null"
         app:backgroundTint="@color/white"
         android:text="Auto-scan"/>
     <com.google.android.flexbox.FlexboxLayout
@@ -74,15 +76,16 @@
         android:layout_height="wrap_content"
         android:hint="xxx.xxx.xxx.xxx">
     </EditText>
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/set_nuc_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:strokeColor="@color/blue"
         app:strokeWidth="2dp"
         android:textColor="@color/blue"
-        android:backgroundTint="@null"
-        app:backgroundTint="@color/white"
+        android:backgroundTint="@android:color/white"
+        app:rippleColor="@color/grey"
+        android:stateListAnimator="@null"
         android:text="Update"/>
 
 </com.google.android.flexbox.FlexboxLayout>
