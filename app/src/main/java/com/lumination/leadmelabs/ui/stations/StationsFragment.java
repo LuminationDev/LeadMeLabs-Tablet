@@ -51,11 +51,5 @@ public class StationsFragment extends Fragment {
             stationAdapter.notifyDataSetChanged();
             binding.setStationList(stationAdapter.stationList);
         });
-
-        Button newSession = view.findViewById(R.id.new_session_button);
-        newSession.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
-            SteamSelectionFragment.setStationId(0);
-        });
     }
 }

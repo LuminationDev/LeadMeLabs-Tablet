@@ -131,6 +131,8 @@ public class StationSingleFragment extends Fragment {
                     title.setText("Shutting Down");
                     contentText.setText("Cancel shutdown?");
                     androidx.appcompat.app.AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(shutdownDialogView).create();
+                    confirmDialog.setCancelable(false);
+                    confirmDialog.setCanceledOnTouchOutside(false);
                     confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
                     cancelButton.setOnClickListener(x -> {
                         NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");

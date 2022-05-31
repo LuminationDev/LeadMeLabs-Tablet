@@ -12,28 +12,14 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/stations_fragment"
         style="@style/StationsContainer"
+        android:paddingVertical="20dp"
         tools:context=".ui.stations.StationsFragment"
         app:flexDirection="column">
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_marginHorizontal="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:flexDirection="row"
-            app:justifyContent="space_between"
-            app:alignItems="center"
-            android:layout_marginHorizontal="30dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Station Status"/>
-            <Button
-                android:id="@+id/new_session_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/icon_add"
-                android:background="@android:color/transparent"
-                android:textColor="@color/blue"
-                android:text="New Session"/>
-        </com.google.android.flexbox.FlexboxLayout>
+            android:text="Station Status"/>
         <com.google.android.flexbox.FlexboxLayout
             android:visibility="@{stationList.size() > 0 ? View.GONE : View.VISIBLE}"
             android:layout_width="match_parent"
@@ -55,7 +41,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingVertical="20dp"
             android:paddingHorizontal="10dp"
             tools:listitem="@layout/card_station" />
 
