@@ -32,6 +32,126 @@
                 android:textSize="20dp"/>
         </com.google.android.flexbox.FlexboxLayout>
 
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Controls"/>
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/new_session_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:alignItems="center"
+                    android:layout_marginLeft="30dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="10dp"
+                    android:background="@drawable/white_card_ripple_rounded"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="15dp"
+                    android:layout_marginVertical="10dp"
+                    app:flexDirection="row">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/new_session_icon"/>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        app:flexDirection="column">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="600"
+                            android:textColor="@color/black"
+                            android:text="New Session"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Choose VR game"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_marginHorizontal="20dp"
+                    android:id="@+id/end_session_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:alignItems="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="10dp"
+                    android:background="@drawable/white_card_ripple_rounded"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="15dp"
+                    android:layout_marginVertical="10dp"
+                    app:flexDirection="row">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/end_session_icon"/>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        app:flexDirection="column">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="600"
+                            android:textColor="@color/black"
+                            android:text="End Session"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="End VR game"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/shutdown_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:alignItems="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:elevation="10dp"
+                    android:background="@drawable/white_card_ripple_rounded"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="15dp"
+                    android:layout_marginVertical="10dp"
+                    app:flexDirection="row">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/shutdown_icon"/>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        app:flexDirection="column">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="600"
+                            android:textColor="@color/black"
+                            android:text="Shut down"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shut down stations"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
         <RelativeLayout
             android:id="@+id/stations"
             android:layout_width="wrap_content"

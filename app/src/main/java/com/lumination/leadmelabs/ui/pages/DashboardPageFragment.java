@@ -1,22 +1,31 @@
 package com.lumination.leadmelabs.ui.pages;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -65,6 +74,61 @@ public class DashboardPageFragment extends Fragment {
         dateMessage += (now.getYear() + " ");
         TextView dateMessageView = view.findViewById(R.id.date_message);
         dateMessageView.setText(dateMessage);
+
+        FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
+        newSession.setOnClickListener(v -> {
+            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
+            SteamSelectionFragment.setStationId(0);
+        });
+
+        FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
+        endSession.setOnClickListener(v -> {
+            int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "EndVR");
+        });
+
+        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
+        shutdown.setOnClickListener(v -> {
+            int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "Shutdown");
+
+            View shutdownDialogView = View.inflate(getContext(), R.layout.dialog_template, null);
+            Button confirmButton = shutdownDialogView.findViewById(R.id.confirm_button);
+            Button cancelButton = shutdownDialogView.findViewById(R.id.cancel_button);
+            TextView title = shutdownDialogView.findViewById(R.id.title);
+            TextView contentText = shutdownDialogView.findViewById(R.id.content_text);
+            title.setText("Shutting Down");
+            contentText.setText("Cancel shutdown?");
+            androidx.appcompat.app.AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(shutdownDialogView).create();
+            confirmDialog.setCancelable(false);
+            confirmDialog.setCanceledOnTouchOutside(false);
+            confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
+            cancelButton.setOnClickListener(x -> {
+                NetworkService.sendMessage("Station," + stationIds, "CommandLine", "CancelShutdown");
+                confirmDialog.dismiss();
+            });
+            confirmButton.setText("Continue");
+            cancelButton.setText("Cancel (10)");
+            confirmDialog.show();
+            confirmDialog.getWindow().setLayout(1200, 380);
+
+            CountDownTimer timer = new CountDownTimer(9000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    cancelButton.setText("Cancel (" + (l + 1000) / 1000 + ")");
+                }
+
+                @Override
+                public void onFinish() {
+                    confirmDialog.dismiss();
+                }
+            }.start();
+        });
+
     }
 
     /**

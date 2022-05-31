@@ -69,6 +69,18 @@ public class StationsViewModel extends ViewModel {
         return selectedIds;
     }
 
+    public int[] getAllStationIds() {
+        ArrayList<Station> stations = (ArrayList<Station>) getStations().getValue();
+        if (stations == null) {
+            return new int[0];
+        }
+        int[] ids = new int[stations.size()];
+        for (int i = 0; i < stations.size(); i++) {
+            ids[i] = stations.get(i).id;
+        }
+        return ids;
+    }
+
     public ArrayList<Station> getSelectedStations() {
         ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
         selectedStations = (ArrayList<Station>) selectedStations.clone();

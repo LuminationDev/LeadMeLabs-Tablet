@@ -32,7 +32,9 @@ public class Station {
         String[] apps = steamApplicationsJson.split("/");
         for (String app: apps) {
             String[] appData = app.split("\\|");
-            this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
+            if (appData.length > 1) {
+                this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
+            }
         }
         Collections.sort(this.steamApplications, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
     }
