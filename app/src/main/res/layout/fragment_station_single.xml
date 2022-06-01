@@ -163,8 +163,16 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_curved"
                         android:padding="20dp"
-                        app:alignItems="center"
                         app:flexDirection="column">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:textFontWeight="600"
+                            android:textColor="@color/black"
+                            android:layout_height="wrap_content"
+                            android:gravity="left|center_vertical"
+                            android:drawablePadding="5dp"
+                            android:text="*Warning this will flash the station's screen."
+                            android:drawableLeft="@drawable/icon_volume"/>
                         <Button
                             android:id="@+id/ping_station"
                             android:layout_width="wrap_content"
