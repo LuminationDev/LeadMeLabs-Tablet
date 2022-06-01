@@ -13,11 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
@@ -127,6 +129,15 @@ public class DashboardPageFragment extends Fragment {
                     confirmDialog.dismiss();
                 }
             }.start();
+        });
+
+
+        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
+        settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
+            View stationControls = view.findViewById(R.id.station_controls);
+            stationControls.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
+            View stations = view.findViewById(R.id.stations);
+            stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
 
     }

@@ -54,15 +54,14 @@ public class SettingsFragment extends Fragment {
 
         FlexboxLayout hideStationControlsLayout = view.findViewById(R.id.hide_station_controls);
         SwitchCompat hideStationControlsToggle = view.findViewById(R.id.hide_station_controls_toggle);
-        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
-        hideStationControlsToggle.setChecked(settingsViewModel.getHideStationControls().getValue().booleanValue());
+        hideStationControlsToggle.setChecked(mViewModel.getHideStationControls().getValue().booleanValue());
         hideStationControlsLayout.setOnClickListener(v -> {
             hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked());
         });
         CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                settingsViewModel.setHideStationControls(new Boolean(isChecked));
+                mViewModel.setHideStationControls(new Boolean(isChecked));
             }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);

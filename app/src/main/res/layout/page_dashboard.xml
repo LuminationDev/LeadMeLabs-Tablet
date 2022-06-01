@@ -7,7 +7,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginVertical="30dp">
@@ -33,6 +33,7 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/station_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:flexDirection="column">
