@@ -10,7 +10,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
-import com.lumination.leadmelabs.ui.nuc.NucViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/settings_fragment"
+        tools:context=".ui.settings.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="30dp"
+        app:flexDirection="column">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textFontWeight="600"
+            android:textSize="40dp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/set_nuc_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/white_card_ripple_rounded"
+                app:alignItems="center"
+                android:padding="15dp"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Set NUC Address"
+                    android:drawableRight="@drawable/icon_menu_right"/>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/how_to_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/white_card_ripple_rounded"
+                app:alignItems="center"
+                android:padding="15dp"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="How to use LeadMe Labs"
+                    android:drawableRight="@drawable/icon_menu_right"/>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/hide_station_controls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/white_card_ripple_rounded"
+                app:alignItems="center"
+                app:justifyContent="space_between">
+                <TextView
+                    android:padding="15dp"
+                    app:layout_flexShrink="0"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Hide station controls"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/hide_station_controls_toggle"
+                    app:thumbTint="@color/blue"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>
