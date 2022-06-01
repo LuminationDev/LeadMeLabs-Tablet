@@ -41,6 +41,7 @@ public class ZonesFragment extends Fragment {
 
         Button backButton = view.findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
+            backButton.setVisibility(View.GONE);
             binding.selectedZone.setVisibility(View.GONE);
             binding.zoneSelection.setVisibility(View.VISIBLE);
         });
@@ -55,6 +56,15 @@ public class ZonesFragment extends Fragment {
             zoneAdapter.zoneList = (ArrayList<Zone>) zones;
             binding.setZoneList(zoneAdapter.zoneList);
             zoneAdapter.notifyDataSetChanged();
+            if (zoneAdapter.zoneList.size() == 1) {
+                binding.selectedZone.setVisibility(View.VISIBLE);
+                binding.zoneSelection.setVisibility(View.GONE);
+                binding.backButton.setVisibility(View.GONE);
+                binding.activeCard.setZone(zoneAdapter.zoneList.get(0));
+                zoneAdapter.sceneAdapter = new SceneAdapter(view.getContext(), zoneAdapter.zoneList.get(0));
+                zoneAdapter.sceneAdapter.sceneList = zoneAdapter.zoneList.get(0).scenes;
+                binding.sceneList.setAdapter(zoneAdapter.sceneAdapter);
+            }
             if (zoneAdapter.sceneAdapter != null) {
                 zoneAdapter.sceneAdapter.animate = false;
                 zoneAdapter.sceneAdapter.notifyDataSetChanged();

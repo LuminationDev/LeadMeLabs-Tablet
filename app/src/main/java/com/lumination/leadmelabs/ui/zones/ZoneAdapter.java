@@ -54,6 +54,9 @@ public class ZoneAdapter extends RecyclerView.Adapter {
 
                 fragmentZonesBinding.selectedZone.setVisibility(View.VISIBLE);
                 fragmentZonesBinding.zoneSelection.setVisibility(View.GONE);
+                if (fragmentZonesBinding.getZoneList().size() != 1) {
+                    fragmentZonesBinding.backButton.setVisibility(View.VISIBLE);
+                }
             });
             zoneBindings.add(binding);
         }
