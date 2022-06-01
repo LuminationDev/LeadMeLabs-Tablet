@@ -1,24 +1,30 @@
-package com.lumination.leadmelabs.ui.nuc;
+package com.lumination.leadmelabs.ui.settings;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
-public class NucFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
-    public static NucViewModel mViewModel;
+    public static SettingsViewModel mViewModel;
     private View view;
     private AlertDialog nucDialog;
 
@@ -26,7 +32,7 @@ public class NucFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_nuc, container, false);
+        view = inflater.inflate(R.layout.fragment_settings, container, false);
         return view;
     }
 
@@ -36,15 +42,29 @@ public class NucFragment extends Fragment {
 
         buildSetNucDialog();
 
-        Button set_button = view.findViewById(R.id.set_nuc_address);
-        set_button.setOnClickListener(v -> {
+        FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);
+        setNucAddressButton.setOnClickListener(v -> {
             nucDialog.show();
         });
 
-        Button how_to_button = view.findViewById(R.id.how_to_button);
-        how_to_button.setOnClickListener(v -> {
+        FlexboxLayout howToButton = view.findViewById(R.id.how_to_button);
+        howToButton.setOnClickListener(v -> {
             // todo - open the guide
         });
+
+        FlexboxLayout hideStationControlsLayout = view.findViewById(R.id.hide_station_controls);
+        SwitchCompat hideStationControlsToggle = view.findViewById(R.id.hide_station_controls_toggle);
+        hideStationControlsToggle.setChecked(mViewModel.getHideStationControls().getValue().booleanValue());
+        hideStationControlsLayout.setOnClickListener(v -> {
+            hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked());
+        });
+        CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                mViewModel.setHideStationControls(new Boolean(isChecked));
+            }
+        };
+        hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
     }
 
     private void buildSetNucDialog() {

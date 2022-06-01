@@ -11,8 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 public class SettingsPageFragment extends Fragment {
     private View view;
@@ -41,7 +40,7 @@ public class SettingsPageFragment extends Fragment {
      */
     private void loadFragments() {
         childManager.beginTransaction()
-                .replace(R.id.settings_menu, NucFragment.class, null)
+                .replace(R.id.settings_menu, SettingsFragment.class, null)
                 .commitNow();
     }
 }

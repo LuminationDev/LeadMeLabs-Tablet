@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -18,6 +19,7 @@ import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
@@ -57,6 +59,12 @@ public class SideMenuFragment extends Fragment {
 
         mViewModel.getSelectedIcon().observe(getViewLifecycleOwner(), selectedIcon -> {
 
+        });
+
+        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
+        settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
+            View sessionButton = view.findViewById(R.id.session_button);
+            sessionButton.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
     }
 

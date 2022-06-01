@@ -24,8 +24,8 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
-import com.lumination.leadmelabs.ui.nuc.NucViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
 import com.lumination.leadmelabs.ui.sessionControls.SessionControlsViewModel;
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
      * fragment is loaded.
      */
     private void preloadViewModels() {
-        NucFragment.mViewModel = ViewModelProviders.of(this).get(NucViewModel.class);
+        SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
      * Preload the data necessary for the ViewModel operations.
      */
     private void preloadData() {
-        NucFragment.mViewModel.getNuc();
+        SettingsFragment.mViewModel.getNuc();
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();

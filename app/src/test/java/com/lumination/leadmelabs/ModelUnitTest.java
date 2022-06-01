@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.lumination.leadmelabs.models.NUC;
 import com.lumination.leadmelabs.models.Scene;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
@@ -22,14 +21,6 @@ import com.lumination.leadmelabs.models.SteamApplication;
 public class ModelUnitTest {
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
-
-    @Test
-    public void nuc_creation() {
-        NUC nuc = new NUC("192.168.0.254");
-
-        assertEquals(nuc.ipAddress, "192.168.0.254");
-        assertEquals(nuc.name, "NUC");
-    }
 
     @Test
     public void scene_creation() throws InterruptedException {

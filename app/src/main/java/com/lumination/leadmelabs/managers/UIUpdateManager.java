@@ -6,13 +6,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
-import com.lumination.leadmelabs.ui.nuc.NucFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
-import com.lumination.leadmelabs.ui.nuc.NucViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 import org.json.JSONArray;
@@ -182,7 +178,7 @@ public class UIUpdateManager {
      */
     private static void updateNUCAddress(String response) {
         MainActivity.runOnUI(() -> {
-            ViewModelProviders.of(MainActivity.getInstance()).get(NucViewModel.class).setNucAddress(response);
+            ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).setNucAddress(response);
         });
     }
 }
