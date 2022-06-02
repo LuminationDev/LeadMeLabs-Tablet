@@ -40,6 +40,7 @@ public class LogoFragment extends Fragment {
         int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
+        //TODO stagger the messages
         NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
     }
 }
