@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class SideMenuFragment extends Fragment {
@@ -31,7 +32,7 @@ public class SideMenuFragment extends Fragment {
     private View view;
     private FragmentSideMenuBinding binding;
     private ViewGroup.LayoutParams layout;
-    private static String currentType;
+    public static String currentType;
 
     @Nullable
     @Override
@@ -146,7 +147,13 @@ public class SideMenuFragment extends Fragment {
             String[] split = name.split(":");
 
             mViewModel.setSelectedIcon(split[1]);
-            currentType = split[1];
+
+            Log.e("SIDE MENU", Arrays.toString(split));
+            if(split.length > 2) {
+                currentType = split[2];
+            } else {
+                currentType = split[1];
+            }
 
             if(!name.contains("controls")) {
                 removeSubMenu();
