@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSubMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
+import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 
 public class SubMenuFragment extends Fragment {
 
@@ -42,13 +43,16 @@ public class SubMenuFragment extends Fragment {
         binding.setSubMenu(mViewModel);
 
         //load the default fragment
-        mViewModel.setSelectedPage("lighting");
-        currentType = "lighting";
+        mViewModel.setSelectedPage("scenes");
+        currentType = "scenes";
     }
 
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
+        MainActivity.feedback(view.findViewById(R.id.scene_button));
+        view.findViewById(R.id.scene_button).setOnClickListener(v -> loadZones());
+
         MainActivity.feedback(view.findViewById(R.id.light_button));
         view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Control", "lighting"));
 
@@ -63,6 +67,24 @@ public class SubMenuFragment extends Fragment {
 
         MainActivity.feedback(view.findViewById(R.id.source_button));
         view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
+    }
+
+    /**
+     * Load in the zones for controlling the scenes.
+     */
+    private void loadZones() {
+        if(currentType.equals("scenes")) {
+            return;
+        }
+        currentType = "scenes";
+
+        ControlPageFragment.childManager.beginTransaction()
+                .replace(R.id.subpage, ZonesFragment.class, null)
+                .addToBackStack("submenu:" + "scenes")
+                .commit();
+
+        ControlPageFragment.childManager.executePendingTransactions();
+        mViewModel.setSelectedPage("scenes");
     }
 
     /**

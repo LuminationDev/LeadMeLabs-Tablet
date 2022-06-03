@@ -168,7 +168,7 @@ public class SideMenuFragment extends Fragment {
      * Add the sub menu to the view.
      */
     private void addSubMenu() {
-        changeViewParams(150, 25);
+        changeViewParams(150, 22);
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                 .commitNow();
@@ -185,7 +185,7 @@ public class SideMenuFragment extends Fragment {
                     .remove(fragment)
                     .commitNow();
 
-            changeViewParams(200, 50);
+            changeViewParams(200, 45);
         }
     }
 

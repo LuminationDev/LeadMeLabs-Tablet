@@ -23,7 +23,6 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.time.LocalDate;
@@ -91,6 +90,15 @@ public class DashboardPageFragment extends Fragment {
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "EndVR");
         });
 
+        FlexboxLayout identify = view.findViewById(R.id.identify_button);
+        identify.setOnClickListener(v -> {
+            int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+            //TODO stagger the messages
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
+        });
+
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
         shutdown.setOnClickListener(v -> {
             int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
@@ -139,7 +147,6 @@ public class DashboardPageFragment extends Fragment {
             View stations = view.findViewById(R.id.stations);
             stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
-
     }
 
     /**
@@ -148,7 +155,6 @@ public class DashboardPageFragment extends Fragment {
     private void loadFragments() {
         childManager.beginTransaction()
                 .replace(R.id.stations, StationsFragment.class, null)
-                .replace(R.id.zones, ZonesFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .commitNow();
     }

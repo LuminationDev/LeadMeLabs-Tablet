@@ -7,7 +7,7 @@ public class Station {
     public String name;
     public int id;
     public String status;
-    public String gameName;
+    public String gameName = null;
     public String gameId;
     public String theatreText;
     public int volume;

@@ -19,4 +19,5 @@
     <string name="source">Source</string>
     <string name="shutdown">Shutdown</string>
     <string name="launch_url">Launch URL</string>
+    <string name="scenes">Scenes</string>
 </resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An white rectangle ripple. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/grey">
+    <item
+        android:id="@android:id/background"
+        android:gravity="center">
+        <shape android:shape="rectangle">
+            <corners
+                android:bottomRightRadius="15px"
+                android:bottomLeftRadius="15px"
+                android:topRightRadius="15px"
+                android:topLeftRadius="15px" />
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+</ripple>

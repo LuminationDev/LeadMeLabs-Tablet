@@ -24,9 +24,15 @@
             app:justifyContent="space_around">
 
             <TextView
+                android:id="@+id/scene_button"
+                style="@style/SubMenuLabel"
+                android:textColor="@{subMenu.selectedPage.equals(`scenes`) ? @color/blue : @color/black, default=@color/blue}"
+                android:text="@string/scenes"/>
+
+            <TextView
                 android:id="@+id/light_button"
                 style="@style/SubMenuLabel"
-                android:textColor="@{subMenu.selectedPage.equals(`lighting`) ? @color/blue : @color/black, default=@color/blue}"
+                android:textColor="@{subMenu.selectedPage.equals(`lighting`) ? @color/blue : @color/black, default=@color/black}"
                 android:text="@string/lights"/>
 
             <TextView

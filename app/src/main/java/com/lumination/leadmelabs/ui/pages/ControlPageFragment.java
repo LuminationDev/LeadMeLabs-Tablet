@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
+import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 
 public class ControlPageFragment extends Fragment {
     private View view;
@@ -32,23 +32,20 @@ public class ControlPageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null) {
-            loadFragments();
+            loadZones();
         }
     }
 
     /**
      * Load in the initial fragments for the main view and replace the side menu.
      */
-    private void loadFragments() {
-        //Load in the lights by default
-        Bundle args = new Bundle();
-        args.putString("type", "lighting");
-        args.putString("title", "Lighting Control");
-
+    private void loadZones() {
         childManager.beginTransaction()
-                .replace(R.id.subpage, AppliancePageFragment.class, args)
+                .replace(R.id.subpage, ZonesFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
-                .addToBackStack("submenu:lighting")
+                .addToBackStack("submenu:" + "scenes")
                 .commit();
+
+        childManager.executePendingTransactions();
     }
 }
