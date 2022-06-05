@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.lumination.leadmelabs.models.Station"></import>
+        <import type="com.lumination.leadmelabs.models.Station" />
         <import type="android.view.View"/>
         <variable
             name="stationList"
@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="Stations loading..."/>
         </com.google.android.flexbox.FlexboxLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:visibility="@{stationList.size() > 0 ? View.VISIBLE : View.GONE}"
             android:id="@+id/stations_list"

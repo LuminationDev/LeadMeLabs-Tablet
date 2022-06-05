@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -174,7 +176,7 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("status"),
                     stationJson.getInt("volume"),
                     stationJson.getInt("theatreId"));
-            if (stationJson.getString("gameName") != "null") {
+            if (!stationJson.getString("gameName").equals("")) {
                 station.gameName = stationJson.getString("gameName");
             }
             if (stationJson.getString("gameId") != "null") {

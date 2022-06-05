@@ -20,27 +20,16 @@ import java.util.Arrays;
 public class LogoFragment extends Fragment {
 
     public static LogoViewModel mViewModel;
-    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_logo, container, false);
-        view.setOnClickListener(v -> pingAll());
-        return view;
+        return inflater.inflate(R.layout.fragment_logo, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    private void pingAll() {
-        int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
-        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-
-        //TODO stagger the messages
-        NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
     }
 }
