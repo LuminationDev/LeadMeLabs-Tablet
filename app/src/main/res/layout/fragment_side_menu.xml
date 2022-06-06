@@ -18,7 +18,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/side_menu_fragment"
         style="@style/SideMenuContainer"
-        android:layout_width="200dp"
+        android:layout_width="210dp"
         android:paddingHorizontal="45dp"
         android:paddingVertical="30dp"
         app:flexDirection="column">
@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:flexDirection="column"
-            app:alignItems="center"
-            app:justifyContent="space_between">
+            app:alignItems="center">
 
             <LinearLayout
                 style="@style/SideMenuIcon"
@@ -42,7 +41,6 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? View.GONE : View.VISIBLE}"
                     android:text="Dashboard"/>
             </LinearLayout>
 
@@ -58,7 +56,6 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? View.GONE : View.VISIBLE}"
                     android:text="VR Session"/>
             </LinearLayout>
 
@@ -74,7 +71,6 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? View.GONE : View.VISIBLE}"
                     android:text="Room Controls"/>
             </LinearLayout>
 
@@ -90,7 +86,6 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? View.GONE : View.VISIBLE}"
                     android:text="Settings"/>
             </LinearLayout>
 

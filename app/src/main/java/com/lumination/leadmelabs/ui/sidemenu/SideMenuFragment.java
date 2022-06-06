@@ -48,11 +48,12 @@ public class SideMenuFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
 
         binding.setLifecycleOwner(this);
         binding.setSideMenu(mViewModel);
-        mViewModel.setSelectedIcon("dashboard");
-        currentType = "dashboard";
+        mViewModel.setSelectedIcon(settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard");
+        currentType = settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard";
 
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements
@@ -62,10 +63,11 @@ public class SideMenuFragment extends Fragment {
 
         });
 
-        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
             View sessionButton = view.findViewById(R.id.session_button);
             sessionButton.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
+            View dashboardButton = view.findViewById(R.id.dashboard_button);
+            dashboardButton.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
     }
 
@@ -168,7 +170,7 @@ public class SideMenuFragment extends Fragment {
      * Add the sub menu to the view.
      */
     private void addSubMenu() {
-        changeViewParams(150, 22);
+//        changeViewParams(150, 22);
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                 .commitNow();
@@ -185,7 +187,7 @@ public class SideMenuFragment extends Fragment {
                     .remove(fragment)
                     .commitNow();
 
-            changeViewParams(200, 45);
+//            changeViewParams(200, 45);
         }
     }
 
