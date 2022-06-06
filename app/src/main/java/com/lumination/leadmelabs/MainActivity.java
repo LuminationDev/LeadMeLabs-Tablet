@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
+import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -110,10 +111,20 @@ public class MainActivity extends AppCompatActivity {
                 .commitNow();
 
         //Loading the home screen
-        fragmentManager.beginTransaction()
-                .replace(R.id.main, DashboardPageFragment.class, null)
-                .addToBackStack("menu:dashboard")
-                .commit();
+        if (ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main, ControlPageFragment.class, null)
+                    .addToBackStack("menu:controls")
+                    .commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
+                    .commitNow();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main, DashboardPageFragment.class, null)
+                    .addToBackStack("menu:dashboard")
+                    .commit();
+        }
     }
 
     /**
