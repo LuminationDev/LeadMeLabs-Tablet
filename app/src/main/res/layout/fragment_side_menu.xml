@@ -29,9 +29,12 @@
             app:flexDirection="column"
             app:alignItems="center">
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
                 style="@style/SideMenuIcon"
                 android:id="@+id/dashboard_button"
+                app:flexDirection="column"
+                app:alignItems="center"
+                app:justifyContent="center"
                 android:background="@{sideMenu.selectedIcon.equals(`dashboard`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
@@ -42,11 +45,14 @@
                 <TextView
                     style="@style/SideMenuLabel"
                     android:text="Dashboard"/>
-            </LinearLayout>
+            </com.google.android.flexbox.FlexboxLayout>
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
                 style="@style/SideMenuIcon"
                 android:id="@+id/session_button"
+                app:flexDirection="column"
+                app:alignItems="center"
+                app:justifyContent="center"
                 android:background="@{sideMenu.selectedIcon.equals(`session`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
@@ -56,12 +62,15 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:text="VR Session"/>
-            </LinearLayout>
+                    android:text="VR Library"/>
+            </com.google.android.flexbox.FlexboxLayout>
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
                 style="@style/SideMenuIcon"
                 android:id="@+id/controls_button"
+                app:flexDirection="column"
+                app:alignItems="center"
+                app:justifyContent="center"
                 android:background="@{sideMenu.selectedIcon.equals(`controls`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
@@ -71,12 +80,16 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
+                    android:paddingBottom="3dp"
                     android:text="Room Controls"/>
-            </LinearLayout>
+            </com.google.android.flexbox.FlexboxLayout>
 
-            <LinearLayout
+            <com.google.android.flexbox.FlexboxLayout
                 style="@style/SideMenuIcon"
                 android:id="@+id/navigation_button_settings"
+                app:flexDirection="column"
+                app:alignItems="center"
+                app:justifyContent="center"
                 android:background="@{sideMenu.selectedIcon.equals(`navigation`) ? @drawable/bg_menu_selected : @drawable/bg_none}">
 
                 <ImageView
@@ -87,7 +100,7 @@
                 <TextView
                     style="@style/SideMenuLabel"
                     android:text="Settings"/>
-            </LinearLayout>
+            </com.google.android.flexbox.FlexboxLayout>
 
         </com.google.android.flexbox.FlexboxLayout>
 

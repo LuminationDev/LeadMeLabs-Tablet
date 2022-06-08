@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,7 +69,7 @@ public class DashboardPageFragment extends Fragment {
         String dayName = now.getDayOfWeek().name();
         dayName = dayName.substring(0, 1) + dayName.substring(1).toLowerCase(Locale.ROOT);
         dateMessage += (dayName + " ");
-        dateMessage += (now.getDayOfMonth() + " ");
+        dateMessage += (now.getDayOfMonth() + getDayOfMonthSuffix(now.getDayOfMonth()) +" ");
         String monthName = now.getMonth().name();
         monthName = monthName.substring(0, 1) + monthName.substring(1).toLowerCase(Locale.ROOT);
         dateMessage += (monthName + " ");
@@ -94,9 +95,8 @@ public class DashboardPageFragment extends Fragment {
         identify.setOnClickListener(v -> {
             int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-
-            //TODO stagger the messages
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
+            Toast.makeText(getContext(), "Stations located successfully", Toast.LENGTH_SHORT).show();
         });
 
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
@@ -157,5 +157,20 @@ public class DashboardPageFragment extends Fragment {
                 .replace(R.id.stations, StationsFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .commitNow();
+    }
+
+    String getDayOfMonthSuffix(final int n) {
+        if (n < 1 || n > 31) {
+            return "";
+        }
+        if (n >= 11 && n <= 13) {
+            return "th";
+        }
+        switch (n % 10) {
+            case 1:  return "st";
+            case 2:  return "nd";
+            case 3:  return "rd";
+            default: return "th";
+        }
     }
 }

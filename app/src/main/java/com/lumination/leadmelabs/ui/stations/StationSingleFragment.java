@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +78,7 @@ public class StationSingleFragment extends Fragment {
         pingStation.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
             NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "IdentifyStation");
+            Toast.makeText(getContext(), "Station located successfully", Toast.LENGTH_SHORT).show();
         });
 
         Button stopGame = view.findViewById(R.id.station_stop_game);
