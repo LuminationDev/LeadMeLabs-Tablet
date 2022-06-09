@@ -20,7 +20,6 @@ import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
-import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
@@ -67,6 +66,10 @@ public class SideMenuFragment extends Fragment {
 
         });
 
+        mViewModel.getWallMode().observe(getViewLifecycleOwner(), wallMode -> {
+
+        });
+
         settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
             View sessionButton = view.findViewById(R.id.session_button);
             sessionButton.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
@@ -94,7 +97,7 @@ public class SideMenuFragment extends Fragment {
             loadFragment(ControlPageFragment.class, "controls");
         });
 
-        view.findViewById(R.id.navigation_button_settings).setOnClickListener(v -> {
+        view.findViewById(R.id.settings_button).setOnClickListener(v -> {
             confirmPinCode("replace");
         });
 
@@ -138,7 +141,7 @@ public class SideMenuFragment extends Fragment {
     private void handleBackState() {
         if (MainActivity.fragmentManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry backStackEntry = MainActivity.fragmentManager.getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 2);
-            if (backStackEntry.getName().equals("menu:navigation")) {
+            if (backStackEntry.getName().equals("menu:settings")) {
                 confirmPinCode("back");
             } else {
                 MainActivity.fragmentManager.popBackStackImmediate();
@@ -180,7 +183,6 @@ public class SideMenuFragment extends Fragment {
         if (name != null) {
             String[] split = name.split(":");
 
-            Log.e("SIDE MENU", Arrays.toString(split));
             if(split.length > 2) {
                 currentType = split[2];
             } else {
@@ -290,7 +292,7 @@ public class SideMenuFragment extends Fragment {
                 MainActivity.fragmentManager.popBackStackImmediate();
                 break;
             case "replace":
-                loadFragment(SettingsPageFragment.class, "navigation");
+                loadFragment(SettingsPageFragment.class, "settings");
                 break;
         }
         setSideMenuIcon();

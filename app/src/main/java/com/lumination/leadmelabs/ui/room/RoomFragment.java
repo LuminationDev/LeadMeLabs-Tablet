@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.room;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +17,12 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentRoomsBinding;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
-import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
-import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 public class RoomFragment extends Fragment {
 
@@ -65,17 +62,27 @@ public class RoomFragment extends Fragment {
         });
     }
 
-    private void setupButtons(List<String> rooms) {
+    private void setupButtons(HashSet<String> rooms) {
         LinearLayout layout = view.findViewById(R.id.room_fragment);
+
+        ArrayList<String> roomSet = new ArrayList<>(rooms);
+
+        //Hashset does not always maintain the order, always make sure the All is last
+        if(roomSet.contains("All")) {
+            roomSet.remove("All");
+            roomSet.add("All");
+        }
+
         //For each room in the list create an on click listener
-        for (int i = 0; i<rooms.size(); i++) {
+        for (int i = 0; i<roomSet.size(); i++) {
             androidx.appcompat.widget.AppCompatButton btn = new androidx.appcompat.widget.AppCompatButton(MainActivity.getInstance());
             btn.setTextSize(13);
-            btn.setText(rooms.get(i));
+            btn.setAllCaps(false);
+            btn.setText(roomSet.get(i));
             btn.setStateListAnimator(null);
             btn.setId(i);
 
-            if(rooms.get(i).equals("All")) {
+            if(roomSet.get(i).equals("All")) {
                 btn.setTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.white, null));
                 btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_blue_room_button, null));
             } else {
@@ -92,8 +99,8 @@ public class RoomFragment extends Fragment {
 
             int finalI = i;
             btn.setOnClickListener(v -> {
-                mViewModel.setSelectedRoom(rooms.get(finalI));
-                currentType = rooms.get(finalI);
+                mViewModel.setSelectedRoom(roomSet.get(finalI));
+                currentType = roomSet.get(finalI);
 
                 if(SideMenuFragment.currentType.equals("dashboard")) {
                     StationsFragment.getInstance().notifyDataChange();
@@ -115,14 +122,22 @@ public class RoomFragment extends Fragment {
             return;
         }
 
-        List<String> rooms = mViewModel.getRooms().getValue();
+        HashSet<String> rooms = mViewModel.getRooms().getValue();
+        ArrayList<String> roomSet = new ArrayList<>(rooms);
+
+        //Hashset does not always maintain the order, always make sure the All is last
+        if(roomSet.contains("All")) {
+            roomSet.remove("All");
+            roomSet.add("All");
+        }
+
         LinearLayout v;
 
-        for (int i = 0; i < rooms.size(); i++) {
+        for (int i = 0; i < roomSet.size(); i++) {
             v = view.findViewById(R.id.room_fragment);
             androidx.appcompat.widget.AppCompatButton btn = (androidx.appcompat.widget.AppCompatButton) v.getChildAt(i);
 
-            if(rooms.get(i).equals(mViewModel.getSelectedRoom().getValue())) {
+            if(roomSet.get(i).equals(mViewModel.getSelectedRoom().getValue())) {
                 btn.setTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.white, null));
                 btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_blue_room_button, null));
             } else {

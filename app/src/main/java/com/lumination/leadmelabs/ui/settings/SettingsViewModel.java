@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 /**
  * Only responsible for setting the address as it is saved in shared
@@ -39,7 +40,13 @@ public class SettingsViewModel extends AndroidViewModel {
     public LiveData<Boolean> getHideStationControls() {
         if (hideStationControls == null) {
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
-            hideStationControls = new MutableLiveData<>(sharedPreferences.getBoolean("hide_station_controls", true));
+            boolean wallMode = sharedPreferences.getBoolean("hide_station_controls", true);
+            if (wallMode) {
+                SideMenuFragment.mViewModel.setWallMode("on");
+            } else {
+                SideMenuFragment.mViewModel.setWallMode("off");
+            }
+            hideStationControls = new MutableLiveData<>(wallMode);
         }
         return hideStationControls;
     }

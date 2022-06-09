@@ -9,6 +9,7 @@ import java.util.List;
 public class SideMenuViewModel extends ViewModel {
     private MutableLiveData<List<String>> info;
     private MutableLiveData<String> selectedIcon = new MutableLiveData<>();
+    private MutableLiveData<String> wallMode;
 
     public LiveData<List<String>> getInfo() {
         if (info == null) {
@@ -31,5 +32,17 @@ public class SideMenuViewModel extends ViewModel {
 
     public void setSelectedIcon(String icon) {
         selectedIcon.setValue(icon);
+    }
+
+    public LiveData<String> getWallMode() {
+        if (wallMode == null) {
+            wallMode = new MutableLiveData<>();
+            wallMode.setValue("off");
+        }
+        return wallMode;
+    }
+
+    public void setWallMode(String value) {
+        wallMode.setValue(value);
     }
 }
