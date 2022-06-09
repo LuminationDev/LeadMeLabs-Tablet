@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,7 @@ public class SideMenuFragment extends Fragment {
     private FragmentSideMenuBinding binding;
     private ViewGroup.LayoutParams layout;
     public static String currentType;
+    private static int pinCodeAttempts = 0;
 
     @Nullable
     @Override
@@ -92,8 +94,7 @@ public class SideMenuFragment extends Fragment {
         });
 
         view.findViewById(R.id.navigation_button_settings).setOnClickListener(v -> {
-            removeSubMenu();
-            loadFragment(SettingsPageFragment.class, "navigation");
+            confirmPinCode("replace");
         });
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
@@ -135,21 +136,48 @@ public class SideMenuFragment extends Fragment {
      */
     private void handleBackState() {
         if (MainActivity.fragmentManager.getBackStackEntryCount() > 1) {
-            MainActivity.fragmentManager.popBackStackImmediate();
+            FragmentManager.BackStackEntry backStackEntry = MainActivity.fragmentManager.getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 2);
+            if (backStackEntry.getName().equals("menu:navigation")) {
+                confirmPinCode("back");
+            } else {
+                MainActivity.fragmentManager.popBackStackImmediate();
+            }
         }
 
+        setSideMenuIcon();
+        handleSubMenuOnNavigate();
+    }
+
+    private String getMenuName() {
         String name = MainActivity.fragmentManager
                 .getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 1)
                 .getName();
 
-        if(name != null) {
-            if(!name.startsWith("menu")) {
-                return;
-            }
+        if (name == null) {
+            return null;
+        }
 
+        if(!name.startsWith("menu")) {
+            return null;
+        }
+
+        return name;
+    }
+
+    private void setSideMenuIcon() {
+        String name = getMenuName();
+        if (name != null) {
             String[] split = name.split(":");
 
             mViewModel.setSelectedIcon(split[1]);
+        }
+
+    }
+
+    private void handleSubMenuOnNavigate() {
+        String name = getMenuName();
+        if (name != null) {
+            String[] split = name.split(":");
 
             Log.e("SIDE MENU", Arrays.toString(split));
             if(split.length > 2) {
@@ -212,5 +240,51 @@ public class SideMenuFragment extends Fragment {
      */
     private static void clearBackStack() {
         MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    private void confirmPinCode(String navigationType) {
+        pinCodeAttempts = 0;
+        View view = View.inflate(getContext(), R.layout.dialog_pin, null);
+        androidx.appcompat.app.AlertDialog pinDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(view).create();
+        pinDialog.show();
+        EditText pinEditText = view.findViewById(R.id.pin_code_input);
+        view.findViewById(R.id.pin_confirm_button).setOnClickListener(w -> {
+            View errorMessage = view.findViewById(R.id.pin_error);
+            errorMessage.setVisibility(View.GONE);
+            SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
+            String pinCode = settingsViewModel.getPinCode().getValue();
+            if (pinCode != null) {
+                String pinInput = pinEditText.getText().toString();
+                String luminationOverridePin = "5864628466"; // workaround for Lumination tech support, put in PIN for l-u-m-i-n-a-t-i-o-n and press 5 times
+                if (pinInput.equals(luminationOverridePin)) {
+                    pinCodeAttempts++;
+                }
+                if (pinCode.equals(pinInput) || (pinCodeAttempts >= 5 && pinInput.equals(luminationOverridePin))) {
+                    navigateToSettingsPage(navigationType);
+                    pinDialog.dismiss();
+                } else {
+                    errorMessage.setVisibility(View.VISIBLE);
+                }
+            } else {
+                navigateToSettingsPage(navigationType);
+                pinDialog.dismiss();
+            }
+        });
+        view.findViewById(R.id.pin_cancel_button).setOnClickListener(w -> {
+            pinDialog.dismiss();
+        });
+    }
+
+    private void navigateToSettingsPage(String navigationType) {
+        switch (navigationType) {
+            case "back":
+                MainActivity.fragmentManager.popBackStackImmediate();
+                break;
+            case "replace":
+                loadFragment(SettingsPageFragment.class, "navigation");
+                break;
+        }
+        setSideMenuIcon();
+        handleSubMenuOnNavigate();
     }
 }

@@ -47,6 +47,16 @@ public class SettingsFragment extends Fragment {
             nucDialog.show();
         });
 
+        FlexboxLayout setPinCodeButton = view.findViewById(R.id.set_pin_code);
+        setPinCodeButton.setOnClickListener(v -> {
+            buildSetPINCodeDialog();
+        });
+
+        FlexboxLayout setEncryptionKeyButton = view.findViewById(R.id.set_encryption_key);
+        setEncryptionKeyButton.setOnClickListener(v -> {
+            buildSetEncryptionKeyDialog();
+        });
+
         FlexboxLayout howToButton = view.findViewById(R.id.how_to_button);
         howToButton.setOnClickListener(v -> {
             View webViewDialogView = View.inflate(getContext(), R.layout.dialog_webview, null);
@@ -90,5 +100,29 @@ public class SettingsFragment extends Fragment {
             nucDialog.dismiss();
         });
         nucDialog = new AlertDialog.Builder(getContext()).setView(view).create();
+    }
+
+    private void buildSetPINCodeDialog() {
+        View view = View.inflate(getContext(), R.layout.dialog_set_pin, null);
+        EditText newPin = view.findViewById(R.id.pin_code_input);
+        Button pinConfirmButton = view.findViewById(R.id.pin_confirm_button);
+        AlertDialog pinDialog = new AlertDialog.Builder(getContext()).setView(view).create();
+        pinConfirmButton.setOnClickListener(v -> {
+            mViewModel.setPinCode(newPin.getText().toString());
+            pinDialog.dismiss();
+        });
+        pinDialog.show();
+    }
+
+    private void buildSetEncryptionKeyDialog() {
+        View view = View.inflate(getContext(), R.layout.dialog_set_encryption_key, null);
+        EditText newKey = view.findViewById(R.id.encryption_key_input);
+        Button encryptionKeyConfirmButton = view.findViewById(R.id.encryption_key_confirm);
+        AlertDialog encryptionDialog = new AlertDialog.Builder(getContext()).setView(view).create();
+        encryptionKeyConfirmButton.setOnClickListener(v -> {
+            mViewModel.setEncryptionKey(newKey.getText().toString());
+            encryptionDialog.dismiss();
+        });
+        encryptionDialog.show();
     }
 }
