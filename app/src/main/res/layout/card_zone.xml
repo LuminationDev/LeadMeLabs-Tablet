@@ -14,7 +14,7 @@
         android:layout_height="100dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/white_card_ripple"
+        android:background="@drawable/card_ripple_white"
         app:flexDirection="column"
         android:elevation="10dp"
         android:layout_margin="20dp"

@@ -15,23 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StationsFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
-    private View view;
     private StationAdapter stationAdapter;
     private FragmentStationsBinding binding;
+
+    public static StationsFragment instance;
+    public static StationsFragment getInstance() { return instance; }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_stations, container, false);
+        View view = inflater.inflate(R.layout.fragment_stations, container, false);
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -46,10 +52,36 @@ public class StationsFragment extends Fragment {
         binding.setStationList(stationAdapter.stationList);
         recyclerView.setAdapter(stationAdapter);
 
-        mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            stationAdapter.stationList = (ArrayList<Station>) stations;
-            stationAdapter.notifyDataSetChanged();
-            binding.setStationList(stationAdapter.stationList);
-        });
+        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
+
+        instance = this;
+    }
+
+    /**
+     * Reload the current appliance list when a room is changed.
+     */
+    public void notifyDataChange() {
+        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
+    }
+
+    private void reloadData(List<Station> stations) {
+        ArrayList<Station> stationRoom = new ArrayList<>();
+
+        String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+        if(roomType == null) {
+            roomType = "All";
+        }
+
+        for(Station station : stations) {
+            if(roomType.equals("All")) {
+                stationRoom.add(station);
+            } else if(station.room.equals(roomType)) {
+                stationRoom.add(station);
+            }
+        }
+
+        stationAdapter.stationList = stationRoom;
+        stationAdapter.notifyDataSetChanged();
+        binding.setStationList(stationAdapter.stationList);
     }
 }

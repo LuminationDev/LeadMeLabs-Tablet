@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.room.RoomFragment">
+
+    <LinearLayout
+        android:id="@+id/room_fragment"
+        style="@style/RoomContainer"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+    </LinearLayout>
+
+</layout>

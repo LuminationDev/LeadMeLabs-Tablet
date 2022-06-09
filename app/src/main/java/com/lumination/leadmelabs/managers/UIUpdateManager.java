@@ -48,9 +48,9 @@ public class UIUpdateManager {
                     if (additionalData.startsWith("List")) {
                         updateZones(additionalData.split(":", 2)[1]);
                     }
-                    if (additionalData.startsWith("SetScene")) {
-                        updateSelectedScene(additionalData);
-                    }
+//                    if (additionalData.startsWith("SetScene")) {
+//                        updateSelectedScene(additionalData);
+//                    }
                     break;
                 case "Appliances":
                     if (additionalData.startsWith("List")) {
@@ -72,9 +72,10 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("Set")) {
                         String[] values = additionalData.split(":");
-                        MainActivity.runOnUI(() -> {
-                            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[2], values[3], values[4], true);
-                        });
+
+                        MainActivity.runOnUI(() ->
+                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveAppliances(Integer.parseInt(values[1]), Integer.parseInt(values[2]), values[3])
+                        );
                     }
                     break;
                 case "Scanner":
@@ -140,12 +141,12 @@ public class UIUpdateManager {
     }
 
     //Need cleaning up when there is access to CBUS
-    private static void updateSelectedScene(String response) throws JSONException {
-        String[] values = response.split(":");
-        MainActivity.runOnUI(() -> {
-            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[1], values[2], values[3], true);
-        });
-    }
+//    private static void updateSelectedScene(String response) throws JSONException {
+//        String[] values = response.split(":");
+//        MainActivity.runOnUI(() -> {
+//            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[1], values[2], values[3], true);
+//        });
+//    }
 
     private static void updateAppliances(String jsonString) throws JSONException {
         JSONArray json = new JSONArray(jsonString);
@@ -177,8 +178,8 @@ public class UIUpdateManager {
      * @param response A string representing the IP address of the NUC.
      */
     private static void updateNUCAddress(String response) {
-        MainActivity.runOnUI(() -> {
-            ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).setNucAddress(response);
-        });
+        MainActivity.runOnUI(() ->
+                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).setNucAddress(response)
+        );
     }
 }

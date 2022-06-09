@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
@@ -114,6 +115,9 @@ public class SteamApplicationAdapter extends BaseAdapter {
             playButton.setOnClickListener(v -> {
                 viewModel.selectSelectedSteamApplication(steamApplication.id);
                 SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.rooms, RoomFragment.class, null)
+                        .commitNow();
 
                 StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
                 View newView = fragment.getView();

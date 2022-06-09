@@ -19,6 +19,7 @@ import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
@@ -170,7 +171,7 @@ public class SideMenuFragment extends Fragment {
      * Add the sub menu to the view.
      */
     private void addSubMenu() {
-//        changeViewParams(150, 22);
+        changeViewParams(150, 22);
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                 .commitNow();
@@ -187,7 +188,7 @@ public class SideMenuFragment extends Fragment {
                     .remove(fragment)
                     .commitNow();
 
-//            changeViewParams(200, 45);
+            changeViewParams(200, 45);
         }
     }
 

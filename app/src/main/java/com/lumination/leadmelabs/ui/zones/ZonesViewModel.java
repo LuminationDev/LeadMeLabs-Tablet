@@ -60,7 +60,7 @@ public class ZonesViewModel extends ViewModel {
     }
 
     public void setZones(List<Zone> zones) {
-        this.zones.setValue(zones);
+        //this.zones.setValue(zones);
     }
 
     public void setActiveScene(String automationGroup, String automationId, String sceneValue, boolean fromNuc) {
