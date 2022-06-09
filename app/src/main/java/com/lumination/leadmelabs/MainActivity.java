@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                     View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
                     Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
+                    Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_reconnect_dialog);
                     reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
                     reconnectDialog.setCancelable(false);
                     reconnectDialog.setCanceledOnTouchOutside(false);
@@ -132,6 +133,11 @@ public class MainActivity extends AppCompatActivity {
                                 },
                                 10000
                         );
+                    });
+                    closeReconnectDialogButton.setOnClickListener(w -> {
+                        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+                        reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                        reconnectDialog.dismiss();
                     });
                     reconnectDialog.show();
                     reconnectDialog.getWindow().setLayout(1200, 450);
