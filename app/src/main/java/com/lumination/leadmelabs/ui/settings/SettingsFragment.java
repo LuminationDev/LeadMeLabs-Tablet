@@ -23,6 +23,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 public class SettingsFragment extends Fragment {
 
@@ -81,13 +82,16 @@ public class SettingsFragment extends Fragment {
             mViewModel.setHideStationControls(isChecked);
 
             if(isChecked) {
+                SideMenuFragment.mViewModel.setWallMode("on");
                 MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 MainActivity.fragmentManager.beginTransaction()
                         .replace(R.id.main, SettingsFragment.class, null)
-                        .addToBackStack("menu:navigation")
+                        .addToBackStack("menu:settings")
                         .commit();
 
                 MainActivity.fragmentManager.executePendingTransactions();
+            } else {
+                SideMenuFragment.mViewModel.setWallMode("off");
             }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);

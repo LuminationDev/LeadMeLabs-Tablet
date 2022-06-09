@@ -154,13 +154,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private void preloadData() {
         SettingsFragment.mViewModel.getNuc();
-        SettingsFragment.mViewModel.getHideStationControls();
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();
         SessionControlsFragment.mViewModel.getInfo();
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
+        SideMenuFragment.mViewModel.getWallMode();
+        SettingsFragment.mViewModel.getHideStationControls();
         //ZonesFragment.mViewModel.getZones();
     }
 
