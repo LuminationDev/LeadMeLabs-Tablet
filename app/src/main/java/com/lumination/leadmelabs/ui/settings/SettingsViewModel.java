@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.ui.settings;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -37,9 +38,8 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getHideStationControls() {
         if (hideStationControls == null) {
-            hideStationControls = new MutableLiveData<Boolean>();
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
-            hideStationControls.setValue(sharedPreferences.getBoolean("hide_station_controls", true));
+            hideStationControls = new MutableLiveData<>(sharedPreferences.getBoolean("hide_station_controls", true));
         }
         return hideStationControls;
     }
@@ -48,11 +48,11 @@ public class SettingsViewModel extends AndroidViewModel {
         hideStationControls.setValue(value);
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("hide_station_controls", value.booleanValue());
+        editor.putBoolean("hide_station_controls", value);
         editor.apply();
     }
 
-    public void setNucAddress (String newValue) {
+    public void setNucAddress(String newValue) {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("nuc_address", newValue);

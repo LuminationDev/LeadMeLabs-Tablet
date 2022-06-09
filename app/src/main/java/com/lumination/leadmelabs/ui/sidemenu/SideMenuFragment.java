@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
@@ -227,6 +228,14 @@ public class SideMenuFragment extends Fragment {
      * @param newPadding A integer representing the new padding.
      */
     private void changeViewParams(int newWidth, int newPadding) {
+        Boolean hide = SettingsFragment.mViewModel.getHideStationControls().getValue();
+        if(hide != null) {
+            if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+                //If in wall mode do not change the parameters
+                return;
+            }
+        }
+
         final float scale = Objects.requireNonNull(getContext()).getResources().getDisplayMetrics().density;
         layout.width = (int) (newWidth * scale + 0.5f);
         view.setLayoutParams(layout);
