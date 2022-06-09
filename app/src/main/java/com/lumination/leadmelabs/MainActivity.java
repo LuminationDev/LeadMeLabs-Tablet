@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void preloadData() {
         SettingsFragment.mViewModel.getNuc();
+        SettingsFragment.mViewModel.getHideStationControls();
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();

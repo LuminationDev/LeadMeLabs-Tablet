@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.settings;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     @Override
@@ -69,6 +69,16 @@ public class SettingsFragment extends Fragment {
 
         CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = (compoundButton, isChecked) -> {
             mViewModel.setHideStationControls(isChecked);
+
+            if(isChecked) {
+                MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                MainActivity.fragmentManager.beginTransaction()
+                        .replace(R.id.main, SettingsFragment.class, null)
+                        .addToBackStack("menu:navigation")
+                        .commit();
+
+                MainActivity.fragmentManager.executePendingTransactions();
+            }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
     }
