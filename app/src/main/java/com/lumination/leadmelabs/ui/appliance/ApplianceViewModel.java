@@ -40,6 +40,13 @@ public class ApplianceViewModel extends ViewModel {
         return activeAppliances;
     }
 
+    /**
+     * Set the appliances that are to be controlled from the tablet. The JSON file located on the
+     * NUC is sent over and configured into the separate types.
+     * @param applianceList A JSON received from the NUC containing all CBUS objects that are
+     *                      to be controlled.
+     * @throws JSONException If the JSON is not in the correct format an exception is thrown.
+     */
     public void setAppliances(JSONArray applianceList) throws JSONException {
         List<Appliance> st = new ArrayList<>();
         HashSet<String> rooms = new HashSet<>();
@@ -74,7 +81,13 @@ public class ApplianceViewModel extends ViewModel {
         appliances.setValue(st);
     }
 
-    //Do not load in user_parameters as their data field is a string and not an object.
+    /**
+     * The result of calling the CBUS unit to find what objects are currently active. The JSON array
+     * received contains the full list of objects on the CBUS, sorting and filtering needs to be
+     * performed.
+     * @param appliances A JSON received from the NUC containing all CBUS objects.
+     * @throws JSONException If the JSON is not in the correct format an exception is thrown.
+     */
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
         HashSet<String> active = new HashSet<>();
 
@@ -91,6 +104,15 @@ public class ApplianceViewModel extends ViewModel {
         activeAppliances.setValue(active);
     }
 
+    /**
+     * Receiving a message from the NUC after another tablet has activated something on the CBUS.
+     * Update the necessary appliance object based on the supplied Id.
+     * @param id An int representing the Id of the appliance, relates directly to the Id in the
+     *           supplied JSON file.
+     * @param value An int representing the new value of the appliance object.
+     * @param room A string representing what room the appliance belongs to. Only applicable for the
+     *             scene subtype.
+     */
     public void updateActiveAppliances(int id, int value, String room) {
         if(appliances.getValue() == null) {
             getAppliances();
