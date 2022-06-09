@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -13,6 +14,9 @@ import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import android.os.Handler;
+import android.view.View;
 
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
@@ -39,6 +43,16 @@ public class UIUpdateManager {
 
         try {
             switch (actionNamespace) {
+                case "Ping":
+                    if (MainActivity.hasNotReceivedPing > 2) {
+                        MainActivity.startNucPingMonitor();
+                    }
+                    MainActivity.hasNotReceivedPing = 0;
+                    if (MainActivity.reconnectDialog != null) {
+                        MainActivity.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                        MainActivity.reconnectDialog.dismiss();
+                    }
+                    break;
                 case "Stations":
                     if (additionalData.startsWith("List")) {
                         updateStations(additionalData.split(":", 2)[1]);
@@ -80,6 +94,7 @@ public class UIUpdateManager {
                     break;
                 case "Scanner":
                     updateNUCAddress(additionalData);
+                    MainActivity.getInstance().findViewById(R.id.reconnect_overlay).setVisibility(View.GONE);
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
