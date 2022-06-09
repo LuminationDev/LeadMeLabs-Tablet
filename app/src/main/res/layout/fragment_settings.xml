@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:background="@drawable/white_card_ripple_rounded"
+                android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
                 android:padding="15dp"
                 android:layout_marginBottom="15dp">
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:background="@drawable/white_card_ripple_rounded"
+                android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
                 android:padding="15dp"
                 android:layout_marginBottom="15dp">

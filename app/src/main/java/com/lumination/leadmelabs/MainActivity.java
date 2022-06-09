@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
 
+    public static int hasNotReceivedPing = 0;
+
+    public static Handler handler;
+
+    public static androidx.appcompat.app.AlertDialog reconnectDialog;
+
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
     /**
@@ -85,8 +91,55 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             setupFragmentManager();
         }
-        //Example of RXJava
-        //Flowable.just("Hello world").subscribe(System.out::println);
+
+        startNucPingMonitor();
+    }
+
+    public static void startNucPingMonitor() {
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+        handler = new Handler(Looper.getMainLooper());
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                hasNotReceivedPing += 1;
+                if (hasNotReceivedPing > 2) {
+                    Log.e("MainActivity", "NUC Lost");
+
+                    View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
+                    Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
+                    reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
+                    reconnectDialog.setCancelable(false);
+                    reconnectDialog.setCanceledOnTouchOutside(false);
+                    reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+                    reconnectButton.setOnClickListener(w -> {
+                        reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
+                        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+                        NetworkService.broadcast("Android");
+                        new java.util.Timer().schedule( // turn animations back on after the scenes have updated
+                                new java.util.TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        MainActivity.runOnUI(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                                                reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
+                                            }
+                                        });
+                                    }
+                                },
+                                10000
+                        );
+                    });
+                    reconnectDialog.show();
+                    reconnectDialog.getWindow().setLayout(1200, 450);
+                } else {
+                    handler.postDelayed(this, 5000);
+                }
+            }
+        }, 5000);
     }
 
     @Override
