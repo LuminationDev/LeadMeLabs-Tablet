@@ -20,6 +20,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -156,6 +157,7 @@ public class DashboardPageFragment extends Fragment {
         childManager.beginTransaction()
                 .replace(R.id.stations, StationsFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.rooms, RoomFragment.class, null)
                 .commitNow();
     }
 

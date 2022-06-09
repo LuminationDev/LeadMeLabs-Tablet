@@ -16,7 +16,7 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        android:background="@{station.selected ? @drawable/white_card_ripple_blue_border : @drawable/white_card_ripple}">
+        android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_white}">
 
         <TextView
             android:id="@+id/theatre_text"

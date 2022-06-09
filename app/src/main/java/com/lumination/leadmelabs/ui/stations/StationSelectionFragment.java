@@ -6,40 +6,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationSelectionBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class StationSelectionFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
-    private View view;
     private StationAdapter stationAdapter;
-    private FragmentStationSelectionBinding binding;
+
+    public static StationSelectionFragment instance;
+    public static StationSelectionFragment getInstance() { return instance; }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_station_selection, container, false);
-        binding = DataBindingUtil.bind(view);
+        View view = inflater.inflate(R.layout.fragment_station_selection, container, false);
         return view;
     }
 
@@ -52,10 +52,7 @@ public class StationSelectionFragment extends Fragment {
         stationAdapter.stationList = new ArrayList<>();
         recyclerView.setAdapter(stationAdapter);
 
-        mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            stationAdapter.stationList = (ArrayList<Station>) stations;
-            stationAdapter.notifyDataSetChanged();
-        });
+        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
 
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
@@ -104,6 +101,35 @@ public class StationSelectionFragment extends Fragment {
                 }
             }
         });
+
+        instance = this;
+    }
+
+    /**
+     * Reload the current appliance list when a room is changed.
+     */
+    public void notifyDataChange() {
+        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
+    }
+
+    private void reloadData(List<Station> stations) {
+        ArrayList<Station> stationRoom = new ArrayList<>();
+
+        String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+        if(roomType == null) {
+            roomType = "All";
+        }
+
+        for(Station station : stations) {
+            if(roomType.equals("All")) {
+                stationRoom.add(station);
+            } else if(station.room.equals(roomType)) {
+                stationRoom.add(station);
+            }
+        }
+
+        stationAdapter.stationList = stationRoom;
+        stationAdapter.notifyDataSetChanged();
     }
 
     private void confirmLaunchGame(int[] selectedIds, int steamGameId) {

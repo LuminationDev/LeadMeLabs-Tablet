@@ -16,22 +16,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.services.NetworkService;
 
 public class SettingsFragment extends Fragment {
 
     public static SettingsViewModel mViewModel;
-    private View view;
     private AlertDialog nucDialog;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         return view;
     }
 
@@ -65,11 +66,9 @@ public class SettingsFragment extends Fragment {
         hideStationControlsLayout.setOnClickListener(v -> {
             hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked());
         });
-        CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                mViewModel.setHideStationControls(new Boolean(isChecked));
-            }
+
+        CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = (compoundButton, isChecked) -> {
+            mViewModel.setHideStationControls(isChecked);
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
     }
