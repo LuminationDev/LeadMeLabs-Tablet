@@ -21,15 +21,15 @@ import java.util.ArrayList;
 public class ApplianceAdapter extends BaseAdapter {
     private final String TAG = "ApplianceAdapter";
 
+    public static ApplianceAdapter instance;
+    public static ApplianceAdapter getInstance() { return instance; }
+
     public ArrayList<Appliance> applianceList = new ArrayList<>();
     private LayoutInflater mInflater;
-    private Context context;
-    private View list_view;
 
-    ApplianceAdapter(Context context, View list_view) {
-        this.context = context;
+    ApplianceAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.list_view = list_view;
+        instance = this;
     }
 
     @Override
@@ -69,19 +69,25 @@ public class ApplianceAdapter extends BaseAdapter {
         }
         binding.setAppliance(appliance);
 
-        Boolean active = ApplianceViewModel.activeApplianceList.contains(id);
+        boolean active;
+
+        //Determine if the appliance is active
+        if(getItemType(position).equals("scenes")) {
+            active = ApplianceViewModel.activeSceneList.contains(getItem(position));
+        } else {
+            active = ApplianceViewModel.activeApplianceList.contains(id);
+        }
 
         //Load what appliance is active or not
         setIcon(binding, getItemType(position), active);
         binding.setIsActive(new MutableLiveData<>(active));
 
         result.setOnClickListener(v -> {
-            //TODO Expand this so we can load different trigger strategies
-            String value = toggleStrategy(binding, id);
-
-            //Set the new icon and send a message to the NUC
-            setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(id));
-            NetworkService.sendMessage("NUC", "Automation", "SetId:" + appliance.id + ":" + value);
+            if(getItemType(position).equals("scenes")) {
+                sceneStrategy(binding, appliance, position);
+            } else {
+                toggleStrategy(binding, appliance, position);
+            }
         });
 
         return result;
@@ -119,6 +125,8 @@ public class ApplianceAdapter extends BaseAdapter {
                         new MutableLiveData<>(R.drawable.icon_appliance_source_1);
                 break;
 
+                //TODO add scene cases
+
             default:
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
@@ -128,16 +136,47 @@ public class ApplianceAdapter extends BaseAdapter {
     }
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
-    private String toggleStrategy(CardApplianceBinding binding, String id) {
-        if(ApplianceViewModel.activeApplianceList.contains(id)) {
+    private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, int position) {
+        //Set the new icon and send a message to the NUC
+        setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
+
+        String value;
+
+        if(ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id))) {
             binding.setIsActive(new MutableLiveData<>(false));
-            ApplianceViewModel.activeApplianceList.remove(id);
-            return "0";
+            ApplianceViewModel.activeApplianceList.remove(String.valueOf(appliance.id));
+            value = "0";
 
         } else {
             binding.setIsActive(new MutableLiveData<>(true));
-            ApplianceViewModel.activeApplianceList.add(id);
-            return "255";
+            ApplianceViewModel.activeApplianceList.add(String.valueOf(appliance.id));
+            value = "255";
         }
+
+        NetworkService.sendMessage("NUC", "Automation", "Set:0:" + appliance.automationGroup + ":" + appliance.automationId  + ":" + appliance.id + ":" + value + ":" + appliance.room);
+    }
+
+
+    private void sceneStrategy(CardApplianceBinding binding, Appliance scene, int position) {
+        //Set the new icon and send a message to the NUC
+        setIcon(binding, getItemType(position), ApplianceViewModel.activeSceneList.contains(scene));
+
+        if(ApplianceViewModel.activeSceneList.contains(scene)) {
+            //Do nothing don't want to double click something
+            return;
+        } else {
+            binding.setIsActive(new MutableLiveData<>(true));
+            ApplianceViewModel.activeSceneList.add(scene);
+        }
+
+        //Remove any scene from the activeScene list that is in the same room?
+        for(Appliance appliance : applianceList) {
+            if(ApplianceViewModel.activeSceneList.contains(appliance) && appliance.room.equals(scene.room) && appliance.id != scene.id) {
+                ApplianceViewModel.activeSceneList.remove(appliance);
+            }
+        }
+
+        notifyDataSetChanged();
+        NetworkService.sendMessage("NUC", "Automation", "Set:0:" + scene.automationGroup + ":" + scene.automationId  + ":" + scene.id + ":" + scene.automationValue + ":" + scene.room);
     }
 }

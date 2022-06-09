@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-    </data>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_selection"
@@ -13,6 +12,7 @@
         app:flexDirection="column"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
+
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,12 +67,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp">
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/select_stations"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/blue"
                 android:layout_marginRight="10dp"
+                android:textSize="16dp"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="50dp"
+                android:textAllCaps="false"
                 android:text="Play"/>
             <Button
                 android:id="@+id/cancel_button"
@@ -80,7 +84,17 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 android:textColor="@color/black"
-                android:text="Back"/>
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="50dp"
+                android:textAllCaps="false"
+                android:text="Cancel"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
-</layout>
+
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

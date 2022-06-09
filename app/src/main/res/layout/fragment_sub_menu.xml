@@ -18,7 +18,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:paddingTop="30dp"
-            android:layout_height="350dp"
+            android:layout_height="500dp"
             app:flexDirection="column"
             app:alignItems="flex_start"
             app:justifyContent="space_around">

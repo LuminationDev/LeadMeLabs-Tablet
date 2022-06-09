@@ -12,11 +12,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class ApplianceViewModel extends ViewModel {
-    public static ArrayList<String> activeApplianceList = new ArrayList<>();
-    public MutableLiveData<List<String>> activeAppliances;
+    public static HashSet<String> activeApplianceList = new HashSet<>();
+    public static HashSet<Appliance> activeSceneList = new HashSet<>();
+    public MutableLiveData<HashSet<String>> activeAppliances;
     private MutableLiveData<List<Appliance>> appliances;
 
     public LiveData<List<Appliance>> getAppliances() {
@@ -28,7 +30,7 @@ public class ApplianceViewModel extends ViewModel {
         return appliances;
     }
 
-    public LiveData<List<String>> getActiveAppliances() {
+    public LiveData<HashSet<String>> getActiveAppliances() {
         if (activeAppliances == null) {
             activeAppliances = new MutableLiveData<>();
             loadActiveAppliances();
@@ -50,7 +52,12 @@ public class ApplianceViewModel extends ViewModel {
                 //Iterator over the child objects
                 for(int x = 0; x < currentObjectList.length(); x++) {
                     JSONObject current = currentObjectList.getJSONObject(x);
-                    Appliance appliance = new Appliance(type, current.getString("name"), current.getInt("id"));
+                    Appliance appliance;
+                    if(type.equals("scenes")) {
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getInt("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
+                    } else {
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getInt("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
+                    }
                     st.add(appliance);
                 }
             }
@@ -61,7 +68,7 @@ public class ApplianceViewModel extends ViewModel {
 
     //Do not load in user_parameters as their data field is a string and not an object.
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
-        ArrayList<String> active = new ArrayList<>();
+        HashSet<String> active = new HashSet<>();
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
@@ -74,6 +81,39 @@ public class ApplianceViewModel extends ViewModel {
         }
 
         activeAppliances.setValue(active);
+    }
+
+    public void updateActiveAppliances(int id, int value, String room) {
+        if(appliances.getValue() == null) {
+            getAppliances();
+            loadActiveAppliances();
+            return;
+        }
+
+        for(Appliance appliance : appliances.getValue()) {
+            if(appliance.id == id) {
+                if(appliance.type.equals("scenes")) {
+                    for(Appliance scene : appliances.getValue()) {
+                        if(ApplianceViewModel.activeSceneList.contains(scene) && scene.room.equals(room) && scene.id != id) {
+                            ApplianceViewModel.activeSceneList.remove(scene);
+                        }
+                    }
+
+                    activeSceneList.add(appliance);
+                } else {
+                    if (value == 0) {
+                        activeApplianceList.remove(String.valueOf(id));
+                    } else {
+                        activeApplianceList.add(String.valueOf(id));
+                    }
+                }
+            }
+        }
+
+        //Update the current data set
+        if(ApplianceAdapter.getInstance() != null) {
+            ApplianceAdapter.getInstance().notifyDataSetChanged();
+        }
     }
 
     public void loadActiveAppliances() {

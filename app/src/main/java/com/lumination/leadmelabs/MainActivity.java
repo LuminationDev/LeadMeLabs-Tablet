@@ -25,6 +25,8 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
      * fragment is loaded.
      */
     private void preloadViewModels() {
+        RoomFragment.mViewModel = ViewModelProviders.of(this).get(RoomViewModel.class);
         SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
         SubMenuFragment.mViewModel = ViewModelProviders.of(this).get(SubMenuViewModel.class);
         SideMenuFragment.mViewModel = ViewModelProviders.of(this).get(SideMenuViewModel.class);
-        ZonesFragment.mViewModel = ViewModelProviders.of(this).get(ZonesViewModel.class);
+        //ZonesFragment.mViewModel = ViewModelProviders.of(this).get(ZonesViewModel.class);
     }
 
     /**
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         SessionControlsFragment.mViewModel.getInfo();
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
-        ZonesFragment.mViewModel.getZones();
+        //ZonesFragment.mViewModel.getZones();
     }
 
     /**

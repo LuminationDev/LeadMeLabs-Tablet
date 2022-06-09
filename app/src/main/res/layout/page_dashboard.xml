@@ -145,7 +145,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="11sp"
-                            android:text="Locate Stations"/>
+                            android:text="Locate stations"/>
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
@@ -173,7 +173,7 @@
                             android:textFontWeight="600"
                             android:textSize="13sp"
                             android:textColor="@color/black"
-                            android:text="Shut down"/>
+                            android:text="Shut Down"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -194,6 +194,13 @@
 
     <RelativeLayout
         android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rooms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

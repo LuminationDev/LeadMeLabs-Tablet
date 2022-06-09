@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Settings"
+            android:textColor="@color/black"
             android:textFontWeight="600"
             android:textSize="40dp" />
 
@@ -32,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:background="@drawable/white_card_ripple_rounded"
+                android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
                 android:padding="15dp"
                 android:layout_marginBottom="15dp">
@@ -40,10 +41,10 @@
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text"
+                    android:textColor="@color/black"
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
-                    android:text="Set NUC Address"
+                    android:text="Set NUC address"
                     android:drawableRight="@drawable/icon_menu_right"/>
             </com.google.android.flexbox.FlexboxLayout>
             <com.google.android.flexbox.FlexboxLayout
@@ -51,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:background="@drawable/white_card_ripple_rounded"
+                android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
                 android:padding="15dp"
                 android:layout_marginBottom="15dp">
@@ -59,7 +60,7 @@
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text"
+                    android:textColor="@color/black"
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="How to use LeadMe Labs"
@@ -108,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:background="@drawable/white_card_ripple_rounded"
+                android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
                 app:justifyContent="space_between">
                 <TextView
@@ -117,7 +118,7 @@
                     android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text"
+                    android:textColor="@color/black"
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="Hide station controls"/>
