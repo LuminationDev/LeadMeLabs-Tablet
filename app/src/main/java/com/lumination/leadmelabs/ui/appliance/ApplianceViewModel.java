@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public class ApplianceViewModel extends ViewModel {
 
     public void setAppliances(JSONArray applianceList) throws JSONException {
         List<Appliance> st = new ArrayList<>();
+        HashSet<String> rooms = new HashSet<>();
 
         //Iterator over the outer loop - different appliance types
         for (int i = 0; i < applianceList.length(); i++) {
@@ -52,6 +54,8 @@ public class ApplianceViewModel extends ViewModel {
                 //Iterator over the child objects
                 for(int x = 0; x < currentObjectList.length(); x++) {
                     JSONObject current = currentObjectList.getJSONObject(x);
+                    rooms.add(current.getString("room"));
+
                     Appliance appliance;
                     if(type.equals("scenes")) {
                         appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getInt("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
@@ -63,6 +67,10 @@ public class ApplianceViewModel extends ViewModel {
             }
         }
 
+        if(rooms.size() > 1) {
+            rooms.add("All");
+        }
+        RoomFragment.mViewModel.setRooms(rooms);
         appliances.setValue(st);
     }
 
