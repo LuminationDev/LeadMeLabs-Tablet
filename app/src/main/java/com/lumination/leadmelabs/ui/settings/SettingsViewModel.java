@@ -17,6 +17,8 @@ import com.lumination.leadmelabs.services.NetworkService;
  */
 public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> nucAddress;
+    private MutableLiveData<String> pinCode;
+    private MutableLiveData<String> encryptionKey;
     private MutableLiveData<Boolean> hideStationControls;
 
     public SettingsViewModel(@NonNull Application application) {
@@ -59,5 +61,41 @@ public class SettingsViewModel extends AndroidViewModel {
         nucAddress.setValue(newValue);
         NetworkService.sendMessage("NUC", "Stations", "List");
         NetworkService.sendMessage("NUC", "Zones", "List");
+    }
+
+    public LiveData<String> getPinCode() {
+        if (pinCode == null) {
+            pinCode = new MutableLiveData<String>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("pin_code", Context.MODE_PRIVATE);
+            pinCode.setValue(sharedPreferences.getString("pin_code", null));
+        }
+        return pinCode;
+    }
+
+    public void setPinCode(String value) {
+        getPinCode(); // to initialize if not already done
+        pinCode.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("pin_code", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("pin_code", value);
+        editor.apply();
+    }
+
+    public LiveData<String> getEncryptionKey() {
+        if (encryptionKey == null) {
+            encryptionKey = new MutableLiveData<String>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
+            encryptionKey.setValue(sharedPreferences.getString("encryption_key", null));
+        }
+        return encryptionKey;
+    }
+
+    public void setEncryptionKey(String value) {
+        getEncryptionKey(); // to initialize if not already done
+        encryptionKey.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("encryption_key", value);
+        editor.apply();
     }
 }

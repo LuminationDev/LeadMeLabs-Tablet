@@ -7,11 +7,13 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.lumination.leadmelabs.BuildConfig;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 
@@ -73,6 +75,11 @@ public class NetworkService extends Service {
 
     public static String getNUCAddress() { return NUCAddress; }
 
+    private static String getEncryptionKey() {
+        SharedPreferences sharedPreferences = MainActivity.getInstance().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("encryption_key", "");
+    }
+
     /**
      * Send a message to the NUC's server.
      */
@@ -81,7 +88,7 @@ public class NetworkService extends Service {
         String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
 
         Log.d(TAG, "Going to send: " + message);
-        message = EncryptionHelper.encrypt(message, BuildConfig.APP_KEY);
+        message = EncryptionHelper.encrypt(message, getEncryptionKey());
         int port = 8080;
 
         Log.d(TAG, "Attempting to send: " + message);
@@ -164,7 +171,7 @@ public class NetworkService extends Service {
             }
 
             String message = baos.toString();
-            message = EncryptionHelper.decrypt(message, BuildConfig.APP_KEY);
+            message = EncryptionHelper.decrypt(message, getEncryptionKey());
 
             //Get the IP address used to determine who has just connected.
             String ipAddress = clientSocket.getInetAddress().getHostAddress();
@@ -203,7 +210,7 @@ public class NetworkService extends Service {
      * @param broadcastMessage A string message to be sent.
      */
     public static void broadcast(String broadcastMessage) {
-        broadcastMessage = EncryptionHelper.encrypt(broadcastMessage, BuildConfig.APP_KEY);
+        broadcastMessage = EncryptionHelper.encrypt(broadcastMessage, getEncryptionKey());
 
         String finalBroadcastMessage = broadcastMessage;
         backgroundExecutor.submit(() -> {

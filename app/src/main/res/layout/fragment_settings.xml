@@ -66,6 +66,44 @@
                     android:drawableRight="@drawable/icon_menu_right"/>
             </com.google.android.flexbox.FlexboxLayout>
             <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/set_pin_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/white_card_ripple_rounded"
+                app:alignItems="center"
+                android:padding="15dp"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Set PIN code"
+                    android:drawableRight="@drawable/icon_menu_right"/>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/set_encryption_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/white_card_ripple_rounded"
+                app:alignItems="center"
+                android:padding="15dp"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Set encryption key"
+                    android:drawableRight="@drawable/icon_menu_right"/>
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/hide_station_controls"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
