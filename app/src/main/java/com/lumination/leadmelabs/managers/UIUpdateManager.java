@@ -48,9 +48,9 @@ public class UIUpdateManager {
                         MainActivity.startNucPingMonitor();
                     }
                     MainActivity.hasNotReceivedPing = 0;
-                    if (MainActivity.reconnectDialog != null) {
-                        MainActivity.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                        MainActivity.reconnectDialog.dismiss();
+                    if (DialogManager.reconnectDialog != null) {
+                        DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                        DialogManager.reconnectDialog.dismiss();
                     }
                     break;
                 case "Stations":
@@ -134,7 +134,7 @@ public class UIUpdateManager {
                     break;
                 case "gameName":
                     station.gameName = value;
-                    MainActivity.gameLaunchedOnStation(station.id);
+                    DialogManager.gameLaunchedOnStation(station.id);
                     break;
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);

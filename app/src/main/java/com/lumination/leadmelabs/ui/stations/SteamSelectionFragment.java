@@ -79,7 +79,7 @@ public class SteamSelectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
-        steamApplicationAdapter = new SteamApplicationAdapter(getContext(), mViewModel);
+        steamApplicationAdapter = new SteamApplicationAdapter(getContext());
         updateSteamApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             updateSteamApplicationList(stationId, steamGridView);
