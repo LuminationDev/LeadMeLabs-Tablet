@@ -23,23 +23,30 @@
                 android:layout_height="wrap_content"
                 android:text="Select Stations"
                 android:textFontWeight="600"
+                android:textColor="@color/black"
                 android:textSize="40dp"/>
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
                     android:text="Choose the stations you would like to launch "/>
                 <TextView
                     android:id="@+id/station_selection_game_name"
                     android:textColor="@color/blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="20sp"
                     android:text="Google Earth VR"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     android:text=" on."/>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>

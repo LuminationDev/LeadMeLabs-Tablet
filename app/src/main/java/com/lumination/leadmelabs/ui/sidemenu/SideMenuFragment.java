@@ -255,6 +255,7 @@ public class SideMenuFragment extends Fragment {
         androidx.appcompat.app.AlertDialog pinDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(view).create();
         pinDialog.show();
         EditText pinEditText = view.findViewById(R.id.pin_code_input);
+        pinEditText.requestFocus();
         view.findViewById(R.id.pin_confirm_button).setOnClickListener(w -> {
             View errorMessage = view.findViewById(R.id.pin_error);
             errorMessage.setVisibility(View.GONE);
@@ -265,6 +266,8 @@ public class SideMenuFragment extends Fragment {
                 String luminationOverridePin = "5864628466"; // workaround for Lumination tech support, put in PIN for l-u-m-i-n-a-t-i-o-n and press 5 times
                 if (pinInput.equals(luminationOverridePin)) {
                     pinCodeAttempts++;
+                } else {
+                    pinCodeAttempts = 0;
                 }
                 if (pinCode.equals(pinInput) || (pinCodeAttempts >= 5 && pinInput.equals(luminationOverridePin))) {
                     navigateToSettingsPage(navigationType);

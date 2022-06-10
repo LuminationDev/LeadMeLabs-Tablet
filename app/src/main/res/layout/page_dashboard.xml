@@ -24,14 +24,14 @@
                 android:textColor="#3A3A3A"
                 android:text="Welcome!"
                 android:textFontWeight="600"
-                android:textSize="40dp"/>
+                android:textSize="40sp"/>
             <TextView
                 android:id="@+id/date_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#3A3A3A"
                 android:text="Tuesday 26th April 2022"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
