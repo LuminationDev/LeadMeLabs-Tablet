@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -29,7 +30,7 @@ public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
     private View view;
     private FragmentRoomsBinding binding;
-    private static String currentType;
+    public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
     @Nullable
     @Override
@@ -45,9 +46,11 @@ public class RoomFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.setLifecycleOwner(this);
+
         if(mViewModel.getSelectedRoom().getValue() == null) {
             mViewModel.setSelectedRoom("All");
-            currentType = "All";
+            currentType.setValue("All");
         }
 
         mViewModel.getRooms().observe(getViewLifecycleOwner(), rooms -> {
@@ -100,7 +103,7 @@ public class RoomFragment extends Fragment {
             int finalI = i;
             btn.setOnClickListener(v -> {
                 mViewModel.setSelectedRoom(roomSet.get(finalI));
-                currentType = roomSet.get(finalI);
+                currentType.setValue(roomSet.get(finalI));
 
                 if(SideMenuFragment.currentType.equals("dashboard")) {
                     StationsFragment.getInstance().notifyDataChange();

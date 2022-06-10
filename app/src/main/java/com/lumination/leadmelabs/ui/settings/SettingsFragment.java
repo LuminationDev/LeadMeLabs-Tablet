@@ -16,12 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
@@ -29,12 +31,15 @@ public class SettingsFragment extends Fragment {
 
     public static SettingsViewModel mViewModel;
     private AlertDialog nucDialog;
+    private FragmentSettingsBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        binding = DataBindingUtil.bind(view);
+        return view;
     }
 
     @Override
@@ -82,7 +87,6 @@ public class SettingsFragment extends Fragment {
             mViewModel.setHideStationControls(isChecked);
 
             if(isChecked) {
-                SideMenuFragment.mViewModel.setWallMode("on");
                 MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 MainActivity.fragmentManager.beginTransaction()
                         .replace(R.id.main, SettingsFragment.class, null)
@@ -90,8 +94,6 @@ public class SettingsFragment extends Fragment {
                         .commit();
 
                 MainActivity.fragmentManager.executePendingTransactions();
-            } else {
-                SideMenuFragment.mViewModel.setWallMode("off");
             }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);

@@ -104,7 +104,7 @@ public class ApplianceAdapter extends BaseAdapter {
 
         //Add to this in the future
         switch(type) {
-            case "lighting":
+            case "lights":
                 icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_on) :
                         new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_off);
                 break;
@@ -116,7 +116,7 @@ public class ApplianceAdapter extends BaseAdapter {
                 icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_projector_on) :
                         new MutableLiveData<>(R.drawable.icon_appliance_projector_off);
                 break;
-            case "rings":
+            case "LED rings":
                 icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_ring_on) :
                         new MutableLiveData<>(R.drawable.icon_appliance_ring_off);
                 break;

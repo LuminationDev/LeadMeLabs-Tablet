@@ -18,7 +18,7 @@ public class Station {
 
     public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room) {
         this.name = name;
-        if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("null")) {
+        if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("Off")) {
             this.setSteamApplicationsFromJsonString(steamApplications);
         }
         this.id = id;
@@ -38,7 +38,7 @@ public class Station {
                 this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
             }
         }
-        Collections.sort(this.steamApplications, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+        this.steamApplications.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
     }
 
     public boolean hasSteamApplicationInstalled(int steamApplicationId)

@@ -32,7 +32,7 @@
             <TextView
                 android:id="@+id/light_button"
                 style="@style/SubMenuLabel"
-                android:textColor="@{subMenu.selectedPage.equals(`lighting`) ? @color/blue : @color/black, default=@color/black}"
+                android:textColor="@{subMenu.selectedPage.equals(`lights`) ? @color/blue : @color/black, default=@color/black}"
                 android:text="@string/lights"/>
 
             <TextView
@@ -50,7 +50,7 @@
             <TextView
                 android:id="@+id/ring_button"
                 style="@style/SubMenuLabel"
-                android:textColor="@{subMenu.selectedPage.equals(`rings`) ? @color/blue : @color/black, default=@color/black}"
+                android:textColor="@{subMenu.selectedPage.equals(`LED rings`) ? @color/blue : @color/black, default=@color/black}"
                 android:text="@string/led_rings"/>
 
             <TextView

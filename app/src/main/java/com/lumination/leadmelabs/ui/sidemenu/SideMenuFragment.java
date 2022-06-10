@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.sidemenu;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentSideMenuBinding;
+import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
@@ -25,14 +24,13 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class SideMenuFragment extends Fragment {
 
     public static SideMenuViewModel mViewModel;
     private View view;
-    private FragmentSideMenuBinding binding;
+    private FragmentMenuSideBinding binding;
     private ViewGroup.LayoutParams layout;
     public static String currentType;
     private static int pinCodeAttempts = 0;
@@ -41,7 +39,7 @@ public class SideMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_side_menu, container, false);
+        view = inflater.inflate(R.layout.fragment_menu_side, container, false);
         binding = DataBindingUtil.bind(view);
         layout = view.getLayoutParams();
         setupButtons();
@@ -55,6 +53,8 @@ public class SideMenuFragment extends Fragment {
 
         binding.setLifecycleOwner(this);
         binding.setSideMenu(mViewModel);
+        binding.setSettings(SettingsFragment.mViewModel);
+
         mViewModel.setSelectedIcon(settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard");
         currentType = settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard";
 
@@ -63,10 +63,6 @@ public class SideMenuFragment extends Fragment {
         });
 
         mViewModel.getSelectedIcon().observe(getViewLifecycleOwner(), selectedIcon -> {
-
-        });
-
-        mViewModel.getWallMode().observe(getViewLifecycleOwner(), wallMode -> {
 
         });
 

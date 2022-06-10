@@ -40,13 +40,7 @@ public class SettingsViewModel extends AndroidViewModel {
     public LiveData<Boolean> getHideStationControls() {
         if (hideStationControls == null) {
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
-            boolean wallMode = sharedPreferences.getBoolean("hide_station_controls", true);
-            if (wallMode) {
-                SideMenuFragment.mViewModel.setWallMode("on");
-            } else {
-                SideMenuFragment.mViewModel.setWallMode("off");
-            }
-            hideStationControls = new MutableLiveData<>(wallMode);
+            hideStationControls = new MutableLiveData<>(sharedPreferences.getBoolean("hide_station_controls", true));
         }
         return hideStationControls;
     }

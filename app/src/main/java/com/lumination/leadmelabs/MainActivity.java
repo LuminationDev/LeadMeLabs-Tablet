@@ -219,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
         SessionControlsFragment.mViewModel.getInfo();
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
-        SideMenuFragment.mViewModel.getWallMode();
         SettingsFragment.mViewModel.getHideStationControls();
         //ZonesFragment.mViewModel.getZones();
     }

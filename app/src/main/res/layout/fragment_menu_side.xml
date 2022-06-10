@@ -13,6 +13,11 @@
         <variable
             name="main"
             type="com.lumination.leadmelabs.MainActivity" />
+
+        <import type="com.lumination.leadmelabs.ui.settings.SettingsViewModel"/>
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -83,7 +88,7 @@
                 <TextView
                     style="@style/SideMenuLabel"
                     android:paddingBottom="3dp"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? (sideMenu.wallMode.equals(`off`) ? View.INVISIBLE : View.VISIBLE) : View.VISIBLE}"
+                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? (settings.hideStationControls ? View.VISIBLE : View.INVISIBLE) : View.VISIBLE}"
                     android:text="@string/room_controls"/>
             </com.google.android.flexbox.FlexboxLayout>
 
@@ -102,7 +107,7 @@
 
                 <TextView
                     style="@style/SideMenuLabel"
-                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? (sideMenu.wallMode.equals(`off`) ? View.INVISIBLE : View.VISIBLE) : View.VISIBLE}"
+                    android:visibility="@{sideMenu.selectedIcon.equals(`controls`) ? (settings.hideStationControls ? View.VISIBLE : View.INVISIBLE) : View.VISIBLE}"
                     android:text="@string/settings"/>
             </com.google.android.flexbox.FlexboxLayout>
 

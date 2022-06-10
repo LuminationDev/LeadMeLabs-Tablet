@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentSubMenuBinding;
+import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
@@ -21,14 +21,14 @@ public class SubMenuFragment extends Fragment {
 
     public static SubMenuViewModel mViewModel;
     private View view;
-    private FragmentSubMenuBinding binding;
+    private FragmentMenuSubBinding binding;
     private static String currentType;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_sub_menu, container, false);
+        view = inflater.inflate(R.layout.fragment_menu_sub, container, false);
         binding = DataBindingUtil.bind(view);
 
         setupButtons();
@@ -55,7 +55,7 @@ public class SubMenuFragment extends Fragment {
         view.findViewById(R.id.scene_button).setOnClickListener(v -> loadFragment("Scenes", "scenes"));
 
         MainActivity.feedback(view.findViewById(R.id.light_button));
-        view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Control", "lighting"));
+        view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Control", "lights"));
 
         MainActivity.feedback(view.findViewById(R.id.blind_button));
         view.findViewById(R.id.blind_button).setOnClickListener(v -> loadFragment("Blind Controls", "blinds"));
@@ -64,7 +64,7 @@ public class SubMenuFragment extends Fragment {
         view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projectors"));
 
         MainActivity.feedback(view.findViewById(R.id.ring_button));
-        view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "rings"));
+        view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "LED rings"));
 
         MainActivity.feedback(view.findViewById(R.id.source_button));
         view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
