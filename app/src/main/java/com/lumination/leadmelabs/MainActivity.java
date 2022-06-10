@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     reconnectButton.setOnClickListener(w -> {
                         reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
                         reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-                        NetworkService.broadcast("Android");
+                        NetworkService.broadcast("Android:Reconnect");
                         new java.util.Timer().schedule( // turn animations back on after the scenes have updated
                                 new java.util.TimerTask() {
                                     @Override
