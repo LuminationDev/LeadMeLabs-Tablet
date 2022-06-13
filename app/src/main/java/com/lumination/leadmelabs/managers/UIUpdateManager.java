@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.os.Handler;
 import android.view.View;
 
 /**
@@ -88,7 +87,7 @@ public class UIUpdateManager {
                         String[] values = additionalData.split(":");
 
                         MainActivity.runOnUI(() ->
-                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveAppliances(Integer.parseInt(values[1]), Integer.parseInt(values[2]), values[3])
+                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[1], Integer.parseInt(values[2]), values[3])
                         );
                     }
                     break;

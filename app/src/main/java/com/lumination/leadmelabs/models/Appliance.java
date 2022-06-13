@@ -12,7 +12,7 @@ public class Appliance {
     public String type;
     public String name;
     public String room;
-    public int id;
+    public String id;
     public int value; //used for appliances
     public int automationGroup;
     public int automationId;
@@ -22,7 +22,7 @@ public class Appliance {
     public MutableLiveData<Integer> icon;
     public MutableLiveData<Boolean> isActive;
 
-    public Appliance(String type, String name, String room, int id, int automationGroup, int automationId, int automationValue) {
+    public Appliance(String type, String name, String room, String id, int automationGroup, int automationId, int automationValue) {
         this.type = type;
         this.name = name;
         this.room = room;
