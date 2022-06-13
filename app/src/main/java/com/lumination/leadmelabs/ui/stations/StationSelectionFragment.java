@@ -85,17 +85,7 @@ public class StationSelectionFragment extends Fragment {
                 }
 
                 if (theatreStations.size() > 0) {
-                    View confirmDialogView = View.inflate(getContext(), R.layout.dialog_confirm, null);
-                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-                    headingText.setText("Exit theatre mode?");
-                    contentText.setText(String.join(", ", theatreStations) + (theatreStations.size() > 1 ? " are" : " is") +" currently in theatre mode. Are you sure you want to exit theatre mode?");
-                    AlertDialog confirmDialog = new AlertDialog.Builder(getContext()).setView(confirmDialogView).create();
-                    confirmButton.setOnClickListener(w -> confirmLaunchGame(selectedIds, steamGameId, confirmDialog));
-                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-                    confirmDialog.show();
+                    DialogManager.buildSelectionLaunch(getContext(), theatreStations, steamGameId, selectedIds);
                 } else {
                     confirmLaunchGame(selectedIds, steamGameId);
                 }
@@ -132,14 +122,14 @@ public class StationSelectionFragment extends Fragment {
         stationAdapter.notifyDataSetChanged();
     }
 
-    private void confirmLaunchGame(int[] selectedIds, int steamGameId) {
+    public void confirmLaunchGame(int[] selectedIds, int steamGameId) {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
         DialogManager.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId));
     }
 
-    private void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {
+    public void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {
         dialog.dismiss();
         confirmLaunchGame(selectedIds, steamGameId);
     }
