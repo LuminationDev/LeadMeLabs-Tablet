@@ -49,6 +49,24 @@
                     android:textSize="20sp"
                     android:text=" on."/>
             </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/additional_steps_warning"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:alignItems="center">
+                <ImageView
+                    app:layout_flexShrink="0"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/icon_alert"
+                    android:layout_marginRight="10dp"/>
+                <TextView
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This game may require additional steps to launch and may not be able to launch automatically."/>
+            </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
         <CheckBox
             android:id="@+id/select_all_checkbox"
