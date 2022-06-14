@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
 import com.lumination.leadmelabs.models.Station;
@@ -121,8 +122,18 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
                 StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
                 View newView = fragment.getView();
+                FlexboxLayout additionalStepsWarning = newView.findViewById(R.id.additional_steps_warning);
+                additionalStepsWarning.setVisibility(View.GONE);
                 TextView textView = newView.findViewById(R.id.station_selection_game_name);
                 textView.setText(steamApplication.name);
+                ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
+
+                gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
+                gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
+
+                if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
+                    additionalStepsWarning.setVisibility(View.VISIBLE);
+                }
             });
         }
 
