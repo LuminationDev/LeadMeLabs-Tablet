@@ -78,6 +78,22 @@ public class UIUpdateManager {
                         String value = keyValue[2];
                         updateStation(source.split(",")[1], key, value);
                     }
+                    if (additionalData.startsWith("GameLaunchFailed")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        MainActivity.gameLaunchedOnStation(station.id);
+                        String[] data = additionalData.split(":", 2);
+                        MainActivity.createBasicDialog(
+                                "Game launch failed",
+                                "Launch of " + data[1] + " failed on " + station.name
+                        );
+                    }
+                    if (additionalData.startsWith("SteamError")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        MainActivity.createBasicDialog(
+                                "Steam error",
+                                "A steam error occurred on " + station.name + ". Check the station for more details."
+                        );
+                    }
                     break;
                 case "Automation":
                     // todo need to handle a scene being updated from another tablets
