@@ -24,12 +24,13 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class RoomFragment extends Fragment {
-
     public static RoomViewModel mViewModel;
     private View view;
     private FragmentRoomsBinding binding;
+
     public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
     @Nullable

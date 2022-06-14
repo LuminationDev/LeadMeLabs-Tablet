@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -43,6 +44,36 @@ public class DialogManager {
     public static AlertDialog endSessionDialog;
 
     private static int pinCodeAttempts = 0;
+
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     */
+    public static void createBasicDialog(String titleText, String contentText) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
+        AlertDialog launchFailedDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> launchFailedDialog.dismiss());
+        confirmButton.setText(R.string.dismiss);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
+        cancelButton.setVisibility(View.GONE);
+
+        ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
+        loadingBar.setVisibility(View.GONE);
+
+        launchFailedDialog.show();
+        launchFailedDialog.getWindow().setLayout(1200, 320);
+    }
 
     /**
      * Build and show the URL dialog box. The input from the edit text field is send to the stations
@@ -401,7 +432,7 @@ public class DialogManager {
         TextView contentText = endSessionDialogView.findViewById(R.id.content_text);
         contentText.setText(MessageFormat.format("Ending session on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
 
-        endSessionStationIds =  new ArrayList<Integer>(stationIds.length);
+        endSessionStationIds =  new ArrayList<>(stationIds.length);
         for (int i : stationIds)
         {
             endSessionStationIds.add(i);

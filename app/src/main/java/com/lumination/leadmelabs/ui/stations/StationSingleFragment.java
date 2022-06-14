@@ -97,15 +97,8 @@ public class StationSingleFragment extends Fragment {
         Button endVr = view.findViewById(R.id.station_end_vr);
         endVr.setOnClickListener(v -> {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");
-<<<<<<< HEAD
             DialogManager.awaitStationEndSession(new int[] { binding.getSelectedStation().id });
         });
-=======
-            MainActivity.awaitStationEndSession(new int[] { binding.getSelectedStation().id });
-        });
-
-        buildEnterUrlDialog();
->>>>>>> main
 
         Button button = view.findViewById(R.id.enter_url);
         button.setOnClickListener(v ->

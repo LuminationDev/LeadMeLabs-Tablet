@@ -21,6 +21,7 @@ public class ApplianceViewModel extends ViewModel {
     public static HashSet<Appliance> activeSceneList = new HashSet<>();
     public MutableLiveData<HashSet<String>> activeAppliances;
     public static MutableLiveData<HashSet<String>> activeScenes;
+
     private MutableLiveData<List<Appliance>> appliances;
 
     public LiveData<List<Appliance>> getAppliances() {
@@ -158,10 +159,6 @@ public class ApplianceViewModel extends ViewModel {
         }
     }
 
-    /**
-     * Used to contact the CBUS and collects a JSON of all the objects on the unit. On return it
-     * checks what object Id's have levels or values above 0. Meaning they are active.
-     */
     public void loadActiveAppliances() {
         NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
     }

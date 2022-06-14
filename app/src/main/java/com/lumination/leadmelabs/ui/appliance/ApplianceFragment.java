@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
-import com.lumination.leadmelabs.ui.room.RoomViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,6 +25,7 @@ import java.util.List;
 public class ApplianceFragment extends Fragment {
     public static ApplianceViewModel mViewModel;
     private String title;
+
     public static MutableLiveData<String> type = new MutableLiveData<>();
     public static MutableLiveData<Integer> applianceCount = new MutableLiveData<>(0);
     public ApplianceAdapter applianceAdapter;
