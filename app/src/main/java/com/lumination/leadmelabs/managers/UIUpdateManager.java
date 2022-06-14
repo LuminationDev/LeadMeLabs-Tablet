@@ -123,6 +123,11 @@ public class UIUpdateManager {
                 return;
             }
             switch (attribute) {
+                case "session":
+                    if (value.equals("Ended")) {
+                        MainActivity.sessionEndedOnStation(station.id);
+                    }
+                    break;
                 case "status":
                     station.status = value;
                     break;

@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
@@ -105,9 +106,10 @@ public class StationSingleFragment extends Fragment {
         );
 
         Button endVr = view.findViewById(R.id.station_end_vr);
-        endVr.setOnClickListener(v ->
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR")
-        );
+        endVr.setOnClickListener(v -> {
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");
+            MainActivity.awaitStationEndSession(new int[] { binding.getSelectedStation().id });
+        });
 
         buildEnterUrlDialog();
 

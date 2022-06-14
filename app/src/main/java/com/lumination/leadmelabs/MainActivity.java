@@ -60,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
 
+    public static androidx.appcompat.app.AlertDialog endSessionDialog;
+    public static List<Integer> endSessionStationIds;
+
     public static int hasNotReceivedPing = 0;
 
     public static Handler handler;
@@ -322,6 +325,39 @@ public class MainActivity extends AppCompatActivity {
             if (gameLaunchStationIds.size() == 0) {
                 if (gameLaunchDialog != null) {
                     gameLaunchDialog.dismiss();
+                }
+            }
+        }
+    }
+
+    public static void awaitStationEndSession(int[] stationIds)
+    {
+        View endSessionDialogView = View.inflate(instance, R.layout.dialog_template, null);
+        Button confirmButton = endSessionDialogView.findViewById(R.id.confirm_button);
+        Button cancelButton = endSessionDialogView.findViewById(R.id.cancel_button);
+        TextView title = endSessionDialogView.findViewById(R.id.title);
+        TextView contentText = endSessionDialogView.findViewById(R.id.content_text);
+        title.setText("Ending session");
+        contentText.setText("Ending session on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
+        endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(instance).setView(endSessionDialogView).create();
+        endSessionStationIds =  new ArrayList<Integer>(stationIds.length);
+        for (int i : stationIds)
+        {
+            endSessionStationIds.add(i);
+        }
+        confirmButton.setOnClickListener(w -> endSessionDialog.dismiss());
+        cancelButton.setVisibility(View.GONE);
+        confirmButton.setText("Dismiss");
+        endSessionDialog.show();
+        endSessionDialog.getWindow().setLayout(1200, 380);
+    }
+
+    public static void sessionEndedOnStation(int stationId) {
+        if (endSessionStationIds != null) {
+            endSessionStationIds.removeIf(id -> id == stationId);
+            if (endSessionStationIds.size() == 0) {
+                if (endSessionDialog != null) {
+                    endSessionDialog.dismiss();
                 }
             }
         }
