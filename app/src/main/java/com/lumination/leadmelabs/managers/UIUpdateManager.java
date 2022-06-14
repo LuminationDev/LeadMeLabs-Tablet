@@ -82,17 +82,21 @@ public class UIUpdateManager {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                         MainActivity.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
-                        MainActivity.createBasicDialog(
-                                "Game launch failed",
-                                "Launch of " + data[1] + " failed on " + station.name
-                        );
+                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.createBasicDialog(
+                                    "Game launch failed",
+                                    "Launch of " + data[1] + " failed on " + station.name
+                            );
+                        }
                     }
                     if (additionalData.startsWith("SteamError")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                        MainActivity.createBasicDialog(
-                                "Steam error",
-                                "A steam error occurred on " + station.name + ". Check the station for more details."
-                        );
+                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.createBasicDialog(
+                                    "Steam error",
+                                    "A steam error occurred on " + station.name + ". Check the station for more details."
+                            );
+                        }
                     }
                     break;
                 case "Automation":
