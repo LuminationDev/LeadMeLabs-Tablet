@@ -42,6 +42,8 @@ public class DialogManager {
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
+    public static List<Integer> endSessionStationIds;
+    public static AlertDialog endSessionDialog;
 
     private static int pinCodeAttempts = 0;
 
@@ -253,6 +255,48 @@ public class DialogManager {
     }
 
     /**
+     * Build and display the reconnection dialog. Can either be dismissed through the close button
+     * or a user can select reconnect, sending a UDP broadcast out from the network service looking
+     * for active NUCs.
+     */
+    public static void buildReconnectDialog() {
+        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
+        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
+        reconnectDialog.setCancelable(false);
+        reconnectDialog.setCanceledOnTouchOutside(false);
+        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+
+        Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
+        reconnectButton.setOnClickListener(w -> {
+            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
+            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+            NetworkService.broadcast("Android");
+            new java.util.Timer().schedule( // turn animations back on after the scenes have updated
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            MainActivity.runOnUI(() -> {
+                                reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                                reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
+                            });
+                        }
+                    },
+                    10000
+            );
+        });
+
+        Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_reconnect_dialog);
+        closeReconnectDialogButton.setOnClickListener(w -> {
+            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+            reconnectDialog.dismiss();
+        });
+
+        reconnectDialog.show();
+        reconnectDialog.getWindow().setLayout(1200, 450);
+    }
+
+    /**
      * Build the launch confirmation dialog when launching a new steam experience from the station
      * selection screen.
      */
@@ -348,45 +392,36 @@ public class DialogManager {
         }
     }
 
-    /**
-     * Build and display the reconnection dialog. Can either be dismissed through the close button
-     * or a user can select reconnect, sending a UDP broadcast out from the network service looking
-     * for active NUCs.
-     */
-    public static void buildReconnectDialog() {
-        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
-        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
-        reconnectDialog.setCancelable(false);
-        reconnectDialog.setCanceledOnTouchOutside(false);
-        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+    public static void awaitStationEndSession(int[] stationIds)
+    {
+        View endSessionDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
+        Button confirmButton = endSessionDialogView.findViewById(R.id.confirm_button);
+        Button cancelButton = endSessionDialogView.findViewById(R.id.cancel_button);
+        TextView title = endSessionDialogView.findViewById(R.id.title);
+        TextView contentText = endSessionDialogView.findViewById(R.id.content_text);
+        title.setText("Ending session");
+        contentText.setText("Ending session on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
+        endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(endSessionDialogView).create();
+        endSessionStationIds =  new ArrayList<Integer>(stationIds.length);
+        for (int i : stationIds)
+        {
+            endSessionStationIds.add(i);
+        }
+        confirmButton.setOnClickListener(w -> endSessionDialog.dismiss());
+        cancelButton.setVisibility(View.GONE);
+        confirmButton.setText("Dismiss");
+        endSessionDialog.show();
+        endSessionDialog.getWindow().setLayout(1200, 380);
+    }
 
-        Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
-        reconnectButton.setOnClickListener(w -> {
-            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
-            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-            NetworkService.broadcast("Android");
-            new java.util.Timer().schedule( // turn animations back on after the scenes have updated
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            MainActivity.runOnUI(() -> {
-                                reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                                reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
-                            });
-                        }
-                    },
-                    10000
-            );
-        });
-
-        Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_reconnect_dialog);
-        closeReconnectDialogButton.setOnClickListener(w -> {
-            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-            reconnectDialog.dismiss();
-        });
-
-        reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(1200, 450);
+    public static void sessionEndedOnStation(int stationId) {
+        if (endSessionStationIds != null) {
+            endSessionStationIds.removeIf(id -> id == stationId);
+            if (endSessionStationIds.size() == 0) {
+                if (endSessionDialog != null) {
+                    endSessionDialog.dismiss();
+                }
+            }
+        }
     }
 }

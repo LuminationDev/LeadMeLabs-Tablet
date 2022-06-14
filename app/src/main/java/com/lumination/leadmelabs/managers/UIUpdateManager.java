@@ -122,6 +122,11 @@ public class UIUpdateManager {
                 return;
             }
             switch (attribute) {
+                case "session":
+                    if (value.equals("Ended")) {
+                        DialogManager.sessionEndedOnStation(station.id);
+                    }
+                    break;
                 case "status":
                     station.status = value;
                     break;
