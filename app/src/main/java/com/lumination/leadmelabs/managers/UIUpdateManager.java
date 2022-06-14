@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.os.Handler;
 import android.view.View;
 
 /**
@@ -44,13 +43,13 @@ public class UIUpdateManager {
         try {
             switch (actionNamespace) {
                 case "Ping":
-                    if (MainActivity.hasNotReceivedPing > 2) {
-                        MainActivity.startNucPingMonitor();
-                    }
+//                    if (MainActivity.hasNotReceivedPing > 3) {
+//                        MainActivity.startNucPingMonitor();
+//                    }
                     MainActivity.hasNotReceivedPing = 0;
-                    if (MainActivity.reconnectDialog != null) {
-                        MainActivity.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                        MainActivity.reconnectDialog.dismiss();
+                    if (DialogManager.reconnectDialog != null) {
+                        DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+                        DialogManager.reconnectDialog.dismiss();
                     }
                     break;
                 case "Stations":
@@ -80,10 +79,10 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("GameLaunchFailed")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                        MainActivity.gameLaunchedOnStation(station.id);
+                        DialogManager.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
                         if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
-                            MainActivity.createBasicDialog(
+                            DialogManager.createBasicDialog(
                                     "Game launch failed",
                                     "Launch of " + data[1] + " failed on " + station.name
                             );
@@ -92,7 +91,7 @@ public class UIUpdateManager {
                     if (additionalData.startsWith("SteamError")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                         if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
-                            MainActivity.createBasicDialog(
+                            DialogManager.createBasicDialog(
                                     "Steam error",
                                     "A steam error occurred on " + station.name + ". Check the station for more details."
                             );
@@ -108,7 +107,7 @@ public class UIUpdateManager {
                         String[] values = additionalData.split(":");
 
                         MainActivity.runOnUI(() ->
-                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveAppliances(Integer.parseInt(values[1]), Integer.parseInt(values[2]), values[3])
+                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[1], Integer.parseInt(values[2]), values[3])
                         );
                     }
                     break;
@@ -145,7 +144,7 @@ public class UIUpdateManager {
             switch (attribute) {
                 case "session":
                     if (value.equals("Ended")) {
-                        MainActivity.sessionEndedOnStation(station.id);
+                        DialogManager.sessionEndedOnStation(station.id);
                     }
                     break;
                 case "status":
@@ -159,7 +158,7 @@ public class UIUpdateManager {
                     break;
                 case "gameName":
                     station.gameName = value;
-                    MainActivity.gameLaunchedOnStation(station.id);
+                    DialogManager.gameLaunchedOnStation(station.id);
                     break;
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);

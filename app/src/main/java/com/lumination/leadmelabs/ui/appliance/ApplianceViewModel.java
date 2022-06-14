@@ -20,6 +20,8 @@ public class ApplianceViewModel extends ViewModel {
     public static HashSet<String> activeApplianceList = new HashSet<>();
     public static HashSet<Appliance> activeSceneList = new HashSet<>();
     public MutableLiveData<HashSet<String>> activeAppliances;
+    public static MutableLiveData<HashSet<String>> activeScenes;
+
     private MutableLiveData<List<Appliance>> appliances;
 
     public LiveData<List<Appliance>> getAppliances() {
@@ -34,6 +36,7 @@ public class ApplianceViewModel extends ViewModel {
     public LiveData<HashSet<String>> getActiveAppliances() {
         if (activeAppliances == null) {
             activeAppliances = new MutableLiveData<>();
+            activeScenes = new MutableLiveData<>();
             loadActiveAppliances();
         }
 
@@ -65,9 +68,9 @@ public class ApplianceViewModel extends ViewModel {
 
                     Appliance appliance;
                     if(type.equals("scenes")) {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getInt("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
                     } else {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getInt("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
                     }
                     st.add(appliance);
                 }
@@ -89,19 +92,26 @@ public class ApplianceViewModel extends ViewModel {
      * @throws JSONException If the JSON is not in the correct format an exception is thrown.
      */
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
-        HashSet<String> active = new HashSet<>();
+        HashSet<String> objects = new HashSet<>();
+        HashSet<String> scenes = new HashSet<>();
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
                 if (appliances.getJSONObject(i).getJSONObject("data").has("level")) {
                     if (!appliances.getJSONObject(i).getJSONObject("data").getString("level").equals("0")) {
-                        active.add(appliances.getJSONObject(i).getString("id"));
+                        objects.add(appliances.getJSONObject(i).getString("id"));
                     }
+                } else if (appliances.getJSONObject(i).getJSONObject("data").has("value")) {
+                    String value = appliances.getJSONObject(i).getJSONObject("data").getString("value");
+                    String id = appliances.getJSONObject(i).getString("id");
+                    String sceneId = id + value;
+                    scenes.add(sceneId);
                 }
             }
         }
 
-        activeAppliances.setValue(active);
+        activeAppliances.setValue(objects);
+        activeScenes.setValue(scenes);
     }
 
     /**
@@ -113,7 +123,7 @@ public class ApplianceViewModel extends ViewModel {
      * @param room A string representing what room the appliance belongs to. Only applicable for the
      *             scene subtype.
      */
-    public void updateActiveAppliances(int id, int value, String room) {
+    public void updateActiveApplianceList(String id, int value, String room) {
         if(appliances.getValue() == null) {
             getAppliances();
             loadActiveAppliances();
@@ -121,20 +131,23 @@ public class ApplianceViewModel extends ViewModel {
         }
 
         for(Appliance appliance : appliances.getValue()) {
-            if(appliance.id == id) {
+            if(appliance.id.equals(id)) {
                 if(appliance.type.equals("scenes")) {
                     for(Appliance scene : appliances.getValue()) {
-                        if(ApplianceViewModel.activeSceneList.contains(scene) && scene.room.equals(room) && scene.id != id) {
+                        if(ApplianceViewModel.activeSceneList.contains(scene) && scene.room.equals(room) && !scene.id.equals(id)) {
                             ApplianceViewModel.activeSceneList.remove(scene);
                         }
                     }
 
                     activeSceneList.add(appliance);
+
+                    //TODO test that this does not cause an infinity loop
+                    loadActiveAppliances();
                 } else {
                     if (value == 0) {
-                        activeApplianceList.remove(String.valueOf(id));
+                        activeApplianceList.remove(id);
                     } else {
-                        activeApplianceList.add(String.valueOf(id));
+                        activeApplianceList.add(id);
                     }
                 }
             }

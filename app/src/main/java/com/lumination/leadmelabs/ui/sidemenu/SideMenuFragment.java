@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
@@ -33,7 +33,6 @@ public class SideMenuFragment extends Fragment {
     private FragmentMenuSideBinding binding;
     private ViewGroup.LayoutParams layout;
     public static String currentType;
-    private static int pinCodeAttempts = 0;
 
     @Nullable
     @Override
@@ -94,7 +93,7 @@ public class SideMenuFragment extends Fragment {
         });
 
         view.findViewById(R.id.settings_button).setOnClickListener(v -> {
-            confirmPinCode("replace");
+            DialogManager.confirmPinCode(this, "replace");
         });
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
@@ -138,7 +137,7 @@ public class SideMenuFragment extends Fragment {
         if (MainActivity.fragmentManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry backStackEntry = MainActivity.fragmentManager.getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 2);
             if (backStackEntry.getName().equals("menu:settings")) {
-                confirmPinCode("back");
+                DialogManager.confirmPinCode(this, "back");
             } else {
                 MainActivity.fragmentManager.popBackStackImmediate();
             }
@@ -249,43 +248,7 @@ public class SideMenuFragment extends Fragment {
         MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    private void confirmPinCode(String navigationType) {
-        pinCodeAttempts = 0;
-        View view = View.inflate(getContext(), R.layout.dialog_pin, null);
-        androidx.appcompat.app.AlertDialog pinDialog = new androidx.appcompat.app.AlertDialog.Builder(getContext()).setView(view).create();
-        pinDialog.show();
-        EditText pinEditText = view.findViewById(R.id.pin_code_input);
-        pinEditText.requestFocus();
-        view.findViewById(R.id.pin_confirm_button).setOnClickListener(w -> {
-            View errorMessage = view.findViewById(R.id.pin_error);
-            errorMessage.setVisibility(View.GONE);
-            SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
-            String pinCode = settingsViewModel.getPinCode().getValue();
-            if (pinCode != null) {
-                String pinInput = pinEditText.getText().toString();
-                String luminationOverridePin = "5864628466"; // workaround for Lumination tech support, put in PIN for l-u-m-i-n-a-t-i-o-n and press 5 times
-                if (pinInput.equals(luminationOverridePin)) {
-                    pinCodeAttempts++;
-                } else {
-                    pinCodeAttempts = 0;
-                }
-                if (pinCode.equals(pinInput) || (pinCodeAttempts >= 5 && pinInput.equals(luminationOverridePin))) {
-                    navigateToSettingsPage(navigationType);
-                    pinDialog.dismiss();
-                } else {
-                    errorMessage.setVisibility(View.VISIBLE);
-                }
-            } else {
-                navigateToSettingsPage(navigationType);
-                pinDialog.dismiss();
-            }
-        });
-        view.findViewById(R.id.pin_cancel_button).setOnClickListener(w -> {
-            pinDialog.dismiss();
-        });
-    }
-
-    private void navigateToSettingsPage(String navigationType) {
+    public void navigateToSettingsPage(String navigationType) {
         switch (navigationType) {
             case "back":
                 MainActivity.fragmentManager.popBackStackImmediate();
@@ -294,6 +257,7 @@ public class SideMenuFragment extends Fragment {
                 loadFragment(SettingsPageFragment.class, "settings");
                 break;
         }
+
         setSideMenuIcon();
         handleSubMenuOnNavigate();
     }

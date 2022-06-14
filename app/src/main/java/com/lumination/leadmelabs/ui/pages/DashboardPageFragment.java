@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
@@ -91,7 +92,7 @@ public class DashboardPageFragment extends Fragment {
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "EndVR");
-            MainActivity.awaitStationEndSession(selectedIds);
+            DialogManager.awaitStationEndSession(selectedIds);
         });
 
         FlexboxLayout identify = view.findViewById(R.id.identify_button);

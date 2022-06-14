@@ -73,7 +73,7 @@ public class StationAdapter extends RecyclerView.Adapter {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
                     if (!station.status.equals("Off")) {
                         TextView infoText = finalResult.findViewById(R.id.card_info_text);
-                        infoText.setText("Game not installed");
+                        infoText.setText(R.string.game_not_installed);
                         infoText.setVisibility(View.VISIBLE);
                     }
                 }

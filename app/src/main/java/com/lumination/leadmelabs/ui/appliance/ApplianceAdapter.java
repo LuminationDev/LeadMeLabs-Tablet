@@ -44,7 +44,7 @@ public class ApplianceAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return applianceList.get(position).id;
+        return 0;
     }
 
     public String getItemType(int position) { return applianceList.get(position).type; }
@@ -73,10 +73,20 @@ public class ApplianceAdapter extends BaseAdapter {
 
         //Determine if the appliance is active
         if(getItemType(position).equals("scenes")) {
+            if(ApplianceViewModel.activeScenes.getValue() != null) {
+                if (ApplianceViewModel.activeScenes.getValue().contains(String.valueOf(getItem(position).id))) {
+                    ApplianceViewModel.activeSceneList.add(getItem(position));
+                }
+            }
+
             active = ApplianceViewModel.activeSceneList.contains(getItem(position));
         } else {
             active = ApplianceViewModel.activeApplianceList.contains(id);
         }
+
+        //TODO Find appropriate place to put this after more testing
+        //Clear the active list after loading
+        ApplianceViewModel.activeScenes = new MutableLiveData<>();
 
         //Load what appliance is active or not
         setIcon(binding, getItemType(position), active);
@@ -171,7 +181,7 @@ public class ApplianceAdapter extends BaseAdapter {
 
         //Remove any scene from the activeScene list that is in the same room?
         for(Appliance appliance : applianceList) {
-            if(ApplianceViewModel.activeSceneList.contains(appliance) && appliance.room.equals(scene.room) && appliance.id != scene.id) {
+            if(ApplianceViewModel.activeSceneList.contains(appliance) && appliance.room.equals(scene.room) && !appliance.id.equals(scene.id)) {
                 ApplianceViewModel.activeSceneList.remove(appliance);
             }
         }

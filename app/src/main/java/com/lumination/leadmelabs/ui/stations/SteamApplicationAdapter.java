@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -18,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 
@@ -35,16 +35,14 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
     public ArrayList<SteamApplication> steamApplicationList = new ArrayList<>();
     public static int stationId = 0;
-    private LayoutInflater mInflater;
-    private Context context;
-    private StationsViewModel viewModel;
-    private StationsViewModel stationsViewModel;
+    private final LayoutInflater mInflater;
+    private final Context context;
+    public static StationsViewModel mViewModel;
 
-    SteamApplicationAdapter(Context context, StationsViewModel viewModel) {
+    SteamApplicationAdapter(Context context) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
-        this.viewModel = viewModel;
-        stationsViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
+        mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
 
     @Override
@@ -88,33 +86,18 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
         if (stationId > 0) {
             playButton.setOnClickListener(v -> {
-                Station station = stationsViewModel.getStationById(stationId);
+                Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
                 if (station != null && station.theatreText != null) {
-                    View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
-                    Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-                    Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-                    TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-                    TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-                    headingText.setText("Exit theatre mode?");
-                    contentText.setText(station.name + " is currently in theatre mode. Are you sure you want to exit theatre mode?");
-                    AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
-                    confirmButton.setOnClickListener(w -> {
-                        NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
-                        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                        confirmDialog.dismiss();
-                        MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
-                    });
-                    cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-                    confirmDialog.show();
-                } else {
-                    NetworkService.sendMessage("Station," + stationId, "Steam", "Launch:" + steamApplication.id);
+                    DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
+                } else if(station != null) {
+                    NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
                     SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                    MainActivity.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
+                    DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
                 }
             });
         } else {
             playButton.setOnClickListener(v -> {
-                viewModel.selectSelectedSteamApplication(steamApplication.id);
+                mViewModel.selectSelectedSteamApplication(steamApplication.id);
                 SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
                 MainActivity.fragmentManager.beginTransaction()
                         .replace(R.id.rooms, RoomFragment.class, null)

@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class RoomFragment extends Fragment {
-
     public static RoomViewModel mViewModel;
     private View view;
     private FragmentRoomsBinding binding;
+
     public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
     @Nullable

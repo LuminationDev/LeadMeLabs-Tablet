@@ -17,10 +17,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -46,9 +44,6 @@ import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
 
@@ -58,18 +53,9 @@ public class MainActivity extends AppCompatActivity {
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;
     public static MutableLiveData<Integer> fragmentCount;
-
-    public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
-    public static List<Integer> gameLaunchStationIds;
-
-    public static androidx.appcompat.app.AlertDialog endSessionDialog;
-    public static List<Integer> endSessionStationIds;
-
     public static int hasNotReceivedPing = 0;
 
     public static Handler handler;
-
-    public static androidx.appcompat.app.AlertDialog reconnectDialog;
 
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
@@ -129,43 +115,9 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 hasNotReceivedPing += 1;
-                if (hasNotReceivedPing > 2) {
+                if (hasNotReceivedPing > 3) {
                     Log.e("MainActivity", "NUC Lost");
-
-                    View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
-                    Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
-                    Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_reconnect_dialog);
-                    reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
-                    reconnectDialog.setCancelable(false);
-                    reconnectDialog.setCanceledOnTouchOutside(false);
-                    reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-                    reconnectButton.setOnClickListener(w -> {
-                        reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
-                        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-                        NetworkService.broadcast("Android:Reconnect");
-                        new java.util.Timer().schedule( // turn animations back on after the scenes have updated
-                                new java.util.TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        MainActivity.runOnUI(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                                                reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
-                                            }
-                                        });
-                                    }
-                                },
-                                10000
-                        );
-                    });
-                    closeReconnectDialogButton.setOnClickListener(w -> {
-                        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-                        reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                        reconnectDialog.dismiss();
-                    });
-                    reconnectDialog.show();
-                    reconnectDialog.getWindow().setLayout(1200, 450);
+                    DialogManager.buildReconnectDialog();
                 } else {
                     handler.postDelayed(this, 5000);
                 }
@@ -317,71 +269,5 @@ public class MainActivity extends AppCompatActivity {
 
            return false;
        });
-    }
-
-    public static void awaitStationGameLaunch(int[] stationIds, String gameName)
-    {
-        View gameLaunchDialogView = View.inflate(instance, R.layout.dialog_template, null);
-        Button confirmButton = gameLaunchDialogView.findViewById(R.id.confirm_button);
-        Button cancelButton = gameLaunchDialogView.findViewById(R.id.cancel_button);
-        TextView title = gameLaunchDialogView.findViewById(R.id.title);
-        TextView contentText = gameLaunchDialogView.findViewById(R.id.content_text);
-        title.setText("Launching Game");
-        contentText.setText("Launching " + gameName + " on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
-        gameLaunchDialog = new androidx.appcompat.app.AlertDialog.Builder(instance).setView(gameLaunchDialogView).create();
-        gameLaunchStationIds =  new ArrayList<Integer>(stationIds.length);
-        for (int i : stationIds)
-        {
-            gameLaunchStationIds.add(i);
-        }
-        confirmButton.setOnClickListener(w -> gameLaunchDialog.dismiss());
-        cancelButton.setVisibility(View.GONE);
-        confirmButton.setText("Dismiss");
-        gameLaunchDialog.show();
-        gameLaunchDialog.getWindow().setLayout(1200, 380);
-    }
-
-    public static void gameLaunchedOnStation(int stationId) {
-        if (gameLaunchStationIds != null) {
-            gameLaunchStationIds.removeIf(id -> id == stationId);
-            if (gameLaunchStationIds.size() == 0) {
-                if (gameLaunchDialog != null) {
-                    gameLaunchDialog.dismiss();
-                }
-            }
-        }
-    }
-
-    public static void awaitStationEndSession(int[] stationIds)
-    {
-        View endSessionDialogView = View.inflate(instance, R.layout.dialog_template, null);
-        Button confirmButton = endSessionDialogView.findViewById(R.id.confirm_button);
-        Button cancelButton = endSessionDialogView.findViewById(R.id.cancel_button);
-        TextView title = endSessionDialogView.findViewById(R.id.title);
-        TextView contentText = endSessionDialogView.findViewById(R.id.content_text);
-        title.setText("Ending session");
-        contentText.setText("Ending session on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
-        endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(instance).setView(endSessionDialogView).create();
-        endSessionStationIds =  new ArrayList<Integer>(stationIds.length);
-        for (int i : stationIds)
-        {
-            endSessionStationIds.add(i);
-        }
-        confirmButton.setOnClickListener(w -> endSessionDialog.dismiss());
-        cancelButton.setVisibility(View.GONE);
-        confirmButton.setText("Dismiss");
-        endSessionDialog.show();
-        endSessionDialog.getWindow().setLayout(1200, 380);
-    }
-
-    public static void sessionEndedOnStation(int stationId) {
-        if (endSessionStationIds != null) {
-            endSessionStationIds.removeIf(id -> id == stationId);
-            if (endSessionStationIds.size() == 0) {
-                if (endSessionDialog != null) {
-                    endSessionDialog.dismiss();
-                }
-            }
-        }
     }
 }
