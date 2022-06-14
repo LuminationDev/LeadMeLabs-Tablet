@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     public static Handler UIHandler;
     public static FragmentManager fragmentManager;
     public static MutableLiveData<Integer> fragmentCount;
-
     public static int hasNotReceivedPing = 0;
 
     public static Handler handler;
@@ -64,6 +64,26 @@ public class MainActivity extends AppCompatActivity {
      */
     public static void runOnUI(Runnable runnable) {
         UIHandler.post(runnable);
+    }
+
+    public static void createBasicDialog(String titleText, String contentText) {
+        MainActivity.runOnUI(() -> {
+            View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
+            Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
+            Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
+            ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
+            TextView title = basicDialogView.findViewById(R.id.title);
+            TextView contentView = basicDialogView.findViewById(R.id.content_text);
+            title.setText(titleText);
+            contentView.setText(contentText);
+            AlertDialog launchFailedDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+            confirmButton.setOnClickListener(w -> launchFailedDialog.dismiss());
+            cancelButton.setVisibility(View.GONE);
+            loadingBar.setVisibility(View.GONE);
+            confirmButton.setText("Dismiss");
+            launchFailedDialog.show();
+            launchFailedDialog.getWindow().setLayout(1200, 320);
+        });
     }
 
     @Override

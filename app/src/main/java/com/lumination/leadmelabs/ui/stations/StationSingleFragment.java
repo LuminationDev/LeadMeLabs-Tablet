@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
