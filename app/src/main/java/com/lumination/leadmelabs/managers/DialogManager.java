@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -22,6 +24,7 @@ import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
@@ -39,6 +42,8 @@ public class DialogManager {
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
+
+    private static int pinCodeAttempts = 0;
 
     /**
      * Build and show the URL dialog box. The input from the edit text field is send to the stations
@@ -164,6 +169,49 @@ public class DialogManager {
         });
 
         pinDialog.show();
+    }
+
+    public static void confirmPinCode(SideMenuFragment sideMenuFragment, String navigationType) {
+        pinCodeAttempts = 0;
+        View view = View.inflate(sideMenuFragment.getContext(), R.layout.dialog_pin, null);
+        AlertDialog pinDialog = new AlertDialog.Builder(sideMenuFragment.getContext()).setView(view).create();
+
+        pinDialog.show();
+        EditText pinEditText = view.findViewById(R.id.pin_code_input);
+        pinEditText.requestFocus();
+        view.findViewById(R.id.pin_confirm_button).setOnClickListener(w -> {
+            View errorMessage = view.findViewById(R.id.pin_error);
+            errorMessage.setVisibility(View.GONE);
+
+            String pinCode = SettingsFragment.mViewModel.getPinCode().getValue();
+
+            if (pinCode != null) {
+                String pinInput = pinEditText.getText().toString();
+                String luminationOverridePin = "5864628466"; // workaround for Lumination tech support, put in PIN for l-u-m-i-n-a-t-i-o-n and press 5 times
+
+                if (pinInput.equals(luminationOverridePin)) {
+                    pinCodeAttempts++;
+                } else {
+                    pinCodeAttempts = 0;
+                }
+
+                if (pinCode.equals(pinInput) || (pinCodeAttempts >= 5 && pinInput.equals(luminationOverridePin))) {
+                    sideMenuFragment.navigateToSettingsPage(navigationType);
+                    pinDialog.dismiss();
+                } else {
+                    errorMessage.setVisibility(View.VISIBLE);
+                }
+            }
+            //TODO delete after testing - lets user through without inputting a pin
+            else {
+                sideMenuFragment.navigateToSettingsPage(navigationType);
+                pinDialog.dismiss();
+            }
+        });
+
+        view.findViewById(R.id.pin_cancel_button).setOnClickListener(w -> {
+            pinDialog.dismiss();
+        });
     }
 
     /**

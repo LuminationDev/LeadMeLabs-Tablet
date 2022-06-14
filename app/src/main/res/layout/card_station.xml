@@ -61,7 +61,7 @@
                     android:drawablePadding="5dp"
                     android:textColor="@color/orange"
                     android:textSize="11sp"
-                    android:text="Game not installed"
+                    android:text="@string/game_not_installed"
                     android:visibility="gone"
                     app:drawableLeftCompat="@drawable/icon_alert" />
 
