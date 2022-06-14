@@ -43,9 +43,9 @@ public class UIUpdateManager {
         try {
             switch (actionNamespace) {
                 case "Ping":
-                    if (MainActivity.hasNotReceivedPing > 2) {
-                        MainActivity.startNucPingMonitor();
-                    }
+//                    if (MainActivity.hasNotReceivedPing > 3) {
+//                        MainActivity.startNucPingMonitor();
+//                    }
                     MainActivity.hasNotReceivedPing = 0;
                     if (DialogManager.reconnectDialog != null) {
                         DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
@@ -76,6 +76,26 @@ public class UIUpdateManager {
                         String key = keyValue[1];
                         String value = keyValue[2];
                         updateStation(source.split(",")[1], key, value);
+                    }
+                    if (additionalData.startsWith("GameLaunchFailed")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        DialogManager.gameLaunchedOnStation(station.id);
+                        String[] data = additionalData.split(":", 2);
+                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.createBasicDialog(
+                                    "Game launch failed",
+                                    "Launch of " + data[1] + " failed on " + station.name
+                            );
+                        }
+                    }
+                    if (additionalData.startsWith("SteamError")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.createBasicDialog(
+                                    "Steam error",
+                                    "A steam error occurred on " + station.name + ". Check the station for more details."
+                            );
+                        }
                     }
                     break;
                 case "Automation":

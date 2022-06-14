@@ -34,4 +34,5 @@
     <string name="exit_theatre">Exit theatre mode?</string>
     <string name="exit_current_theatre_mode">\" is currently in theatre mode. Are you sure you want to exit theatre mode?\"</string>
     <string name="game_not_installed">Game not installed</string>
+    <string name="ending_session">Ending session</string>
 </resources>

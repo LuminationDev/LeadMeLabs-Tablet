@@ -92,7 +92,11 @@ public class DashboardPageFragment extends Fragment {
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "EndVR");
+<<<<<<< HEAD
             DialogManager.awaitStationEndSession(selectedIds);
+=======
+            MainActivity.awaitStationEndSession(selectedIds);
+>>>>>>> main
         });
 
         FlexboxLayout identify = view.findViewById(R.id.identify_button);

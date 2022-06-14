@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -24,7 +22,6 @@ import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
@@ -56,6 +53,7 @@ public class DialogManager {
         AlertDialog urlDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
 
         EditText url = view.findViewById(R.id.url_input);
+        url.requestFocus();
         TextView errorText = view.findViewById(R.id.error_text);
 
         Button submit = view.findViewById(R.id.submit_button);
@@ -395,21 +393,27 @@ public class DialogManager {
     public static void awaitStationEndSession(int[] stationIds)
     {
         View endSessionDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        Button confirmButton = endSessionDialogView.findViewById(R.id.confirm_button);
-        Button cancelButton = endSessionDialogView.findViewById(R.id.cancel_button);
+        endSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(endSessionDialogView).create();
+
         TextView title = endSessionDialogView.findViewById(R.id.title);
+        title.setText(R.string.ending_session);
+
         TextView contentText = endSessionDialogView.findViewById(R.id.content_text);
-        title.setText("Ending session");
-        contentText.setText("Ending session on " + String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds)));
-        endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(endSessionDialogView).create();
+        contentText.setText(MessageFormat.format("Ending session on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
+
         endSessionStationIds =  new ArrayList<Integer>(stationIds.length);
         for (int i : stationIds)
         {
             endSessionStationIds.add(i);
         }
+
+        Button confirmButton = endSessionDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> endSessionDialog.dismiss());
+        confirmButton.setText(R.string.dismiss);
+
+        Button cancelButton = endSessionDialogView.findViewById(R.id.cancel_button);
         cancelButton.setVisibility(View.GONE);
-        confirmButton.setText("Dismiss");
+
         endSessionDialog.show();
         endSessionDialog.getWindow().setLayout(1200, 380);
     }
