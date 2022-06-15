@@ -88,4 +88,39 @@
         android:stateListAnimator="@null"
         android:text="Update"/>
 
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flexDirection="column"
+        app:alignItems="center"
+        app:justifyContent="center">
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="140dp"
+            android:layout_marginVertical="20dp"
+            android:background="@color/grey"
+            app:flexDirection="column"
+            app:alignItems="center"
+            app:justifyContent="center"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manually resend the connection message to the NUC">
+    </TextView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/refresh_nuc_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:strokeColor="@color/blue"
+        app:strokeWidth="2dp"
+        android:textColor="@color/blue"
+        android:backgroundTint="@android:color/white"
+        app:rippleColor="@color/grey"
+        android:stateListAnimator="@null"
+        android:text="Refresh"/>
+
 </com.google.android.flexbox.FlexboxLayout>

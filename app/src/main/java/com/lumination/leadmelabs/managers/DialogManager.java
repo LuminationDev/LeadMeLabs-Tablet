@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -172,13 +173,26 @@ public class DialogManager {
         });
 
         Button scan_button = view.findViewById(R.id.scan_nuc_address);
-        scan_button.setOnClickListener(v -> NetworkService.broadcast("Android"));
+        scan_button.setOnClickListener(v -> {
+            NetworkService.broadcast("Android");
+            nucDialog.dismiss();
+        });
 
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString());
             nucDialog.dismiss();
+        });
+
+        Button refreshAddress = view.findViewById(R.id.refresh_nuc_button);
+        refreshAddress.setOnClickListener(v -> {
+            if(NetworkService.getNUCAddress() != null) {
+                SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
+                nucDialog.dismiss();
+            } else {
+                Toast.makeText(context, "NUC address needs to be set.", Toast.LENGTH_LONG).show();
+            }
         });
 
         nucDialog.show();
