@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -128,6 +129,8 @@ public class StationSelectionFragment extends Fragment {
 
         stationAdapter.stationList = stationRoom;
         stationAdapter.notifyDataSetChanged();
+        TextView noStationsAvailable = getView().findViewById(R.id.no_stations_available);
+        noStationsAvailable.setVisibility(stationRoom.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public void confirmLaunchGame(int[] selectedIds, int steamGameId) {

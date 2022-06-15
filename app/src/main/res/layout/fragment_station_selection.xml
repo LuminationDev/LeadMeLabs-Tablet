@@ -103,6 +103,15 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
+        <TextView
+            android:id="@+id/no_stations_available"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:paddingVertical="20dp"
+            android:text="No stations available in selected room."/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stations_list"
             android:layout_width="match_parent"
