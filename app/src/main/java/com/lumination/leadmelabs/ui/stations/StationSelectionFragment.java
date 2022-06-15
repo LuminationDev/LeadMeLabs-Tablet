@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,6 +90,14 @@ public class StationSelectionFragment extends Fragment {
                     confirmLaunchGame(selectedIds, steamGameId);
                 }
             }
+        });
+
+        Button identifyStations = view.findViewById(R.id.identify_button);
+        identifyStations.setOnClickListener(v -> {
+            int[] selectedIds = stationAdapter.stationList.stream().mapToInt(station -> station.id).toArray();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
+            Toast.makeText(getContext(), "Stations located successfully", Toast.LENGTH_SHORT).show();
         });
 
         instance = this;

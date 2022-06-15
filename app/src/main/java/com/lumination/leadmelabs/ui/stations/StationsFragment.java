@@ -49,6 +49,7 @@ public class StationsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, true);
         stationAdapter.stationList = new ArrayList<>();
+        binding.setStationsLoaded(false);
         binding.setStationList(stationAdapter.stationList);
         recyclerView.setAdapter(stationAdapter);
 
@@ -83,5 +84,11 @@ public class StationsFragment extends Fragment {
         stationAdapter.stationList = stationRoom;
         stationAdapter.notifyDataSetChanged();
         binding.setStationList(stationAdapter.stationList);
+        binding.setStationsLoaded(true);
+    }
+
+    public ArrayList<Station> getRoomStations()
+    {
+        return stationAdapter.stationList;
     }
 }

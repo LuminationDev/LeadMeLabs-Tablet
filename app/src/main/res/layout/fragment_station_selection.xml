@@ -7,112 +7,141 @@
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_selection"
-        android:background="@color/grey"
-        tools:context=".ui.stations.StationSelectionFragment"
-        app:flexDirection="column"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:background="@color/grey"
+        app:flexDirection="column"
+        tools:context=".ui.stations.StationSelectionFragment">
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:flexDirection="column"
-            android:padding="30dp">
+            android:padding="30dp"
+            app:flexDirection="column">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Select Stations"
-                android:textFontWeight="600"
                 android:textColor="@color/black"
-                android:textSize="40dp"/>
+                android:textFontWeight="600"
+                android:textSize="40dp" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:flexWrap="wrap">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
+                    android:text="Choose the stations you would like to launch "
                     android:textColor="@color/black"
-                    android:text="Choose the stations you would like to launch "/>
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/station_selection_game_name"
-                    android:textColor="@color/blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:text="Google Earth VR"/>
+                    android:text="Google Earth VR"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text=" on."
                     android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:text=" on."/>
+                    android:textSize="20sp" />
             </com.google.android.flexbox.FlexboxLayout>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/additional_steps_warning"
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 app:alignItems="center">
+
                 <ImageView
-                    app:layout_flexShrink="0"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
                     android:src="@drawable/icon_alert"
-                    android:layout_marginRight="10dp"/>
+                    app:layout_flexShrink="0" />
+
                 <TextView
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="This game may require additional steps to launch and may not be able to launch automatically."/>
+                    android:text="This game may require additional steps to launch and may not be able to launch automatically."
+                    android:textColor="@color/black" />
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
-        <CheckBox
-            android:id="@+id/select_all_checkbox"
-            android:layout_width="wrap_content"
-            android:buttonTint="@color/blue"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:gravity="center"
-            android:paddingTop="3dp"
-            android:text="Select All Available" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stations_list"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            android:layout_marginHorizontal="20dp">
+            <CheckBox
+                android:id="@+id/select_all_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/blue"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="Select All Available" />
+
+            <Button
+                android:id="@+id/identify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.01"
+                android:text="Identify Stations"
+                android:drawableLeft="@drawable/ic_identify_station_small"
+                android:textAllCaps="false"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stations_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="10dp"
             tools:listitem="@layout/card_station" />
+
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/select_stations"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/blue"
                 android:layout_marginRight="10dp"
-                android:textSize="16dp"
-                android:paddingVertical="10dp"
+                android:backgroundTint="@color/blue"
                 android:paddingHorizontal="50dp"
+                android:paddingVertical="10dp"
+                android:text="Play"
                 android:textAllCaps="false"
-                android:text="Play"/>
+                android:textSize="16dp" />
+
             <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:paddingVertical="10dp"
                 android:paddingHorizontal="50dp"
+                android:paddingVertical="10dp"
+                android:text="Cancel"
                 android:textAllCaps="false"
-                android:text="Cancel"/>
+                android:textColor="@color/black" />
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 
