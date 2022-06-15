@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.pages;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
@@ -32,17 +34,18 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class DashboardPageFragment extends Fragment {
-    private View view;
     private FragmentManager childManager;
+    private static boolean identifying = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_dashboard, container, false);
+        View view = inflater.inflate(R.layout.page_dashboard, container, false);
         childManager = getChildFragmentManager();
         return view;
     }
@@ -97,10 +100,8 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
-            int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
-            Toast.makeText(getContext(), "Stations located successfully", Toast.LENGTH_SHORT).show();
+            List<Station> stations = StationsFragment.getInstance().getRoomStations();
+            identifyStations(stations);
         });
 
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
@@ -142,5 +143,46 @@ public class DashboardPageFragment extends Fragment {
             case 3:  return "rd";
             default: return "th";
         }
+    }
+
+    /**
+     * Cycle through the connected stations, triggering the identify stations overlay and the
+     * associated LED rings.
+     */
+    public static void identifyStations(List<Station> stations) {
+        if(identifying) {
+            return;
+        } else {
+            identifying = true;
+        }
+
+        if(stations == null || stations.size() == 0) {
+            Toast.makeText(MainActivity.getInstance(), "No stations located", Toast.LENGTH_SHORT).show();
+            identifying = false;
+            return;
+        }
+
+        //Run in a new thread as to not block the main thread when staggering
+        Thread triggerThread = new Thread(() -> {
+            for (Station current: stations) {
+                //Trigger the overlay
+                NetworkService.sendMessage("Station," + current.id, "CommandLine", "IdentifyStation");
+
+                //Trigger the LED ring to flash - run the script on the CBUS with the provided context (the associated LED ring id - CBUS group id not actual id)
+                NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + current.associated.automationId);
+
+                //Wait for a little bit so the overall effect is staggered
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            identifying = false;
+        });
+
+        triggerThread.start();
+        Toast.makeText(MainActivity.getInstance(), "Stations located successfully", Toast.LENGTH_SHORT).show();
     }
 }

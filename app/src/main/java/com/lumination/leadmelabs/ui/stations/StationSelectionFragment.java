@@ -95,10 +95,8 @@ public class StationSelectionFragment extends Fragment {
 
         Button identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
-            int[] selectedIds = stationAdapter.stationList.stream().mapToInt(station -> station.id).toArray();
-            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
-            Toast.makeText(getContext(), "Stations located successfully", Toast.LENGTH_SHORT).show();
+            List<Station> stations = stationAdapter.stationList;
+            DashboardPageFragment.identifyStations(stations);
         });
 
         instance = this;

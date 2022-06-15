@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +73,13 @@ public class ApplianceViewModel extends ViewModel {
                         appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
                     } else {
                         appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
+
+                        if(type.equals("LED rings")) {
+                            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
+                            if(temp != null) {
+                                temp.associated = appliance;
+                            }
+                        }
                     }
                     st.add(appliance);
                 }

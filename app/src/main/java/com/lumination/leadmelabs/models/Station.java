@@ -15,6 +15,7 @@ public class Station {
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
     public int theatreId;
     public boolean selected = false;
+    public Appliance associated = null;
 
     public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room) {
         this.name = name;
