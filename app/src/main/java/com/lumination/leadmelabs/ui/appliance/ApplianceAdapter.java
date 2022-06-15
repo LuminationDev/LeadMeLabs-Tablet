@@ -147,9 +147,6 @@ public class ApplianceAdapter extends BaseAdapter {
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
     private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, int position) {
-        //Set the new icon and send a message to the NUC
-        setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
-
         String value;
 
         if(ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id))) {
@@ -162,6 +159,9 @@ public class ApplianceAdapter extends BaseAdapter {
             ApplianceViewModel.activeApplianceList.add(String.valueOf(appliance.id));
             value = "255";
         }
+
+        //Set the new icon and send a message to the NUC
+        setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
 
         NetworkService.sendMessage("NUC", "Automation", "Set:0:" + appliance.automationGroup + ":" + appliance.automationId  + ":" + appliance.id + ":" + value + ":" + appliance.room);
     }
