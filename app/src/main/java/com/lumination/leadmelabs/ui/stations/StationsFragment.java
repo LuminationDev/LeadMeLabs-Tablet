@@ -84,4 +84,9 @@ public class StationsFragment extends Fragment {
         stationAdapter.notifyDataSetChanged();
         binding.setStationList(stationAdapter.stationList);
     }
+
+    public ArrayList<Station> getRoomStations()
+    {
+        return stationAdapter.stationList;
+    }
 }
