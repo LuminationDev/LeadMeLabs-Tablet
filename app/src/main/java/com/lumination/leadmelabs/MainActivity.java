@@ -40,8 +40,6 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";

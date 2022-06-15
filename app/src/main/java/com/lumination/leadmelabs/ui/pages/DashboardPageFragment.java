@@ -1,12 +1,9 @@
 package com.lumination.leadmelabs.ui.pages;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -27,7 +23,6 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
@@ -73,11 +68,11 @@ public class DashboardPageFragment extends Fragment {
         LocalDate now = LocalDate.now();
         String dateMessage = "";
         String dayName = now.getDayOfWeek().name();
-        dayName = dayName.substring(0, 1) + dayName.substring(1).toLowerCase(Locale.ROOT);
+        dayName = dayName.charAt(0) + dayName.substring(1).toLowerCase(Locale.ROOT);
         dateMessage += (dayName + " ");
         dateMessage += (now.getDayOfMonth() + getDayOfMonthSuffix(now.getDayOfMonth()) +" ");
         String monthName = now.getMonth().name();
-        monthName = monthName.substring(0, 1) + monthName.substring(1).toLowerCase(Locale.ROOT);
+        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase(Locale.ROOT);
         dateMessage += (monthName + " ");
         dateMessage += (now.getYear() + " ");
         TextView dateMessageView = view.findViewById(R.id.date_message);

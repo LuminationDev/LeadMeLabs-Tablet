@@ -3,24 +3,13 @@ package com.lumination.leadmelabs.ui.stations;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.ImageView;
 
 import com.lumination.leadmelabs.R;
-
-import com.lumination.leadmelabs.databinding.CardZoneBinding;
-import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
-import com.lumination.leadmelabs.databinding.FragmentZonesBinding;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.Zone;
 import androidx.core.content.ContextCompat;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
@@ -35,7 +24,7 @@ public class StationAdapter extends RecyclerView.Adapter {
 
     public ArrayList<Station> stationList = new ArrayList<>();
     private boolean launchSingleOnTouch = false;
-    private StationsViewModel viewModel;
+    private final StationsViewModel viewModel;
 
     StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch) {
         this.launchSingleOnTouch = launchSingleOnTouch;
@@ -52,7 +41,7 @@ public class StationAdapter extends RecyclerView.Adapter {
         public void bind(Station station, int position) {
             binding.setStation(station);
             View finalResult = binding.getRoot();
-            if (launchSingleOnTouch == true) {
+            if (launchSingleOnTouch) {
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
                     viewModel.selectStation(position);

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
-import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 import java.util.List;
