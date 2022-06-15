@@ -32,6 +32,7 @@ import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -115,7 +116,7 @@ public class DialogManager {
      * Build and launch the shutdown dialog box for stations. Each time this is build a timer is
      * started to allow the users to cancel the shutdown operation.
      */
-    public static void buildShutdownDialog(Context context, FragmentStationSingleBinding binding, CompoundButton compoundButton) {
+    public static void buildShutdownDialog(Context context, int[] stationIds) {
         View view = View.inflate(context, R.layout.dialog_template, null);
         AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
         confirmDialog.setCancelable(false);
@@ -126,8 +127,9 @@ public class DialogManager {
         title.setText(R.string.shutting_down);
         contentText.setText(R.string.cancel_shutdown);
 
-        Station selectedStation = binding.getSelectedStation();
-        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "Shutdown");
+        String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "Shutdown");
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
@@ -152,8 +154,7 @@ public class DialogManager {
         }.start();
 
         cancelButton.setOnClickListener(x -> {
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "CancelShutdown");
-            compoundButton.setChecked(true);
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
             timer.cancel();
             confirmDialog.dismiss();
         });

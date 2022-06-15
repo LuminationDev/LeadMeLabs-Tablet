@@ -38,23 +38,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:text="@{selectedStation.name, default=Station}"
                         android:textFontWeight="600"
                         android:textSize="40dp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:text="Individually control a station."
                         android:textSize="20sp"/>
                 </com.google.android.flexbox.FlexboxLayout>
-                <Button
-                    android:id="@+id/new_session_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_add"
-                    android:background="@android:color/transparent"
-                    android:textColor="@color/blue"
-                    android:text="New Session"/>
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout
@@ -65,173 +59,23 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:flexDirection="column"
-                    android:paddingRight="20dp">
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_white_curved"
-                        android:padding="20dp"
-                        app:flexDirection="row"
-                        app:alignItems="center"
-                        android:layout_marginBottom="20dp"
-                        app:justifyContent="space_between">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|center_vertical"
-                            android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:drawablePadding="5dp"
-                            android:text="Station Power"
-                            android:drawableLeft="@drawable/icon_power"/>
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/power_toggle"
-                            app:thumbTint="@color/blue"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"/>
-                    </com.google.android.flexbox.FlexboxLayout>
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_white_curved"
-                        android:padding="20dp"
-                        android:layout_marginBottom="20dp"
-                        app:flexDirection="column">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|center_vertical"
-                            android:drawablePadding="5dp"
-                            android:text="Station Controls"
-                            android:drawableLeft="@drawable/icon_volume"/>
-                        <com.google.android.flexbox.FlexboxLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:justifyContent="space_between">
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/station_end_vr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:drawableTop="@drawable/compound_end_session"
-                                android:textColor="@color/blue"
-                                android:text="End Session"
-                                android:backgroundTint="@android:color/white"
-                                android:elevation="0dp"
-                                android:stateListAnimator="@null"
-                                app:rippleColor="@color/grey"/>
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/station_restart_vr"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:drawableTop="@drawable/compound_restart_session"
-                                android:textColor="@color/blue"
-                                android:text="Restart Session"
-                                android:backgroundTint="@android:color/white"
-                                android:elevation="0dp"
-                                android:stateListAnimator="@null"
-                                app:rippleColor="@color/grey"/>
-                        </com.google.android.flexbox.FlexboxLayout>
-                    </com.google.android.flexbox.FlexboxLayout>
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_white_curved"
-                        android:layout_marginBottom="20dp"
-                        android:padding="20dp"
-                        app:flexDirection="column">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|center_vertical"
-                            android:drawablePadding="5dp"
-                            android:text="Launch Website"
-                            android:drawableLeft="@drawable/icon_volume"/>
-                        <Button
-                            android:id="@+id/enter_url"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/blue"
-                            android:text="@string/launch_url" />
-                    </com.google.android.flexbox.FlexboxLayout>
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_white_curved"
-                        android:padding="20dp"
-                        app:flexDirection="column">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|center_vertical"
-                            android:drawablePadding="5dp"
-                            android:text="*Warning this will flash the station's screen."
-                            android:drawableLeft="@drawable/icon_volume"/>
-                        <Button
-                            android:id="@+id/ping_station"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/blue"
-                            android:text="Identify Station" />
-                    </com.google.android.flexbox.FlexboxLayout>
-                </com.google.android.flexbox.FlexboxLayout>
-                <com.google.android.flexbox.FlexboxLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    app:layout_flexShrink="0"
+                    android:layout_marginRight="20dp"
                     app:flexDirection="column">
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="400dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_curved"
                         android:padding="20dp"
-                        android:layout_marginBottom="20dp"
                         app:flexDirection="column">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="left|center_vertical"
                             android:drawablePadding="5dp"
+                            android:text="Current Session"
                             android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:text="Volume"
-                            android:drawableLeft="@drawable/icon_volume"/>
-                        <com.google.android.material.slider.Slider
-                            android:id="@+id/station_volume_slider"
-                            app:thumbColor="@color/blue"
-                            app:haloColor="@color/blue"
-                            app:thumbStrokeColor="@color/blue"
-                            app:trackColorActive="@color/blue"
-                            app:trackColorInactive="@color/grey"
-                            app:tickColorActive="@color/blue"
-                            app:tickColorInactive="@color/grey"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:value="@{selectedStation.volume}"
-                            android:valueFrom="0.0"
-                            android:stepSize="1.0"
-                            android:valueTo="100.0"/>
-                    </com.google.android.flexbox.FlexboxLayout>
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_white_curved"
-                        android:padding="20dp"
-                        app:flexDirection="column">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left|center_vertical"
-                            android:drawablePadding="5dp"
-                            android:text="Game Control"
-                            android:textFontWeight="600"
-                            android:textColor="@color/black"
-                            android:drawableLeft="@drawable/icon_volume"/>
+                            android:textColor="@color/black"/>
                         <ImageView
                             android:visibility="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? View.VISIBLE : View.GONE}"
                             android:layout_marginVertical="5dp"
@@ -249,7 +93,7 @@
                                 android:layout_gravity="center"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="No game selected"/>
+                                android:text="@{(selectedStation.gameName != null &amp;&amp; selectedStation.gameName.length() > 0) ? selectedStation.gameName : `No session running`}"/>
                         </LinearLayout>
                         <com.google.android.flexbox.FlexboxLayout
                             android:layout_width="match_parent"
@@ -260,7 +104,7 @@
                                 android:id="@+id/station_stop_game"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/blue"
+                                android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey}"
                                 android:text="Stop"/>
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_new_game"
@@ -275,6 +119,109 @@
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
 
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="400dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_white_curved"
+                        android:padding="20dp"
+                        android:layout_marginTop="20dp"
+                        app:flexDirection="row"
+                        app:alignItems="center">
+                        <ImageView
+                            app:layout_flexShrink="0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:src="@drawable/ic_volume"/>
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/station_volume_slider"
+                            app:thumbColor="@color/white"
+                            app:haloColor="@color/blue"
+                            app:thumbStrokeWidth="2dp"
+                            app:thumbRadius="7dp"
+                            app:thumbStrokeColor="#3A3A3A"
+                            app:trackColorActive="#3A3A3A"
+                            app:trackColorInactive="@color/grey"
+                            app:tickColorActive="#3A3A3A"
+                            app:tickColorInactive="@color/grey"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:value="@{selectedStation.volume}"
+                            android:valueFrom="0.0"
+                            android:stepSize="1.0"
+                            android:valueTo="100.0"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="400dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_white_curved"
+                        android:padding="20dp"
+                        android:layout_marginTop="20dp"
+                        app:flexDirection="row"
+                        app:alignItems="center">
+                        <ImageView
+                            app:layout_flexShrink="0"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:textColor="@color/black"
+                            android:src="@drawable/icon_alert"
+                            android:visibility="@{selectedStation.status.equals(`Not Responding`) ? View.VISIBLE : View.GONE}"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="600"
+                            android:textColor="@color/black"
+                            android:text="Station status: "/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textFontWeight="600"
+                            android:text="@{selectedStation.status}"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="50dp"
+                    app:flexDirection="row"
+                    app:justifyContent="space_between"
+                    app:flexWrap="wrap">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/new_session_button"
+                        style="@style/StationSingleButton"
+                        android:drawableTop="@drawable/ic_start_session"
+                        android:text="New Session"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/station_restart_vr"
+                        style="@style/StationSingleButton"
+                        android:drawableTop="@drawable/ic_restart_session"
+                        android:text="Restart Session"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/enter_url"
+                        style="@style/StationSingleButton"
+                        android:drawableTop="@drawable/ic_launch_website"
+                        android:text="Launch Website"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/station_end_vr"
+                        style="@style/StationSingleButton"
+                        android:drawableTop="@drawable/ic_end_session"
+                        android:text="End Session"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/ping_station"
+                        style="@style/StationSingleButton"
+                        android:drawableTop="@drawable/ic_identify_station"
+                        android:text="Identify Station"/>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/shutdown_station"
+                        style="@style/StationSingleButton"
+                        android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : @color/red}"
+                        app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : @color/red_light}"
+                        android:drawableTop="@drawable/ic_shutdown"
+                        android:text="@{selectedStation.status.equals(`Off`) ? `Power On` : `Shut Down`}"/>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
