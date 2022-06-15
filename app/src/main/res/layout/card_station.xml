@@ -82,7 +82,7 @@
                     android:text="@{station.status, default=`Off`}"/>
 
                 <TextView
-                    android:visibility="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) &amp;&amp; !station.gameName.equals(`null`) ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
