@@ -185,4 +185,19 @@
 
     <style name="DefaultContainer">
     </style>
+
+    <style name="StationSingleButton">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="rippleColor">@color/blue</item>
+        <item name="backgroundTint">@color/blue_darkest</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_marginTop">-5dp</item>
+    </style>
 </resources>

@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -105,23 +106,14 @@ public class StationSingleFragment extends Fragment {
                 DialogManager.buildURLDialog(getContext(), binding)
         );
 
-        CompoundButton.OnCheckedChangeListener powerSwitchListener = (compoundButton, isChecked) -> {
-            if (!isChecked) {
-                DialogManager.buildShutdownDialog(getContext(), binding, compoundButton);
-            } else {
-                // turn the station on
-            }
-        };
-
-        SwitchCompat powerSwitch = view.findViewById(R.id.power_toggle);
-        powerSwitch.setOnCheckedChangeListener(powerSwitchListener);
+        MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
+        shutdownButton.setOnClickListener(v -> {
+            DialogManager.buildShutdownDialog(getContext(), new int[] { binding.getSelectedStation().id });
+        });
 
         ImageView gameControlImage = (ImageView) view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
-            powerSwitch.setOnCheckedChangeListener(null);
-            powerSwitch.setChecked(!station.status.equals("Off"));
-            powerSwitch.setOnCheckedChangeListener(powerSwitchListener);
             if (station.gameId != null && station.gameId.length() > 0) {
                 Glide.with(view).load(SteamApplication.getImageUrl(station.gameId)).into(gameControlImage);
             } else {
