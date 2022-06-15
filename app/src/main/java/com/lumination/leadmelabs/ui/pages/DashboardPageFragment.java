@@ -88,7 +88,7 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
-            int[] selectedIds = new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds();
+            int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "EndVR");
@@ -105,7 +105,7 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
         shutdown.setOnClickListener(v -> {
-            DialogManager.buildShutdownDialog(getContext(), new ViewModelProvider(requireActivity()).get(StationsViewModel.class).getAllStationIds());
+            DialogManager.buildShutdownDialog(getContext(), StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray());
         });
 
 
