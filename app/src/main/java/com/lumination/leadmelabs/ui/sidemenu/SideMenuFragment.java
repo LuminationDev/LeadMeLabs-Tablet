@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.sidemenu;
 
+import android.animation.LayoutTransition;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
@@ -88,13 +90,13 @@ public class SideMenuFragment extends Fragment {
         });
 
         view.findViewById(R.id.controls_button).setOnClickListener(v -> {
-            addSubMenu();
+            if(!currentType.equals("controls")) { addSubMenu(); }
             loadFragment(ControlPageFragment.class, "controls");
         });
 
-        view.findViewById(R.id.settings_button).setOnClickListener(v -> {
-            DialogManager.confirmPinCode(this, "replace");
-        });
+        view.findViewById(R.id.settings_button).setOnClickListener(v ->
+                DialogManager.confirmPinCode(this, "replace")
+        );
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
             handleBackState()
@@ -117,6 +119,10 @@ public class SideMenuFragment extends Fragment {
         }
 
         MainActivity.fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left,
+                        android.R.anim.fade_out,
+                        android.R.anim.slide_in_left,
+                        android.R.anim.fade_out)
                 .replace(R.id.main, fragmentClass, null)
                 .addToBackStack("menu:" + type)
                 .commit();
@@ -199,6 +205,7 @@ public class SideMenuFragment extends Fragment {
     private void addSubMenu() {
         changeViewParams(150, 22);
         MainActivity.fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                 .commitNow();
     }
@@ -232,6 +239,11 @@ public class SideMenuFragment extends Fragment {
                 return;
             }
         }
+
+        LayoutTransition layoutTransition = new LayoutTransition();
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        FlexboxLayout flexLayout = view.findViewById(R.id.side_menu_fragment);
+        flexLayout.setLayoutTransition(layoutTransition);
 
         final float scale = Objects.requireNonNull(getContext()).getResources().getDisplayMetrics().density;
         layout.width = (int) (newWidth * scale + 0.5f);

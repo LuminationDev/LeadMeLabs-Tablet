@@ -105,6 +105,8 @@ public class SubMenuFragment extends Fragment {
         args.putString("type", type);
 
         ControlPageFragment.childManager.beginTransaction()
+            .setCustomAnimations(R.anim.fade_in,
+                    R.anim.fade_out)
             .replace(R.id.subpage, AppliancePageFragment.class, args)
             .addToBackStack("submenu:" + type)
             .commit();
