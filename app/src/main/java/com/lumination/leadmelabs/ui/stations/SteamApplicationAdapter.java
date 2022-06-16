@@ -76,49 +76,48 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
         binding.setSteamApplication(steamApplication);
 
-        Button playButton = view.findViewById(R.id.steam_play_button);
-
         View finalView = view;
-        view.setOnClickListener(v -> {
-            InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        });
+        View.OnClickListener selectGame = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                if (stationId > 0) {
+                    Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
+                    if (station != null && station.theatreText != null) {
+                        DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
+                    } else if(station != null) {
+                        NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
+                        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                        DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
+                    }
+                } else {
+                    mViewModel.selectSelectedSteamApplication(steamApplication.id);
+                    SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
+                    MainActivity.fragmentManager.beginTransaction()
+                            .replace(R.id.rooms, RoomFragment.class, null)
+                            .commitNow();
 
-        if (stationId > 0) {
-            playButton.setOnClickListener(v -> {
-                Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
-                if (station != null && station.theatreText != null) {
-                    DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
-                } else if(station != null) {
-                    NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
-                    SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                    DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
+                    StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                    View newView = fragment.getView();
+                    FlexboxLayout additionalStepsWarning = newView.findViewById(R.id.additional_steps_warning);
+                    additionalStepsWarning.setVisibility(View.GONE);
+                    TextView textView = newView.findViewById(R.id.station_selection_game_name);
+                    textView.setText(steamApplication.name);
+                    ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
+
+                    gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
+                    gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
+
+                    if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
+                        additionalStepsWarning.setVisibility(View.VISIBLE);
+                    }
                 }
-            });
-        } else {
-            playButton.setOnClickListener(v -> {
-                mViewModel.selectSelectedSteamApplication(steamApplication.id);
-                SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
-                MainActivity.fragmentManager.beginTransaction()
-                        .replace(R.id.rooms, RoomFragment.class, null)
-                        .commitNow();
-
-                StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
-                View newView = fragment.getView();
-                FlexboxLayout additionalStepsWarning = newView.findViewById(R.id.additional_steps_warning);
-                additionalStepsWarning.setVisibility(View.GONE);
-                TextView textView = newView.findViewById(R.id.station_selection_game_name);
-                textView.setText(steamApplication.name);
-                ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
-
-                gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
-                gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
-
-                if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
-                    additionalStepsWarning.setVisibility(View.VISIBLE);
-                }
-            });
-        }
+            }
+        };
+        view.setOnClickListener(selectGame);
+        Button playButton = view.findViewById(R.id.steam_play_button);
+        playButton.setOnClickListener(selectGame);
 
         return view;
     }
