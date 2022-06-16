@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,14 +90,23 @@ public class ApplianceAdapter extends BaseAdapter {
         ApplianceViewModel.activeScenes = new MutableLiveData<>();
 
         //Load what appliance is active or not
-        setIcon(binding, getItemType(position), active);
+        setIcon(binding, active);
         binding.setIsActive(new MutableLiveData<>(active));
 
         result.setOnClickListener(v -> {
-            if(getItemType(position).equals("scenes")) {
-                sceneStrategy(binding, appliance, position);
-            } else {
-                toggleStrategy(binding, appliance, position);
+            String type = getItemType(position);
+
+            switch (type) {
+                case "scenes":
+                    sceneStrategy(binding, appliance);
+                    break;
+                case "blinds":
+                    //Open the blind widget when that is built for now just act as a toggle
+                case "source":
+                    //Toggle the source when that is implemented for now just act as a toggle
+                default:
+                    toggleStrategy(binding, appliance);
+                    break;
             }
         });
 
@@ -104,16 +114,57 @@ public class ApplianceAdapter extends BaseAdapter {
     }
 
     /**
-     * Depending on a scenes type add an icon.
+     * Depending on an appliances type add an icon.
      * @param binding A SceneCardBinding relating associated with the current scene.
-     * @param type A string representing what appliance type the card triggers on the CBUS.
      * @param active A Boolean representing if the appliance is currently on or off
      */
-    private void setIcon(CardApplianceBinding binding, String type, Boolean active) {
+    private void setIcon(CardApplianceBinding binding, Boolean active) {
+        if(binding.getAppliance().type.equals("scenes")) {
+            determineSceneType(binding, active);
+        } else {
+            determineApplianceType(binding, active);
+        }
+    }
+
+    /**
+     * Determine what icon a scene needs depending on their name.
+     */
+    private void determineSceneType(CardApplianceBinding binding, Boolean active) {
+        MutableLiveData<Integer> icon;
+
+        switch (binding.getAppliance().name) {
+            case "Classroom":
+                icon = active ? new MutableLiveData<>(R.drawable.icon_scene_classroommode_on) :
+                        new MutableLiveData<>(R.drawable.icon_scene_classroommode_off);
+                break;
+            case "VR Mode":
+                icon = active ? new MutableLiveData<>(R.drawable.icon_scene_vrmode_on) :
+                        new MutableLiveData<>(R.drawable.icon_scene_vrmode_off);
+                break;
+            case "Theatre":
+                icon = active ? new MutableLiveData<>(R.drawable.icon_scene_theatremode_on) :
+                        new MutableLiveData<>(R.drawable.icon_scene_theatremode_off);
+                break;
+            case "Off":
+                icon = active ? new MutableLiveData<>(R.drawable.icon_scene_power_on) :
+                        new MutableLiveData<>(R.drawable.icon_scene_power_off);
+                break;
+            default:
+                icon = new MutableLiveData<>(R.drawable.icon_settings);
+                break;
+        }
+
+        binding.setIcon(icon);
+    }
+
+    /**
+     * Determine what icon an appliance needs depending on their type.
+     */
+    private void determineApplianceType(CardApplianceBinding binding, Boolean active) {
         MutableLiveData<Integer> icon;
 
         //Add to this in the future
-        switch(type) {
+        switch(binding.getAppliance().type) {
             case "lights":
                 icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_on) :
                         new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_off);
@@ -134,9 +185,6 @@ public class ApplianceAdapter extends BaseAdapter {
                 icon = active ? new MutableLiveData<>(R.drawable.icon_appliance_source_2) :
                         new MutableLiveData<>(R.drawable.icon_appliance_source_1);
                 break;
-
-                //TODO add scene cases
-
             default:
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
@@ -146,7 +194,7 @@ public class ApplianceAdapter extends BaseAdapter {
     }
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
-    private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, int position) {
+    private void toggleStrategy(CardApplianceBinding binding, Appliance appliance) {
         String value;
 
         if(ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id))) {
@@ -161,15 +209,15 @@ public class ApplianceAdapter extends BaseAdapter {
         }
 
         //Set the new icon and send a message to the NUC
-        setIcon(binding, getItemType(position), ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
+        setIcon(binding, ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
 
         NetworkService.sendMessage("NUC", "Automation", "Set:0:" + appliance.automationGroup + ":" + appliance.automationId  + ":" + appliance.id + ":" + value + ":" + appliance.room);
     }
 
 
-    private void sceneStrategy(CardApplianceBinding binding, Appliance scene, int position) {
+    private void sceneStrategy(CardApplianceBinding binding, Appliance scene) {
         //Set the new icon and send a message to the NUC
-        setIcon(binding, getItemType(position), ApplianceViewModel.activeSceneList.contains(scene));
+        setIcon(binding, ApplianceViewModel.activeSceneList.contains(scene));
 
         if(ApplianceViewModel.activeSceneList.contains(scene)) {
             //Do nothing don't want to double click something
