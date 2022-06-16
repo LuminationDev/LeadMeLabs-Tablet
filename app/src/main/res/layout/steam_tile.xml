@@ -9,10 +9,11 @@
     </data>
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/logo_fragment"
-        android:background="@color/white"
+        android:background="@drawable/ripple_white"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:flexDirection="column"
+        android:clickable="true"
         app:justifyContent="flex_end"
         android:paddingHorizontal="15dp"
         android:paddingVertical="15dp"
@@ -36,9 +37,11 @@
             android:textColor="@color/blue"
             app:backgroundTint="@color/white"
             android:elevation="0dp"
+            android:gravity="center"
             app:rippleColor="@color/grey"
             android:stateListAnimator="@null"
             android:backgroundTint="@android:color/white"
+            android:textAllCaps="false"
             android:text="Play"/>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

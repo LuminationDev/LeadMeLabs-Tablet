@@ -78,12 +78,6 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
         });
 
-        Button newGame = view.findViewById(R.id.station_new_game);
-        newGame.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
-            SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
-        });
-
         Button newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");

@@ -93,7 +93,7 @@ public class StationSelectionFragment extends Fragment {
             }
         });
 
-        Button identifyStations = view.findViewById(R.id.identify_button);
+        View identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
             int[] selectedIds = stationAdapter.stationList.stream().mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));

@@ -80,9 +80,10 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:justifyContent="space_between"
+            android:layout_marginHorizontal="20dp"
             app:alignItems="center"
-            android:layout_marginHorizontal="20dp">
+            app:justifyContent="space_between">
+
             <CheckBox
                 android:id="@+id/select_all_checkbox"
                 android:layout_width="wrap_content"
@@ -92,25 +93,16 @@
                 android:paddingTop="3dp"
                 android:text="Select All Available" />
 
-            <Button
-                android:id="@+id/identify_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:letterSpacing="0.01"
-                android:text="Identify Stations"
-                android:drawableLeft="@drawable/ic_identify_station_small"
-                android:textAllCaps="false"/>
-
         </com.google.android.flexbox.FlexboxLayout>
 
         <TextView
             android:id="@+id/no_stations_available"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
             android:paddingVertical="20dp"
-            android:text="No stations available in selected room."/>
+            android:text="No stations available in selected room."
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stations_list"
@@ -160,4 +152,28 @@
         android:id="@+id/rooms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+        <ImageView
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:id="@+id/identify_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_blue_dark_circle"
+            android:src="@drawable/ic_identify_station"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:letterSpacing="0.01"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/logo"
+        style="@style/LogoImage" />
 </RelativeLayout>
