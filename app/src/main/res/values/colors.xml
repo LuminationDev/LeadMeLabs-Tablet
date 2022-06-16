@@ -14,11 +14,16 @@
     <color name="green_light">#7AC19E</color>
 
     <color name="blue_light">#64bcf7</color>
+    <color name="blue_card">#2668D8</color>
     <color name="blue">#1599F3</color>
     <color name="blue_dark">#3676EB</color>
     <color name="blue_darkest">#2668D8</color>
     <color name="grey">#ECE9E9</color>
     <color name="grey_medium">#AFB7CB</color>
-    <color name="grey_card">#D4DAE4</color>
+    <color name="grey_card">#8B919B</color>
     <color name="text">#808080</color>
+
+    <color name="appliance_title">#FAFAFA</color>
+    <color name="appliance_on">#FFFFFFFF</color>
+    <color name="appliance_off">#D0D0D0</color>
 </resources>
