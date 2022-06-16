@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
@@ -17,9 +16,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -44,8 +40,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
+import com.lumination.leadmelabs.utilities.Identifier;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
@@ -87,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
+        initialDelayModification();
     }
 
     public static void startNucPingMonitor() {
@@ -106,6 +102,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 5000);
+    }
+
+    /**
+     * If the identify function is called right after start up it breaks the application flow as the
+     * main context is still loading. An initial delay of 2.5 seconds is set on the Identifier class.
+     * After 4 seconds of the application running this is changed to 0.3 seconds. Simple but effective
+     * way to stop the application from breaking.
+     */
+    private static void initialDelayModification() {
+        UIHandler.postDelayed(() -> Identifier.initialDelay = 300, 4000);
     }
 
     @Override

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,8 +40,7 @@ public class StationSelectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_station_selection, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_station_selection, container, false);
     }
 
     @Override
@@ -95,10 +94,8 @@ public class StationSelectionFragment extends Fragment {
 
         View identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
-            int[] selectedIds = stationAdapter.stationList.stream().mapToInt(station -> station.id).toArray();
-            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "IdentifyStation");
-            Toast.makeText(getContext(), "Stations located successfully", Toast.LENGTH_SHORT).show();
+            List<Station> stations = stationAdapter.stationList;
+            Identifier.identifyStations(stations);
         });
 
         instance = this;

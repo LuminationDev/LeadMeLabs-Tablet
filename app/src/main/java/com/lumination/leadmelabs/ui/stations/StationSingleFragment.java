@@ -5,20 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -26,6 +22,10 @@ import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.utilities.Identifier;
+
+import java.util.Collections;
+import java.util.List;
 
 public class StationSingleFragment extends Fragment {
 
@@ -67,9 +67,8 @@ public class StationSingleFragment extends Fragment {
 
         Button pingStation = view.findViewById(R.id.ping_station);
         pingStation.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "IdentifyStation");
-            Toast.makeText(getContext(), "Station located successfully", Toast.LENGTH_SHORT).show();
+            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+            Identifier.identifyStations(stations);
         });
 
         Button stopGame = view.findViewById(R.id.station_stop_game);
@@ -101,9 +100,9 @@ public class StationSingleFragment extends Fragment {
         );
 
         MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
-        shutdownButton.setOnClickListener(v -> {
-            DialogManager.buildShutdownDialog(getContext(), new int[] { binding.getSelectedStation().id });
-        });
+        shutdownButton.setOnClickListener(v ->
+                DialogManager.buildShutdownDialog(getContext(), new int[] { binding.getSelectedStation().id })
+        );
 
         ImageView gameControlImage = (ImageView) view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
