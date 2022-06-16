@@ -22,6 +22,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,7 +95,7 @@ public class StationSelectionFragment extends Fragment {
         Button identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
             List<Station> stations = stationAdapter.stationList;
-            DashboardPageFragment.identifyStations(stations);
+            Identifier.identifyStations(stations);
         });
 
         instance = this;

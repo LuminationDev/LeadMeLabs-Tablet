@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
@@ -25,6 +23,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -34,7 +33,6 @@ import java.util.Locale;
 
 public class DashboardPageFragment extends Fragment {
     private FragmentManager childManager;
-    private static boolean identifying = false;
 
     @Nullable
     @Override
@@ -96,7 +94,7 @@ public class DashboardPageFragment extends Fragment {
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
-            identifyStations(stations);
+            Identifier.identifyStations(stations);
         });
 
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
@@ -138,46 +136,5 @@ public class DashboardPageFragment extends Fragment {
             case 3:  return "rd";
             default: return "th";
         }
-    }
-
-    /**
-     * Cycle through the connected stations, triggering the identify stations overlay and the
-     * associated LED rings.
-     */
-    public static void identifyStations(List<Station> stations) {
-        if(identifying) {
-            return;
-        } else {
-            identifying = true;
-        }
-
-        if(stations == null || stations.size() == 0) {
-            Toast.makeText(MainActivity.getInstance(), "No stations located", Toast.LENGTH_SHORT).show();
-            identifying = false;
-            return;
-        }
-
-        //Run in a new thread as to not block the main thread when staggering
-        Thread triggerThread = new Thread(() -> {
-            for (Station current: stations) {
-                //Trigger the overlay
-                NetworkService.sendMessage("Station," + current.id, "CommandLine", "IdentifyStation");
-
-                //Trigger the LED ring to flash - run the script on the CBUS with the provided context (the associated LED ring id - CBUS group id not actual id)
-                NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + current.associated.automationId);
-
-                //Wait for a little bit so the overall effect is staggered
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            identifying = false;
-        });
-
-        triggerThread.start();
-        Toast.makeText(MainActivity.getInstance(), "Stations located successfully", Toast.LENGTH_SHORT).show();
     }
 }
