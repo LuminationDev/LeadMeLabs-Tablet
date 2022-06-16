@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 
 public class SettingsFragment extends Fragment {
 
@@ -73,7 +74,7 @@ public class SettingsFragment extends Fragment {
             if(isChecked) {
                 MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 MainActivity.fragmentManager.beginTransaction()
-                        .replace(R.id.main, SettingsFragment.class, null)
+                        .replace(R.id.main, SettingsPageFragment.class, null)
                         .addToBackStack("menu:settings")
                         .commit();
 
