@@ -205,7 +205,10 @@ public class SideMenuFragment extends Fragment {
     private void addSubMenu() {
         changeViewParams(150, 22);
         MainActivity.fragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .setCustomAnimations(android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right)
                 .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                 .commitNow();
     }
