@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.room;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -65,6 +66,7 @@ public class RoomFragment extends Fragment {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setupButtons(HashSet<String> rooms) {
         LinearLayout layout = view.findViewById(R.id.room_fragment);
 
@@ -87,15 +89,15 @@ public class RoomFragment extends Fragment {
 
             if(roomSet.get(i).equals("All")) {
                 btn.setTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.white, null));
-                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_blue_room_button, null));
+                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_blue_room_rounded, null));
             } else {
-                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.bg_white, null));
+                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_white_room_button, null));
             }
 
-            btn.setPadding(16, 0, 16, 0);
+            btn.setPadding(16, 4, 16, 0);
             btn.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 60);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 60);
             params.setMargins(0,0,38,0);
 
             btn.setLayoutParams(params);
@@ -142,10 +144,10 @@ public class RoomFragment extends Fragment {
 
             if(roomSet.get(i).equals(mViewModel.getSelectedRoom().getValue())) {
                 btn.setTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.white, null));
-                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_blue_room_button, null));
+                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_blue_room_rounded, null));
             } else {
                 btn.setTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.black, null));
-                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.bg_white, null));
+                btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_white_room_button, null));
             }
         }
     }

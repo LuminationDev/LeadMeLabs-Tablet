@@ -19,7 +19,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/appliance_card"
         style="@style/ApplianceCardContainer"
-        android:background="@{isActive ? @drawable/bg_appliance_card_blue : @drawable/bg_appliance_card_grey, default=@drawable/bg_appliance_card_grey}"
+        android:background="@drawable/transition_appliance_fade"
         app:flexDirection="column"
         app:alignItems="flex_start"
         app:justifyContent="space_between">
@@ -53,3 +53,5 @@
         </LinearLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>
+
+<!--    android:background="@{isActive ? @drawable/bg_appliance_card_blue : @drawable/bg_appliance_card_grey, default=@drawable/bg_appliance_card_grey}"-->

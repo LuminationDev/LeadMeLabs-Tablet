@@ -1,13 +1,16 @@
 package com.lumination.leadmelabs.ui.sidemenu;
 
 import android.animation.LayoutTransition;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -78,29 +81,63 @@ public class SideMenuFragment extends Fragment {
     //Really easy to set animations
     //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
-        view.findViewById(R.id.dashboard_button).setOnClickListener(v -> {
+        View dashBtn = view.findViewById(R.id.dashboard_button);
+        buttonFeedback(dashBtn, "dashboard");
+        dashBtn.setOnClickListener(v -> {
             removeSubMenu();
             loadFragment(DashboardPageFragment.class, "dashboard");
         });
 
-        view.findViewById(R.id.session_button).setOnClickListener(v -> {
+        View sessionBtn = view.findViewById(R.id.session_button);
+        buttonFeedback(sessionBtn, "session");
+        sessionBtn.setOnClickListener(v -> {
             removeSubMenu();
             loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(0);
         });
 
-        view.findViewById(R.id.controls_button).setOnClickListener(v -> {
+        View controlsBtn = view.findViewById(R.id.controls_button);
+        buttonFeedback(controlsBtn, "controls");
+        controlsBtn.setOnClickListener(v -> {
             if(!currentType.equals("controls")) { addSubMenu(); }
             loadFragment(ControlPageFragment.class, "controls");
         });
 
-        view.findViewById(R.id.settings_button).setOnClickListener(v ->
+        View settingsBtn = view.findViewById(R.id.settings_button);
+        buttonFeedback(settingsBtn, "settings");
+        settingsBtn.setOnClickListener(v ->
                 DialogManager.confirmPinCode(this, "replace")
         );
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
             handleBackState()
         );
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void buttonFeedback(View view, String type) {
+        view.setOnTouchListener((v, event) -> {
+            if(currentType.equals(type)) {
+                return false;
+            }
+
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setBackgroundResource(0);
+                    break;
+
+                case MotionEvent.ACTION_DOWN:
+                    v.setBackground(ResourcesCompat.getDrawable(
+                            MainActivity.getInstance().getResources(),
+                            R.drawable.card_ripple_trans_active,
+                            null)
+                    );
+                    break;
+            }
+
+            return false;
+        });
     }
 
     /**
@@ -121,8 +158,8 @@ public class SideMenuFragment extends Fragment {
         MainActivity.fragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left,
                         android.R.anim.fade_out,
-                        android.R.anim.slide_in_left,
-                        android.R.anim.fade_out)
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left)
                 .replace(R.id.main, fragmentClass, null)
                 .addToBackStack("menu:" + type)
                 .commit();
