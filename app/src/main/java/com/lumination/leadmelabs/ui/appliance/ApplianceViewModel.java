@@ -145,10 +145,12 @@ public class ApplianceViewModel extends ViewModel {
                     for(Appliance scene : appliances.getValue()) {
                         if(ApplianceViewModel.activeSceneList.contains(scene) && scene.room.equals(room) && !scene.id.equals(id)) {
                             ApplianceViewModel.activeSceneList.remove(scene);
+                            ApplianceAdapter.getInstance().latestOff.add(scene.id);
                         }
                     }
 
                     activeSceneList.add(appliance);
+                    ApplianceAdapter.getInstance().latestOn.add(appliance.id);
 
                     //TODO test that this does not cause an infinity loop
                     loadActiveAppliances();
