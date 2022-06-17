@@ -12,13 +12,19 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <TextView
+            style="@style/PageTitle"
+            android:text="@string/select_stations_title"/>
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/station_single_fragment"
             style="@style/StationsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/grey"
+            android:layout_marginTop="75dp"
             app:flexDirection="column"
             tools:context=".ui.stations.StationsFragment">
             <com.google.android.flexbox.FlexboxLayout

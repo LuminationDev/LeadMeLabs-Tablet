@@ -45,7 +45,7 @@
                 android:id="@+id/projector_button"
                 style="@style/SubMenuLabel"
                 android:textColor="@{subMenu.selectedPage.equals(`projectors`) ? @color/blue : @color/black, default=@color/black}"
-                android:text="@string/projector"/>
+                android:text="@string/projectors"/>
 
             <TextView
                 android:id="@+id/ring_button"

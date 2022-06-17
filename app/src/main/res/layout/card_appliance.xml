@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textColor="@color/white"
+                android:textColor="@color/appliance_title"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:text="@{appliance.name, default=Scene_Example}" />

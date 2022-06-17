@@ -28,20 +28,44 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text="@{steamApplication.name, default=Google}"/>
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/steam_play_button"
-            android:layout_width="wrap_content"
-            app:strokeColor="@color/blue"
-            app:strokeWidth="2dp"
+
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_height="wrap_content"
-            android:textColor="@color/blue"
-            app:backgroundTint="@color/white"
-            android:elevation="0dp"
-            android:gravity="center"
-            app:rippleColor="@color/grey"
-            android:stateListAnimator="@null"
-            android:backgroundTint="@android:color/white"
-            android:textAllCaps="false"
-            android:text="Play"/>
+            android:layout_width="280dp"
+            app:flexDirection="row"
+            app:justifyContent="space_between">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/steam_play_button"
+                android:layout_width="wrap_content"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="2dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                app:backgroundTint="@color/white"
+                android:elevation="0dp"
+                android:gravity="center"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                android:backgroundTint="@android:color/white"
+                android:textAllCaps="false"
+                android:text="Play"/>
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/steam_info_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                app:strokeColor="@color/blue"-->
+<!--                app:strokeWidth="2dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/blue"-->
+<!--                app:backgroundTint="@color/white"-->
+<!--                android:elevation="0dp"-->
+<!--                android:gravity="center"-->
+<!--                app:rippleColor="@color/grey"-->
+<!--                android:stateListAnimator="@null"-->
+<!--                android:backgroundTint="@android:color/white"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:text="Info"/>-->
+        </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

@@ -5,14 +5,20 @@
     android:background="@color/grey"
     android:orientation="horizontal">
 
+    <TextView
+        style="@style/PageTitle"
+        android:text="@string/settings_title"/>
+
     <RelativeLayout
         android:id="@+id/settings_menu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"/>
 
-    <RelativeLayout
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <ImageView
+        style="@style/LogoImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/logo" />
 
 </RelativeLayout>

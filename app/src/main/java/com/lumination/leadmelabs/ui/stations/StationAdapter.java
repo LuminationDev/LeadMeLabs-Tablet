@@ -47,6 +47,10 @@ public class StationAdapter extends RecyclerView.Adapter {
                     viewModel.selectStation(position);
                     MainActivity.fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
+                            .setCustomAnimations(android.R.anim.fade_in,
+                                    android.R.anim.fade_out,
+                                    android.R.anim.fade_in,
+                                    android.R.anim.fade_out)
                             .replace(R.id.main, StationSingleFragment.class, null)
                             .addToBackStack("menu:dashboard:stationSingle")
                             .commit();

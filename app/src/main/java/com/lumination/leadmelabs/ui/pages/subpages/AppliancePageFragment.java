@@ -14,14 +14,13 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 
 public class AppliancePageFragment extends Fragment {
-    private View view;
     private FragmentManager childManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.subpage_appliance, container, false);
+        View view = inflater.inflate(R.layout.subpage_appliance, container, false);
         childManager = getChildFragmentManager();
         return view;
     }

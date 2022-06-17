@@ -14,7 +14,7 @@
     <string name="appliance_default_title">Appliance Default Title</string>
     <string name="lights">Lights</string>
     <string name="blinds">Blinds</string>
-    <string name="projector">Projector</string>
+    <string name="projectors">Projectors</string>
     <string name="led_rings">LED Rings</string>
     <string name="source">Source</string>
     <string name="shutdown">Shutdown</string>
@@ -35,4 +35,8 @@
     <string name="exit_current_theatre_mode">\" is currently in theatre mode. Are you sure you want to exit theatre mode?\"</string>
     <string name="game_not_installed">Experience not installed</string>
     <string name="ending_session">Ending session</string>
+    <string name="room_controls_title">ROOM CONTROLS</string>
+    <string name="vr_library_title">VR LIBRARY</string>
+    <string name="settings_title">SETTINGS</string>
+    <string name="select_stations_title">SELECT STATIONS</string>
 </resources>

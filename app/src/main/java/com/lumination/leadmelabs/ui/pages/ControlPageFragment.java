@@ -45,6 +45,7 @@ public class ControlPageFragment extends Fragment {
         args.putString("type", "scenes");
 
         childManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(R.id.subpage, ApplianceFragment.class, args)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .replace(R.id.rooms, RoomFragment.class, null)

@@ -119,6 +119,11 @@ public class SteamApplicationAdapter extends BaseAdapter {
         Button playButton = view.findViewById(R.id.steam_play_button);
         playButton.setOnClickListener(selectGame);
 
+//        Button infoButton = view.findViewById(R.id.steam_info_button);
+//        infoButton.setOnClickListener(v -> {
+//            DialogManager.buildWebViewDialog(MainActivity.getInstance(), "https://store.steampowered.com/app/" + binding.getSteamApplication().id);
+//        });
+
         return view;
     }
 }
