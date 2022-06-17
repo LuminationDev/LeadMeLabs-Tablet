@@ -9,13 +9,15 @@
     </style>
 
     <style name="SideMenuIcon">
-        <item name="android:minHeight">100dp</item>
         <item name="android:layout_width">110dp</item>
-        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_height">100dp</item>
         <item name="android:paddingVertical">2dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_marginBottom">30dp</item>
+        <item name="flexDirection">column</item>
+        <item name="alignItems">center</item>
+        <item name="justifyContent">center</item>
     </style>
 
     <style name="SideMenuImage">
