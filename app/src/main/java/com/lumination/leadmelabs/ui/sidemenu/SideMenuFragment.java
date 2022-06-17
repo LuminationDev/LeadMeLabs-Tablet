@@ -156,10 +156,10 @@ public class SideMenuFragment extends Fragment {
         }
 
         MainActivity.fragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.slide_in_left,
+                .setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out,
-                        R.anim.slide_in_right,
-                        R.anim.slide_out_left)
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out)
                 .replace(R.id.main, fragmentClass, null)
                 .addToBackStack("menu:" + type)
                 .commit();
