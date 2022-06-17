@@ -158,7 +158,9 @@ public class UIUpdateManager {
                     break;
                 case "gameName":
                     station.gameName = value;
-                    DialogManager.gameLaunchedOnStation(station.id);
+                    if (value.length() > 0 && !value.equals("No session running")) {
+                        DialogManager.gameLaunchedOnStation(station.id);
+                    }
                     break;
                 case "steamApplications":
                     station.setSteamApplicationsFromJsonString(value);
