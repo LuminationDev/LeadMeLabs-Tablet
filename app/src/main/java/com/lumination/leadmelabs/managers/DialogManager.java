@@ -6,7 +6,9 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.Patterns;
 import android.view.View;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -291,8 +293,9 @@ public class DialogManager {
         closeButton.setOnClickListener(w -> webViewDialog.dismiss());
 
         WebView webView = webViewDialogView.findViewById(R.id.dialog_webview);
-        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(URL);
+        webView.getSettings().setJavaScriptEnabled(true);
 
         webViewDialog.show();
         webViewDialog.getWindow().setLayout(1200, 900);

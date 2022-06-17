@@ -131,10 +131,10 @@
     </style>
 
     <style name="LogoImage">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_marginTop">15dp</item>
-        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_width">150dp</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:layout_marginRight">17dp</item>
         <item name="android:src">@drawable/ic_logo</item>
     </style>
 
@@ -172,14 +172,14 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="RoomControlsTitle">
+    <style name="PageTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">43dp</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">100dp</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="ApplianceCardContainer">
