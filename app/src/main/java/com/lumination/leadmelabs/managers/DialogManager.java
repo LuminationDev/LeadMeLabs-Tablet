@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebResourceRequest;
@@ -46,6 +47,8 @@ public class DialogManager {
     public static AlertDialog reconnectDialog;
     public static List<Integer> endSessionStationIds;
     public static AlertDialog endSessionDialog;
+    public static List<Integer> restartSessionStationIds;
+    public static AlertDialog restartSessionDialog;
 
     private static int pinCodeAttempts = 0;
 
@@ -57,7 +60,7 @@ public class DialogManager {
      */
     public static void createBasicDialog(String titleText, String contentText) {
         View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        AlertDialog launchFailedDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
 
         TextView title = basicDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -66,7 +69,7 @@ public class DialogManager {
         contentView.setText(contentText);
 
         Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> launchFailedDialog.dismiss());
+        confirmButton.setOnClickListener(w -> basicDialog.dismiss());
         confirmButton.setText(R.string.dismiss);
 
         Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
@@ -75,8 +78,8 @@ public class DialogManager {
         ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
         loadingBar.setVisibility(View.GONE);
 
-        launchFailedDialog.show();
-        launchFailedDialog.getWindow().setLayout(1200, 320);
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(1200, 340);
     }
 
     /**
@@ -473,6 +476,45 @@ public class DialogManager {
             if (endSessionStationIds.size() == 0) {
                 if (endSessionDialog != null) {
                     endSessionDialog.dismiss();
+                }
+            }
+        }
+    }
+
+    public static void awaitStationRestartSession(int[] stationIds)
+    {
+        View restartSessionDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
+        restartSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(restartSessionDialogView).create();
+
+        TextView title = restartSessionDialogView.findViewById(R.id.title);
+        title.setText("Restarting session");
+
+        TextView contentText = restartSessionDialogView.findViewById(R.id.content_text);
+        contentText.setText(MessageFormat.format("Restarting session on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
+
+        restartSessionStationIds =  new ArrayList<>(stationIds.length);
+        for (int i : stationIds)
+        {
+            restartSessionStationIds.add(i);
+        }
+
+        Button confirmButton = restartSessionDialogView.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> restartSessionDialog.dismiss());
+        confirmButton.setText(R.string.dismiss);
+
+        Button cancelButton = restartSessionDialogView.findViewById(R.id.cancel_button);
+        cancelButton.setVisibility(View.GONE);
+
+        restartSessionDialog.show();
+        restartSessionDialog.getWindow().setLayout(1200, 380);
+    }
+
+    public static void sessionRestartedOnStation(int stationId) {
+        if (restartSessionStationIds != null) {
+            restartSessionStationIds.removeIf(id -> id == stationId);
+            if (restartSessionStationIds.size() == 0) {
+                if (restartSessionDialog != null) {
+                    restartSessionDialog.dismiss();
                 }
             }
         }

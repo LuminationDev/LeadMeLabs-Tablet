@@ -6,9 +6,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import androidx.core.content.ContextCompat;
 import com.lumination.leadmelabs.MainActivity;
@@ -40,7 +44,7 @@ public class StationAdapter extends RecyclerView.Adapter {
 
         public void bind(Station station, int position) {
             binding.setStation(station);
-            View finalResult = binding.getRoot();
+            View finalResult = binding.getRoot().findViewById(R.id.station_card);
             if (launchSingleOnTouch) {
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
@@ -65,9 +69,21 @@ public class StationAdapter extends RecyclerView.Adapter {
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
                     if (!station.status.equals("Off")) {
-                        TextView infoText = finalResult.findViewById(R.id.card_info_text);
-                        infoText.setText(R.string.game_not_installed);
-                        infoText.setVisibility(View.VISIBLE);
+                        RelativeLayout stationCardAlert = binding.getRoot().findViewById(R.id.station_card_alert);
+                        stationCardAlert.setVisibility(View.VISIBLE);
+                        View.OnClickListener showAppNotInstalledListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                MainActivity.runOnUI(() -> {
+                                    DialogManager.createBasicDialog(
+                                            "Application not installed",
+                                            "This application is not installed on this station. Please contact your IT department for install instructions."
+                                    );
+                                });
+                            }
+                        };
+                        finalResult.setOnClickListener(showAppNotInstalledListener);
+                        stationCardAlert.setOnClickListener(showAppNotInstalledListener);
                     }
                 }
             }

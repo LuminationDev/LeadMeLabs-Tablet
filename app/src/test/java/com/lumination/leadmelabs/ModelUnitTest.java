@@ -26,9 +26,9 @@ public class ModelUnitTest {
     public void scene_creation() throws InterruptedException {
         Scene scene = new Scene("Home", 0, "1", new int[0]);
 
-        assertEquals(scene.name, "Home");
-        assertEquals(scene.number, 0);
-        assertEquals(scene.value, 1);
+        assertEquals("Home", scene.name);
+        assertEquals(0, scene.number);
+        assertEquals("1", scene.value);
 
         assertFalse(getOrAwaitValue(scene.isActive));
         scene.isActive = new MutableLiveData<>(true);
