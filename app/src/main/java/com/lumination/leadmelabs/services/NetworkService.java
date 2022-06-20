@@ -15,6 +15,7 @@ import android.util.Log;
 import com.lumination.leadmelabs.BuildConfig;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 
 import androidx.core.app.NotificationCompat;
@@ -88,6 +89,10 @@ public class NetworkService extends Service {
         String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
 
         Log.d(TAG, "Going to send: " + message);
+        if (getEncryptionKey().length() == 0) {
+            DialogManager.createBasicDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
+            return;
+        }
         message = EncryptionHelper.encrypt(message, getEncryptionKey());
         int port = 8080;
 
@@ -171,6 +176,10 @@ public class NetworkService extends Service {
             }
 
             String message = baos.toString();
+            if (getEncryptionKey().length() == 0) {
+                DialogManager.createBasicDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
+                return;
+            }
             message = EncryptionHelper.decrypt(message, getEncryptionKey());
 
             //Get the IP address used to determine who has just connected.
