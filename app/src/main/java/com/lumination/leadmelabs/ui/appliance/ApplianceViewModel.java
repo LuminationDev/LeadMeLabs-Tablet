@@ -191,14 +191,6 @@ public class ApplianceViewModel extends ViewModel {
         }
     }
 
-    private void checkScenes() {
-
-    }
-
-    private void checkAppliance() {
-
-    }
-
     public static void loadActiveAppliances() {
         NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
     }
