@@ -99,7 +99,6 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
-                    // todo need to handle a scene being updated from another tablets
                     if (additionalData.startsWith("Appliances")) {
                         updateActiveAppliances(additionalData);
                     }

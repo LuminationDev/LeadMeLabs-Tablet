@@ -28,8 +28,8 @@ public class ApplianceAdapter extends BaseAdapter {
     public static ApplianceAdapter getInstance() { return instance; }
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
-    public ArrayList<String> latestOn = new ArrayList<>();
-    public ArrayList<String> latestOff = new ArrayList<>();
+    public static ArrayList<String> latestOn = new ArrayList<>();
+    public static ArrayList<String> latestOff = new ArrayList<>();
 
     private LayoutInflater mInflater;
 
@@ -82,6 +82,7 @@ public class ApplianceAdapter extends BaseAdapter {
             if(ApplianceViewModel.activeScenes.getValue() != null) {
                 if (ApplianceViewModel.activeScenes.getValue().contains(String.valueOf(getItem(position).id))) {
                     ApplianceViewModel.activeSceneList.add(getItem(position));
+                    ApplianceViewModel.activeScenes.getValue().remove(String.valueOf(getItem(position).id));
                 }
             }
             active = ApplianceViewModel.activeSceneList.contains(getItem(position));
@@ -93,12 +94,10 @@ public class ApplianceAdapter extends BaseAdapter {
             TransitionDrawable transition = (TransitionDrawable) result.getBackground();
             if(active) {
                 transition.startTransition(200);
+            } else {
+                transition.resetTransition();
             }
         }
-
-        //TODO Find appropriate place to put this after more testing
-        //Clear the active list after loading
-        ApplianceViewModel.activeScenes = new MutableLiveData<>();
 
         //Load what appliance is active or not
         setIcon(binding, active);
@@ -257,9 +256,7 @@ public class ApplianceAdapter extends BaseAdapter {
         NetworkService.sendMessage("NUC", "Automation", "Set:0:" + appliance.automationGroup + ":" + appliance.automationId  + ":" + appliance.id + ":" + value + ":" + appliance.room);
     }
 
-
     private void sceneStrategy(CardApplianceBinding binding, Appliance scene, View finalResult) {
-        TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
         //Set the new icon and send a message to the NUC
         setIcon(binding, ApplianceViewModel.activeSceneList.contains(scene));
 
