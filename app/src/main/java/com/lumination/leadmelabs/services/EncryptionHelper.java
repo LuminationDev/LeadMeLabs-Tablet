@@ -107,25 +107,7 @@ public class EncryptionHelper {
 
             try {
                 decrypted += EncryptionHelper.decrypt108(cipherText.substring(i, i + substringLength), passPhrase);
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (InvalidKeySpecException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-                Sentry.captureException(e);
-            } catch (BadPaddingException e) {
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
                 e.printStackTrace();
                 Sentry.captureException(e);
             }

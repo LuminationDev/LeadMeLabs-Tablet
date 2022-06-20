@@ -76,7 +76,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="New Session"
+                            android:text="New VR Session"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
@@ -84,7 +84,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Choose VR experience"
+                            android:text="Choose experience"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
@@ -111,7 +111,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="End Session"
+                            android:text="End VR Session"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
@@ -119,7 +119,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="End VR experience"
+                            android:text="End experience"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>

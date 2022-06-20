@@ -86,7 +86,7 @@ public class UIUpdateManager {
                         if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
-                                        "Game launch failed",
+                                        "Experience launch failed",
                                         "Launch of " + data[1] + " failed on " + station.name
                                 );
                             });
