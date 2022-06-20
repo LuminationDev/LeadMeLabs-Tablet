@@ -9,42 +9,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginVertical="30dp">
+        android:layout_marginVertical="58dp"
+        android:orientation="vertical">
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:flexDirection="column"
-            android:layout_marginHorizontal="30dp">
+            android:layout_marginHorizontal="30dp"
+            app:flexDirection="column">
+
             <TextView
                 android:id="@+id/welcome_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#3A3A3A"
                 android:text="Welcome!"
+                android:textColor="#3A3A3A"
                 android:textFontWeight="600"
-                android:textSize="40sp"/>
+                android:textSize="45sp" />
+
             <TextView
                 android:id="@+id/date_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#3A3A3A"
                 android:text="Tuesday 26th April 2022"
-                android:textSize="20sp"/>
+                android:textColor="#3A3A3A"
+                android:textSize="16sp" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_marginTop="60dp"
             android:id="@+id/station_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
             app:flexDirection="column">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:text="Controls"/>
+                android:layout_marginStart="30dp"
+                android:text="Controls" />
+
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,148 +56,151 @@
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/new_session_button"
-                    android:layout_marginStart="30dp"
                     style="@style/ActionCard"
+                    android:layout_marginStart="30dp"
                     app:flexDirection="row">
 
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:src="@drawable/new_session_icon"
-                        android:contentDescription="start_icon" />
+                        android:contentDescription="start_icon"
+                        android:src="@drawable/new_session_icon" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
-                        app:justifyContent="center"
-                        app:flexDirection="column">
+                        app:flexDirection="column"
+                        app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textFontWeight="600"
-                            android:textSize="13sp"
+                            android:text="New VR Session"
                             android:textColor="@color/black"
-                            android:text="New VR Session"/>
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:text="Choose experience"/>
+                            android:text="Choose experience"
+                            android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/end_session_button"
-                    android:layout_marginStart="20dp"
                     style="@style/ActionCard"
+                    android:layout_marginStart="20dp"
                     app:flexDirection="row">
 
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:src="@drawable/end_session_icon"
-                        android:contentDescription="stop_icon" />
+                        android:contentDescription="stop_icon"
+                        android:src="@drawable/end_session_icon" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
-                        app:justifyContent="center"
-                        app:flexDirection="column">
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textFontWeight="600"
-                            android:textSize="13sp"
+                            android:text="End VR Session"
                             android:textColor="@color/black"
-                            android:text="End VR Session"/>
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:text="End experience"/>
+                            android:text="End experience"
+                            android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/identify_button"
-                    android:layout_marginStart="20dp"
                     style="@style/ActionCard"
+                    android:layout_marginStart="20dp"
                     app:flexDirection="row">
 
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:src="@drawable/icon_identify"
-                        android:contentDescription="identify_icon" />
+                        android:contentDescription="identify_icon"
+                        android:src="@drawable/icon_identify" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        app:justifyContent="center"
                         android:layout_marginStart="16dp"
-                        app:flexDirection="column">
+                        app:flexDirection="column"
+                        app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textFontWeight="600"
-                            android:textSize="13sp"
+                            android:text="Identify Stations"
                             android:textColor="@color/black"
-                            android:text="Identify Stations"/>
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:text="Locate stations"/>
+                            android:text="Locate stations"
+                            android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/shutdown_button"
-                    android:layout_marginStart="20dp"
                     style="@style/ActionCard"
+                    android:layout_marginStart="20dp"
                     app:flexDirection="row">
 
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:src="@drawable/icon_shutdown"
-                        android:contentDescription="shutdown_icon" />
+                        android:contentDescription="shutdown_icon"
+                        android:src="@drawable/icon_shutdown" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
-                        app:justifyContent="center"
-                        app:flexDirection="column">
+                        app:flexDirection="column"
+                        app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textFontWeight="600"
-                            android:textSize="13sp"
+                            android:text="Shut Down"
                             android:textColor="@color/black"
-                            android:text="Shut Down"/>
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:text="Shut down stations"/>
+                            android:text="Shut down stations"
+                            android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
 
         <RelativeLayout
-            android:layout_marginTop="20dp"
             android:id="@+id/stations"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
     </LinearLayout>
 
     <RelativeLayout
