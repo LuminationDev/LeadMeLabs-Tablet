@@ -57,7 +57,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pick a game to play in VR"
+                        android:text="Pick an experience to play in VR"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
                 </com.google.android.flexbox.FlexboxLayout>

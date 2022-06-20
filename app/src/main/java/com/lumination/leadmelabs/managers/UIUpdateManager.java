@@ -83,7 +83,7 @@ public class UIUpdateManager {
                         String[] data = additionalData.split(":", 2);
                         if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             DialogManager.createBasicDialog(
-                                    "Game launch failed",
+                                    "Experience launch failed",
                                     "Launch of " + data[1] + " failed on " + station.name
                             );
                         }
