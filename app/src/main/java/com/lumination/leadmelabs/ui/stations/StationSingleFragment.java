@@ -84,9 +84,10 @@ public class StationSingleFragment extends Fragment {
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
-        restartVr.setOnClickListener(v ->
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR")
-        );
+        restartVr.setOnClickListener(v -> {
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
+            DialogManager.awaitStationRestartSession(new int[] { binding.getSelectedStation().id });
+        });
 
         Button endVr = view.findViewById(R.id.station_end_vr);
         endVr.setOnClickListener(v -> {

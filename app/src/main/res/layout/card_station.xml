@@ -10,43 +10,54 @@
             type="com.lumination.leadmelabs.models.Station" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/station_card"
-        style="@style/StationCard"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical"
-        android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_white}">
-
-        <TextView
-            android:id="@+id/theatre_text"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/station_card_alert"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{station.theatreText}"
-            android:textColor="@color/blue"
-            android:textFontWeight="600"
-            android:textSize="11sp"
-            android:visibility="@{station.theatreText != null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/station_card" />
+            android:translationZ="5dp"
+            android:layout_marginLeft="144dp"
+            android:layout_marginTop="6dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_alert" />
+        </RelativeLayout>
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/station_card"
+            style="@style/StationCard"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            app:justifyContent="space_between"
+            android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_white}">
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+                <TextView
+                    android:id="@+id/theatre_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{station.theatreText}"
+                    android:textColor="@color/blue"
+                    android:textFontWeight="600"
+                    android:textSize="11sp"
+                    android:visibility="@{station.theatreText != null ? View.VISIBLE : View.GONE}" />
 
-        <ImageView
-            android:id="@+id/station_vr_icon"
-            android:layout_width="52dp"
-            android:layout_height="28dp"
-            android:minWidth="52dp"
-            android:minHeight="28dp"
-            android:src="@{station.status.equals(`Off`) ? @drawable/icon_vr_gray : @drawable/icon_vr, default=@drawable/bg_station_card_grey}"
-            android:contentDescription="vr_status_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/theatre_text"
-            android:layout_marginTop="10dp"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+                <ImageView
+                    android:id="@+id/station_vr_icon"
+                    android:layout_width="52dp"
+                    android:layout_height="28dp"
+                    android:minWidth="52dp"
+                    android:minHeight="28dp"
+                    android:src="@{station.status.equals(`Off`) ? @drawable/icon_vr_gray : @drawable/icon_vr, default=@drawable/bg_station_card_grey}"
+                    android:contentDescription="vr_status_icon"
+                    android:layout_marginTop="10dp"/>
+            </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
@@ -54,41 +65,41 @@
                 app:flexDirection="column">
 
                 <TextView
-                    android:layout_marginBottom="10dp"
                     android:id="@+id/card_info_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_marginBottom="10dp"
                     android:drawablePadding="3dp"
-                    android:textColor="@color/orange"
-                    tools:ignore="SmallSp"
-                    android:textSize="9sp"
+                    android:gravity="center"
                     android:text="@string/game_not_installed"
+                    android:textColor="@color/orange"
+                    android:textSize="9sp"
                     android:visibility="gone"
-                    app:drawableLeftCompat="@drawable/icon_alert"/>
+                    app:drawableLeftCompat="@drawable/icon_alert"
+                    tools:ignore="SmallSp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textFontWeight="600"
-                    android:textSize="11sp"
+                    android:text="@{station.name, default=Name}"
                     android:textColor="@color/black"
-                    android:text="@{station.name, default=Name}"/>
+                    android:textFontWeight="600"
+                    android:textSize="11sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{station.status, default=`Off`}"
                     android:textSize="13sp"
-                    android:visibility="@{(station.gameName == null || station.gameName.equals(``)) || station.status.equals(`Not Responding`) || station.status.equals(`Off`) ? View.VISIBLE : View.GONE}"
-                    android:text="@{station.status, default=`Off`}"/>
+                    android:visibility="@{(station.gameName == null || station.gameName.equals(``)) || station.status.equals(`Not Responding`) || station.status.equals(`Off`) ? View.VISIBLE : View.GONE}" />
 
                 <TextView
-                    android:visibility="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) &amp;&amp; !station.gameName.equals(`null`) ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@{station.gameName}"
                     android:textSize="11sp"
-                    android:text="@{station.gameName}"/>
+                    android:visibility="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) &amp;&amp; !station.gameName.equals(`null`) ? View.VISIBLE : View.GONE}" />
             </com.google.android.flexbox.FlexboxLayout>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
 </layout>

@@ -17,6 +17,8 @@ import org.json.JSONException;
 
 import android.view.View;
 
+import java.util.ArrayList;
+
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
@@ -82,19 +84,23 @@ public class UIUpdateManager {
                         DialogManager.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
                         if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
-                            DialogManager.createBasicDialog(
-                                    "Game launch failed",
-                                    "Launch of " + data[1] + " failed on " + station.name
-                            );
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Game launch failed",
+                                        "Launch of " + data[1] + " failed on " + station.name
+                                );
+                            });
                         }
                     }
                     if (additionalData.startsWith("SteamError")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
-                            DialogManager.createBasicDialog(
-                                    "Steam error",
-                                    "A steam error occurred on " + station.name + ". Check the station for more details."
-                            );
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Steam error",
+                                        "A steam error occurred on " + station.name + ". Check the station for more details."
+                                );
+                            });
                         }
                     }
                     break;
@@ -145,6 +151,9 @@ public class UIUpdateManager {
                 case "session":
                     if (value.equals("Ended")) {
                         DialogManager.sessionEndedOnStation(station.id);
+                    }
+                    if (value.equals("Restarted")) {
+                        DialogManager.sessionRestartedOnStation(station.id);
                     }
                     break;
                 case "status":
