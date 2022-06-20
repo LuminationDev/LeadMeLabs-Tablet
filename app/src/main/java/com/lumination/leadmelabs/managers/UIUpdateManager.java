@@ -103,6 +103,17 @@ public class UIUpdateManager {
                             });
                         }
                     }
+                    if (additionalData.startsWith("LostHeadset")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Lost VR Headset Connection",
+                                        station.name + " lost connection to the VR headset. This is normally caused by a flat battery."
+                                );
+                            });
+                        }
+                    }
                     break;
                 case "Automation":
                     // todo need to handle a scene being updated from another tablets
