@@ -7,12 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import androidx.core.content.ContextCompat;
 import com.lumination.leadmelabs.MainActivity;
@@ -69,21 +64,10 @@ public class StationAdapter extends RecyclerView.Adapter {
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
                     if (!station.status.equals("Off")) {
-                        RelativeLayout stationCardAlert = binding.getRoot().findViewById(R.id.station_card_alert);
-                        stationCardAlert.setVisibility(View.VISIBLE);
-                        View.OnClickListener showAppNotInstalledListener = new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                MainActivity.runOnUI(() -> {
-                                    DialogManager.createBasicDialog(
-                                            "Application not installed",
-                                            "This application is not installed on this station. Please contact your IT department for install instructions."
-                                    );
-                                });
-                            }
-                        };
-                        finalResult.setOnClickListener(showAppNotInstalledListener);
-                        stationCardAlert.setOnClickListener(showAppNotInstalledListener);
+                        StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                        View notInstalledAlert = fragment.getView().findViewById(R.id.not_installed_alert);
+                        notInstalledAlert.setVisibility(View.VISIBLE);
+                        finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.card_disabled_red_border));
                     }
                 }
             }
