@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
@@ -73,16 +74,19 @@ public class StationSingleFragment extends Fragment {
             Identifier.identifyStations(stations);
         });
 
-        Button stopGame = view.findViewById(R.id.station_stop_game);
-        stopGame.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
-        });
-
         Button newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
+        });
+
+        Button restartGame = view.findViewById(R.id.station_restart_session);
+        restartGame.setOnClickListener(v -> {
+            if (binding.getSelectedStation().gameId != null && binding.getSelectedStation().gameId.length() > 0) {
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Steam", "Launch:" + binding.getSelectedStation().gameId);
+                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)));
+            }
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
@@ -91,10 +95,10 @@ public class StationSingleFragment extends Fragment {
             DialogManager.awaitStationRestartSession(new int[] { binding.getSelectedStation().id });
         });
 
-        Button endVr = view.findViewById(R.id.station_end_vr);
-        endVr.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "EndVR");
-            DialogManager.awaitStationEndSession(new int[] { binding.getSelectedStation().id });
+        Button endGame = view.findViewById(R.id.station_end_session);
+        endGame.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
         });
 
         Button button = view.findViewById(R.id.enter_url);

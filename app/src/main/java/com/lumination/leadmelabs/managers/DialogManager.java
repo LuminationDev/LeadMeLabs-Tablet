@@ -487,10 +487,10 @@ public class DialogManager {
         restartSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(restartSessionDialogView).create();
 
         TextView title = restartSessionDialogView.findViewById(R.id.title);
-        title.setText("Restarting session");
+        title.setText("Restarting system");
 
         TextView contentText = restartSessionDialogView.findViewById(R.id.content_text);
-        contentText.setText(MessageFormat.format("Restarting session on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
+        contentText.setText(MessageFormat.format("Restarting system on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
 
         restartSessionStationIds =  new ArrayList<>(stationIds.length);
         for (int i : stationIds)
