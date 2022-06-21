@@ -115,6 +115,9 @@ public class ApplianceAdapter extends BaseAdapter {
                     //Open the blind widget when that is built for now just act as a toggle
                 case "source":
                     //Toggle the source when that is implemented for now just act as a toggle
+                case "LED rings":
+                    toggleStrategy(binding, appliance, finalResult, "180", "0");
+                    break;
                 default:
                     toggleStrategy(binding, appliance, finalResult);
                     break;
@@ -235,6 +238,11 @@ public class ApplianceAdapter extends BaseAdapter {
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
     private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+        toggleStrategy(binding, appliance, finalResult, "255", "0");
+    }
+
+    //Strategies to control the units on the CBUS, there should be toggle and dimmer
+    private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, View finalResult, String onValue, String offValue) {
         String value;
         TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
 
@@ -242,13 +250,13 @@ public class ApplianceAdapter extends BaseAdapter {
             transition.reverseTransition(200);
             binding.setIsActive(new MutableLiveData<>(false));
             ApplianceViewModel.activeApplianceList.remove(String.valueOf(appliance.id));
-            value = "0";
+            value = offValue;
 
         } else {
             binding.setIsActive(new MutableLiveData<>(true));
             transition.startTransition(200);
             ApplianceViewModel.activeApplianceList.add(String.valueOf(appliance.id));
-            value = "255";
+            value = onValue;
         }
 
         //Set the new icon and send a message to the NUC
