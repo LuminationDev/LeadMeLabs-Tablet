@@ -1,7 +1,14 @@
 package com.lumination.leadmelabs.models;
 
+import android.os.CountDownTimer;
+
+import androidx.lifecycle.ViewModelProviders;
+
+import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Station {
     public String name;
@@ -16,6 +23,9 @@ public class Station {
     public int theatreId;
     public boolean selected = false;
     public Appliance associated = null;
+    public int automationGroup;
+    public int automationId;
+    private CountDownTimer timer;
 
     public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room) {
         this.name = name;
@@ -50,5 +60,36 @@ public class Station {
             }
         }
         return false;
+    }
+
+    /**
+     * Start a countdown to check the station status, if the station has not contacted the NUC
+     * within the time limit (3mins) then something has gone wrong and alert the user.
+     */
+    public void powerStatusCheck() {
+        timer = new CountDownTimer(3* 1000 * 60, 2000) {
+            @Override
+            public void onTick(long l) {
+            }
+
+            @Override
+            public void onFinish() {
+                DialogManager.createBasicDialog("STATION ERROR", "Station " + id + " has not powered on correctly");
+                MainActivity.runOnUI(() -> {
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    station.status = "Off";
+                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
+                });
+            }
+        }.start();
+    }
+
+    /**
+     * The station has turned on so cancel the automatic station check.
+     */
+    public void cancelStatusCheck() {
+        if(timer != null) {
+            timer.cancel();
+        }
     }
 }
