@@ -17,8 +17,6 @@ import org.json.JSONException;
 
 import android.view.View;
 
-import java.util.ArrayList;
-
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
@@ -168,6 +166,7 @@ public class UIUpdateManager {
                     break;
                 case "status":
                     station.status = value;
+                    if(value.equals("On")) { station.cancelStatusCheck(); }
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);

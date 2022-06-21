@@ -26,12 +26,14 @@ public class Identifier {
             return;
         }
         identifying = true;
-        CountDownTimer timer = new CountDownTimer(2000 * (stations.size()), 2000) {
+        CountDownTimer timer = new CountDownTimer(2000L * (stations.size()), 2000) {
             @Override
             public void onTick(long l) {
                 Station station = stations.get((stations.size() - 1) - index[0]);
                 NetworkService.sendMessage("Station," + station.id, "CommandLine", "IdentifyStation");
-                NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + station.associated.automationId);
+                if(station.associated != null) {
+                    NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + station.associated.automationId);
+                }
                 index[0]--;
             }
 

@@ -243,10 +243,10 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/shutdown_station"
                             style="@style/StationSingleButton"
-                            android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : @color/red}"
+                            android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : (selectedStation.status.equals(`On`) ? @color/red : @color/orange)}"
                             android:drawableTop="@drawable/ic_shutdown"
-                            android:text="@{selectedStation.status.equals(`Off`) ? `Power On` : `Shut Down`}"
-                            app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : @color/red_light}" />
+                            android:text="@{selectedStation.status.equals(`Off`) ? `Power On` : (selectedStation.status.equals(`On`) ? `Shut Down` : `Turning On`)}"
+                            app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
