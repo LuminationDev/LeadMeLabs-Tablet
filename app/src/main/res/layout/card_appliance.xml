@@ -16,42 +16,48 @@
             type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
     </data>
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/appliance_card"
-        style="@style/ApplianceCardContainer"
-        android:background="@drawable/transition_appliance_fade"
-        app:flexDirection="column"
-        app:alignItems="flex_start"
-        app:justifyContent="space_between">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/scene_icon"
-            app:imageResource="@{icon}" />
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/appliance_card"
+            style="@style/ApplianceCardContainer"
+            android:background="@drawable/transition_appliance_fade"
+            app:flexDirection="column"
+            app:alignItems="flex_start"
+            app:justifyContent="space_between"
+            android:layout_margin="10dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/appliance_title"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:text="@{appliance.name, default=Scene_Example}" />
+                android:contentDescription="@string/scene_icon"
+                app:imageResource="@{icon}" />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/white"
-                android:text="@{isActive ? appliance.description.get(0) : appliance.description.get(1), default=`Loading`}"/>
-        </LinearLayout>
-    </com.google.android.flexbox.FlexboxLayout>
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/appliance_title"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@{appliance.name, default=Scene_Example}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:text="@{isActive ? appliance.description.get(0) : appliance.description.get(1), default=`Loading`}"/>
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
 </layout>
 
 <!--    android:background="@{isActive ? @drawable/bg_appliance_card_blue : @drawable/bg_appliance_card_grey, default=@drawable/bg_appliance_card_grey}"-->

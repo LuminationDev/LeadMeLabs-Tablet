@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
@@ -57,10 +59,12 @@ public class ApplianceFragment extends Fragment {
         TextView titleView = view.findViewById(R.id.appliance_title);
         titleView.setText(title);
 
-        GridView gridView = view.findViewById(R.id.appliance_list);
-        applianceAdapter = new ApplianceAdapter(getContext());
+        RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
+        int numberOfColumns = 4;
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
+        applianceAdapter = new ApplianceAdapter();
         applianceAdapter.applianceList = new ArrayList<>();
-        gridView.setAdapter(applianceAdapter);
+        recyclerView.setAdapter(applianceAdapter);
 
         applianceCount.setValue(applianceAdapter.applianceList.size());
 
@@ -68,7 +72,7 @@ public class ApplianceFragment extends Fragment {
         mViewModel.getAppliances().observe(getViewLifecycleOwner(), this::reloadData);
 
         mViewModel.getActiveAppliances().observe(getViewLifecycleOwner(), active -> {
-            ApplianceViewModel.activeApplianceList = (HashSet<String>) active;
+            ApplianceViewModel.activeApplianceList = active;
             applianceAdapter.notifyDataSetChanged();
         });
 
