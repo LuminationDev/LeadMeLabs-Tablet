@@ -23,6 +23,7 @@ public class ApplianceViewModel extends ViewModel {
     public static HashSet<Appliance> activeSceneList = new HashSet<>();
     public MutableLiveData<HashSet<String>> activeAppliances;
     public static MutableLiveData<HashSet<String>> activeScenes;
+    public static boolean init = false;
 
     private MutableLiveData<List<Appliance>> appliances;
 
@@ -96,7 +97,8 @@ public class ApplianceViewModel extends ViewModel {
     /**
      * The result of calling the CBUS unit to find what objects are currently active. The JSON array
      * received contains the full list of objects on the CBUS, sorting and filtering needs to be
-     * performed.
+     * performed. It should only retrieve the scenes when first connecting. UpdateActiveApplianceList
+     * handles the tablet syncing.
      * @param appliances A JSON received from the NUC containing all CBUS objects.
      * @throws JSONException If the JSON is not in the correct format an exception is thrown.
      */
@@ -106,21 +108,32 @@ public class ApplianceViewModel extends ViewModel {
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
-                if (appliances.getJSONObject(i).getJSONObject("data").has("level")) {
-                    if (!appliances.getJSONObject(i).getJSONObject("data").getString("level").equals("0")) {
+                if (appliances.getJSONObject(i).getJSONObject("data").has("target")) {
+                    if (!appliances.getJSONObject(i).getJSONObject("data").getString("target").equals("0")) {
                         objects.add(appliances.getJSONObject(i).getString("id"));
                     }
                 } else if (appliances.getJSONObject(i).getJSONObject("data").has("value")) {
                     String value = appliances.getJSONObject(i).getJSONObject("data").getString("value");
                     String id = appliances.getJSONObject(i).getString("id");
                     String sceneId = id + value;
-                    scenes.add(sceneId);
+
+                    if(!value.startsWith("-")) {
+                        scenes.add(sceneId);
+                    }
                 }
             }
         }
 
         activeAppliances.setValue(objects);
-        activeScenes.setValue(scenes);
+
+        if(!init) {
+            activeScenes.setValue(scenes);
+            init = true;
+        }
+
+        if(ApplianceAdapter.getInstance() != null) {
+            ApplianceAdapter.getInstance().notifyDataSetChanged();
+        }
     }
 
     /**
@@ -139,38 +152,46 @@ public class ApplianceViewModel extends ViewModel {
             return;
         }
 
+        boolean modified = false;
+
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
                 if(appliance.type.equals("scenes")) {
                     for(Appliance scene : appliances.getValue()) {
-                        if(ApplianceViewModel.activeSceneList.contains(scene) && scene.room.equals(room) && !scene.id.equals(id)) {
-                            ApplianceViewModel.activeSceneList.remove(scene);
-                            ApplianceAdapter.getInstance().latestOff.add(scene.id);
+                        if(activeSceneList.contains(scene) && scene.room.equals(room) && !scene.id.equals(id)) {
+                            activeSceneList.remove(scene);
+                            ApplianceAdapter.latestOff.add(scene.id);
                         }
                     }
 
-                    activeSceneList.add(appliance);
-                    ApplianceAdapter.getInstance().latestOn.add(appliance.id);
-
-                    //TODO test that this does not cause an infinity loop
+                    //Check that only one scene is active per room
                     loadActiveAppliances();
+                    activeSceneList.add(appliance);
+                    ApplianceAdapter.latestOn.add(appliance.id);
+                    modified = true;
                 } else {
                     if (value == 0) {
-                        activeApplianceList.remove(id);
+                        if(activeApplianceList.contains(id)) {
+                            activeApplianceList.remove(id);
+                            modified = true;
+                        }
                     } else {
-                        activeApplianceList.add(id);
+                        if(!activeApplianceList.contains(id)) {
+                            activeApplianceList.add(id);
+                            modified = true;
+                        }
                     }
                 }
             }
         }
 
         //Update the current data set
-        if(ApplianceAdapter.getInstance() != null) {
+        if(ApplianceAdapter.getInstance() != null && modified) {
             ApplianceAdapter.getInstance().notifyDataSetChanged();
         }
     }
 
-    public void loadActiveAppliances() {
+    public static void loadActiveAppliances() {
         NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
     }
 
