@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -101,11 +103,29 @@ public class StationSingleFragment extends Fragment {
         );
 
         MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
-        shutdownButton.setOnClickListener(v ->
-                DialogManager.buildShutdownDialog(getContext(), new int[] { binding.getSelectedStation().id })
-        );
+        shutdownButton.setOnClickListener(v -> {
+            int id = binding.getSelectedStation().id;
+            Station station = mViewModel.getStationById(id);
 
-        ImageView gameControlImage = (ImageView) view.findViewById(R.id.game_control_image);
+            if (station.status.equals("Off")) {
+                station.powerStatusCheck();
+
+                MainActivity.runOnUI(() -> {
+                    station.status = "Turning on";
+                    mViewModel.updateStationById(id, station);
+                });
+                //As per the CBUS code value is hard coded to 2.
+                NetworkService.sendMessage("NUC", "Automation", "Set:0:" + station.automationGroup + ":" + station.automationId  + ":" + station.id + ":" + 2 + ":" + station.room);
+
+            } else if(station.status.equals("starting")) {
+                Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
+
+            } else {
+                DialogManager.buildShutdownDialog(getContext(), new int[]{id});
+            }
+        });
+
+        ImageView gameControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
             if (station.gameId != null && station.gameId.length() > 0) {

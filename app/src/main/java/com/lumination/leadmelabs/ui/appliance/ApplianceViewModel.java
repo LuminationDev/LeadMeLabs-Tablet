@@ -81,6 +81,14 @@ public class ApplianceViewModel extends ViewModel {
                                 temp.associated = appliance;
                             }
                         }
+
+                        if(type.equals("computers")) {
+                            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
+                            if(temp != null) {
+                                temp.automationGroup = appliance.automationGroup;
+                                temp.automationId = appliance.automationId;
+                            }
+                        }
                     }
                     st.add(appliance);
                 }
