@@ -15,6 +15,7 @@ import java.util.List;
 public class Identifier {
     //Detect if the function is already running, do not want to double up.
     private static boolean identifying = false;
+    public static int initialDelay = 2500;
 
     /**
      * Cycle through the currently viewable stations, triggering the identify stations overlay and the
