@@ -121,7 +121,7 @@ public class StationSingleFragment extends Fragment {
                 //As per the CBUS code value is hard coded to 2.
                 NetworkService.sendMessage("NUC", "Automation", "Set:0:" + station.automationGroup + ":" + station.automationId  + ":" + station.id + ":" + 2 + ":" + station.room);
 
-            } else if(station.status.equals("starting")) {
+            } else if(station.status.equals("Turning on")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
             } else {
