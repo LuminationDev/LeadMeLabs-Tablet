@@ -116,7 +116,7 @@ public class ApplianceAdapter extends BaseAdapter {
                 case "source":
                     //Toggle the source when that is implemented for now just act as a toggle
                 case "LED rings":
-                    toggleStrategy(binding, appliance, finalResult, "180", "0");
+                    toggleStrategy(binding, appliance, finalResult, "153", "0");
                     break;
                 default:
                     toggleStrategy(binding, appliance, finalResult);

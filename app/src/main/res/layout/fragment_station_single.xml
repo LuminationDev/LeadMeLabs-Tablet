@@ -17,7 +17,7 @@
 
         <TextView
             style="@style/PageTitle"
-            android:text="@string/select_stations_title"/>
+            android:text="@string/manage_station_title"/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/station_single_fragment"
@@ -123,11 +123,12 @@
                                 app:justifyContent="space_between">
 
                                 <Button
-                                    android:id="@+id/station_stop_game"
+                                    android:id="@+id/new_session_button"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey}"
-                                    android:text="Stop"
+                                    android:backgroundTint="@color/blue"
+                                    android:letterSpacing="0.02"
+                                    android:text="Choose new"
                                     android:textAllCaps="false" />
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
@@ -211,16 +212,12 @@
                         app:justifyContent="space_between">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/new_session_button"
+                            android:id="@+id/station_end_session"
                             style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_start_session"
-                            android:text="New Session" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/station_restart_vr"
-                            style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_restart_session"
-                            android:text="Restart Session" />
+                            android:drawableTop="@drawable/ic_end_session"
+                            android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/blue_light}"
+                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}"
+                            android:text="End Session" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/enter_url"
@@ -229,10 +226,20 @@
                             android:text="Launch Website" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/station_end_vr"
+                            android:id="@+id/station_restart_vr"
                             style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_end_session"
-                            android:text="End Session" />
+                            android:backgroundTint="@color/orange"
+                            android:drawableTop="@drawable/ic_restart"
+                            android:text="Restart System"
+                            app:rippleColor="@color/orange_light" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/station_restart_session"
+                            style="@style/StationSingleButton"
+                            android:drawableTop="@drawable/ic_restart_session"
+                            android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/blue_light}"
+                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}"
+                            android:text="Restart Session" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/ping_station"
@@ -251,6 +258,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
+
         <ImageView
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
