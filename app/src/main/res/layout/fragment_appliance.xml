@@ -43,18 +43,17 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/red"
-            android:visibility="@{appliances.applianceCount > 0 ? View.INVISIBLE : View.VISIBLE}"/>
+            android:visibility="@{appliances.applianceCount > 0 ? View.GONE : View.VISIBLE}"/>
 
-        <GridView
-            android:id="@+id/appliance_list"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:columnWidth="200dp"
+            android:id="@+id/appliance_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:horizontalSpacing="2dp"
+            android:paddingHorizontal="10dp"
             android:verticalSpacing="20dp"
-            android:numColumns="auto_fit"
             tools:listitem="@layout/card_appliance" />
 
     </LinearLayout>

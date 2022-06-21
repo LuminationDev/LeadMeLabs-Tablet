@@ -1,14 +1,14 @@
 package com.lumination.leadmelabs.ui.appliance;
 
-import android.content.Context;
 import android.graphics.drawable.TransitionDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -21,29 +21,107 @@ import java.util.ArrayList;
 /**
  * Use this adapter for scripts in the future.
  */
-public class ApplianceAdapter extends BaseAdapter {
+public class ApplianceAdapter extends RecyclerView.Adapter {
     private final String TAG = "ApplianceAdapter";
 
     public static ApplianceAdapter instance;
     public static ApplianceAdapter getInstance() { return instance; }
 
+    public ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
+
     public ArrayList<Appliance> applianceList = new ArrayList<>();
     public static ArrayList<String> latestOn = new ArrayList<>();
     public static ArrayList<String> latestOff = new ArrayList<>();
 
-    private LayoutInflater mInflater;
-
-    ApplianceAdapter(Context context) {
-        this.mInflater = LayoutInflater.from(context);
+    ApplianceAdapter() {
         instance = this;
     }
 
+    public class ApplianceViewHolder extends RecyclerView.ViewHolder {
+        private final CardApplianceBinding binding;
+        public ApplianceViewHolder(@NonNull CardApplianceBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(Appliance appliance, int position) {
+            binding.setAppliance(appliance);
+            View finalResult = binding.getRoot().findViewById(R.id.appliance_card);
+            String id = String.valueOf(appliance.id);
+
+            boolean active;
+
+            //Determine if the appliance is active
+            if(getItemType(position).equals("scenes")) {
+                if(ApplianceViewModel.activeScenes.getValue() != null) {
+                    if (ApplianceViewModel.activeScenes.getValue().contains(String.valueOf(getItem(position).id))) {
+                        ApplianceViewModel.activeSceneList.add(getItem(position));
+                        ApplianceViewModel.activeScenes.getValue().remove(String.valueOf(getItem(position).id));
+                    }
+                }
+                active = ApplianceViewModel.activeSceneList.contains(getItem(position));
+                sceneTransition(active, id, finalResult);
+
+            } else {
+                active = ApplianceViewModel.activeApplianceList.contains(id);
+
+                TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
+                if(active) {
+                    transition.startTransition(200);
+                } else {
+                    transition.resetTransition();
+                }
+            }
+
+            //Load what appliance is active or not
+            setIcon(binding, active);
+            binding.setIsActive(new MutableLiveData<>(active));
+
+            finalResult.setOnClickListener(v -> {
+                String type = getItemType(position);
+
+                switch (type) {
+                    case "scenes":
+                        sceneStrategy(binding, appliance, finalResult);
+                        break;
+                    case "blinds":
+                        //Open the blind widget when that is built for now just act as a toggle
+                    case "source":
+                        //Toggle the source when that is implemented for now just act as a toggle
+                    case "LED rings":
+                        toggleStrategy(binding, appliance, finalResult, "180", "0");
+                        break;
+                    default:
+                        toggleStrategy(binding, appliance, finalResult);
+                        break;
+                }
+            });
+
+            applianceBindings.add(binding);
+        }
+    }
+
+    @NonNull
     @Override
-    public int getCount() {
-        return applianceList != null ? applianceList.size() : 0;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        CardApplianceBinding binding = CardApplianceBinding.inflate(layoutInflater, parent, false);
+        return new ApplianceAdapter.ApplianceViewHolder(binding);
     }
 
     @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Appliance appliance = getItem(position);
+        ApplianceAdapter.ApplianceViewHolder applianceViewHolder = (ApplianceAdapter.ApplianceViewHolder) holder;
+        applianceViewHolder.bind(appliance, position);
+    }
+
+    //Accessors
+    @Override
+    public int getItemCount() {
+        return applianceList != null ? applianceList.size() : 0;
+    }
+
     public Appliance getItem(int position) {
         return applianceList.get(position);
     }
@@ -54,78 +132,6 @@ public class ApplianceAdapter extends BaseAdapter {
     }
 
     public String getItemType(int position) { return applianceList.get(position).type; }
-
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        View result = view;
-
-        CardApplianceBinding binding;
-        Appliance appliance = getItem(position);
-        String id = String.valueOf(appliance.id);
-
-        if (result == null) {
-            if (mInflater == null) {
-                mInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            }
-            binding = CardApplianceBinding.inflate(mInflater, parent, false);
-            result = binding.getRoot();
-            result.setTag(binding);
-        } else {
-            binding = (CardApplianceBinding) result.getTag();
-        }
-        binding.setAppliance(appliance);
-
-        boolean active;
-
-        //Determine if the appliance is active
-        if(getItemType(position).equals("scenes")) {
-            if(ApplianceViewModel.activeScenes.getValue() != null) {
-                if (ApplianceViewModel.activeScenes.getValue().contains(String.valueOf(getItem(position).id))) {
-                    ApplianceViewModel.activeSceneList.add(getItem(position));
-                    ApplianceViewModel.activeScenes.getValue().remove(String.valueOf(getItem(position).id));
-                }
-            }
-            active = ApplianceViewModel.activeSceneList.contains(getItem(position));
-            sceneTransition(active, id, result);
-
-        } else {
-            active = ApplianceViewModel.activeApplianceList.contains(id);
-
-            TransitionDrawable transition = (TransitionDrawable) result.getBackground();
-            if(active) {
-                transition.startTransition(200);
-            } else {
-                transition.resetTransition();
-            }
-        }
-
-        //Load what appliance is active or not
-        setIcon(binding, active);
-        binding.setIsActive(new MutableLiveData<>(active));
-
-        View finalResult = result;
-        result.setOnClickListener(v -> {
-            String type = getItemType(position);
-
-            switch (type) {
-                case "scenes":
-                    sceneStrategy(binding, appliance, finalResult);
-                    break;
-                case "blinds":
-                    //Open the blind widget when that is built for now just act as a toggle
-                case "source":
-                    //Toggle the source when that is implemented for now just act as a toggle
-                case "LED rings":
-                    toggleStrategy(binding, appliance, finalResult, "153", "0");
-                    break;
-                default:
-                    toggleStrategy(binding, appliance, finalResult);
-                    break;
-            }
-        });
-
-        return result;
-    }
 
     /**
      * Depending on an appliances type add an icon.
