@@ -22,12 +22,10 @@ import java.util.ArrayList;
  * Use this adapter for scripts in the future.
  */
 public class ApplianceAdapter extends RecyclerView.Adapter {
-    private final String TAG = "ApplianceAdapter";
-
     public static ApplianceAdapter instance;
     public static ApplianceAdapter getInstance() { return instance; }
 
-    public ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
+    public static ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
     public static ArrayList<String> latestOn = new ArrayList<>();
@@ -53,13 +51,15 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
             //Determine if the appliance is active
             if(getItemType(position).equals("scenes")) {
+                //This is applicable when first starting up the application
                 if(ApplianceViewModel.activeScenes.getValue() != null) {
                     if (ApplianceViewModel.activeScenes.getValue().contains(String.valueOf(getItem(position).id))) {
-                        ApplianceViewModel.activeSceneList.add(getItem(position));
+                        ApplianceViewModel.activeSceneList.put(getItemRoom(position),getItem(position));
                         ApplianceViewModel.activeScenes.getValue().remove(String.valueOf(getItem(position).id));
                     }
                 }
-                active = ApplianceViewModel.activeSceneList.contains(getItem(position));
+
+                active = ApplianceViewModel.activeSceneList.containsValue(getItem(position));
                 sceneTransition(active, id, finalResult);
 
             } else {
@@ -82,7 +82,7 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
                 switch (type) {
                     case "scenes":
-                        sceneStrategy(binding, appliance, finalResult);
+                        sceneStrategy(binding, appliance);
                         break;
                     case "blinds":
                         //Open the blind widget when that is built for now just act as a toggle
@@ -126,12 +126,32 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
         return applianceList.get(position);
     }
 
+    public String getItemRoom(int position) {
+        return applianceList.get(position).room;
+    }
+
     @Override
     public long getItemId(int position) {
         return 0;
     }
 
     public String getItemType(int position) { return applianceList.get(position).type; }
+
+    /**
+     * Update the data set only if the card with the supplied ID is visible otherwise it will be
+     * update when it is next visible automatically with the new ViewHolder creation.
+     * @param id A string representing the ID of the appliance.
+     */
+    public void updateIfVisible(String id) {
+        for(int i=0; i < applianceList.size(); i++) {
+            if(applianceList.get(i).id.equals(id)) {
+                int finalI = i;
+                MainActivity.runOnUI(() ->
+                    notifyItemChanged(finalI)
+                );
+            }
+        }
+    }
 
     /**
      * Depending on an appliances type add an icon.
@@ -249,6 +269,7 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
     //Strategies to control the units on the CBUS, there should be toggle and dimmer
     private void toggleStrategy(CardApplianceBinding binding, Appliance appliance, View finalResult, String onValue, String offValue) {
+        String type = "appliance";
         String value;
         TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
 
@@ -267,31 +288,56 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
         //Set the new icon and send a message to the NUC
         setIcon(binding, ApplianceViewModel.activeApplianceList.contains(String.valueOf(appliance.id)));
-        NetworkService.sendMessage("NUC", "Automation", "Set:0:" + appliance.automationGroup + ":" + appliance.automationId  + ":" + appliance.id + ":" + value + ":" + appliance.room);
+
+        //additionalData break down
+        //Action : [cbus unit : group address : id address : value] : [type : room : id appliance]
+        NetworkService.sendMessage("NUC",
+                "Automation",
+                "Set" + ":"                         //[0] Action
+                        + "0" + ":"                             //[1] CBUS unit number
+                        + appliance.automationGroup + ":"       //[2] CBUS group address
+                        + appliance.automationId  + ":"         //[3] CBUS unit address
+                        + value + ":"                           //[4] New value for address
+                        + type + ":"                            //[5] Object type (computer, appliance, scene)
+                        + appliance.room + ":"                  //[6] Appliance room
+                        + appliance.id);                        //[7] CBUS object id/doubles as card id
     }
 
-    private void sceneStrategy(CardApplianceBinding binding, Appliance scene, View finalResult) {
+    private void sceneStrategy(CardApplianceBinding binding, Appliance scene) {
+        String type = "scene";
+
         //Set the new icon and send a message to the NUC
-        setIcon(binding, ApplianceViewModel.activeSceneList.contains(scene));
+        setIcon(binding, ApplianceViewModel.activeSceneList.containsValue(scene));
 
-        if(ApplianceViewModel.activeSceneList.contains(scene)) {
-            //Do nothing don't want to double click something
-            return;
-        } else {
-            binding.setIsActive(new MutableLiveData<>(true));
-            ApplianceViewModel.activeSceneList.add(scene);
-            latestOn.add(scene.id);
+        if(ApplianceViewModel.activeSceneList.containsValue(scene)) {
+            return; //Do nothing don't want to double click something
         }
 
-        //Remove any scene from the activeScene list that is in the same room?
-        for(Appliance appliance : applianceList) {
-            if(ApplianceViewModel.activeSceneList.contains(appliance) && appliance.room.equals(scene.room) && !appliance.id.equals(scene.id)) {
-                ApplianceViewModel.activeSceneList.remove(appliance);
-                latestOff.add(appliance.id);
-            }
-        }
+        binding.setIsActive(new MutableLiveData<>(true));
+        Appliance last = ApplianceViewModel.activeSceneList.put(scene.room, scene);
 
-        notifyDataSetChanged();
-        NetworkService.sendMessage("NUC", "Automation", "Set:0:" + scene.automationGroup + ":" + scene.automationId  + ":" + scene.id + ":" + scene.automationValue + ":" + scene.room);
+        if(last != null) {
+            latestOff.add(last.id);
+            updateIfVisible(last.id);
+        }
+        latestOn.add(scene.id);
+
+        updateIfVisible(scene.id);
+
+        //Action : [cbus unit : group address : id address : scene value] : [type : room : id scene]
+        NetworkService.sendMessage("NUC",
+                "Automation",
+                "Set" + ":"                         //[0] Action
+                        + "0" + ":"                             //[1] CBUS unit number
+                        + scene.automationGroup + ":"           //[2] CBUS group address
+                        + scene.automationId  + ":"             //[3] CBUS unit address
+                        + scene.automationValue + ":"           //[4] New value for address
+                        + type + ":"                            //[5] Object type (computer, appliance, scene)
+                        + scene.room + ":"                      //[6] Appliance room
+                        + scene.id);                            //[7] CBUS object id/doubles as card id
+
+
+        //Cancel/start the timer to get the latest updated cards
+        ApplianceViewModel.delayLoadCall();
     }
 }

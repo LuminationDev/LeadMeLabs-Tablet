@@ -118,8 +118,22 @@ public class StationSingleFragment extends Fragment {
                     station.status = "Turning on";
                     mViewModel.updateStationById(id, station);
                 });
-                //As per the CBUS code value is hard coded to 2.
-                NetworkService.sendMessage("NUC", "Automation", "Set:0:" + station.automationGroup + ":" + station.automationId  + ":" + station.id + ":" + 2 + ":" + station.room);
+
+                String type = "computer";
+
+                //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
+                //additionalData break down
+                //Action : [cbus unit : group address : id address : value] : [type : room : id station]
+                NetworkService.sendMessage("NUC",
+                        "Automation",
+                        "Set" + ":"                         //[0] Action
+                                + "0" + ":"                             //[1] CBUS unit number
+                                + station.automationGroup + ":"         //[2] CBUS group address
+                                + station.automationId  + ":"           //[3] CBUS unit address
+                                + 2 + ":"                               //[4] New value for address
+                                + type + ":"                            //[5] Object type (computer, appliance, scene)
+                                + station.room + ":"                    //[6] Station room
+                                + station.id);                          //[7] CBUS object id/doubles as card id
 
             } else if(station.status.equals("Turning on")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();

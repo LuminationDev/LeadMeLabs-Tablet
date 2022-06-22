@@ -25,6 +25,7 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
@@ -104,6 +105,10 @@ public class RoomFragment extends Fragment {
 
             int finalI = i;
             btn.setOnClickListener(v -> {
+                if(Objects.equals(currentType.getValue(), roomSet.get(finalI))) {
+                    return;
+                }
+
                 mViewModel.setSelectedRoom(roomSet.get(finalI));
                 currentType.setValue(roomSet.get(finalI));
 

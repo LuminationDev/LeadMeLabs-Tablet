@@ -61,7 +61,7 @@ public class SettingsViewModel extends AndroidViewModel {
         NetworkService.setNUCAddress(newValue);
         nucAddress.setValue(newValue);
         NetworkService.sendMessage("NUC", "Stations", "List");
-        NetworkService.sendMessage("NUC", "Zones", "List");
+        NetworkService.sendMessage("NUC", "Appliances", "List");
     }
 
     public LiveData<String> getPinCode() {
