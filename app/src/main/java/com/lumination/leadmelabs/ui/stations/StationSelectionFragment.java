@@ -134,7 +134,7 @@ public class StationSelectionFragment extends Fragment {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-        DialogManager.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId));
+        DialogManager.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId), false);
     }
 
     public void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {

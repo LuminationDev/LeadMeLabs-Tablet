@@ -343,7 +343,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(1200, 450);
+        reconnectDialog.getWindow().setLayout(1400, 450);
     }
 
     /**
@@ -386,7 +386,7 @@ public class DialogManager {
             NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
             SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
             confirmDialog.dismiss();
-            awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
+            awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
         });
 
         Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
@@ -400,16 +400,16 @@ public class DialogManager {
      * This is dismisses manually by the user or automatically when the NUC sends back confirmation
      * from the stations.
      */
-    public static void awaitStationGameLaunch(int[] stationIds, String gameName)
+    public static void awaitStationGameLaunch(int[] stationIds, String gameName, boolean restarting)
     {
         View gameLaunchDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
         gameLaunchDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(gameLaunchDialogView).create();
 
         TextView title = gameLaunchDialogView.findViewById(R.id.title);
-        title.setText(R.string.launching_game);
+        title.setText(restarting ? "Restarting Experience" : "Launching Experience");
 
         TextView contentText = gameLaunchDialogView.findViewById(R.id.content_text);
-        contentText.setText(MessageFormat.format("Launching {0} on {1}", gameName, String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
+        contentText.setText(MessageFormat.format("{0} {1} on {2}", restarting ? "Restarting" : "Launching", gameName, String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
 
         gameLaunchStationIds = new ArrayList<>(stationIds.length);
         for (int i : stationIds)

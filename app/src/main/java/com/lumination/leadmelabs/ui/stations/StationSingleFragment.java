@@ -85,7 +85,7 @@ public class StationSingleFragment extends Fragment {
             if (binding.getSelectedStation().gameId != null && binding.getSelectedStation().gameId.length() > 0) {
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Steam", "Launch:" + binding.getSelectedStation().gameId);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)));
+                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
             }
         });
 
