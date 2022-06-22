@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
+import android.os.CountDownTimer;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,17 +17,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 public class ApplianceViewModel extends ViewModel {
     public static HashSet<String> activeApplianceList = new HashSet<>();
-    public static HashSet<Appliance> activeSceneList = new HashSet<>();
-    public MutableLiveData<HashSet<String>> activeAppliances;
+    //Use a hash map for active scenes, the room is the key, the value is the scene
+    public static HashMap<String, Appliance> activeSceneList = new HashMap<>();
+    private MutableLiveData<HashSet<String>> activeAppliances;
     public static MutableLiveData<HashSet<String>> activeScenes;
-    public static boolean init = false;
-
     private MutableLiveData<List<Appliance>> appliances;
+    private static boolean init = false;
 
     public LiveData<List<Appliance>> getAppliances() {
         if (appliances == null) {
@@ -111,14 +114,17 @@ public class ApplianceViewModel extends ViewModel {
      * @throws JSONException If the JSON is not in the correct format an exception is thrown.
      */
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
-        HashSet<String> objects = new HashSet<>();
+        HashSet<String> activeObjects = new HashSet<>();
+        HashSet<String> inactiveObjects = new HashSet<>();
         HashSet<String> scenes = new HashSet<>();
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
                 if (appliances.getJSONObject(i).getJSONObject("data").has("target")) {
                     if (!appliances.getJSONObject(i).getJSONObject("data").getString("target").equals("0")) {
-                        objects.add(appliances.getJSONObject(i).getString("id"));
+                        activeObjects.add(appliances.getJSONObject(i).getString("id"));
+                    } else {
+                        inactiveObjects.add(appliances.getJSONObject(i).getString("id"));
                     }
                 } else if (appliances.getJSONObject(i).getJSONObject("data").has("value")) {
                     String value = appliances.getJSONObject(i).getJSONObject("data").getString("value");
@@ -132,70 +138,110 @@ public class ApplianceViewModel extends ViewModel {
             }
         }
 
-        activeAppliances.setValue(objects);
+        activeAppliances.setValue(activeObjects);
 
         if(!init) {
             activeScenes.setValue(scenes);
             init = true;
-        }
 
-        if(ApplianceAdapter.getInstance() != null) {
-            ApplianceAdapter.getInstance().notifyDataSetChanged();
+            if(ApplianceAdapter.getInstance() != null) {
+                ApplianceAdapter.getInstance().notifyDataSetChanged();
+            }
+        } else {
+            for(String cards : activeObjects) {
+                ApplianceAdapter.getInstance().updateIfVisible(cards);
+            }
+
+            for(String cards : inactiveObjects) {
+                ApplianceAdapter.getInstance().updateIfVisible(cards);
+            }
         }
     }
 
     /**
      * Receiving a message from the NUC after another tablet has activated something on the CBUS.
-     * Update the necessary appliance object based on the supplied Id.
+     * Update the necessary object based on the supplied Id.
      * @param id An int representing the Id of the appliance, relates directly to the Id in the
      *           supplied JSON file.
-     * @param value An int representing the new value of the appliance object.
      * @param room A string representing what room the appliance belongs to. Only applicable for the
      *             scene subtype.
      */
-    public void updateActiveApplianceList(String id, int value, String room) {
+    public void updateActiveSceneList(String room, String id) {
         if(appliances.getValue() == null) {
             getAppliances();
             loadActiveAppliances();
             return;
         }
 
-        boolean modified = false;
+        //Detect whether the set has changed
+        Appliance temp = null;
 
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
-                if(appliance.type.equals("scenes")) {
-                    for(Appliance scene : appliances.getValue()) {
-                        if(activeSceneList.contains(scene) && scene.room.equals(room) && !scene.id.equals(id)) {
-                            activeSceneList.remove(scene);
-                            ApplianceAdapter.latestOff.add(scene.id);
-                        }
-                    }
+                temp = activeSceneList.put(room, appliance);
+            }
+        }
 
-                    //Check that only one scene is active per room
-                    loadActiveAppliances();
-                    activeSceneList.add(appliance);
-                    ApplianceAdapter.latestOn.add(appliance.id);
-                    modified = true;
+        // if a scene has changed load the active objects associated with the scene from the CBUS
+        if(temp != activeSceneList.get(room)) {
+            delayLoadCall();
+            ApplianceAdapter.getInstance().updateIfVisible(id);
+        }
+    }
+
+    private static final CountDownTimer timer = new CountDownTimer(2000, 1000) {
+        @Override
+        public void onTick(long l) {
+        }
+
+        @Override
+        public void onFinish() {
+            loadActiveAppliances();
+        }
+    };
+
+    /**
+     * Delay a call to the CBUS to get the active appliances, stops the unit from overloading if
+     * the scenes are switched rapidly as it cancels any previous call.
+     * Aim is to only run once (on the last update).
+     */
+    public static void delayLoadCall() {
+        timer.cancel();
+        timer.start();
+    }
+
+    /**
+     * Receiving a message from the NUC after another tablet has activated something on the CBUS.
+     * Update the necessary object based on the supplied Id.
+     * @param id An int representing the Id of the appliance, relates directly to the Id in the
+     *           supplied JSON file.
+     * @param value An int representing the new value of the appliance object.
+     */
+    public void updateActiveApplianceList(String id, String value) {
+        if(appliances.getValue() == null) {
+            getAppliances();
+            loadActiveAppliances();
+            return;
+        }
+
+        //Detect whether the set has changed
+        boolean changed = false;
+
+        //Find the appliance with the corresponding ID
+        for(Appliance appliance : appliances.getValue()) {
+            if(appliance.id.equals(id)) {
+                //Set the new value
+                if (value.equals("0")) {
+                    changed = activeApplianceList.remove(id);
                 } else {
-                    if (value == 0) {
-                        if(activeApplianceList.contains(id)) {
-                            activeApplianceList.remove(id);
-                            modified = true;
-                        }
-                    } else {
-                        if(!activeApplianceList.contains(id)) {
-                            activeApplianceList.add(id);
-                            modified = true;
-                        }
-                    }
+                    changed = activeApplianceList.add(id);
                 }
             }
         }
 
-        //Update the current data set
-        if(ApplianceAdapter.getInstance() != null && modified) {
-            ApplianceAdapter.getInstance().notifyDataSetChanged();
+        //Find the appliance within the recyclerview and notify of the change if currently present
+        if(changed) {
+            ApplianceAdapter.getInstance().updateIfVisible(id);
         }
     }
 

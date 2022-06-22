@@ -10,7 +10,6 @@ import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
-import com.lumination.leadmelabs.ui.zones.ZonesViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,14 +55,6 @@ public class UIUpdateManager {
                     if (additionalData.startsWith("List")) {
                         updateStations(additionalData.split(":", 2)[1]);
                     }
-                    break;
-                case "Zones":
-                    if (additionalData.startsWith("List")) {
-                        updateZones(additionalData.split(":", 2)[1]);
-                    }
-//                    if (additionalData.startsWith("SetScene")) {
-//                        updateSelectedScene(additionalData);
-//                    }
                     break;
                 case "Appliances":
                     if (additionalData.startsWith("List")) {
@@ -115,15 +106,12 @@ public class UIUpdateManager {
                     break;
                 case "Automation":
                     if (additionalData.startsWith("Appliances")) {
-                        updateActiveAppliances(additionalData);
+                        cbusActiveAppliances(additionalData);
                     }
-                    if (additionalData.startsWith("Set")) {
-                        String[] values = additionalData.split(":");
+                    if (additionalData.startsWith("Update")) {
+                        syncAppliances(additionalData);
+                    }
 
-                        MainActivity.runOnUI(() ->
-                                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[1], Integer.parseInt(values[2]), values[3])
-                        );
-                    }
                     break;
                 case "Scanner":
                     updateNUCAddress(additionalData);
@@ -187,26 +175,6 @@ public class UIUpdateManager {
         });
     }
 
-    private static void updateZones(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
-
-        MainActivity.runOnUI(() -> {
-            try {
-                ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setZones(json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    //Need cleaning up when there is access to CBUS
-//    private static void updateSelectedScene(String response) throws JSONException {
-//        String[] values = response.split(":");
-//        MainActivity.runOnUI(() -> {
-//            ViewModelProviders.of(MainActivity.getInstance()).get(ZonesViewModel.class).setActiveScene(values[1], values[2], values[3], true);
-//        });
-//    }
-
     private static void updateAppliances(String jsonString) throws JSONException {
         JSONArray json = new JSONArray(jsonString);
 
@@ -219,7 +187,10 @@ public class UIUpdateManager {
         });
     }
 
-    private static void updateActiveAppliances(String jsonString) throws JSONException {
+    /**
+     * Update the appliance list with the most active directly from the CBUS.
+     */
+    private static void cbusActiveAppliances(String jsonString) throws JSONException {
         String requiredString = jsonString.substring(jsonString.indexOf("["), jsonString.indexOf("]") + 1);
         JSONArray json = new JSONArray(requiredString);
 
@@ -230,6 +201,34 @@ public class UIUpdateManager {
                 e.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Another tablet has set a new value for a CBUS object, determine what it was and what cards
+     * need updating.
+     * @param additionalData A string containing the values necessary to update the cards.
+     *                      //- [1]type (scene, appliance, computer)
+     *                      //- [2]room
+     *                      //- [3]id
+     *                      //- [4]value
+     *                      //- [5]msg (contains ID from CBUS in brackets [xxxxxxxx])
+     */
+    private static void syncAppliances(String additionalData) {
+        String[] values = additionalData.split(":");
+
+        Log.e("NUC DATA", values[1]);
+
+        switch(values[1]) {
+            case "computer":
+                Log.e("NUC DATA", additionalData);
+                break;
+            case "scene":
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(values[2], values[3]);
+                break;
+            case "appliance":
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[3], values[4]);
+                break;
+        }
     }
 
     /**

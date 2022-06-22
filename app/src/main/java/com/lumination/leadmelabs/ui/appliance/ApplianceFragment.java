@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,10 +72,23 @@ public class ApplianceFragment extends Fragment {
 
         mViewModel.getActiveAppliances().observe(getViewLifecycleOwner(), active -> {
             ApplianceViewModel.activeApplianceList = active;
-            applianceAdapter.notifyDataSetChanged();
+            new filler(active);
         });
 
         instance = this;
+    }
+
+    /**
+     * If the lambda from observer does not access anything then it compiles as a singleton and
+     * does not allow for movement between subpages. Instantiating a class bypasses this base
+     * behaviour.
+     */
+    class filler {
+        public filler(HashSet<String> active) {
+            for (String cards : active) {
+                ApplianceAdapter.getInstance().updateIfVisible(cards);
+            }
+        }
     }
 
     /**
