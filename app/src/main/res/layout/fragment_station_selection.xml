@@ -21,7 +21,8 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="30dp"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="20dp"
             app:flexDirection="column">
 
             <TextView
@@ -58,27 +59,6 @@
                     android:text=" on."
                     android:textColor="@color/black"
                     android:textSize="20sp" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/additional_steps_warning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:alignItems="center">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/icon_alert"
-                    app:layout_flexShrink="0" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This game may require additional steps to launch and may not be able to launch automatically."
-                    android:textColor="@color/black" />
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
 
