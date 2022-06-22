@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.lumination.leadmelabs.CallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -74,6 +75,58 @@ public class DialogManager {
 
         Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
         cancelButton.setVisibility(View.GONE);
+
+        ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
+        loadingBar.setVisibility(View.GONE);
+
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(1200, 340);
+    }
+
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     */
+    public static void createConfirmationDialog(String titleText, String contentText) {
+        CallbackInterface callbackInterface = new CallbackInterface() {
+            @Override
+            public void callback(boolean result) { }
+        };
+        createConfirmationDialog(titleText, contentText, callbackInterface);
+    }
+
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     * @param callbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
+     */
+    public static void createConfirmationDialog(String titleText, String contentText, CallbackInterface callbackInterface) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> {
+            callbackInterface.callback(true);
+            basicDialog.dismiss();
+        });
+        confirmButton.setText("Confirm");
+
+        Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(w -> {
+            callbackInterface.callback(false);
+            basicDialog.dismiss();
+        });
+        cancelButton.setText("Cancel");
 
         ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
         loadingBar.setVisibility(View.GONE);

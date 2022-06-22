@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.CallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -82,36 +83,24 @@ public class SteamApplicationAdapter extends BaseAdapter {
             public void onClick(View view) {
                 InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                if (stationId > 0) {
-                    Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
-                    if (station != null && station.theatreText != null) {
-                        DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
-                    } else if(station != null) {
-                        NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
-                        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                        DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
-                    }
+//                confirm if it is one of the dodgy apps
+                ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
+
+                gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
+                gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
+
+                if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
+                    CallbackInterface callbackInterface = new CallbackInterface() {
+                        @Override
+                        public void callback(boolean result) {
+                            if (result) {
+                                completeSelectApplicationAction(steamApplication);
+                            }
+                        }
+                    };
+                    DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", callbackInterface);
                 } else {
-                    mViewModel.selectSelectedSteamApplication(steamApplication.id);
-                    SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
-                    MainActivity.fragmentManager.beginTransaction()
-                            .replace(R.id.rooms, RoomFragment.class, null)
-                            .commitNow();
-
-                    StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
-                    View newView = fragment.getView();
-                    FlexboxLayout additionalStepsWarning = newView.findViewById(R.id.additional_steps_warning);
-                    additionalStepsWarning.setVisibility(View.GONE);
-                    TextView textView = newView.findViewById(R.id.station_selection_game_name);
-                    textView.setText(steamApplication.name);
-                    ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
-
-                    gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
-                    gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
-
-                    if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
-                        additionalStepsWarning.setVisibility(View.VISIBLE);
-                    }
+                    completeSelectApplicationAction(steamApplication);
                 }
             }
         };
@@ -125,5 +114,29 @@ public class SteamApplicationAdapter extends BaseAdapter {
 //        });
 
         return view;
+    }
+
+    private void completeSelectApplicationAction(SteamApplication steamApplication) {
+        if (stationId > 0) {
+            Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
+            if (station != null && station.theatreText != null) {
+                DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
+            } else if(station != null) {
+                NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
+                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
+            }
+        } else {
+            mViewModel.selectSelectedSteamApplication(steamApplication.id);
+            SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
+            MainActivity.fragmentManager.beginTransaction()
+                    .replace(R.id.rooms, RoomFragment.class, null)
+                    .commitNow();
+
+            StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+            View newView = fragment.getView();
+            TextView textView = newView.findViewById(R.id.station_selection_game_name);
+            textView.setText(steamApplication.name);
+        }
     }
 }
