@@ -27,7 +27,7 @@ public class Identifier {
             return;
         }
         identifying = true;
-        CountDownTimer timer = new CountDownTimer(2000L * (stations.size()), 2000) {
+        CountDownTimer timer = new CountDownTimer(4000L * (stations.size()), 4000) {
             @Override
             public void onTick(long l) {
                 Station station = stations.get((stations.size() - 1) - index[0]);
@@ -35,14 +35,12 @@ public class Identifier {
                 if(station.associated != null) {
                     NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + station.associated.automationId);
                 }
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Successfully located " + station.name, Toast.LENGTH_SHORT).show();
                 index[0]--;
             }
 
             @Override
             public void onFinish() {
-                MainActivity.runOnUI(() ->
-                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Stations located successfully", Toast.LENGTH_SHORT).show()
-                );
                 identifying = false;
             }
         }.start();

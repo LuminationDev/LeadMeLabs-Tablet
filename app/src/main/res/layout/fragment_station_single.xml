@@ -214,10 +214,10 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_end_session"
                             style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_end_session"
                             android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/blue_light}"
-                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}"
-                            android:text="End Session" />
+                            android:drawableTop="@drawable/ic_end_session"
+                            android:text="End Session"
+                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/enter_url"
@@ -236,10 +236,10 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_restart_session"
                             style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_restart_session"
                             android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/blue_light}"
-                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}"
-                            android:text="Restart Session" />
+                            android:drawableTop="@drawable/ic_restart_session"
+                            android:text="Restart Session"
+                            app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/blue_light}" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/ping_station"

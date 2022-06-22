@@ -10,7 +10,7 @@ android:color="@color/blue">
             android:bottomLeftRadius="100dp"
             android:topRightRadius="100dp"
             android:topLeftRadius="100dp" />
-        <solid android:color="@color/blue_dark"/>
+        <solid android:color="@color/blue_darkest"/>
     </shape>
 </item>
 </ripple>

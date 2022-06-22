@@ -89,7 +89,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
                     } else if(station != null) {
                         NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
                         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                        DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name);
+                        DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
                     }
                 } else {
                     mViewModel.selectSelectedSteamApplication(steamApplication.id);
