@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -146,6 +147,37 @@ public class StationsViewModel extends ViewModel {
         if (getSelectedStation().getValue() != null && id == getSelectedStation().getValue().id) {
             setSelectedStation(station);
         }
+    }
+
+    /**
+     * A message has been sent from the NUC determine which station has values that are changing.
+     * The values for the computer will be in CBUS format i.e. numbers. Therefore run a switch case
+     * to determine what the status should be.
+     */
+    public void syncStationStatus(String id, String value) {
+        Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
+
+        String status = null;
+        switch (value) {
+            case "0":
+                break;
+            case "1":
+                break;
+            case "2":
+                status = "Turning On";
+                break;
+        }
+
+        //Nothing to update.
+        if(station.status.equals(status)) {
+            return;
+        }
+
+        String finalStatus = status;
+        MainActivity.runOnUI(() -> {
+            station.status = finalStatus;
+            StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
+        });
     }
 
     public LiveData<Station> selectStation(int index) {

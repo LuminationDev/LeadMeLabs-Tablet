@@ -58,7 +58,7 @@
             tools:listitem="@layout/card_appliance"
             android:visibility="gone"/>
 
-        <!--Used when only all rooms are visible-->
+        <!--Used when all rooms are visible-->
         <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
