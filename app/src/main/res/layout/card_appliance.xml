@@ -30,8 +30,9 @@
             android:layout_margin="10dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="10dp"
                 android:contentDescription="@string/scene_icon"
                 app:imageResource="@{icon}" />
 

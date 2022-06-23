@@ -179,7 +179,7 @@ public class SideMenuFragment extends Fragment {
     private void handleBackState() {
         if (MainActivity.fragmentManager.getBackStackEntryCount() > 1) {
             FragmentManager.BackStackEntry backStackEntry = MainActivity.fragmentManager.getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 2);
-            if (backStackEntry.getName().equals("menu:settings")) {
+            if (Objects.equals(backStackEntry.getName(), "menu:settings")) {
                 DialogManager.confirmPinCode(this, "back");
             } else {
                 MainActivity.fragmentManager.popBackStackImmediate();
@@ -272,14 +272,6 @@ public class SideMenuFragment extends Fragment {
      * @param newPadding A integer representing the new padding.
      */
     private void changeViewParams(int newWidth, int newPadding) {
-        Boolean hide = SettingsFragment.mViewModel.getHideStationControls().getValue();
-        if(hide != null) {
-            if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
-                //If in wall mode do not change the parameters
-                return;
-            }
-        }
-
         LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
         FlexboxLayout flexLayout = view.findViewById(R.id.side_menu_fragment);

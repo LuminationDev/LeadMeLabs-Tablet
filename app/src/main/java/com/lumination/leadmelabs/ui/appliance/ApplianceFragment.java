@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,14 +60,25 @@ public class ApplianceFragment extends Fragment {
         TextView titleView = view.findViewById(R.id.appliance_title);
         titleView.setText(title);
 
-        RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
-        int numberOfColumns = 4;
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
-        applianceAdapter = new ApplianceAdapter();
-        applianceAdapter.applianceList = new ArrayList<>();
-        recyclerView.setAdapter(applianceAdapter);
+//        if(title.equals("Scenes")) {
+//            RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
+//            int numberOfColumns = 4;
+//            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
+//            applianceAdapter = new ApplianceAdapter();
+//            applianceAdapter.applianceList = new ArrayList<>();
+//            recyclerView.setAdapter(applianceAdapter);
+//
+//            applianceCount.setValue(applianceAdapter.applianceList.size());
+//        } else {
+            RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
+            int numberOfColumns = 4;
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
+            applianceAdapter = new ApplianceAdapter();
+            applianceAdapter.applianceList = new ArrayList<>();
+            recyclerView.setAdapter(applianceAdapter);
 
-        applianceCount.setValue(applianceAdapter.applianceList.size());
+            applianceCount.setValue(applianceAdapter.applianceList.size());
+//        }
 
         //Only add objects that are of the same sub type as the supplied argument
         mViewModel.getAppliances().observe(getViewLifecycleOwner(), this::reloadData);
