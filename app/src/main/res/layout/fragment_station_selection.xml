@@ -150,11 +150,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:backgroundTint="@color/blue"
+                android:letterSpacing="0.02"
                 android:paddingHorizontal="50dp"
                 android:paddingVertical="10dp"
                 android:text="Play"
                 android:textAllCaps="false"
-                android:letterSpacing="0.02"
                 android:textSize="16dp" />
 
             <Button
@@ -162,11 +162,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
+                android:letterSpacing="0.02"
                 android:paddingHorizontal="50dp"
                 android:paddingVertical="10dp"
                 android:text="Cancel"
                 android:textAllCaps="false"
-                android:letterSpacing="0.02"
                 android:textColor="@color/black" />
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
