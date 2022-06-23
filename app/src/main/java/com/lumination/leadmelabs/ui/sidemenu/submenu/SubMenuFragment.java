@@ -71,30 +71,12 @@ public class SubMenuFragment extends Fragment {
     }
 
     /**
-     * Load in the zones for controlling the scenes.
-     */
-    private void loadZones() {
-        if(currentType.equals("scenes")) {
-            return;
-        }
-        currentType = "scenes";
-
-        ControlPageFragment.childManager.beginTransaction()
-                .replace(R.id.subpage, ZonesFragment.class, null)
-                .addToBackStack("submenu:" + "scenes")
-                .commit();
-
-        ControlPageFragment.childManager.executePendingTransactions();
-        mViewModel.setSelectedPage("scenes");
-    }
-
-    /**
      * Load in the Appliance page fragment, the bundle passed to the fragment manager details
      * what should be loaded onto the page.
      * @param title A string that is displayed as the title of the fragment.
      * @param type A string representing what appliances to load from the viewModel
      */
-    private void loadFragment(String title, String type) {
+    public static void loadFragment(String title, String type) {
         if(currentType.equals(type)) {
             return;
         }
