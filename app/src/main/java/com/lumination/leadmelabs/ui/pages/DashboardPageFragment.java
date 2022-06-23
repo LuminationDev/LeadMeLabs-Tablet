@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.CallbackInterface;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
@@ -26,6 +27,7 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -84,10 +86,21 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
-            int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+            CallbackInterface selectStationsCallback = new CallbackInterface() {
+                @Override
+                public void callback(boolean confirmationResult) {
+                    if (confirmationResult) {
+                        int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+                        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                        NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                    } else {
+                        ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
+                        DialogManager.createEndSessionDialog(stationsToSelectFrom);
+                    }
+                }
+            };
+            DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences", selectStationsCallback, "End on select", "End on all");
         });
 
         FlexboxLayout identify = view.findViewById(R.id.identify_button);

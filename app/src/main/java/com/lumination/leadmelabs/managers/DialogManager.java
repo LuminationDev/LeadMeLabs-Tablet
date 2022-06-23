@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.CallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -29,10 +31,13 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
+import com.lumination.leadmelabs.ui.stations.StationAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -94,7 +99,7 @@ public class DialogManager {
             @Override
             public void callback(boolean result) { }
         };
-        createConfirmationDialog(titleText, contentText, callbackInterface);
+        createConfirmationDialog(titleText, contentText, callbackInterface, "Cancel", "Confirm");
     }
 
     /**
@@ -105,34 +110,75 @@ public class DialogManager {
      * @param callbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
     public static void createConfirmationDialog(String titleText, String contentText, CallbackInterface callbackInterface) {
-        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+        createConfirmationDialog(titleText, contentText, callbackInterface, "Cancel", "Confirm");
+    }
 
-        TextView title = basicDialogView.findViewById(R.id.title);
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     * @param callbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
+     */
+    public static void createConfirmationDialog(String titleText, String contentText, CallbackInterface callbackInterface, String cancelButtonText, String confirmButtonText) {
+        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_confirmation, null);
+        AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(confirmationDialogView).create();
+
+        TextView title = confirmationDialogView.findViewById(R.id.title);
         title.setText(titleText);
 
-        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        TextView contentView = confirmationDialogView.findViewById(R.id.content_text);
         contentView.setText(contentText);
 
-        Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
+        Button confirmButton = confirmationDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
             callbackInterface.callback(true);
-            basicDialog.dismiss();
+            confirmationDialog.dismiss();
         });
-        confirmButton.setText("Confirm");
+        confirmButton.setText(confirmButtonText);
 
-        Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
+        Button cancelButton = confirmationDialogView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(w -> {
             callbackInterface.callback(false);
-            basicDialog.dismiss();
+            confirmationDialog.dismiss();
         });
-        cancelButton.setText("Cancel");
+        cancelButton.setText(cancelButtonText);
 
-        ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
-        loadingBar.setVisibility(View.GONE);
+        confirmationDialog.show();
+    }
 
-        basicDialog.show();
-        basicDialog.getWindow().setLayout(1200, 340);
+    public static void createEndSessionDialog(ArrayList<Station> stations) {
+        View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_select_stations, null);
+        AlertDialog endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
+
+        TextView title = view.findViewById(R.id.title);
+        title.setText("Select stations");
+
+        TextView contentView = view.findViewById(R.id.content_text);
+        contentView.setText("Which stations would you like to end the session on?");
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
+        recyclerView.setLayoutManager(new GridLayoutManager(endSessionDialog.getContext(), 3));
+        BasicStationSelectionAdapter stationAdapter = new BasicStationSelectionAdapter();
+        stations = Helpers.cloneStationList(stations);
+        stationAdapter.stationList = stations;
+        recyclerView.setAdapter(stationAdapter);
+
+        Button confirmButton = view.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> {
+            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().mapToInt(station -> station.id).toArray();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+            endSessionDialog.dismiss();
+        });
+
+        Button cancelButton = view.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(w -> {
+            endSessionDialog.dismiss();
+        });
+
+        endSessionDialog.show();
     }
 
     /**

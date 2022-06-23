@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1200dp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flexDirection="column"
+        app:justifyContent="space_between">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            app:flexDirection="column">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/black"
+                android:textSize="30sp"></TextView>
+
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content Text"
+                android:textColor="@color/black"></TextView>
+        </com.google.android.flexbox.FlexboxLayout>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="20dp"
+            app:layout_flexShrink="0"
+            app:justifyContent="flex_end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@android:color/white"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="0dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/blue"
+                android:letterSpacing="0.02"
+                app:strokeWidth="2dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@color/blue"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                android:text="Done"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/blue"
+                android:letterSpacing="0.02"
+                app:cornerRadius="0dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/blue_darkest"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="2dp" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

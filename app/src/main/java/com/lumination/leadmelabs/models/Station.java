@@ -10,7 +10,7 @@ import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
 
-public class Station {
+public class Station implements Cloneable {
     public String name;
     public int id;
     public String status;
@@ -26,6 +26,18 @@ public class Station {
     public int automationGroup;
     public int automationId;
     private CountDownTimer timer;
+
+    @Override
+    public Station clone() {
+        Station clonedStation = null;
+        try {
+            clonedStation = (Station) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        return clonedStation;
+    }
 
     public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room) {
         this.name = name;
