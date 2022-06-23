@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class ApplianceViewModel extends ViewModel {
     public static HashSet<String> activeApplianceList = new HashSet<>();
@@ -147,13 +148,16 @@ public class ApplianceViewModel extends ViewModel {
             if(ApplianceAdapter.getInstance() != null) {
                 ApplianceAdapter.getInstance().notifyDataSetChanged();
             }
+            if (ApplianceParentAdapter.getInstance() != null) {
+                ApplianceParentAdapter.getInstance().notifyDataSetChanged();
+            }
         } else {
             for(String cards : activeObjects) {
-                ApplianceAdapter.getInstance().updateIfVisible(cards);
+                updateIfVisible(cards);
             }
 
             for(String cards : inactiveObjects) {
-                ApplianceAdapter.getInstance().updateIfVisible(cards);
+                updateIfVisible(cards);
             }
         }
     }
@@ -185,7 +189,7 @@ public class ApplianceViewModel extends ViewModel {
         // if a scene has changed load the active objects associated with the scene from the CBUS
         if(temp != activeSceneList.get(room)) {
             delayLoadCall();
-            ApplianceAdapter.getInstance().updateIfVisible(id);
+            updateIfVisible(id);
         }
     }
 
@@ -241,6 +245,18 @@ public class ApplianceViewModel extends ViewModel {
 
         //Find the appliance within the recyclerview and notify of the change if currently present
         if(changed) {
+            updateIfVisible(id);
+        }
+    }
+
+    /**
+     * Determine what the room type is and either update just the single ApplianceAdapter or cycle
+     * through the multi adapters.
+     */
+    private void updateIfVisible(String id) {
+        if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
+            ApplianceParentAdapter.getInstance().updateIfVisible(id);
+        } else {
             ApplianceAdapter.getInstance().updateIfVisible(id);
         }
     }

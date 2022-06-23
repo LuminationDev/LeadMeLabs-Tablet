@@ -42,9 +42,6 @@ public class UIUpdateManager {
         try {
             switch (actionNamespace) {
                 case "Ping":
-//                    if (MainActivity.hasNotReceivedPing > 3) {
-//                        MainActivity.startNucPingMonitor();
-//                    }
                     MainActivity.hasNotReceivedPing = 0;
                     if (DialogManager.reconnectDialog != null) {
                         DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);

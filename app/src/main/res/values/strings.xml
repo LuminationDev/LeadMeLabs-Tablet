@@ -40,4 +40,5 @@
     <string name="settings_title">SETTINGS</string>
     <string name="select_stations_title">SELECT STATIONS</string>
     <string name="manage_station_title">MANAGE STATION</string>
+    <string name="room_type_placeholder">Room Type</string>
 </resources>

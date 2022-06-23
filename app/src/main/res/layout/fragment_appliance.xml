@@ -22,7 +22,7 @@
         style="@style/ApplianceContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="85dp"
+        android:layout_marginBottom="80dp"
         android:orientation="vertical">
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/appliance_default_title"
             android:textSize="30sp"
             android:textStyle="bold"/>
@@ -45,6 +45,7 @@
             android:textColor="@color/red"
             android:visibility="@{appliances.applianceCount > 0 ? View.GONE : View.VISIBLE}"/>
 
+        <!--Used when only one room is visible-->
         <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +55,20 @@
             android:horizontalSpacing="2dp"
             android:paddingHorizontal="10dp"
             android:verticalSpacing="20dp"
-            tools:listitem="@layout/card_appliance" />
+            tools:listitem="@layout/card_appliance"
+            android:visibility="gone"/>
+
+        <!--Used when only all rooms are visible-->
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/multi_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -31,7 +31,7 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
     public static ArrayList<String> latestOn = new ArrayList<>();
     public static ArrayList<String> latestOff = new ArrayList<>();
 
-    ApplianceAdapter() {
+    public ApplianceAdapter() {
         instance = this;
     }
 
