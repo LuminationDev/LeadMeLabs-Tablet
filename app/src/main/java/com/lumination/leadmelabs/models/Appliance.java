@@ -50,6 +50,10 @@ public class Appliance {
                 this.description = new ArrayList<>(Arrays.asList("HDMI 1", "HDMI 2"));
                 break;
 
+            case "scenes":
+                this.description = new ArrayList<>(Arrays.asList("ACTIVE", "INACTIVE"));
+                break;
+
             default:
                 this.description = new ArrayList<>(Arrays.asList("ON", "OFF"));
                 break;

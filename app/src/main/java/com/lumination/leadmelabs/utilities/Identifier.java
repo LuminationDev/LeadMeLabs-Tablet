@@ -30,6 +30,10 @@ public class Identifier {
         CountDownTimer timer = new CountDownTimer(4000L * (stations.size()), 4000) {
             @Override
             public void onTick(long l) {
+                int listIndex = (stations.size() - 1) - index[0];
+                if (listIndex > stations.size() - 1 || listIndex < 0) {
+                    return;
+                }
                 Station station = stations.get((stations.size() - 1) - index[0]);
                 NetworkService.sendMessage("Station," + station.id, "CommandLine", "IdentifyStation");
                 if(station.associated != null) {

@@ -48,6 +48,7 @@
                     android:drawableRight="@drawable/icon_menu_right"/>
             </com.google.android.flexbox.FlexboxLayout>
             <com.google.android.flexbox.FlexboxLayout
+                android:visibility="gone"
                 android:id="@+id/how_to_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

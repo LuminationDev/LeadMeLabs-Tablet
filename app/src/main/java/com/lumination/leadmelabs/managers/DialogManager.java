@@ -166,7 +166,7 @@ public class DialogManager {
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().mapToInt(station -> station.id).toArray();
+            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().filter(station -> station.selected == true).mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
