@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 
@@ -37,6 +38,7 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
     public class ApplianceViewHolder extends RecyclerView.ViewHolder {
         private final CardApplianceBinding binding;
+        private boolean recentlyClicked = false;
         public ApplianceViewHolder(@NonNull CardApplianceBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
@@ -79,6 +81,25 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
 
             finalResult.setOnClickListener(v -> {
                 String type = getItemType(position);
+                int timeout = 500;
+                String title = "Warning";
+                String content = "The automation system performs best when appliances are not repeatedly turned on and off. Try waiting half a second before toggling an appliance.";
+                if (type.equals("projectors")) {
+                    timeout = 10000;
+                    content = "The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off.";
+                }
+                if (recentlyClicked) {
+                    DialogManager.createBasicDialog(title, content);
+                    return;
+                }
+                recentlyClicked = true;
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() { recentlyClicked = false; }
+                        },
+                        timeout
+                );
 
                 switch (type) {
                     case "scenes":

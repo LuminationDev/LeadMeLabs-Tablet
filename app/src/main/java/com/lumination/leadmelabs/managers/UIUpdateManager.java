@@ -98,7 +98,7 @@ public class UIUpdateManager {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
                                         "Lost VR Headset Connection",
-                                        station.name + " lost connection to the VR headset. This is normally caused by a flat battery."
+                                        station.name + " lost connection to the VR headset. Check the battery on the headset, and if this does not work, try restarting the VR system on the station."
                                 );
                             });
                         }
