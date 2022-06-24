@@ -13,7 +13,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.lumination.leadmelabs.CallbackInterface;
+import com.lumination.leadmelabs.BooleanCallbackInterface;
+import com.lumination.leadmelabs.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
@@ -35,6 +36,7 @@ import java.util.Locale;
 
 public class DashboardPageFragment extends Fragment {
     private FragmentManager childManager;
+    private static boolean cancelledShutdown = false;
 
     @Nullable
     @Override
@@ -86,7 +88,7 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
-            CallbackInterface selectStationsCallback = new CallbackInterface() {
+            BooleanCallbackInterface selectStationsCallback = new BooleanCallbackInterface() {
                 @Override
                 public void callback(boolean confirmationResult) {
                     if (confirmationResult) {
@@ -110,8 +112,31 @@ public class DashboardPageFragment extends Fragment {
         });
 
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
+        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
+        TextView shutdownContent = view.findViewById(R.id.shutdown_content);
         shutdown.setOnClickListener(v -> {
-            DialogManager.buildShutdownDialog(getContext(), StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray());
+            CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
+                if (seconds <= 0) {
+                    shutdownHeading.setText("Shut Down");
+                    shutdownContent.setText("Shut down stations");
+                } else {
+                    if (!cancelledShutdown) {
+                        shutdownHeading.setText("Cancel (" + seconds + ")");
+                        shutdownContent.setText("Cancel shut down");
+                    }
+                }
+            };
+            int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+            if (shutdownHeading.getText().toString().startsWith("Shut Down")) {
+                cancelledShutdown = false;
+                DialogManager.buildShutdownDialog(getContext(), stationIds, shutdownCountDownCallback);
+            } else {
+                cancelledShutdown = true;
+                String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+                NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+                shutdownHeading.setText("Shut Down");
+                shutdownContent.setText("Shut down stations");
+            }
         });
 
 

@@ -179,6 +179,7 @@
                         app:justifyContent="center">
 
                         <TextView
+                            android:id="@+id/shutdown_heading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shut Down"
@@ -187,6 +188,7 @@
                             android:textSize="13sp" />
 
                         <TextView
+                            android:id="@+id/shutdown_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shut down stations"

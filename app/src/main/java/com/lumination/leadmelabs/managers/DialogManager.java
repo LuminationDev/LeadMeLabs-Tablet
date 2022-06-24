@@ -4,14 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,7 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumination.leadmelabs.CallbackInterface;
+import com.lumination.leadmelabs.BooleanCallbackInterface;
+import com.lumination.leadmelabs.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -32,7 +30,6 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
-import com.lumination.leadmelabs.ui.stations.StationAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -95,11 +92,11 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createConfirmationDialog(String titleText, String contentText) {
-        CallbackInterface callbackInterface = new CallbackInterface() {
+        BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
             @Override
             public void callback(boolean result) { }
         };
-        createConfirmationDialog(titleText, contentText, callbackInterface, "Cancel", "Confirm");
+        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
     }
 
     /**
@@ -107,10 +104,10 @@ public class DialogManager {
      * passed in.
      * @param titleText A string representing what the title shown to the user will be.
      * @param contentText A string representing what content is described within the dialog box.
-     * @param callbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
+     * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
-    public static void createConfirmationDialog(String titleText, String contentText, CallbackInterface callbackInterface) {
-        createConfirmationDialog(titleText, contentText, callbackInterface, "Cancel", "Confirm");
+    public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface) {
+        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
     }
 
     /**
@@ -118,9 +115,9 @@ public class DialogManager {
      * passed in.
      * @param titleText A string representing what the title shown to the user will be.
      * @param contentText A string representing what content is described within the dialog box.
-     * @param callbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
+     * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
-    public static void createConfirmationDialog(String titleText, String contentText, CallbackInterface callbackInterface, String cancelButtonText, String confirmButtonText) {
+    public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText) {
         View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_confirmation, null);
         AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(confirmationDialogView).create();
 
@@ -132,14 +129,14 @@ public class DialogManager {
 
         Button confirmButton = confirmationDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            callbackInterface.callback(true);
+            booleanCallbackInterface.callback(true);
             confirmationDialog.dismiss();
         });
         confirmButton.setText(confirmButtonText);
 
         Button cancelButton = confirmationDialogView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(w -> {
-            callbackInterface.callback(false);
+            booleanCallbackInterface.callback(false);
             confirmationDialog.dismiss();
         });
         cancelButton.setText(cancelButtonText);
@@ -221,6 +218,15 @@ public class DialogManager {
      * started to allow the users to cancel the shutdown operation.
      */
     public static void buildShutdownDialog(Context context, int[] stationIds) {
+        CountdownCallbackInterface countdownCallbackInterface = result -> { };
+        buildShutdownDialog(context, stationIds, countdownCallbackInterface);
+    }
+
+    /**
+     * Build and launch the shutdown dialog box for stations. Each time this is build a timer is
+     * started to allow the users to cancel the shutdown operation.
+     */
+    public static void buildShutdownDialog(Context context, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
         View view = View.inflate(context, R.layout.dialog_template, null);
         AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
         confirmDialog.setCancelable(false);
@@ -249,16 +255,19 @@ public class DialogManager {
             @Override
             public void onTick(long l) {
                 cancelButton.setText(MessageFormat.format("Cancel ({0})", (l + 1000) / 1000));
+                countdownCallbackInterface.callback((int) (l + 1000) / 1000);
             }
 
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
+                countdownCallbackInterface.callback(0);
             }
         }.start();
 
         cancelButton.setOnClickListener(x -> {
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            countdownCallbackInterface.callback(0);
             timer.cancel();
             confirmDialog.dismiss();
         });

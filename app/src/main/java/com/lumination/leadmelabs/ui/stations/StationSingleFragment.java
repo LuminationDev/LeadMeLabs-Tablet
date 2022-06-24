@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -27,6 +28,7 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class StationSingleFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
     private FragmentStationSingleBinding binding;
+    private static boolean cancelledShutdown = false;
 
     @Nullable
     @Override
@@ -139,7 +142,24 @@ public class StationSingleFragment extends Fragment {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
             } else {
-                DialogManager.buildShutdownDialog(getContext(), new int[]{id});
+                CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
+                    if (seconds <= 0) {
+                        shutdownButton.setText("Shut Down Station");
+                    } else {
+                        if (!cancelledShutdown) {
+                            shutdownButton.setText("Cancel (" + seconds + ")");
+                        }
+                    }
+                };
+                if (shutdownButton.getText().toString().startsWith("Shut Down")) {
+                    cancelledShutdown = false;
+                    DialogManager.buildShutdownDialog(getContext(), new int[]{id}, shutdownCountDownCallback);
+                } else {
+                    cancelledShutdown = true;
+                    String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
+                    NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+                    shutdownButton.setText("Shut Down Station");
+                }
             }
         });
 
