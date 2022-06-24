@@ -14,8 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexboxLayout;
-import com.lumination.leadmelabs.CallbackInterface;
+import com.lumination.leadmelabs.BooleanCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -90,7 +89,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
                 gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
 
                 if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
-                    CallbackInterface callbackInterface = new CallbackInterface() {
+                    BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
                         @Override
                         public void callback(boolean result) {
                             if (result) {
@@ -98,7 +97,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
                             }
                         }
                     };
-                    DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", callbackInterface);
+                    DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", booleanCallbackInterface);
                 } else {
                     completeSelectApplicationAction(steamApplication);
                 }

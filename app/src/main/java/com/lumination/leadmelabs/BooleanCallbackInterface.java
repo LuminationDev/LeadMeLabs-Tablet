@@ -1,5 +1,5 @@
 package com.lumination.leadmelabs;
 
-public interface CallbackInterface {
+public interface BooleanCallbackInterface {
     void callback(boolean param1);
 }
