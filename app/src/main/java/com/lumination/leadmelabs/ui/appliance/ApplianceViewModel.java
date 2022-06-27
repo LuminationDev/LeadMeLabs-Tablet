@@ -1,7 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
+import android.annotation.SuppressLint;
 import android.os.CountDownTimer;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -115,6 +115,7 @@ public class ApplianceViewModel extends ViewModel {
      * @param appliances A JSON received from the NUC containing all CBUS objects.
      * @throws JSONException If the JSON is not in the correct format an exception is thrown.
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
         HashSet<String> activeObjects = new HashSet<>();
         HashSet<String> inactiveObjects = new HashSet<>();
