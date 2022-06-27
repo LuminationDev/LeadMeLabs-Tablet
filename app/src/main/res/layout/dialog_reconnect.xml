@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/reconnect_overlay"
+<RelativeLayout
+    android:id="@+id/reconnect_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.button.MaterialButton
@@ -15,40 +14,36 @@
         android:layout_alignParentRight="true"
         android:background="@android:color/transparent"/>
     <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         app:flexDirection="column"
-        app:justifyContent="center"
+        app:justifyContent="space_between"
+        android:layout_width="match_parent"
         android:padding="20dp"
-        app:alignItems="center">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Lost connection to server, check power and reconnect. If this does not work, contact your IT department."/>
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reconnect_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reconnect"/>
+        android:layout_height="match_parent">
         <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/reconnect_failed"
-            android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:flexDirection="column"
-            app:justifyContent="center"
-            app:alignItems="center"
-            android:visibility="gone">
+            app:flexDirection="column">
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reconnection attempt failed. Try again or contact your IT department."/>
+                android:text="Lost Connection"
+                android:textColor="@color/black"
+                android:textSize="30sp">
+            </TextView>
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Lost connection to server, check power and reconnect. If this does not work, contact your IT department.">
+            </TextView>
         </com.google.android.flexbox.FlexboxLayout>
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/reconnect_loader"
             android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:flexDirection="column"
             app:justifyContent="center"
@@ -57,16 +52,54 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:text="Attempting to reconnect..."/>
             <ProgressBar
                 android:indeterminateDuration="1"
                 android:id="@+id/loading_bar"
                 android:indeterminate="true"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:backgroundTint="@color/purple_200"
                 android:indeterminateTint="@color/purple_700"
                 android:layout_height="wrap_content"/>
         </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/reconnect_failed"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="column"
+            app:justifyContent="center"
+            app:alignItems="center"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Reconnection attempt failed. Try again or contact your IT department."/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:justifyContent="flex_end"
+            android:layout_marginTop="20dp">
+            <com.google.android.material.button.MaterialButton
+                app:layout_flexShrink="0"
+                android:id="@+id/reconnect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:elevation="0dp"
+                app:cornerRadius="2dp"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/blue_darkest"
+                android:textAllCaps="false"
+                android:text="Reconnect" />
+        </com.google.android.flexbox.FlexboxLayout>
+
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
