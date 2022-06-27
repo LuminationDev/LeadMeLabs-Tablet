@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -259,9 +260,13 @@ public class ApplianceViewModel extends ViewModel {
      */
     private void updateIfVisible(String id) {
         if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
-            ApplianceParentAdapter.getInstance().updateIfVisible(id);
+            if(ApplianceParentAdapter.getInstance() != null) {
+                ApplianceParentAdapter.getInstance().updateIfVisible(id);
+            }
         } else {
-            ApplianceAdapter.getInstance().updateIfVisible(id);
+            if(ApplianceAdapter.getInstance() != null) {
+                ApplianceAdapter.getInstance().updateIfVisible(id);
+            }
         }
     }
 
