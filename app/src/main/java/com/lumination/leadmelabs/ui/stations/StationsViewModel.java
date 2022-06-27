@@ -1,7 +1,5 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,15 +8,13 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +41,7 @@ public class StationsViewModel extends ViewModel {
             stationIdsList.add(i);
         }
         stations.removeIf(station -> !stationIdsList.contains(station.id));
-        List<String> stationNames = stations.stream().map(station -> station.name).collect(Collectors.toList());
-        return stationNames;
+        return stations.stream().map(station -> station.name).collect(Collectors.toList());
     }
 
     public int getSelectedSteamApplicationId() {
@@ -113,7 +108,7 @@ public class StationsViewModel extends ViewModel {
             hashSet.addAll(station.steamApplications);
         }
         ArrayList<SteamApplication> list = new ArrayList<>(hashSet);
-        Collections.sort(list, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+        list.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
         return list;
     }
 
@@ -125,7 +120,7 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
                 list = new ArrayList<>(station.steamApplications);
-                Collections.sort(list, (steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+                list.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
             }
         }
         return list;
@@ -157,6 +152,11 @@ public class StationsViewModel extends ViewModel {
     public void syncStationStatus(String id, String value) {
         Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
+        //Exit the function if the tablet is in wall mode.
+        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+            return;
+        }
+
         String status = null;
         switch (value) {
             case "0":
@@ -175,6 +175,8 @@ public class StationsViewModel extends ViewModel {
 
         String finalStatus = status;
         MainActivity.runOnUI(() -> {
+            station.cancelStatusCheck();
+            station.powerStatusCheck();
             station.status = finalStatus;
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
         });

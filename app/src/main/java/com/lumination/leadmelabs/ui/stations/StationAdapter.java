@@ -64,7 +64,7 @@ public class StationAdapter extends RecyclerView.Adapter {
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
                     if (!station.status.equals("Off")) {
-                        StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                        StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
                         View notInstalledAlert = fragment.getView().findViewById(R.id.not_installed_alert);
                         notInstalledAlert.setVisibility(View.VISIBLE);
                         finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.card_disabled_red_border));

@@ -79,14 +79,14 @@ public class Station implements Cloneable {
      * within the time limit (3mins) then something has gone wrong and alert the user.
      */
     public void powerStatusCheck() {
-        timer = new CountDownTimer(3* 1000 * 60, 2000) {
+        timer = new CountDownTimer(10 * 1000, 1000) {
             @Override
             public void onTick(long l) {
             }
 
             @Override
             public void onFinish() {
-                DialogManager.createBasicDialog("STATION ERROR", "Station " + id + " has not powered on correctly");
+                DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
                 MainActivity.runOnUI(() -> {
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
                     station.status = "Off";

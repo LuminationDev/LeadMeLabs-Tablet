@@ -20,8 +20,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentRoomsBinding;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 
 import java.util.ArrayList;
 import java.util.HashSet;

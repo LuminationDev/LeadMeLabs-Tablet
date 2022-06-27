@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 
 import java.util.ArrayList;
@@ -57,7 +58,10 @@ public class StationsFragment extends Fragment {
      * Reload the current appliance list when a room is changed.
      */
     public void notifyDataChange() {
-        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
+        DashboardPageFragment.childManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.stations, StationsFragment.class, null)
+                .commitNow();
     }
 
     private void reloadData(List<Station> stations) {

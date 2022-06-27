@@ -41,4 +41,5 @@
     <string name="select_stations_title">SELECT STATIONS</string>
     <string name="manage_station_title">MANAGE STATION</string>
     <string name="room_type_placeholder">Room Type</string>
+    <string name="no_stations_available">No stations available in selected room.</string>
 </resources>

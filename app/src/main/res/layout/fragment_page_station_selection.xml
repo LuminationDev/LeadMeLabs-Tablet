@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/grey">
+
+    <TextView
+        style="@style/PageTitle"
+        android:text="@string/select_stations_title"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/station_selection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="75dp"
+        app:flexDirection="column"
+        tools:context=".ui.stations.StationSelectionPageFragment">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="20dp"
+            app:flexDirection="column">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Stations"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:textSize="40sp" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose the stations you would like to launch "
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/station_selection_game_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Google Earth VR"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" on."
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            app:alignItems="center"
+            app:justifyContent="space_between">
+
+            <CheckBox
+                android:id="@+id/select_all_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/blue"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="Select All Available" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/not_installed_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bg_red_lightest_rounded"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:visibility="gone"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icon_alert_grey" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This application is not installed on some stations!"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please contact your IT department for install instructions."
+                    android:textColor="@color/black" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <LinearLayout
+            android:id="@+id/station_selection_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/select_stations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="@color/blue"
+                android:letterSpacing="0.02"
+                android:paddingHorizontal="50dp"
+                android:paddingVertical="10dp"
+                android:text="Play"
+                android:textAllCaps="false"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:letterSpacing="0.02"
+                android:paddingHorizontal="50dp"
+                android:paddingVertical="10dp"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/black" />
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:id="@+id/identify_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_blue_dark_circle"
+            android:clickable="true"
+            android:letterSpacing="0.01"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:src="@drawable/ic_identify_station"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/logo"
+        style="@style/LogoImage" />
+</RelativeLayout>

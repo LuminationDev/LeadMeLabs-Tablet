@@ -26,13 +26,12 @@ import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
-import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
@@ -472,7 +471,7 @@ public class DialogManager {
         contentText.setText(MessageFormat.format("{0}{1} currently in theatre mode. Are you sure you want to exit theatre mode?", String.join(", ", theatreStations), theatreStations.size() > 1 ? " are" : " is"));
 
         Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> StationSelectionFragment.getInstance().confirmLaunchGame(selectedIds, steamGameId, confirmDialog));
+        confirmButton.setOnClickListener(w -> StationSelectionPageFragment.getInstance().confirmLaunchGame(selectedIds, steamGameId, confirmDialog));
 
         Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
