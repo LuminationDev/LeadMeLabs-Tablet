@@ -79,7 +79,7 @@ public class Station implements Cloneable {
      * within the time limit (3mins) then something has gone wrong and alert the user.
      */
     public void powerStatusCheck() {
-        timer = new CountDownTimer(10 * 1000, 1000) {
+        timer = new CountDownTimer(3 * 1000 * 60, 1000) {
             @Override
             public void onTick(long l) {
             }
