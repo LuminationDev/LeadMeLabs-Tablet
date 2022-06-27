@@ -71,6 +71,11 @@ public class RoomFragment extends Fragment {
     private void setupButtons(HashSet<String> rooms) {
         LinearLayout layout = view.findViewById(R.id.room_fragment);
 
+        //Rooms have already been loaded, do not double up
+        if(layout.getChildAt(0) != null) {
+            return;
+        }
+
         ArrayList<String> roomSet = new ArrayList<>(rooms);
 
         //Hashset does not always maintain the order, always make sure the All is last

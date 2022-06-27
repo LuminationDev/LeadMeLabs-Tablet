@@ -42,9 +42,6 @@ public class UIUpdateManager {
         try {
             switch (actionNamespace) {
                 case "Ping":
-//                    if (MainActivity.hasNotReceivedPing > 3) {
-//                        MainActivity.startNucPingMonitor();
-//                    }
                     MainActivity.hasNotReceivedPing = 0;
                     if (DialogManager.reconnectDialog != null) {
                         DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
@@ -220,7 +217,7 @@ public class UIUpdateManager {
 
         switch(values[1]) {
             case "computer":
-                Log.e("NUC DATA", additionalData);
+                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(values[3], values[4]);
                 break;
             case "scene":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(values[2], values[3]);

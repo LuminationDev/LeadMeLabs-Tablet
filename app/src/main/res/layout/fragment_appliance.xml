@@ -22,7 +22,7 @@
         style="@style/ApplianceContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="85dp"
+        android:layout_marginBottom="80dp"
         android:orientation="vertical">
 
         <TextView
@@ -30,7 +30,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:layout_marginBottom="40dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/appliance_default_title"
             android:textSize="30sp"
             android:textStyle="bold"/>
@@ -39,12 +41,15 @@
             android:id="@+id/warning_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
             android:text="@{`There are no ` + appliances.type + (room.currentType.equals(`All`) ? ` currently loaded` : ` in ` + room.currentType) + `.`}"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/red"
             android:visibility="@{appliances.applianceCount > 0 ? View.GONE : View.VISIBLE}"/>
 
+        <!--Used when only one room is visible-->
         <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -52,9 +57,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:horizontalSpacing="2dp"
-            android:paddingHorizontal="10dp"
+
             android:verticalSpacing="20dp"
-            tools:listitem="@layout/card_appliance" />
+            tools:listitem="@layout/card_appliance"
+            android:visibility="gone"/>
+
+        <!--Used when all rooms are visible-->
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/multi_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -26,6 +26,8 @@ import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -302,6 +304,7 @@ public class DialogManager {
         Button refreshAddress = view.findViewById(R.id.refresh_nuc_button);
         refreshAddress.setOnClickListener(v -> {
             if(NetworkService.getNUCAddress() != null) {
+                ApplianceViewModel.init = false;
                 SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
                 nucDialog.dismiss();
             } else {

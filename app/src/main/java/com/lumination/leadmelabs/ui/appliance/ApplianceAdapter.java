@@ -20,19 +20,19 @@ import com.lumination.leadmelabs.services.NetworkService;
 import java.util.ArrayList;
 
 /**
- * Use this adapter for scripts in the future.
+ * Use this adapter for scripts in the future. Acts as a singleton when individual rooms are
+ * displayed. When 'All' rooms are chosen it acts as a regular class access through references in
+ * the parent adapter class.
  */
-public class ApplianceAdapter extends RecyclerView.Adapter {
+public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.ApplianceViewHolder> {
     public static ApplianceAdapter instance;
     public static ApplianceAdapter getInstance() { return instance; }
-
-    public static ArrayList<CardApplianceBinding> applianceBindings = new ArrayList<>();
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
     public static ArrayList<String> latestOn = new ArrayList<>();
     public static ArrayList<String> latestOff = new ArrayList<>();
 
-    ApplianceAdapter() {
+    public ApplianceAdapter() {
         instance = this;
     }
 
@@ -117,24 +117,21 @@ public class ApplianceAdapter extends RecyclerView.Adapter {
                         break;
                 }
             });
-
-            applianceBindings.add(binding);
         }
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ApplianceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         CardApplianceBinding binding = CardApplianceBinding.inflate(layoutInflater, parent, false);
         return new ApplianceAdapter.ApplianceViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ApplianceViewHolder holder, int position) {
         Appliance appliance = getItem(position);
-        ApplianceAdapter.ApplianceViewHolder applianceViewHolder = (ApplianceAdapter.ApplianceViewHolder) holder;
-        applianceViewHolder.bind(appliance, position);
+        ((ApplianceViewHolder) holder).bind(appliance, position);
     }
 
     //Accessors
