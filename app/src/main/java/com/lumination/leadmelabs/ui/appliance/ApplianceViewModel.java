@@ -29,7 +29,7 @@ public class ApplianceViewModel extends ViewModel {
     private MutableLiveData<HashSet<String>> activeAppliances;
     public static MutableLiveData<HashSet<String>> activeScenes;
     private MutableLiveData<List<Appliance>> appliances;
-    private static boolean init = false;
+    public static boolean init = false;
 
     public LiveData<List<Appliance>> getAppliances() {
         if (appliances == null) {
@@ -190,6 +190,10 @@ public class ApplianceViewModel extends ViewModel {
         if(temp != activeSceneList.get(room)) {
             delayLoadCall();
             updateIfVisible(id);
+
+            if(temp != null) {
+                updateIfVisible(temp.id);
+            }
         }
     }
 

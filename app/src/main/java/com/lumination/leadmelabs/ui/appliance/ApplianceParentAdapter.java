@@ -20,19 +20,19 @@ import java.util.ArrayList;
  * that can be navigated horizontally to see all appliance cards and vertically for all the different
  * rows (which represent rooms)
  */
-public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParentAdapter.MyViewHolder> {
+public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParentAdapter.ParentViewHolder> {
     public static ApplianceParentAdapter instance;
     public static ApplianceParentAdapter getInstance() { return instance; }
 
     public ArrayMap<String, ArrayList<Appliance>> parentModelArrayList;
     public ArrayList<ApplianceAdapter> adapters = new ArrayList<>();
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class ParentViewHolder extends RecyclerView.ViewHolder {
         public TextView category;
         public TextView warningMessage;
         public RecyclerView childRecyclerView;
 
-        public MyViewHolder(View itemView) {
+        public ParentViewHolder(View itemView) {
             super(itemView);
 
             category = itemView.findViewById(R.id.room_type);
@@ -48,9 +48,9 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ParentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.multi_recycler_layout, parent, false);
-        return new MyViewHolder(view);
+        return new ParentViewHolder(view);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(ParentViewHolder holder, int position) {
         String currentItem = parentModelArrayList.keyAt(position);
         holder.category.setText(currentItem);
 

@@ -169,6 +169,8 @@ public class ApplianceFragment extends Fragment {
      * @param appliances A list of all appliances which may be in the room.
      */
     private void loadAllRoomData(List<Appliance> appliances) {
+        rooms = new ArrayMap<>(); //reset the rooms as to no double up on the appliances
+
         for(Appliance appliance : appliances) {
             if(appliance.type.equals(type.getValue())) {
                 if(rooms.containsKey(appliance.room)) {
@@ -199,9 +201,5 @@ public class ApplianceFragment extends Fragment {
 
         applianceCount.setValue(subtype.size());
         applianceAdapter.applianceList = subtype;
-    }
-
-    public static void updateSingleAdapterIfVisible(String id) {
-        applianceAdapter.updateIfVisible(id);
     }
 }
