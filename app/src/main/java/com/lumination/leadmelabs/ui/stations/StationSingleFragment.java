@@ -138,7 +138,7 @@ public class StationSingleFragment extends Fragment {
                                 + station.room + ":"                    //[6] Station room
                                 + station.id);                          //[7] CBUS object id/doubles as card id
 
-            } else if(station.status.equals("Turning on")) {
+            } else if(station.status.equals("Turning On")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
             } else {
