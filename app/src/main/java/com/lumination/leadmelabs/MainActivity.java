@@ -35,12 +35,11 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel;
-import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
-import com.lumination.leadmelabs.utilities.Identifier;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         RoomFragment.mViewModel = ViewModelProviders.of(this).get(RoomViewModel.class);
         SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-        StationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         SteamSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);

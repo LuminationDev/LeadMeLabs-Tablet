@@ -127,12 +127,12 @@ public class SteamApplicationAdapter extends BaseAdapter {
             }
         } else {
             mViewModel.selectSelectedSteamApplication(steamApplication.id);
-            SideMenuFragment.loadFragment(StationSelectionFragment.class, "notMenu");
+            SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu");
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
 
-            StationSelectionFragment fragment = (StationSelectionFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+            StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
             View newView = fragment.getView();
             TextView textView = newView.findViewById(R.id.station_selection_game_name);
             textView.setText(steamApplication.name);

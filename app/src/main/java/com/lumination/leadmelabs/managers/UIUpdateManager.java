@@ -224,8 +224,6 @@ public class UIUpdateManager {
     private static void syncAppliances(String additionalData) {
         String[] values = additionalData.split(":");
 
-        Log.e("NUC DATA", values[1]);
-
         switch(values[1]) {
             case "computer":
                 ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(values[3], values[4]);

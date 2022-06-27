@@ -4,34 +4,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StationSelectionFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
-    private StationAdapter stationAdapter;
+    public StationAdapter stationAdapter;
 
     public static StationSelectionFragment instance;
     public static StationSelectionFragment getInstance() { return instance; }
@@ -40,6 +32,7 @@ public class StationSelectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        mViewModel = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class);
         return inflater.inflate(R.layout.fragment_station_selection, container, false);
     }
 
@@ -54,50 +47,6 @@ public class StationSelectionFragment extends Fragment {
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
 
-        CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
-        selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
-            ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-            stations = (ArrayList<Station>) stations.clone();
-            for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasSteamApplicationInstalled(mViewModel.getSelectedSteamApplicationId())) {
-                    station.selected = checked;
-                    mViewModel.updateStationById(station.id, station);
-                }
-            }
-        });
-
-        Button backButton = view.findViewById(R.id.cancel_button);
-        backButton.setOnClickListener(v -> {
-            mViewModel.selectSelectedSteamApplication(0);
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
-        });
-
-        Button playButton = view.findViewById(R.id.select_stations);
-        playButton.setOnClickListener(v -> {
-            int steamGameId = mViewModel.getSelectedSteamApplicationId();
-            int[] selectedIds = mViewModel.getSelectedStationIds();
-            if (selectedIds.length > 0) {
-                ArrayList<String> theatreStations = new ArrayList<>();
-                for (Station station:mViewModel.getSelectedStations()) {
-                    if (station.theatreText != null) {
-                        theatreStations.add(station.name);
-                    }
-                }
-
-                if (theatreStations.size() > 0) {
-                    DialogManager.buildSelectionLaunch(getContext(), theatreStations, steamGameId, selectedIds);
-                } else {
-                    confirmLaunchGame(selectedIds, steamGameId);
-                }
-            }
-        });
-
-        View identifyStations = view.findViewById(R.id.identify_button);
-        identifyStations.setOnClickListener(v -> {
-            List<Station> stations = stationAdapter.stationList;
-            Identifier.identifyStations(stations);
-        });
-
         instance = this;
     }
 
@@ -105,7 +54,10 @@ public class StationSelectionFragment extends Fragment {
      * Reload the current appliance list when a room is changed.
      */
     public void notifyDataChange() {
-        mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
+        StationSelectionPageFragment.childManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.station_selection_list_container, StationSelectionFragment.class, null)
+                .commitNow();
     }
 
     private void reloadData(List<Station> stations) {
@@ -130,27 +82,8 @@ public class StationSelectionFragment extends Fragment {
         noStationsAvailable.setVisibility(stationRoom.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    public void confirmLaunchGame(int[] selectedIds, int steamGameId) {
-        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-        NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
-        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-        DialogManager.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId), false);
-    }
-
-    public void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {
-        dialog.dismiss();
-        confirmLaunchGame(selectedIds, steamGameId);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
-        for (Station station:stations) {
-            station.selected = false;
-            mViewModel.updateStationById(station.id, station);
-        }
+    public ArrayList<Station> getRoomStations()
+    {
+        return stationAdapter.stationList;
     }
 }

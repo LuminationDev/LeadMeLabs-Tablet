@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class DashboardPageFragment extends Fragment {
-    private FragmentManager childManager;
+    public static FragmentManager childManager;
     private static boolean cancelledShutdown = false;
 
     @Nullable
