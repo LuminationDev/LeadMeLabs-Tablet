@@ -100,6 +100,17 @@ public class UIUpdateManager {
                             });
                         }
                     }
+                    if (additionalData.startsWith("FailedRestart")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Failed to restart station",
+                                        station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
+                                );
+                            });
+                        }
+                    }
                     break;
                 case "Automation":
                     if (additionalData.startsWith("Appliances")) {
