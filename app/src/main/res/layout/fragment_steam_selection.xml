@@ -97,7 +97,7 @@
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/steam_list_container"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusableInTouchMode="true"
@@ -105,17 +105,16 @@
 
                 <GridView
                     android:id="@+id/steam_list"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:clipToPadding="false"
-                    android:columnWidth="300dp"
+                    android:columnWidth="290dp"
                     android:fadeScrollbars="false"
-                    android:horizontalSpacing="30dp"
+                    android:horizontalSpacing="20dp"
                     android:numColumns="auto_fit"
-                    android:paddingHorizontal="30dp"
+                    android:paddingHorizontal="20dp"
                     android:paddingVertical="20dp"
-                    android:scrollbarStyle="outsideInset"
+                    android:scrollbarStyle="insideInset"
                     android:scrollbarThumbVertical="@color/blue"
                     android:scrollbarTrackVertical="@color/grey_medium"
                     android:smoothScrollbar="true"
