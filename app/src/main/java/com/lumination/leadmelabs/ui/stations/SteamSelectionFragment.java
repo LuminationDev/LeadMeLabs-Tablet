@@ -131,7 +131,7 @@ public class SteamSelectionFragment extends Fragment {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 dismissKeyboard(searchInput);
             }
-            return true;
+            return false;
         });
     }
 
