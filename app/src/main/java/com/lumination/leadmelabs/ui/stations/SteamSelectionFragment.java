@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -70,6 +71,7 @@ public class SteamSelectionFragment extends Fragment {
         }
         steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
         binding.setSteamApplicationList(steamApplicationAdapter.steamApplicationList);
+        binding.setSteamApplicationsLoaded(mViewModel.getAllSteamApplications().size() > 0);
         steamApplicationAdapter.notifyDataSetChanged();
         view.setAdapter(steamApplicationAdapter);
     }
@@ -124,6 +126,12 @@ public class SteamSelectionFragment extends Fragment {
             if (!hasFocus) {
                 dismissKeyboard(searchInput);
             }
+        });
+        steamGridView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                dismissKeyboard(searchInput);
+            }
+            return true;
         });
     }
 

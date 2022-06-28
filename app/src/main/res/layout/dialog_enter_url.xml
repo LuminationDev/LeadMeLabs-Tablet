@@ -34,7 +34,6 @@
         <EditText
             android:id="@+id/url_input"
             android:layout_width="match_parent"
-            android:textCursorDrawable="@null"
             android:backgroundTint="@color/blue_darkest"
             android:foregroundTint="@color/blue_darkest"
             android:layout_height="wrap_content"
