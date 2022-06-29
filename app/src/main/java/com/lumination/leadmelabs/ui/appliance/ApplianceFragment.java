@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
@@ -37,7 +39,7 @@ public class ApplianceFragment extends Fragment {
     public static ApplianceParentAdapter applianceParentAdapter;
     public static ApplianceAdapter applianceAdapter;
 
-    private ArrayMap<String, ArrayList<Appliance>> rooms = new ArrayMap<>();
+    public static ArrayMap<String, ArrayList<Appliance>> rooms = new ArrayMap<>();
 
     public FragmentApplianceBinding binding;
 
@@ -84,7 +86,8 @@ public class ApplianceFragment extends Fragment {
         instance = this;
     }
 
-    private void loadMultiRecycler(View view) {
+    //TODO breaking when loading before there are rooms available
+    public static void loadMultiRecycler(View view) {
         RecyclerView parentRecyclerView = view.findViewById(R.id.multi_recyclerView);
         parentRecyclerView.setVisibility(View.VISIBLE);
 
@@ -99,7 +102,7 @@ public class ApplianceFragment extends Fragment {
             }
         }
 
-        parentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        parentRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.getInstance().getApplicationContext()));
         applianceParentAdapter = new ApplianceParentAdapter(rooms);
         parentRecyclerView.setAdapter(applianceParentAdapter);
     }
