@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
         SubMenuFragment.mViewModel = ViewModelProviders.of(this).get(SubMenuViewModel.class);
         SideMenuFragment.mViewModel = ViewModelProviders.of(this).get(SideMenuViewModel.class);
-        //ZonesFragment.mViewModel = ViewModelProviders.of(this).get(ZonesViewModel.class);
     }
 
     /**
@@ -174,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
         SettingsFragment.mViewModel.getHideStationControls();
-        //ZonesFragment.mViewModel.getZones();
     }
 
     /**
