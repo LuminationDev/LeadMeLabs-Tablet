@@ -22,18 +22,19 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Title"
+                android:text="@string/title_placeholder"
                 android:textColor="@color/black"
-                android:textSize="30sp"></TextView>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/content_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Content Text"
-                android:textColor="@color/black"></TextView>
+                android:text="@string/content_text_placeholder"
+                android:textColor="@color/black" />
         </com.google.android.flexbox.FlexboxLayout>
 
+        <!--TODO REPLACE WITH FRAGMENT - SAME AS STEAM SELECTION AREA?? -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stations_list"
             android:layout_width="match_parent"
@@ -55,12 +56,12 @@
                 android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:backgroundTint="@android:color/white"
                 android:elevation="0dp"
                 android:gravity="center"
                 android:stateListAnimator="@null"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textAllCaps="false"
                 android:textColor="@color/blue"
                 app:backgroundTint="@color/white"
@@ -75,12 +76,12 @@
                 android:id="@+id/confirm_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/blue"
                 android:elevation="0dp"
                 android:gravity="center"
                 android:stateListAnimator="@null"
-                android:text="Done"
+                android:text="@string/done"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/blue"

@@ -43,4 +43,8 @@
     <string name="room_type_placeholder">Room Type</string>
     <string name="no_stations_available">No stations available in selected room.</string>
     <string name="room_all">All</string>
+    <string name="title_placeholder">Title</string>
+    <string name="content_text_placeholder">Content Text</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
 </resources>

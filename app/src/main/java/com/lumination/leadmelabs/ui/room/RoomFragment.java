@@ -2,14 +2,11 @@ package com.lumination.leadmelabs.ui.room;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,14 +30,21 @@ public class RoomFragment extends Fragment {
     private View view;
     private RelativeLayout highlight;
 
+    //Dynamic dimensions
+    private int spacing, marginEnd, width, height;
+
     public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_rooms, container, false);
+        spacing = convertDpToPx(158); //158dp - the current size of a single room button + margin
+        marginEnd = convertDpToPx(25);
+        width = convertDpToPx(133);
+        height = convertDpToPx(40);
 
+        view = inflater.inflate(R.layout.fragment_rooms, container, false);
         return view;
     }
 
@@ -68,9 +72,10 @@ public class RoomFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupButtons(HashSet<String> rooms) {
-        LinearLayout layout = view.findViewById(R.id.room_fragment);
+        RelativeLayout layout = view.findViewById(R.id.room_fragment_container);
 
         //Rooms have already been loaded, do not double up
+        //There are two base elements that are always there
         if(layout.getChildAt(2) != null) {
             return;
         }
@@ -91,35 +96,35 @@ public class RoomFragment extends Fragment {
 
             btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_white_room_button, null));
 
-            btn.setPadding(16, 4, 16, 0);
+            btn.setPadding(convertDpToPx(10), convertDpToPx(2), convertDpToPx(10), 0);
             btn.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 60);
-            params.setMargins(0,0,38,0);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
+            params.setMargins((spacing * (i + 1)),0, marginEnd,0);
 
             btn.setLayoutParams(params);
 
             int finalI = i;
-            btn.setOnClickListener(v -> {
-                if(Objects.equals(currentType.getValue(), roomSet.get(finalI))) {
-                    return;
-                }
+            btn.setOnClickListener(v -> onRoomClick(roomSet.get(finalI), btn.getId()));
 
-                mViewModel.setSelectedRoom(roomSet.get(finalI));
-                currentType.setValue(roomSet.get(finalI));
+            layout.addView(btn, 0);
 
-                if(SideMenuFragment.currentType.equals("dashboard")) {
-                    StationsFragment.getInstance().notifyDataChange();
-                } else if (SideMenuFragment.currentType.equals("controls")) {
-                    ApplianceFragment.getInstance().notifyDataChange();
-                } else {
-                    StationSelectionFragment.getInstance().notifyDataChange();
-                }
+            positionHighlight(i, roomSet.get(i));
+        }
+    }
 
-                moveHighlight(btn.getId(), roomSet.get(finalI));
-            });
-
-            layout.addView(btn);
+    /**
+     * If the room is not set to All then the highlight needs to move to the currently selected
+     * room.
+     * @param idx An int representing the position in the room set, this translates to how much the
+     *            highlight needs to move.
+     * @param name A string representing the name of the room that is active.
+     */
+    private void positionHighlight(int idx, String name) {
+        if(!Objects.equals(currentType.getValue(), "All") && Objects.equals(currentType.getValue(), name)) {
+            RelativeLayout.LayoutParams allParams = new RelativeLayout.LayoutParams(width, height);
+            allParams.setMargins((-spacing + (spacing * (idx + 2))),0,0,0);
+            highlight.setLayoutParams(allParams);
         }
     }
 
@@ -128,35 +133,46 @@ public class RoomFragment extends Fragment {
      */
     private void setupAllButton() {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(R.id.all);
-        btn.setOnClickListener(v -> {
-            if(Objects.equals(currentType.getValue(), "All")) {
-                return;
-            }
+        btn.setOnClickListener(v -> onRoomClick("All", btn.getId()));
+    }
 
-            mViewModel.setSelectedRoom("All");
-            currentType.setValue("All");
+    private void onRoomClick(String roomName, int id) {
+        if(Objects.equals(currentType.getValue(), roomName)) {
+            return;
+        }
 
-            if(SideMenuFragment.currentType.equals("dashboard")) {
-                StationsFragment.getInstance().notifyDataChange();
-            } else if (SideMenuFragment.currentType.equals("controls")) {
-                ApplianceFragment.getInstance().notifyDataChange();
-            } else {
-                StationSelectionFragment.getInstance().notifyDataChange();
-            }
+        mViewModel.setSelectedRoom(roomName);
+        currentType.setValue(roomName);
 
-            moveHighlight(btn.getId(), "All");
-        });
+        if(SideMenuFragment.currentType.equals("dashboard")) {
+            StationsFragment.getInstance().notifyDataChange();
+        } else if (SideMenuFragment.currentType.equals("controls")) {
+            ApplianceFragment.getInstance().notifyDataChange();
+        } else {
+            StationSelectionFragment.getInstance().notifyDataChange();
+        }
+
+        moveHighlight(id);
     }
 
     /**
      * Move the highlight to the required coordinates based on the element id passed to the function.
      * @param id An in representing the ID of the element that the highlight should move to.
      */
-    private void moveHighlight(int id, String name) {
+    private void moveHighlight(int id) {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(id);
         highlight.animate().x(btn.getX()).y(btn.getY());
+    }
 
-        TextView text = view.findViewById(R.id.highlight_title);
-        text.setText(name);
+
+    /**
+     * Convert a density pixel value to regular pixels based on the tablets screen density.
+     * Dynamically setting dimensions require pixel units instead of density pixels.
+     * @param dp A int representing the density pixels to be converted.
+     * @return A int representing the relative pixel size for an individual device.
+     */
+    private int convertDpToPx(int dp){
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) ((dp * scale) + 0.5f);
     }
 }
