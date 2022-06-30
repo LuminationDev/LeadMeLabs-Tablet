@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
-import com.lumination.leadmelabs.ui.zones.ZonesFragment;
 
 public class SubMenuFragment extends Fragment {
 
@@ -47,11 +46,8 @@ public class SubMenuFragment extends Fragment {
         currentType = "scenes";
     }
 
-    //Really easy to set animations
-    //.setCustomAnimations(android.R.anim.slide_out_right, android.R.anim.slide_in_left)
     private void setupButtons() {
         MainActivity.feedback(view.findViewById(R.id.scene_button));
-//        view.findViewById(R.id.scene_button).setOnClickListener(v -> loadZones());
         view.findViewById(R.id.scene_button).setOnClickListener(v -> loadFragment("Scenes", "scenes"));
 
         MainActivity.feedback(view.findViewById(R.id.light_button));

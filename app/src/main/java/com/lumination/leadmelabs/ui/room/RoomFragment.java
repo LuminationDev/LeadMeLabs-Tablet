@@ -2,14 +2,11 @@ package com.lumination.leadmelabs.ui.room;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +29,7 @@ public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
     private View view;
     private RelativeLayout highlight;
+    private final int spacing = 237; //the current spacing of a single room button margin + padding (in pixels)
 
     public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
@@ -40,7 +38,6 @@ public class RoomFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_rooms, container, false);
-
         return view;
     }
 
@@ -68,9 +65,10 @@ public class RoomFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupButtons(HashSet<String> rooms) {
-        LinearLayout layout = view.findViewById(R.id.room_fragment);
+        RelativeLayout layout = view.findViewById(R.id.room_fragment_container);
 
         //Rooms have already been loaded, do not double up
+        //There are two base elements that are always there
         if(layout.getChildAt(2) != null) {
             return;
         }
@@ -94,8 +92,8 @@ public class RoomFragment extends Fragment {
             btn.setPadding(16, 4, 16, 0);
             btn.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 60);
-            params.setMargins(0,0,38,0);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 60);
+            params.setMargins((spacing * (i + 1)),0,38,0);
 
             btn.setLayoutParams(params);
 
@@ -116,10 +114,27 @@ public class RoomFragment extends Fragment {
                     StationSelectionFragment.getInstance().notifyDataChange();
                 }
 
-                moveHighlight(btn.getId(), roomSet.get(finalI));
+                moveHighlight(btn.getId());
             });
 
-            layout.addView(btn);
+            layout.addView(btn, 0);
+
+            positionHighlight(i, roomSet.get(i));
+        }
+    }
+
+    /**
+     * If the room is not set to All then the highlight needs to move to the currently selected
+     * room.
+     * @param idx An int representing the position in the room set, this translates to how much the
+     *            highlight needs to move.
+     * @param name A string representing the name of the room that is active.
+     */
+    private void positionHighlight(int idx, String name) {
+        if(!Objects.equals(currentType.getValue(), "All") && Objects.equals(currentType.getValue(), name)) {
+            RelativeLayout.LayoutParams allParams = new RelativeLayout.LayoutParams(200, 60);
+            allParams.setMargins((-spacing + (spacing * (idx + 2))),0,0,0);
+            highlight.setLayoutParams(allParams);
         }
     }
 
@@ -144,7 +159,7 @@ public class RoomFragment extends Fragment {
                 StationSelectionFragment.getInstance().notifyDataChange();
             }
 
-            moveHighlight(btn.getId(), "All");
+            moveHighlight(btn.getId());
         });
     }
 
@@ -152,11 +167,8 @@ public class RoomFragment extends Fragment {
      * Move the highlight to the required coordinates based on the element id passed to the function.
      * @param id An in representing the ID of the element that the highlight should move to.
      */
-    private void moveHighlight(int id, String name) {
+    private void moveHighlight(int id) {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(id);
         highlight.animate().x(btn.getX()).y(btn.getY());
-
-        TextView text = view.findViewById(R.id.highlight_title);
-        text.setText(name);
     }
 }
