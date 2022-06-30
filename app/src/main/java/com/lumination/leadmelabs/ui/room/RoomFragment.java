@@ -29,7 +29,9 @@ public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
     private View view;
     private RelativeLayout highlight;
-    private final int spacing = 237; //the current spacing of a single room button margin + padding (in pixels)
+
+    //Dynamic dimensions
+    private int spacing, marginEnd, width, height;
 
     public static MutableLiveData<String> currentType = new MutableLiveData<>("All");
 
@@ -37,6 +39,11 @@ public class RoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        spacing = convertDpToPx(158); //158dp - the current size of a single room button + margin
+        marginEnd = convertDpToPx(25);
+        width = convertDpToPx(133);
+        height = convertDpToPx(40);
+
         view = inflater.inflate(R.layout.fragment_rooms, container, false);
         return view;
     }
@@ -89,33 +96,16 @@ public class RoomFragment extends Fragment {
 
             btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_white_room_button, null));
 
-            btn.setPadding(16, 4, 16, 0);
+            btn.setPadding(convertDpToPx(10), convertDpToPx(2), convertDpToPx(10), 0);
             btn.setGravity(Gravity.CENTER);
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 60);
-            params.setMargins((spacing * (i + 1)),0,38,0);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
+            params.setMargins((spacing * (i + 1)),0, marginEnd,0);
 
             btn.setLayoutParams(params);
 
             int finalI = i;
-            btn.setOnClickListener(v -> {
-                if(Objects.equals(currentType.getValue(), roomSet.get(finalI))) {
-                    return;
-                }
-
-                mViewModel.setSelectedRoom(roomSet.get(finalI));
-                currentType.setValue(roomSet.get(finalI));
-
-                if(SideMenuFragment.currentType.equals("dashboard")) {
-                    StationsFragment.getInstance().notifyDataChange();
-                } else if (SideMenuFragment.currentType.equals("controls")) {
-                    ApplianceFragment.getInstance().notifyDataChange();
-                } else {
-                    StationSelectionFragment.getInstance().notifyDataChange();
-                }
-
-                moveHighlight(btn.getId());
-            });
+            btn.setOnClickListener(v -> onRoomClick(roomSet.get(finalI), btn.getId()));
 
             layout.addView(btn, 0);
 
@@ -132,7 +122,7 @@ public class RoomFragment extends Fragment {
      */
     private void positionHighlight(int idx, String name) {
         if(!Objects.equals(currentType.getValue(), "All") && Objects.equals(currentType.getValue(), name)) {
-            RelativeLayout.LayoutParams allParams = new RelativeLayout.LayoutParams(200, 60);
+            RelativeLayout.LayoutParams allParams = new RelativeLayout.LayoutParams(width, height);
             allParams.setMargins((-spacing + (spacing * (idx + 2))),0,0,0);
             highlight.setLayoutParams(allParams);
         }
@@ -143,24 +133,26 @@ public class RoomFragment extends Fragment {
      */
     private void setupAllButton() {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(R.id.all);
-        btn.setOnClickListener(v -> {
-            if(Objects.equals(currentType.getValue(), "All")) {
-                return;
-            }
+        btn.setOnClickListener(v -> onRoomClick("All", btn.getId()));
+    }
 
-            mViewModel.setSelectedRoom("All");
-            currentType.setValue("All");
+    private void onRoomClick(String roomName, int id) {
+        if(Objects.equals(currentType.getValue(), roomName)) {
+            return;
+        }
 
-            if(SideMenuFragment.currentType.equals("dashboard")) {
-                StationsFragment.getInstance().notifyDataChange();
-            } else if (SideMenuFragment.currentType.equals("controls")) {
-                ApplianceFragment.getInstance().notifyDataChange();
-            } else {
-                StationSelectionFragment.getInstance().notifyDataChange();
-            }
+        mViewModel.setSelectedRoom(roomName);
+        currentType.setValue(roomName);
 
-            moveHighlight(btn.getId());
-        });
+        if(SideMenuFragment.currentType.equals("dashboard")) {
+            StationsFragment.getInstance().notifyDataChange();
+        } else if (SideMenuFragment.currentType.equals("controls")) {
+            ApplianceFragment.getInstance().notifyDataChange();
+        } else {
+            StationSelectionFragment.getInstance().notifyDataChange();
+        }
+
+        moveHighlight(id);
     }
 
     /**
@@ -170,5 +162,17 @@ public class RoomFragment extends Fragment {
     private void moveHighlight(int id) {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(id);
         highlight.animate().x(btn.getX()).y(btn.getY());
+    }
+
+
+    /**
+     * Convert a density pixel value to regular pixels based on the tablets screen density.
+     * Dynamically setting dimensions require pixel units instead of density pixels.
+     * @param dp A int representing the density pixels to be converted.
+     * @return A int representing the relative pixel size for an individual device.
+     */
+    private int convertDpToPx(int dp){
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) ((dp * scale) + 0.5f);
     }
 }
