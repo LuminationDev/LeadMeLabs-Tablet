@@ -321,20 +321,20 @@ public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.Appl
                         + appliance.id);                        //[7] CBUS object id/doubles as card id
     }
 
+    /**
+     * A scene can be re-triggered if active, as sub elements can be changed while a scene is
+     * active. If nothing has changed then the Cbus disregards the message.
+     */
     private void sceneStrategy(CardApplianceBinding binding, Appliance scene) {
         String type = "scene";
 
         //Set the new icon and send a message to the NUC
         setIcon(binding, ApplianceViewModel.activeSceneList.containsValue(scene));
 
-        if(ApplianceViewModel.activeSceneList.containsValue(scene)) {
-            return; //Do nothing don't want to double click something
-        }
-
         binding.setIsActive(new MutableLiveData<>(true));
         Appliance last = ApplianceViewModel.activeSceneList.put(scene.room, scene);
 
-        if(last != null) {
+        if(last != null && last != scene) {
             latestOff.add(last.id);
             updateIfVisible(last.id);
         }
