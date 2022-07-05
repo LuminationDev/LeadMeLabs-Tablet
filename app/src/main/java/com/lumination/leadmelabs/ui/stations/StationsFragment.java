@@ -59,7 +59,7 @@ public class StationsFragment extends Fragment {
      */
     public void notifyDataChange() {
         DashboardPageFragment.childManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
                 .replace(R.id.stations, StationsFragment.class, null)
                 .commitNow();
     }
