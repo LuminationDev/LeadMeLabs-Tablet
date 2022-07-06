@@ -18,8 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumination.leadmelabs.BooleanCallbackInterface;
-import com.lumination.leadmelabs.CountdownCallbackInterface;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
+import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -53,6 +53,8 @@ public class DialogManager {
     public static AlertDialog endSessionDialog;
     public static List<Integer> restartSessionStationIds;
     public static AlertDialog restartSessionDialog;
+
+    public static CountDownTimer shutdownTimer;
 
     private static int pinCodeAttempts = 0;
 
@@ -252,7 +254,7 @@ public class DialogManager {
         confirmDialog.show();
         confirmDialog.getWindow().setLayout(1200, 380);
 
-        CountDownTimer timer = new CountDownTimer(9000, 1000) {
+        shutdownTimer = new CountDownTimer(9000, 1000) {
             @Override
             public void onTick(long l) {
                 cancelButton.setText(MessageFormat.format("Cancel ({0})", (l + 1000) / 1000));
@@ -269,7 +271,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(x -> {
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
             countdownCallbackInterface.callback(0);
-            timer.cancel();
+            shutdownTimer.cancel();
             confirmDialog.dismiss();
         });
     }
