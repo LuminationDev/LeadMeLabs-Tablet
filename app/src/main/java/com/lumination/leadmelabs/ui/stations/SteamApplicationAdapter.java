@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.lumination.leadmelabs.BooleanCallbackInterface;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.SteamTileBinding;
 import com.lumination.leadmelabs.managers.DialogManager;

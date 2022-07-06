@@ -13,8 +13,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.lumination.leadmelabs.BooleanCallbackInterface;
-import com.lumination.leadmelabs.CountdownCallbackInterface;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
+import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;

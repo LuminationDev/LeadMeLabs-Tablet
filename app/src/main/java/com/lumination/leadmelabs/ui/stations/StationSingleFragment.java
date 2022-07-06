@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
-import com.lumination.leadmelabs.CountdownCallbackInterface;
+import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -117,11 +117,6 @@ public class StationSingleFragment extends Fragment {
             if (station.status.equals("Off")) {
                 station.powerStatusCheck();
 
-                MainActivity.runOnUI(() -> {
-                    station.status = "Turning on";
-                    mViewModel.updateStationById(id, station);
-                });
-
                 String type = "computer";
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
@@ -137,6 +132,11 @@ public class StationSingleFragment extends Fragment {
                                 + type + ":"                            //[5] Object type (computer, appliance, scene)
                                 + station.room + ":"                    //[6] Station room
                                 + station.id);                          //[7] CBUS object id/doubles as card id
+
+                MainActivity.runOnUI(() -> {
+                    station.status = "Turning on";
+                    mViewModel.updateStationById(id, station);
+                });
 
             } else if(station.status.equals("Turning On")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
@@ -158,6 +158,7 @@ public class StationSingleFragment extends Fragment {
                     cancelledShutdown = true;
                     String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
                     NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+                    DialogManager.shutdownTimer.cancel();
                     shutdownButton.setText("Shut Down Station");
                 }
             }
