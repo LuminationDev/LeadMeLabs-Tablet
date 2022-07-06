@@ -36,11 +36,9 @@ public class SteamApplicationAdapter extends BaseAdapter {
     public ArrayList<SteamApplication> steamApplicationList = new ArrayList<>();
     public static int stationId = 0;
     private final LayoutInflater mInflater;
-    private final Context context;
     public static StationsViewModel mViewModel;
 
     SteamApplicationAdapter(Context context) {
-        this.context = context;
         this.mInflater = LayoutInflater.from(context);
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
@@ -77,30 +75,27 @@ public class SteamApplicationAdapter extends BaseAdapter {
         binding.setSteamApplication(steamApplication);
 
         View finalView = view;
-        View.OnClickListener selectGame = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        View.OnClickListener selectGame = view1 -> {
+            InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 //                confirm if it is one of the dodgy apps
-                ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
+            ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
 
-                gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
-                gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
+            gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
+            gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
 
-                if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
-                    BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
-                        @Override
-                        public void callback(boolean result) {
-                            if (result) {
-                                completeSelectApplicationAction(steamApplication);
-                            }
+            if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
+                BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
+                    @Override
+                    public void callback(boolean result) {
+                        if (result) {
+                            completeSelectApplicationAction(steamApplication);
                         }
-                    };
-                    DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", booleanCallbackInterface);
-                } else {
-                    completeSelectApplicationAction(steamApplication);
-                }
+                    }
+                };
+                DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", booleanCallbackInterface);
+            } else {
+                completeSelectApplicationAction(steamApplication);
             }
         };
         view.setOnClickListener(selectGame);
@@ -119,7 +114,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
         if (stationId > 0) {
             Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
             if (station != null && station.theatreText != null) {
-                DialogManager.buildLaunchExperienceDialog(context, steamApplication, station);
+                DialogManager.buildLaunchExperienceDialog(MainActivity.getInstance().getApplicationContext(), steamApplication, station);
             } else if(station != null) {
                 NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");

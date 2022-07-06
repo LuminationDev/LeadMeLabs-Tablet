@@ -83,13 +83,14 @@
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/not_installed_alert"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/bg_red_lightest_rounded"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
-            android:visibility="gone"
+
+            android:visibility="visible"
             app:alignItems="center"
             app:justifyContent="center">
 
@@ -105,15 +106,17 @@
                 app:flexDirection="column">
 
                 <TextView
+                    android:id="@+id/not_installed_alert_top_line"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="This application is not installed on some stations!"
+                    android:text="@string/not_installed_on_stations"
                     android:textColor="@color/black" />
 
                 <TextView
+                    android:id="@+id/not_installed_alert_bottom_line"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Please contact your IT department for install instructions."
+                    android:text="@string/contact_it_department"
                     android:textColor="@color/black" />
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>

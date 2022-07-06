@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +57,7 @@ public class StationSelectionFragment extends Fragment {
      */
     public void notifyDataChange() {
         StationSelectionPageFragment.childManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
                 .replace(R.id.station_selection_list_container, StationSelectionFragment.class, null)
                 .commitNow();
     }
@@ -78,8 +80,39 @@ public class StationSelectionFragment extends Fragment {
 
         stationAdapter.stationList = stationRoom;
         stationAdapter.notifyDataSetChanged();
+
+        changeWarningLabel(stationRoom.size());
+    }
+
+    /**
+     * Change the warning label on the Station selection page to reflect if there is a game that is
+     * not installed or if there are no stations available in a selected room.
+     * @param numOfStations A integer representing how many stations are present in the currently
+     *                      selected room.
+     */
+    private void changeWarningLabel(int numOfStations) {
+        StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+        Button playBtn = fragment.getView().findViewById(R.id.select_stations);
+        View container = fragment.getView().findViewById(R.id.not_installed_alert);
+        TextView top = fragment.getView().findViewById(R.id.not_installed_alert_top_line);
+
+        TextView bottom = fragment.getView().findViewById(R.id.not_installed_alert_bottom_line);
+        bottom.setVisibility(numOfStations == 0 ? View.GONE : View.VISIBLE);
+
         TextView noStationsAvailable = getView().findViewById(R.id.no_stations_available);
-        noStationsAvailable.setVisibility(stationRoom.size() == 0 ? View.VISIBLE : View.GONE);
+        noStationsAvailable.setVisibility(numOfStations == 0 ? View.VISIBLE : View.GONE);
+
+        if(numOfStations == 0) {
+            container.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_mustard_rounded));
+            top.setText(R.string.no_stations_available);
+            playBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey_medium));
+        } else {
+            container.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_red_lightest_rounded));
+            top.setText(R.string.not_installed_on_stations);
+            playBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue));
+        }
+
+        playBtn.setEnabled(numOfStations != 0);
     }
 
     public ArrayList<Station> getRoomStations()

@@ -23,6 +23,15 @@
             style="@style/PageTitle"
             android:text="@string/vr_library_title"/>
 
+        <Button
+            android:id="@+id/refresh_steam_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:visibility="gone"
+            android:text="Refresh"/>
+        <!--android:visibility="@{steamApplicationList.size() > 0 ? View.GONE : View.VISIBLE}"-->
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/steam_selection"
             android:layout_width="match_parent"
@@ -52,7 +61,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="VR Library"
+                        android:text="@string/vr_library"
                         android:textColor="@color/black"
                         android:textFontWeight="600"
                         android:textSize="40sp" />
@@ -60,7 +69,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pick an experience to play in VR"
+                        android:text="@string/pick_an_experience"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
                 </com.google.android.flexbox.FlexboxLayout>
@@ -69,13 +78,14 @@
                     android:id="@+id/search_input"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
+                    android:autofillHints=""
                     android:background="@drawable/bg_white_curved"
                     android:clickable="true"
                     android:drawableStart="@drawable/icon_search"
                     android:drawablePadding="10dp"
                     android:focusableInTouchMode="true"
                     android:gravity="center_vertical"
-                    android:hint="Search"
+                    android:hint="@string/search"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:paddingStart="15dp"

@@ -245,4 +245,14 @@ public class MainActivity extends AppCompatActivity {
            return false;
        });
     }
+
+
+    /**
+     * On awake check the Cbus to see if any values are not the correct ones.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ApplianceFragment.mViewModel.getActiveAppliances();
+    }
 }

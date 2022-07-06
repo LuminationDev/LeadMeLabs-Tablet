@@ -9,16 +9,16 @@
 
     <TextView
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/no_stations_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="218dp"
-        android:layout_marginHorizontal="25dp"
+        android:paddingStart="50dp"
+        android:paddingEnd="0dp"
         android:paddingVertical="20dp"
-        android:text="@string/no_stations_available"
-        android:visibility="gone" />
+        android:gravity="center"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stations_list"
