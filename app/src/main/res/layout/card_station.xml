@@ -11,33 +11,38 @@
     </data>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="178dp"
+        android:layout_height="178dp">
+
         <RelativeLayout
             android:id="@+id/station_card_alert"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:translationZ="5dp"
-            android:layout_marginLeft="144dp"
+            android:layout_marginStart="144dp"
             android:layout_marginTop="6dp">
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/icon_alert" />
+                android:src="@drawable/icon_alert"
+                android:contentDescription="@string/alert_icon" />
         </RelativeLayout>
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/station_card"
             style="@style/StationCard"
+            android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_white}"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            app:justifyContent="space_between"
-            android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_white}">
+            app:justifyContent="space_between">
+
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:flexDirection="column">
+
                 <TextView
                     android:id="@+id/theatre_text"
                     android:layout_width="wrap_content"
@@ -52,11 +57,11 @@
                     android:id="@+id/station_vr_icon"
                     android:layout_width="52dp"
                     android:layout_height="28dp"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/vr_status_icon"
                     android:minWidth="52dp"
                     android:minHeight="28dp"
-                    android:src="@{station.status.equals(`Off`) ? @drawable/icon_vr_gray : @drawable/icon_vr, default=@drawable/bg_station_card_grey}"
-                    android:contentDescription="vr_status_icon"
-                    android:layout_marginTop="10dp"/>
+                    android:src="@{station.status.equals(`Off`) ? @drawable/icon_vr_gray : @drawable/icon_vr, default=@drawable/bg_station_card_grey}" />
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout

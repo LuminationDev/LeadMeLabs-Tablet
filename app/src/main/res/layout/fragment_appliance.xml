@@ -57,7 +57,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:horizontalSpacing="2dp"
-
             android:verticalSpacing="20dp"
             tools:listitem="@layout/card_appliance"
             android:visibility="gone"/>
@@ -69,7 +68,6 @@
             android:id="@+id/multi_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:visibility="gone"/>

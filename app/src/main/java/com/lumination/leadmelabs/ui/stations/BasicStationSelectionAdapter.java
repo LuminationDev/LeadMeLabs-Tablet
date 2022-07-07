@@ -8,14 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 
 import java.util.ArrayList;
 
-public class BasicStationSelectionAdapter extends RecyclerView.Adapter {
+public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStationSelectionAdapter.StationViewHolder> {
     private final String TAG = "StationAdapter";
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
@@ -45,17 +44,16 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         CardStationBinding binding = CardStationBinding.inflate(layoutInflater, parent, false);
         return new BasicStationSelectionAdapter.StationViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         Station station = getItem(position);
-        BasicStationSelectionAdapter.StationViewHolder stationViewHolder = (BasicStationSelectionAdapter.StationViewHolder) holder;
-        stationViewHolder.bind(station, this);
+        ((StationViewHolder) holder).bind(station, this);
     }
 
     @Override

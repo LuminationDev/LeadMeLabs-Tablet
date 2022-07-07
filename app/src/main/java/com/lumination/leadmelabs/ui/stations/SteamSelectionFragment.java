@@ -1,20 +1,19 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,16 +23,16 @@ import androidx.fragment.app.Fragment;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
-import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.SteamApplication;
+import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class SteamSelectionFragment extends Fragment {
 
     public static StationsViewModel mViewModel;
-    private View view;
     private static SteamApplicationAdapter steamApplicationAdapter;
     private static ArrayList<SteamApplication> steamApplicationList;
     private static int stationId = 0;
@@ -47,7 +46,7 @@ public class SteamSelectionFragment extends Fragment {
             steamApplicationList = (ArrayList<SteamApplication>) mViewModel.getAllSteamApplications();
         }
         if (steamApplicationAdapter != null) {
-            steamApplicationAdapter.stationId = stationId;
+            SteamApplicationAdapter.stationId = stationId;
             steamApplicationAdapter.steamApplicationList = (ArrayList<SteamApplication>) steamApplicationList.clone();
             binding.setSteamApplicationList(steamApplicationAdapter.steamApplicationList);
             steamApplicationAdapter.notifyDataSetChanged();
@@ -58,7 +57,7 @@ public class SteamSelectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_steam_selection, container, false);
+        View view = inflater.inflate(R.layout.fragment_steam_selection, container, false);
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -76,6 +75,7 @@ public class SteamSelectionFragment extends Fragment {
         view.setAdapter(steamApplicationAdapter);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -133,6 +133,9 @@ public class SteamSelectionFragment extends Fragment {
             }
             return false;
         });
+
+        Button refresh_btn = view.findViewById(R.id.refresh_steam_btn);
+        refresh_btn.setOnClickListener(v -> refreshSteamGamesList());
     }
 
     private void performSearch(String searchTerm) {
@@ -146,5 +149,17 @@ public class SteamSelectionFragment extends Fragment {
     private void dismissKeyboard(View searchInput) {
         InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchInput.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    /**
+     * Refresh the list of steam applications on a particular computer or on all.
+     */
+    private void refreshSteamGamesList() {
+        if(stationId > 0) {
+            NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Refresh");
+        } else {
+            String stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
+            NetworkService.sendMessage("Station," + stationIds, "Steam", "Refresh");
+        }
     }
 }

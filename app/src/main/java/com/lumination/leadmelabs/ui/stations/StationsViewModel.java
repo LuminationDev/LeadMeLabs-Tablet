@@ -105,6 +105,7 @@ public class StationsViewModel extends ViewModel {
             return new ArrayList<>();
         }
         for (Station station: stations.getValue()) {
+            //Check if station does not have any loaded games?
             hashSet.addAll(station.steamApplications);
         }
         ArrayList<SteamApplication> list = new ArrayList<>(hashSet);

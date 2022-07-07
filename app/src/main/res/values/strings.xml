@@ -41,10 +41,20 @@
     <string name="select_stations_title">SELECT STATIONS</string>
     <string name="manage_station_title">MANAGE STATION</string>
     <string name="room_type_placeholder">Room Type</string>
-    <string name="no_stations_available">No stations available in selected room.</string>
+    <string name="no_stations_available">There are no stations available in selected room.</string>
     <string name="room_all">All</string>
     <string name="title_placeholder">Title</string>
     <string name="content_text_placeholder">Content Text</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
+    <string name="search">Search</string>
+    <string name="pick_an_experience">Pick an experience to play in VR</string>
+    <string name="not_installed_on_stations">This application is not installed on some stations!</string>
+    <string name="contact_it_department">Please contact your IT department for install instructions.</string>
+    <string name="alert_icon">Alert Icon</string>
+    <string name="vr_status_icon">vr status icon</string>
+    <string name="restarting_system">Restarting system</string>
+    <string name="select_stations">Select stations</string>
+    <string name="end_session_on">Which stations would you like to end the session on?</string>
+    <string name="refresh">Refresh</string>
 </resources>

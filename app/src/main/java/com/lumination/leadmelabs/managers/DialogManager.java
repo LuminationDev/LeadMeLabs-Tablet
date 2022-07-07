@@ -152,13 +152,14 @@ public class DialogManager {
         AlertDialog endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
 
         TextView title = view.findViewById(R.id.title);
-        title.setText("Select stations");
+        title.setText(R.string.select_stations);
 
         TextView contentView = view.findViewById(R.id.content_text);
-        contentView.setText("Which stations would you like to end the session on?");
+        contentView.setText(R.string.end_session_on);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
         recyclerView.setLayoutManager(new GridLayoutManager(endSessionDialog.getContext(), 3));
+
         BasicStationSelectionAdapter stationAdapter = new BasicStationSelectionAdapter();
         stations = Helpers.cloneStationList(stations);
         stationAdapter.stationList = stations;
@@ -166,7 +167,7 @@ public class DialogManager {
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().filter(station -> station.selected == true).mapToInt(station -> station.id).toArray();
+            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
@@ -174,9 +175,7 @@ public class DialogManager {
         });
 
         Button cancelButton = view.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(w -> {
-            endSessionDialog.dismiss();
-        });
+        cancelButton.setOnClickListener(w -> endSessionDialog.dismiss());
 
         endSessionDialog.show();
     }
@@ -372,9 +371,7 @@ public class DialogManager {
             }
         });
 
-        view.findViewById(R.id.pin_cancel_button).setOnClickListener(w -> {
-            pinDialog.dismiss();
-        });
+        view.findViewById(R.id.pin_cancel_button).setOnClickListener(w -> pinDialog.dismiss());
     }
 
     /**
@@ -599,7 +596,7 @@ public class DialogManager {
         restartSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(restartSessionDialogView).create();
 
         TextView title = restartSessionDialogView.findViewById(R.id.title);
-        title.setText("Restarting system");
+        title.setText(R.string.restarting_system);
 
         TextView contentText = restartSessionDialogView.findViewById(R.id.content_text);
         contentText.setText(MessageFormat.format("Restarting system on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
