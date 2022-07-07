@@ -23,14 +23,6 @@
             style="@style/PageTitle"
             android:text="@string/vr_library_title"/>
 
-        <Button
-            android:id="@+id/refresh_steam_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="Refresh"/>
-        <!--android:visibility="@{steamApplicationList.size() > 0 ? View.GONE : View.VISIBLE}"-->
-
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/steam_selection"
             android:layout_width="match_parent"
@@ -73,24 +65,41 @@
                         android:textSize="20sp" />
                 </com.google.android.flexbox.FlexboxLayout>
 
-                <EditText
-                    android:id="@+id/search_input"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:autofillHints="0"
-                    android:background="@drawable/bg_white_curved"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/icon_search"
-                    android:drawablePadding="10dp"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center_vertical"
-                    android:hint="@string/search"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:paddingStart="15dp"
-                    android:paddingTop="2dp"
-                    android:paddingEnd="0dp"
-                    android:textColorHint="@color/grey" />
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="row">
+
+                    <EditText
+                        android:id="@+id/search_input"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:autofillHints="0"
+                        android:background="@drawable/bg_white_curved"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/icon_search"
+                        android:drawablePadding="10dp"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:hint="@string/search"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingStart="15dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="0dp"
+                        android:textColorHint="@color/grey" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/refresh_steam_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bg_blue_refresh"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/refresh"
+                        app:icon="@drawable/icon_refresh" />
+                </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout
