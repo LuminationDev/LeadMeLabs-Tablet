@@ -164,7 +164,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">25dp</item>
-        <item name="android:layout_marginStart">80dp</item>
+        <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">80dp</item>
         <item name="android:paddingTop">25dp</item>
         <item name="android:paddingBottom">50dp</item>
@@ -184,6 +184,14 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="HeadingTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">-.02</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="ApplianceCardContainer">
         <item name="android:layout_height">170dp</item>
         <item name="android:layout_width">180dp</item>
@@ -200,7 +208,7 @@
         <item name="android:layout_height">150dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textFontWeight">600</item>
-        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:layout_marginRight">15dp</item>
         <item name="cornerRadius">20dp</item>
         <item name="rippleColor">@color/blue</item>

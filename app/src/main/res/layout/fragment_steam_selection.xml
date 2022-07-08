@@ -21,7 +21,7 @@
 
         <TextView
             style="@style/PageTitle"
-            android:text="@string/vr_library_title"/>
+            android:text="@string/vr_library_title" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/steam_selection"
@@ -50,24 +50,22 @@
                     app:flexDirection="column">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/HeadingTitle"
                         android:text="@string/vr_library"
-                        android:textColor="@color/black"
-                        android:textFontWeight="600"
-                        android:textSize="40sp" />
+                        android:textSize="32sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pick_an_experience"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="35dp"
                     app:flexDirection="row">
 
                     <EditText
@@ -86,8 +84,9 @@
                         android:inputType="text"
                         android:paddingStart="15dp"
                         android:paddingTop="2dp"
-                        android:paddingEnd="0dp"
-                        android:textColorHint="@color/grey" />
+                        android:paddingEnd="2dp"
+                        android:textColorHint="@color/grey_hint"
+                        android:textSize="15sp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/refresh_steam_btn"
@@ -98,6 +97,7 @@
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:text="@string/refresh"
+                        android:textAllCaps="false"
                         app:icon="@drawable/icon_refresh" />
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>

@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{station.status, default=`Off`}"
                     android:textSize="13sp"
-                    android:visibility="@{(station.gameName == null || station.gameName.equals(``)) || station.status.equals(`Not Responding`) || station.status.equals(`Off`) ? View.VISIBLE : View.GONE}" />
+                    android:visibility="@{(station.gameName.equals(`null`) || station.gameName == null || station.gameName.equals(``)) || station.status.equals(`Not Responding`) || station.status.equals(`Off`) ? View.VISIBLE : View.GONE}" />
 
                 <TextView
                     android:layout_width="wrap_content"

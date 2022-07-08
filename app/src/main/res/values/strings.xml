@@ -57,4 +57,16 @@
     <string name="select_stations">Select stations</string>
     <string name="end_session_on">Which stations would you like to end the session on?</string>
     <string name="refresh">Refresh</string>
+    <string name="experience_preview">experience preview</string>
+    <string name="icon_volume">volume icon</string>
+    <string name="individually_control_a_station">Individually control a station.</string>
+    <string name="current_session">Current Session</string>
+    <string name="choose_new">Choose new</string>
+    <string name="alert_area">Alert area</string>
+    <string name="station_status_title">Station Status:</string>
+    <string name="end_session_lower">End Session</string>
+    <string name="launch_website_lower">Launch Website</string>
+    <string name="restart_vr_system">Restart VR System</string>
+    <string name="restart_session_lower">Restart Session</string>
+    <string name="identify_station_lower">Identify Station</string>
 </resources>
