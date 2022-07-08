@@ -37,7 +37,8 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="20dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="20dp"
                     app:alignItems="center"
                     app:justifyContent="space_between">
 
@@ -49,19 +50,16 @@
                         app:layout_flexShrink="0">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/HeadingTitle"
                             android:text="@{selectedStation.name, default=Station}"
-                            android:textColor="@color/black"
-                            android:textFontWeight="600"
-                            android:textSize="40dp" />
+                            android:textSize="32sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Individually control a station."
+                            android:text="@string/individually_control_a_station"
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="16sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
@@ -74,7 +72,7 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         app:flexDirection="column"
                         app:layout_flexShrink="0">
 
@@ -89,8 +87,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="5dp"
-                                android:gravity="left|center_vertical"
-                                android:text="Current Session"
+                                android:gravity="start|center_vertical"
+                                android:text="@string/current_session"
                                 android:textColor="@color/black"
                                 android:textFontWeight="600" />
 
@@ -99,6 +97,7 @@
                                 android:layout_width="360dp"
                                 android:layout_height="164dp"
                                 android:layout_marginVertical="5dp"
+                                android:contentDescription="@string/experience_preview"
                                 android:visibility="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? View.VISIBLE : View.GONE}" />
 
                             <LinearLayout
@@ -113,7 +112,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:text="@{(selectedStation.gameName != null &amp;&amp; selectedStation.gameName.length() > 0) ? selectedStation.gameName : `No session running`}" />
+                                    android:text="@{(!selectedStation.gameName.equals(`null`) &amp;&amp; selectedStation.gameName != null &amp;&amp; selectedStation.gameName.length() > 0) ? selectedStation.gameName : `No session running`}" />
                             </LinearLayout>
 
                             <com.google.android.flexbox.FlexboxLayout
@@ -128,7 +127,7 @@
                                     android:layout_height="wrap_content"
                                     android:backgroundTint="@color/blue"
                                     android:letterSpacing="0.02"
-                                    android:text="Choose new"
+                                    android:text="@string/choose_new"
                                     android:textAllCaps="false" />
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
@@ -145,6 +144,7 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:contentDescription="@string/icon_volume"
                                 android:src="@drawable/ic_volume"
                                 android:textColor="@color/black"
                                 app:layout_flexShrink="0" />
@@ -180,7 +180,8 @@
                             <ImageView
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:layout_marginRight="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:contentDescription="@string/alert_area"
                                 android:src="@drawable/icon_alert"
                                 android:textColor="@color/black"
                                 android:visibility="@{selectedStation.status.equals(`Not Responding`) ? View.VISIBLE : View.GONE}"
@@ -189,7 +190,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Station Status: "
+                                android:text="@string/station_status_title"
                                 android:textColor="@color/black"
                                 android:textFontWeight="600" />
 
@@ -205,32 +206,32 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="50dp"
+                        android:paddingStart="40dp"
+                        android:paddingEnd="20dp"
                         app:flexDirection="row"
                         app:flexWrap="wrap"
-                        app:justifyContent="space_evenly">
+                        >
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_end_session"
                             style="@style/StationSingleButton"
                             android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
                             android:drawableTop="@drawable/ic_end_session"
-                            android:text="End Session"
+                            android:text="@string/end_session_lower"
                             app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/enter_url"
                             style="@style/StationSingleButton"
                             android:drawableTop="@drawable/ic_launch_website"
-                            android:text="Launch Website" />
+                            android:text="@string/launch_website_lower" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_restart_vr"
                             style="@style/StationSingleButton"
                             android:backgroundTint="@color/orange"
                             android:drawableTop="@drawable/ic_restart"
-                            android:text="Restart VR System"
+                            android:text="@string/restart_vr_system"
                             app:rippleColor="@color/orange_light" />
 
                         <com.google.android.material.button.MaterialButton
@@ -238,14 +239,14 @@
                             style="@style/StationSingleButton"
                             android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
                             android:drawableTop="@drawable/ic_restart_session"
-                            android:text="Restart Session"
+                            android:text="@string/restart_session_lower"
                             app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/ping_station"
                             style="@style/StationSingleButton"
                             android:drawableTop="@drawable/ic_identify_station"
-                            android:text="Identify Station" />
+                            android:text="@string/identify_station_lower" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/shutdown_station"
@@ -260,7 +261,7 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <ImageView
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/logo"
             style="@style/LogoImage" />

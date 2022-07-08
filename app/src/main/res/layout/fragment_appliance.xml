@@ -26,16 +26,13 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/HeadingTitle"
             android:id="@+id/appliance_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
             android:paddingStart="10dp"
             android:paddingEnd="0dp"
             android:layout_marginBottom="20dp"
             android:text="@string/appliance_default_title"
-            android:textSize="30sp"
-            android:textStyle="bold"/>
+            android:textSize="32sp"/>
 
         <TextView
             android:id="@+id/warning_message"
