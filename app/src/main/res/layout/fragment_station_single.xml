@@ -209,8 +209,7 @@
                         android:paddingStart="40dp"
                         android:paddingEnd="20dp"
                         app:flexDirection="row"
-                        app:flexWrap="wrap"
-                        >
+                        app:flexWrap="wrap" >
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_end_session"
