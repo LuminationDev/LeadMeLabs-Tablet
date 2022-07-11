@@ -32,6 +32,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -102,7 +103,8 @@ public class NetworkService extends Service {
         backgroundExecutor.submit(() -> {
             try {
                 InetAddress serverAddress = InetAddress.getByName(NUCAddress);
-                Socket soc = new Socket(serverAddress, port);
+                Socket soc = new Socket();
+                soc.connect(new InetSocketAddress(serverAddress, port), 4000);
 
                 OutputStream toServer = soc.getOutputStream();
                 PrintWriter output = new PrintWriter(toServer);
