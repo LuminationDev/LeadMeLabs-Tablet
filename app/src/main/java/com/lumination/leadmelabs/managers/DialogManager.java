@@ -10,7 +10,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,8 +64,8 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createBasicDialog(String titleText, String contentText) {
-        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(basicDialogView).create();
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_error_colour_title, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(basicDialogView).create();
 
         TextView title = basicDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -74,18 +73,11 @@ public class DialogManager {
         TextView contentView = basicDialogView.findViewById(R.id.content_text);
         contentView.setText(contentText);
 
-        Button confirmButton = basicDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> basicDialog.dismiss());
-        confirmButton.setText(R.string.dismiss);
-
-        Button cancelButton = basicDialogView.findViewById(R.id.cancel_button);
-        cancelButton.setVisibility(View.GONE);
-
-        ProgressBar loadingBar = basicDialogView.findViewById(R.id.loading_bar);
-        loadingBar.setVisibility(View.GONE);
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1200, 340);
+        basicDialog.getWindow().setLayout(1019, 330);
     }
 
     /**
@@ -121,8 +113,8 @@ public class DialogManager {
      * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
     public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText) {
-        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_confirmation, null);
-        AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(confirmationDialogView).create();
+        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_colour_title, null);
+        AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(confirmationDialogView).create();
 
         TextView title = confirmationDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -137,7 +129,7 @@ public class DialogManager {
         });
         confirmButton.setText(confirmButtonText);
 
-        Button cancelButton = confirmationDialogView.findViewById(R.id.cancel_button);
+        Button cancelButton = confirmationDialogView.findViewById(R.id.close_dialog);
         cancelButton.setOnClickListener(w -> {
             booleanCallbackInterface.callback(false);
             confirmationDialog.dismiss();
@@ -145,6 +137,7 @@ public class DialogManager {
         cancelButton.setText(cancelButtonText);
 
         confirmationDialog.show();
+        confirmationDialog.getWindow().setLayout(1019, 330);
     }
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
@@ -157,7 +150,7 @@ public class DialogManager {
         TextView contentView = view.findViewById(R.id.content_text);
         contentView.setText(R.string.end_session_on);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
+        RecyclerView recyclerView = view.findViewById(R.id.stations_list);
         recyclerView.setLayoutManager(new GridLayoutManager(endSessionDialog.getContext(), 3));
 
         BasicStationSelectionAdapter stationAdapter = new BasicStationSelectionAdapter();
@@ -230,9 +223,10 @@ public class DialogManager {
      */
     public static void buildShutdownDialog(Context context, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
         View view = View.inflate(context, R.layout.dialog_template, null);
-        AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+        AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.AlertDialogTheme).setView(view).create();
         confirmDialog.setCancelable(false);
         confirmDialog.setCanceledOnTouchOutside(false);
+        //confirmDialog.getWindow().setBackgroundDrawable(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.bg_white_alertdialog_curved, null));
 
         TextView title = view.findViewById(R.id.title);
         TextView contentText = view.findViewById(R.id.content_text);
@@ -419,17 +413,26 @@ public class DialogManager {
      * for active NUCs.
      */
     public static void buildReconnectDialog() {
-        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_reconnect, null);
-        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(reconnectDialogView).create();
+        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_colour_title, null);
+        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(reconnectDialogView).create();
         reconnectDialog.setCancelable(false);
         reconnectDialog.setCanceledOnTouchOutside(false);
         reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
 
-        Button reconnectButton = reconnectDialogView.findViewById(R.id.reconnect_button);
+        //Configure the text title/content
+        TextView title = reconnectDialogView.findViewById(R.id.title);
+        title.setText(R.string.lost_server_connection);
+
+        TextView content = reconnectDialogView.findViewById(R.id.content_text);
+        content.setText(R.string.lost_server_message_content);
+
+        Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
+        reconnectButton.setText(R.string.reconnect);
         reconnectButton.setOnClickListener(w -> {
+            reconnectDialog.getWindow().setLayout(1019, 450);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
             reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
-            NetworkService.broadcast("Android");
+            //NetworkService.broadcast("Android");
             new java.util.Timer().schedule( // turn animations back on after the scenes have updated
                     new java.util.TimerTask() {
                         @Override
@@ -444,15 +447,17 @@ public class DialogManager {
             );
         });
 
-        Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_reconnect_dialog);
+        Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
         closeReconnectDialogButton.setOnClickListener(w -> {
             reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             reconnectDialog.dismiss();
+            MainActivity.hasNotReceivedPing = 0;
+            MainActivity.startNucPingMonitor();
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(1400, 450);
+        reconnectDialog.getWindow().setLayout(1019, 330);
     }
 
     /**

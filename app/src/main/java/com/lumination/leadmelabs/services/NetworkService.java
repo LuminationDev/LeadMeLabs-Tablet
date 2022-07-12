@@ -12,7 +12,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.lumination.leadmelabs.BuildConfig;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
