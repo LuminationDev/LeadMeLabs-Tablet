@@ -84,7 +84,7 @@ public class UIUpdateManager {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
                                         "Steam error",
-                                        "A steam error occurred on " + station.name + ". Check the station for more details."
+                                        "A Steam error occurred on " + station.name + ". Check the station for more details."
                                 );
                             });
                         }

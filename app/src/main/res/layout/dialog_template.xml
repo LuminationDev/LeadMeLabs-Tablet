@@ -5,25 +5,48 @@
     app:flexDirection="column"
     app:justifyContent="space_between"
     android:layout_width="match_parent"
-    android:padding="20dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="24dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="7dp">
+
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:flexDirection="column">
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+        app:flexDirection="row">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
-            android:textSize="30sp">
-        </TextView>
-        <TextView
-            android:id="@+id/content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Content Text">
-        </TextView>
+            app:flexDirection="column">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_placeholder"
+                android:textColor="@color/black"
+                android:textSize="30sp">
+            </TextView>
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@string/content_text_placeholder">
+            </TextView>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_flexShrink="0"
+            android:id="@+id/confirm_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:elevation="0dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            android:backgroundTint="@android:color/white"
+            app:icon="@drawable/icon_cross"
+            app:iconTint="@android:color/black"/>
     </com.google.android.flexbox.FlexboxLayout>
 
     <ProgressBar
@@ -31,7 +54,7 @@
         android:indeterminateDuration="1"
         android:id="@+id/loading_bar"
         android:indeterminate="true"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:backgroundTint="@color/purple_200"
@@ -43,30 +66,19 @@
         android:layout_height="wrap_content"
         app:justifyContent="flex_end"
         android:layout_marginTop="20dp">
+
         <com.google.android.material.button.MaterialButton
             app:layout_flexShrink="0"
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
             android:elevation="0dp"
             app:rippleColor="@color/grey"
             android:stateListAnimator="@null"
             android:textColor="#EE7878"
             android:backgroundTint="@android:color/white"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
 
-        <com.google.android.material.button.MaterialButton
-            app:layout_flexShrink="0"
-            android:id="@+id/confirm_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:elevation="0dp"
-            app:rippleColor="@color/grey"
-            android:stateListAnimator="@null"
-            android:backgroundTint="@android:color/white"
-            android:text="Continue" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </com.google.android.flexbox.FlexboxLayout>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/reconnect_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_alertdialog_curved">
+
+    <RelativeLayout
+        android:id="@+id/alert_color_bar"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:background="@drawable/alertdialog_orange_line"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        app:flexDirection="column"
+        app:justifyContent="space_between">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_placeholder"
+                android:textColor="@color/orange"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/content_text_placeholder"
+                android:textColor="@color/black" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/reconnect_loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            app:alignItems="center"
+            app:flexDirection="column"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attempting to reconnect..."
+                android:textColor="@color/black" />
+
+            <ProgressBar
+                android:id="@+id/loading_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/purple_200"
+                android:indeterminate="true"
+                android:indeterminateDuration="1"
+                android:indeterminateTint="@color/purple_700" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/reconnect_failed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            app:alignItems="center"
+            app:flexDirection="column"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reconnection attempt failed. Try again or contact your IT department."
+                android:textColor="@color/black" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:justifyContent="flex_end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/close_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="134dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="Dismiss"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                app:cornerRadius="5dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/blue" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm_button"
+                android:layout_width="134dp"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/reconnect"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/blue"
+                app:cornerRadius="5dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

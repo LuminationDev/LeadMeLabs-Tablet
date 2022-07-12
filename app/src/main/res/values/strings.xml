@@ -69,4 +69,8 @@
     <string name="restart_vr_system">Restart VR System</string>
     <string name="restart_session_lower">Restart Session</string>
     <string name="identify_station_lower">Identify Station</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="lost_server_message_content">Lost connection to server, check power and reconnect. If this problem persists,\nplease contact your IT department.</string>
+    <string name="lost_server_connection">Lost server connection</string>
+    <string name="close">Close</string>
 </resources>
