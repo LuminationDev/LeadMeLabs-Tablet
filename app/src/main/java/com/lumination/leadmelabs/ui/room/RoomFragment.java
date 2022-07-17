@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,10 +40,10 @@ public class RoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        spacing = convertDpToPx(158); //158dp - the current size of a single room button + margin
-        marginEnd = convertDpToPx(25);
-        width = convertDpToPx(133);
-        height = convertDpToPx(40);
+        spacing = Helpers.convertDpToPx(158); //158dp - the current size of a single room button + margin
+        marginEnd = Helpers.convertDpToPx(25);
+        width = Helpers.convertDpToPx(133);
+        height = Helpers.convertDpToPx(40);
 
         view = inflater.inflate(R.layout.fragment_rooms, container, false);
         return view;
@@ -96,7 +97,7 @@ public class RoomFragment extends Fragment {
 
             btn.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.card_ripple_white_room_button, null));
 
-            btn.setPadding(convertDpToPx(10), convertDpToPx(2), convertDpToPx(10), 0);
+            btn.setPadding(Helpers.convertDpToPx(10), Helpers.convertDpToPx(2), Helpers.convertDpToPx(10), 0);
             btn.setGravity(Gravity.CENTER);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
@@ -162,17 +163,5 @@ public class RoomFragment extends Fragment {
     private void moveHighlight(int id) {
         androidx.appcompat.widget.AppCompatButton btn = view.findViewById(id);
         highlight.animate().x(btn.getX()).y(btn.getY());
-    }
-
-
-    /**
-     * Convert a density pixel value to regular pixels based on the tablets screen density.
-     * Dynamically setting dimensions require pixel units instead of density pixels.
-     * @param dp A int representing the density pixels to be converted.
-     * @return A int representing the relative pixel size for an individual device.
-     */
-    private int convertDpToPx(int dp){
-        float scale = getResources().getDisplayMetrics().density;
-        return (int) ((dp * scale) + 0.5f);
     }
 }
