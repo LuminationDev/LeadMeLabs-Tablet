@@ -2,6 +2,8 @@ package com.lumination.leadmelabs.models;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.lumination.leadmelabs.utilities.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,7 +22,7 @@ public class Appliance {
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
-    public MutableLiveData<Boolean> isActive;
+    public MutableLiveData<String> status;
 
     public Appliance(String type, String name, String room, String id, int automationGroup, int automationId, int automationValue) {
         this.type = type;
@@ -34,7 +36,7 @@ public class Appliance {
         setDescription(type);
 
         icon = new MutableLiveData<>(null);
-        isActive = new MutableLiveData<>(false);
+        status = new MutableLiveData<>(Constants.INACTIVE);
     }
 
     /**
@@ -43,7 +45,7 @@ public class Appliance {
     private void setDescription(String type) {
         switch(type) {
             case "blinds":
-                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE"));
+                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
                 break;
 
             case "sources":

@@ -8,8 +8,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.text.format.Formatter;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
@@ -31,7 +33,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,8 +46,9 @@ public class NetworkService extends Service {
     private static final String CHANNEL_ID = "network_service";
     private static final String CHANNEL_NAME = "Network_Service";
 
+    public static String IPAddress;
     private static String NUCAddress;
-    private ServerSocket mServerSocket;
+    private static ServerSocket mServerSocket;
 
     private final ThreadPoolExecutor serverThreadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
     private static final ExecutorService backgroundExecutor = Executors.newCachedThreadPool();
@@ -75,6 +77,11 @@ public class NetworkService extends Service {
     }
 
     public static String getNUCAddress() { return NUCAddress; }
+
+    public static String getIPAddress() {
+        return IPAddress;
+    }
+
 
     private static String getEncryptionKey() {
         SharedPreferences sharedPreferences = MainActivity.getInstance().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
@@ -127,6 +134,9 @@ public class NetworkService extends Service {
      * Start a server on the device to receive messages from clients.
      */
     public void startServer() {
+        WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
+        IPAddress = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+
         int port = 3000;
 
         serverThreadPool.submit(() -> {

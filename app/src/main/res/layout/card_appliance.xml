@@ -2,14 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
     <data>
+        <import type="com.lumination.leadmelabs.utilities.Constants" />
         <import type="com.lumination.leadmelabs.models.Appliance" />
         <variable
             name="appliance"
             type="com.lumination.leadmelabs.models.Appliance" />
 
         <variable
-            name="isActive"
-            type="androidx.lifecycle.MutableLiveData&lt;Boolean&gt;" />
+            name="status"
+            type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
 
         <variable
             name="icon"
@@ -55,10 +56,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/white"
-                    android:text="@{isActive ? appliance.description.get(0) : appliance.description.get(1), default=`Loading`}"/>
+                    android:text="@{status.equals(Constants.ACTIVE) ? appliance.description.get(0) : (status.equals(Constants.INACTIVE) ? appliance.description.get(1) : appliance.description.get(2)), default=`Loading`}"/>
             </LinearLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </RelativeLayout>
 </layout>
-
-<!--    android:background="@{isActive ? @drawable/bg_appliance_card_blue : @drawable/bg_appliance_card_grey, default=@drawable/bg_appliance_card_grey}"-->

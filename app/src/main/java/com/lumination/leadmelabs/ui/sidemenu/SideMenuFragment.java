@@ -277,7 +277,7 @@ public class SideMenuFragment extends Fragment {
         FlexboxLayout flexLayout = view.findViewById(R.id.side_menu_fragment);
         flexLayout.setLayoutTransition(layoutTransition);
 
-        final float scale = Objects.requireNonNull(getContext()).getResources().getDisplayMetrics().density;
+        final float scale = requireContext().getResources().getDisplayMetrics().density;
         layout.width = (int) (newWidth * scale + 0.5f);
         view.setLayoutParams(layout);
 

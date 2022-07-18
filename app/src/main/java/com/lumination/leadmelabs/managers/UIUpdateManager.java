@@ -219,7 +219,8 @@ public class UIUpdateManager {
      *                      //- [2]room
      *                      //- [3]id
      *                      //- [4]value
-     *                      //- [5]msg (contains ID from CBUS in brackets [xxxxxxxx])
+     *                      //- [5]ip address of the tablet that the command originated at
+     *                      //- [6]msg (contains ID from CBUS in brackets [xxxxxxxx])
      */
     private static void syncAppliances(String additionalData) {
         String[] values = additionalData.split(":");
@@ -232,7 +233,7 @@ public class UIUpdateManager {
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(values[2], values[3]);
                 break;
             case "appliance":
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[3], values[4]);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[3], values[4], values[5]);
                 break;
         }
     }

@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO APPLIANCES DO NOT UPDATE IF A USER HAS NOT CLICKED ON ROOM CONTROLS TO START WITH
     /**
      * Populate all static ViewModels so that the information is available as soon as the
      * fragment is loaded.

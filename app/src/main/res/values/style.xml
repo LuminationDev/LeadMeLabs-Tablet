@@ -200,6 +200,21 @@
         <item name="android:paddingVertical">10dp</item>
     </style>
 
+    <style name="ApplianceBlindCardContainer">
+        <item name="android:layout_height">170dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
+
+    <style name="BlindButton">
+        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_width">116dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/card_blind_rounded</item>
+    </style>
+
     <style name="DefaultContainer">
     </style>
 

@@ -2,7 +2,6 @@ package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.Bundle;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import com.lumination.leadmelabs.ui.room.RoomFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,11 +45,14 @@ public class ApplianceFragment extends Fragment {
     public static ApplianceFragment instance;
     public static ApplianceFragment getInstance() { return instance; }
 
+    public static LayoutInflater fragmentInflater = null;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_appliance, container, false);
+        fragmentInflater = inflater;
+        View view = fragmentInflater.inflate(R.layout.fragment_appliance, container, false);
         binding = DataBindingUtil.bind(view);
 
         Bundle bundle = getArguments();
@@ -86,7 +88,10 @@ public class ApplianceFragment extends Fragment {
         instance = this;
     }
 
-    //TODO breaking when loading before there are rooms available
+    /**
+     * Load a nested RecyclerView, each row holds the cards from an individual room in a horizontal
+     * list.
+     */
     public static void loadMultiRecycler(View view) {
         RecyclerView parentRecyclerView = view.findViewById(R.id.multi_recyclerView);
         parentRecyclerView.setVisibility(View.VISIBLE);
@@ -107,6 +112,10 @@ public class ApplianceFragment extends Fragment {
         parentRecyclerView.setAdapter(applianceParentAdapter);
     }
 
+    /**
+     * Load a single RecyclerView that presents the appliance cards in a list that expands vertically
+     * once the boundaries are reached (Grid-Like).
+     */
     private void loadSingleRecycler(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
         recyclerView.setVisibility(View.VISIBLE);
@@ -126,13 +135,19 @@ public class ApplianceFragment extends Fragment {
      * behaviour.
      */
     class filler {
-        public filler(HashSet<String> active) {
+        /*
+         * Update all available ApplianceAdapters, depending if all rooms are visible or just a single
+         * one is active.
+         * @param active A list containing the IDs of any appliance card that needs to be refreshed due
+         *             to information changing.
+         */
+        public filler(HashMap<String, String> active) {
             if(!Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
-                for (String cards : active) {
+                for (String cards : active.keySet()) {
                     ApplianceAdapter.getInstance().updateIfVisible(cards);
                 }
             } else {
-                for (String cards : active) {
+                for (String cards : active.keySet()) {
                     ApplianceParentAdapter.getInstance().updateIfVisible(cards);
                 }
             }
