@@ -209,12 +209,12 @@
                         android:paddingStart="40dp"
                         android:paddingEnd="20dp"
                         app:flexDirection="row"
-                        app:flexWrap="wrap" >
+                        app:flexWrap="wrap">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_end_session"
                             style="@style/StationSingleButton"
-                            android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
+                            android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) || selectedStation.gameName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
                             android:drawableTop="@drawable/ic_end_session"
                             android:text="@string/end_session_lower"
                             app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
