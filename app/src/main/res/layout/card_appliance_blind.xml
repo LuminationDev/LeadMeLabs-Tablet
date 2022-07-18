@@ -28,8 +28,8 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginTop="10dp"
-                    android:contentDescription="@string/scene_icon"
-                    android:background="@drawable/icon_appliance_blind_closed" />
+                    android:background="@drawable/icon_appliance_blind_closed"
+                    android:contentDescription="@string/scene_icon" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -65,22 +65,28 @@
                 app:justifyContent="space_between">
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/BlindButton"
                     android:id="@+id/blind_open"
-                    app:backgroundTint="@color/white"
-                    android:text="Open"/>
+                    style="@style/BlindButton"
+                    android:text="Open"
+                    app:cornerRadius="100dp"
+                    app:rippleColor="@color/grey_medium"
+                    app:backgroundTint="@color/white" />
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/BlindButton"
                     android:id="@+id/blind_stop"
-                    app:backgroundTint="@color/white"
-                    android:text="Stop"/>
+                    style="@style/BlindButton"
+                    android:text="Stop"
+                    app:cornerRadius="100dp"
+                    app:rippleColor="@color/grey_medium"
+                    app:backgroundTint="@color/white" />
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/BlindButton"
                     android:id="@+id/blind_close"
-                    app:backgroundTint="@color/white"
-                    android:text="Close"/>
+                    style="@style/BlindButton"
+                    android:text="Close"
+                    app:cornerRadius="100dp"
+                    app:rippleColor="@color/grey_medium"
+                    app:backgroundTint="@color/white" />
 
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
