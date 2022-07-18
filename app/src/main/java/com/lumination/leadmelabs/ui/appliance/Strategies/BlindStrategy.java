@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
@@ -95,7 +96,12 @@ public class BlindStrategy extends AbstractApplianceStrategy {
 
         //Set the layout parameters for where to add the view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, Helpers.convertDpToPx(190));
-        params.leftMargin = Helpers.convertDpToPx(110) + 200 + 70; //sub menu + regular menu + card spacing
+        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+            params.leftMargin = Helpers.convertDpToPx(110) + 275 + 70; //sub menu + regular menu + card spacing
+        } else {
+            params.leftMargin = Helpers.convertDpToPx(110) + 200 + 70; //sub menu + full regular menu + card spacing
+        }
+
         params.rightMargin = 45;
         params.topMargin = out[1];
 
