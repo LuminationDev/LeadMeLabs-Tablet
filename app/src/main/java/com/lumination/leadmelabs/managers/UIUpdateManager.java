@@ -67,13 +67,25 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("GameLaunchFailed")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                        DialogManager.gameLaunchedOnStation(station.id);
-                        String[] data = additionalData.split(":", 2);
-                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            DialogManager.gameLaunchedOnStation(station.id);
+                            String[] data = additionalData.split(":", 2);
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
                                         "Experience launch failed",
                                         "Launch of " + data[1] + " failed on " + station.name
+                                );
+                            });
+                        }
+                    }
+                    if (additionalData.startsWith("AlreadyLaunchingGame")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            DialogManager.gameLaunchedOnStation(station.id);
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Cannot launch experience",
+                                        "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
                                 );
                             });
                         }
