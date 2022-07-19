@@ -53,15 +53,18 @@ public class Station implements Cloneable {
 
     public void setSteamApplicationsFromJsonString(String steamApplicationsJson)
     {
-        steamApplications = new ArrayList<>();
+        ArrayList<SteamApplication> newSteamApplications = new ArrayList<>();
         String[] apps = steamApplicationsJson.split("/");
         for (String app: apps) {
             String[] appData = app.split("\\|");
             if (appData.length > 1) {
-                this.steamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
+                newSteamApplications.add(new SteamApplication(appData[1].replace("\"", ""), Integer.parseInt(appData[0])));
             }
         }
-        this.steamApplications.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+        if (newSteamApplications.size() > 0) {
+            newSteamApplications.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
+            this.steamApplications = newSteamApplications;
+        }
     }
 
     public boolean hasSteamApplicationInstalled(int steamApplicationId)
