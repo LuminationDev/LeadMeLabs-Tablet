@@ -3,15 +3,14 @@ package com.lumination.leadmelabs.ui.settings;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 /**
  * Only responsible for setting the address as it is saved in shared
@@ -21,7 +20,9 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> nucAddress;
     private MutableLiveData<String> pinCode;
     private MutableLiveData<String> encryptionKey;
+    private MutableLiveData<String> licenseKey;
     private MutableLiveData<Boolean> hideStationControls;
+    private MutableLiveData<Boolean> enableAnalyticsCollection;
 
     public SettingsViewModel(@NonNull Application application) {
         super(application);
@@ -53,6 +54,41 @@ public class SettingsViewModel extends AndroidViewModel {
         editor.apply();
     }
 
+    public LiveData<Boolean> getAnalyticsEnabled() {
+        if (enableAnalyticsCollection == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
+            enableAnalyticsCollection = new MutableLiveData<>(sharedPreferences.getBoolean("enable_analytics_collection", true));
+        }
+        return enableAnalyticsCollection;
+    }
+
+    public void setAnalyticsEnabled(Boolean value) {
+        enableAnalyticsCollection.setValue(value);
+        FirebaseManager.toggleAnalytics(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("enable_analytics_collection", value);
+        editor.apply();
+    }
+
+    public LiveData<String> getLicenseKey() {
+        if (licenseKey == null) {
+            licenseKey = new MutableLiveData<>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
+            licenseKey.setValue(sharedPreferences.getString("license_key", null));
+        }
+        return licenseKey;
+    }
+
+    public void setLicenseKey(String value) {
+        getLicenseKey(); // to initialize if not already done
+        licenseKey.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("license_key", value);
+        editor.apply();
+    }
+
     public void setNucAddress(String newValue) {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -66,7 +102,7 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public LiveData<String> getPinCode() {
         if (pinCode == null) {
-            pinCode = new MutableLiveData<String>();
+            pinCode = new MutableLiveData<>();
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("pin_code", Context.MODE_PRIVATE);
             pinCode.setValue(sharedPreferences.getString("pin_code", null));
         }
@@ -84,7 +120,7 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public LiveData<String> getEncryptionKey() {
         if (encryptionKey == null) {
-            encryptionKey = new MutableLiveData<String>();
+            encryptionKey = new MutableLiveData<>();
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
             encryptionKey.setValue(sharedPreferences.getString("encryption_key", null));
         }

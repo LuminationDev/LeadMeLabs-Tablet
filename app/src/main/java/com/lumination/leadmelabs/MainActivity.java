@@ -17,7 +17,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.services.LicenseJobService;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -75,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
         preloadViewModels();
         preloadData();
+
+        FirebaseManager.validateLicenseKey();
+        LicenseJobService.schedule(this);
+        FirebaseManager.setupFirebaseManager(FirebaseAnalytics.getInstance(this));
 
         if (savedInstanceState == null) {
             setupFragmentManager();

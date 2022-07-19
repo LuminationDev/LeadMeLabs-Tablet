@@ -24,12 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:enabled="true"
             android:name=".services.NetworkService"
             android:foregroundServiceType="connectedDevice"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true"/>
+
+        <service
+            android:name=".services.LicenseJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="true"/>
+
         <meta-data android:name="io.sentry.dsn" android:value="https://a85214c8c22b4d078d5221bdf5e1232d@o1294571.ingest.sentry.io/6518750" />
         <meta-data android:name="io.sentry.traces.sample-rate" android:value="0.1" />
     </application>

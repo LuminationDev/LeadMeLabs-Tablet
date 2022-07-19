@@ -41,6 +41,9 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.setLifecycleOwner(this);
+        binding.setSettings(mViewModel);
+
         FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);
         setNucAddressButton.setOnClickListener(v -> {
             DialogManager.buildSetNucDialog(getContext());
@@ -56,11 +59,17 @@ public class SettingsFragment extends Fragment {
             DialogManager.buildSetEncryptionKeyDialog(getContext());
         });
 
+        FlexboxLayout setLicenseKeyButton = view.findViewById(R.id.set_license_key);
+        setLicenseKeyButton.setOnClickListener(v -> {
+            DialogManager.buildSetLicenseKeyDialog(getContext());
+        });
+
         FlexboxLayout howToButton = view.findViewById(R.id.how_to_button);
         howToButton.setOnClickListener(v -> {
             DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/1OSnrUnQwggod2IwialnfbJ32nT-1q9mQ/view?usp=sharing");
         });
 
+        //The toggle for turning wallmode on and off
         FlexboxLayout hideStationControlsLayout = view.findViewById(R.id.hide_station_controls);
         SwitchCompat hideStationControlsToggle = view.findViewById(R.id.hide_station_controls_toggle);
         hideStationControlsToggle.setChecked(mViewModel.getHideStationControls().getValue().booleanValue());
@@ -82,6 +91,18 @@ public class SettingsFragment extends Fragment {
             }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
+
+        //The toggle for turning analytics on and off
+        FlexboxLayout enableAnalyticsLayout = view.findViewById(R.id.enable_analytical_collection);
+        SwitchCompat enableAnalyticsToggle = view.findViewById(R.id.enable_analytical_collection_toggle);
+        enableAnalyticsToggle.setChecked(mViewModel.getAnalyticsEnabled().getValue().booleanValue());
+        enableAnalyticsLayout.setOnClickListener(v -> {
+            enableAnalyticsToggle.setChecked(!enableAnalyticsToggle.isChecked());
+        });
+
+        enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setAnalyticsEnabled(isChecked);
+        });
 
         instance = this;
     }

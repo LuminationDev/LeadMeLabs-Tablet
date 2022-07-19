@@ -5,7 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -19,7 +22,7 @@
         <TextView
             style="@style/HeadingTitle"
             android:text="Settings"
-            android:textSize="32dp" />
+            android:textSize="32sp" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="300dp"
@@ -42,8 +45,9 @@
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="Set NUC address"
-                    android:drawableRight="@drawable/icon_menu_right"/>
+                    app:drawableRightCompat="@drawable/icon_menu_right" />
             </com.google.android.flexbox.FlexboxLayout>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:visibility="gone"
                 android:id="@+id/how_to_button"
@@ -62,8 +66,9 @@
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="How to use LeadMe Labs"
-                    android:drawableRight="@drawable/icon_menu_right"/>
+                    app:drawableRightCompat="@drawable/icon_menu_right" />
             </com.google.android.flexbox.FlexboxLayout>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/set_pin_code"
                 android:layout_width="match_parent"
@@ -81,8 +86,9 @@
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="Set PIN code"
-                    android:drawableRight="@drawable/icon_menu_right"/>
+                    app:drawableRightCompat="@drawable/icon_menu_right" />
             </com.google.android.flexbox.FlexboxLayout>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/set_encryption_key"
                 android:layout_width="match_parent"
@@ -100,8 +106,29 @@
                     android:textAllCaps="false"
                     android:background="@android:color/transparent"
                     android:text="Set encryption key"
-                    android:drawableRight="@drawable/icon_menu_right"/>
+                    app:drawableRightCompat="@drawable/icon_menu_right" />
             </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/set_license_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/card_ripple_white_rounded"
+                app:alignItems="center"
+                android:padding="15dp"
+                android:layout_marginBottom="15dp">
+                <TextView
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Set license key"
+                    app:drawableRightCompat="@drawable/icon_menu_right" />
+            </com.google.android.flexbox.FlexboxLayout>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/hide_station_controls"
                 android:layout_width="match_parent"
@@ -109,7 +136,8 @@
                 android:clickable="true"
                 android:background="@drawable/card_ripple_white_rounded"
                 app:alignItems="center"
-                app:justifyContent="space_between">
+                app:justifyContent="space_between"
+                android:layout_marginBottom="15dp">
                 <TextView
                     android:padding="15dp"
                     app:layout_flexShrink="0"
@@ -125,6 +153,32 @@
                     app:thumbTint="@color/blue"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/enable_analytical_collection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/card_ripple_white_rounded"
+                app:alignItems="center"
+                app:justifyContent="space_between">
+                <TextView
+                    android:padding="15dp"
+                    app:layout_flexShrink="0"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textAllCaps="false"
+                    android:background="@android:color/transparent"
+                    android:text="Allow Analytics"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/enable_analytical_collection_toggle"
+                    app:thumbTint="@color/blue"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:checked="@{settings.analyticsEnabled}"/>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
