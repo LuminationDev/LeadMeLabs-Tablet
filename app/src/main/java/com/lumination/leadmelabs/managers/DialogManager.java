@@ -388,6 +388,25 @@ public class DialogManager {
     }
 
     /**
+     * Build the set license key dialog. The license key is what determines if the program is running
+     * with a valid license.
+     */
+    public static void buildSetLicenseKeyDialog(Context context) {
+        View view = View.inflate(context, R.layout.dialog_set_license_key, null);
+        AlertDialog licenseDialog = new AlertDialog.Builder(context).setView(view).create();
+
+        EditText newKey = view.findViewById(R.id.license_key_input);
+
+        Button encryptionKeyConfirmButton = view.findViewById(R.id.license_key_confirm);
+        encryptionKeyConfirmButton.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setLicenseKey(newKey.getText().toString());
+            licenseDialog.dismiss();
+        });
+
+        licenseDialog.show();
+    }
+
+    /**
      * Build a custom WebView dialog. The view will load the supplied URL.
      */
     @SuppressLint("SetJavaScriptEnabled")

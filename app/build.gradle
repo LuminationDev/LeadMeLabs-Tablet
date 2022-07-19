@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdk 31
 
@@ -39,6 +41,10 @@ android {
 }
 
 dependencies {
+    //For firebase
+    implementation platform('com.google.firebase:firebase-bom:30.2.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'

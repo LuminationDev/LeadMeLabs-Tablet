@@ -1,0 +1,65 @@
+package com.lumination.leadmelabs.services;
+
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.ComponentName;
+import android.content.Context;
+import android.util.Log;
+
+import com.lumination.leadmelabs.managers.FirebaseManager;
+
+/**
+ * Once a day use the FirebaseManager to query if the application has a valid license key.
+ */
+public class LicenseJobService extends JobService {
+    private static final String TAG = "LicenseJobService";
+    private static final int JOB_ID = 1;
+    private static final long ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L; // 1 Day
+    private static final long ONE_WEEK_INTERVAL = 7 * 24 * 60 * 60 * 1000L; // 1 Week
+
+    public static void schedule(Context context) {
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        ComponentName componentName = new ComponentName(context, LicenseJobService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, componentName);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        builder.setPeriodic(ONE_DAY_INTERVAL);
+        int resultCode = jobScheduler.schedule(builder.build());
+
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Job scheduled");
+        } else {
+            Log.d(TAG, "Job scheduling failed");
+        }
+    }
+
+    public static void cancel(Context context) {
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(JOB_ID);
+    }
+
+    @Override
+    public boolean onStartJob(final JobParameters params) {
+        Log.d(TAG, "Performing Job");
+
+        /* executing a task synchronously */
+        FirebaseManager.validateLicenseKey();
+
+        /* condition for finishing it */
+        if (true) { //no finish condition as of yet
+            // To finish a periodic JobService,
+            // you must cancel it, so it will not be scheduled more.
+            LicenseJobService.cancel(this);
+        }
+
+        // false when it is synchronous.
+        return false;
+    }
+
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        return false;
+    }
+}
