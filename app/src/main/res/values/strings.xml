@@ -77,4 +77,11 @@
     <string name="switch_room">Switch Room</string>
     <string name="vern_lost_the_server">vern lost the server</string>
     <string name="vern_out_of_charge">Vern out of charge</string>
+    <string name="set_nuc_address">Set NUC address</string>
+    <string name="how_to_use_leadme_labs">How to use LeadMe Labs</string>
+    <string name="set_pin_code">Set PIN code</string>
+    <string name="set_encryption_key">Set encryption key</string>
+    <string name="set_license_key">Set license key</string>
+    <string name="hide_station_controls">Hide station controls</string>
+    <string name="allow_analytics">Allow Analytics</string>
 </resources>

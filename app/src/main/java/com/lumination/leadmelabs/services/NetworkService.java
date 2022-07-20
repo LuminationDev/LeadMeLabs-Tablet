@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
@@ -33,6 +32,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -77,11 +79,14 @@ public class NetworkService extends Service {
     }
 
     public static String getNUCAddress() { return NUCAddress; }
-
+    
     public static String getIPAddress() {
+        if(IPAddress == null) {
+            IPAddress = collectIpAddress();
+        }
+
         return IPAddress;
     }
-
 
     private static String getEncryptionKey() {
         SharedPreferences sharedPreferences = MainActivity.getInstance().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
@@ -134,8 +139,7 @@ public class NetworkService extends Service {
      * Start a server on the device to receive messages from clients.
      */
     public void startServer() {
-        WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
-        IPAddress = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        IPAddress = collectIpAddress();
 
         int port = 55555;
 
@@ -166,6 +170,29 @@ public class NetworkService extends Service {
                 e.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Collect the local IP address, regardless if it is IPv4 or IPv6.
+     */
+    public static String collectIpAddress() {
+        WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
+
+        String ipAddress = null;
+
+        try {
+            ipAddress = InetAddress.getByAddress(
+                    ByteBuffer
+                            .allocate(Integer.BYTES)
+                            .order(ByteOrder.LITTLE_ENDIAN)
+                            .putInt(wm.getConnectionInfo().getIpAddress())
+                            .array()
+            ).getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        return ipAddress;
     }
 
     /**
