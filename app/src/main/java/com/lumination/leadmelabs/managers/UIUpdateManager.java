@@ -106,7 +106,7 @@ public class UIUpdateManager {
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
-                                        "Lost VR Headset Connection",
+                                        "Oh no!",
                                         station.name + " lost connection to the VR headset. Check the battery on the headset, and if this does not work, try restarting the VR system on the station."
                                 );
                             });

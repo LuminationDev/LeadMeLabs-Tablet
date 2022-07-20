@@ -101,7 +101,7 @@ public class NetworkService extends Service {
             return;
         }
         message = EncryptionHelper.encrypt(message, getEncryptionKey());
-        int port = 8080;
+        int port = 55556;
 
         Log.d(TAG, "Attempting to send: " + message);
 
@@ -137,7 +137,7 @@ public class NetworkService extends Service {
         WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
         IPAddress = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
-        int port = 3000;
+        int port = 55555;
 
         serverThreadPool.submit(() -> {
             try {

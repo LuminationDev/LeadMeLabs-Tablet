@@ -70,9 +70,11 @@
     <string name="restart_session_lower">Restart Session</string>
     <string name="identify_station_lower">Identify Station</string>
     <string name="reconnect">Reconnect</string>
-    <string name="lost_server_message_content">Lost connection to server, check power and reconnect. If this problem persists,\nplease contact your IT department.</string>
-    <string name="lost_server_connection">Lost server connection</string>
+    <string name="lost_server_message_content">Lost connection to server, check power and reconnect. If this problem persists, please contact your IT department.</string>
+    <string name="lost_server_connection">Lost server connection!</string>
     <string name="close">Close</string>
     <string name="room_icon">Room icon</string>
     <string name="switch_room">Switch Room</string>
+    <string name="vern_lost_the_server">vern lost the server</string>
+    <string name="vern_out_of_charge">Vern out of charge</string>
 </resources>

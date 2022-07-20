@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,8 +65,8 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createBasicDialog(String titleText, String contentText) {
-        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_error_colour_title, null);
-        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(basicDialogView).create();
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_basic_vern, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
 
         TextView title = basicDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -77,7 +78,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1019, 330);
+        basicDialog.getWindow().setLayout(720, 720);
     }
 
     /**
@@ -113,14 +114,17 @@ public class DialogManager {
      * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
     public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText) {
-        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_colour_title, null);
-        AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(confirmationDialogView).create();
+        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
+        AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(confirmationDialogView).create();
 
         TextView title = confirmationDialogView.findViewById(R.id.title);
         title.setText(titleText);
 
         TextView contentView = confirmationDialogView.findViewById(R.id.content_text);
         contentView.setText(contentText);
+
+        ImageView vernImage = confirmationDialogView.findViewById(R.id.icon_vern);
+        vernImage.setBackgroundResource(R.drawable.vern_warning);
 
         Button confirmButton = confirmationDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
@@ -137,7 +141,7 @@ public class DialogManager {
         cancelButton.setText(cancelButtonText);
 
         confirmationDialog.show();
-        confirmationDialog.getWindow().setLayout(1019, 330);
+        confirmationDialog.getWindow().setLayout(720, 720);
     }
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
@@ -432,8 +436,8 @@ public class DialogManager {
      * for active NUCs.
      */
     public static void buildReconnectDialog() {
-        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_colour_title, null);
-        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(reconnectDialogView).create();
+        View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
+        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
         reconnectDialog.setCancelable(false);
         reconnectDialog.setCanceledOnTouchOutside(false);
         reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
@@ -442,16 +446,23 @@ public class DialogManager {
         TextView title = reconnectDialogView.findViewById(R.id.title);
         title.setText(R.string.lost_server_connection);
 
-        TextView content = reconnectDialogView.findViewById(R.id.content_text);
-        content.setText(R.string.lost_server_message_content);
+        ImageView vernImage = reconnectDialogView.findViewById(R.id.icon_vern);
+        vernImage.setBackgroundResource(R.drawable.vern_lost_server);
 
         Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
+        reconnectButton.setVisibility(View.VISIBLE);
         reconnectButton.setText(R.string.reconnect);
         reconnectButton.setOnClickListener(w -> {
-            reconnectDialog.getWindow().setLayout(1019, 450);
+            reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
             reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
             //NetworkService.broadcast("Android");
+
+            if(NetworkService.getNUCAddress() != null) {
+                ApplianceViewModel.init = false;
+                SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
+            }
+
             new java.util.Timer().schedule( // turn animations back on after the scenes have updated
                     new java.util.TimerTask() {
                         @Override
@@ -459,6 +470,7 @@ public class DialogManager {
                             MainActivity.runOnUI(() -> {
                                 reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
                                 reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
+                                reconnectButton.setVisibility(View.VISIBLE);
                             });
                         }
                     },
@@ -476,7 +488,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(1019, 330);
+        reconnectDialog.getWindow().setLayout(720, 720);
     }
 
     /**
