@@ -84,7 +84,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
             gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
             gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
 
-            if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
+            if (!gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
                 BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
                     @Override
                     public void callback(boolean result) {
@@ -93,7 +93,12 @@ public class SteamApplicationAdapter extends BaseAdapter {
                         }
                     }
                 };
-                DialogManager.createConfirmationDialog("Attention", "This game may require additional steps to launch and may not be able to launch automatically.", booleanCallbackInterface);
+                DialogManager.createConfirmationDialog(
+                        "Attention",
+                        "This game may require additional steps to launch and may not be able to launch automatically.",
+                        booleanCallbackInterface,
+                        "Go Back",
+                        "Continue");
             } else {
                 completeSelectApplicationAction(steamApplication);
             }
