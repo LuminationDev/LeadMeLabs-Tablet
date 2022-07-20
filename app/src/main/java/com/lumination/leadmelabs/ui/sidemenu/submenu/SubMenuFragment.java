@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -22,6 +23,7 @@ public class SubMenuFragment extends Fragment {
     private View view;
     private FragmentMenuSubBinding binding;
     private static String currentType;
+    public static MutableLiveData<Integer> currentIcon = new MutableLiveData<>();
 
     @Nullable
     @Override
@@ -44,6 +46,7 @@ public class SubMenuFragment extends Fragment {
         //load the default fragment
         mViewModel.setSelectedPage("scenes");
         currentType = "scenes";
+        currentIcon.setValue(R.drawable.icon_empty_scenes);
     }
 
     private void setupButtons() {
@@ -90,6 +93,35 @@ public class SubMenuFragment extends Fragment {
             .commit();
 
         ControlPageFragment.childManager.executePendingTransactions();
+        changeIcon(type);
         mViewModel.setSelectedPage(type);
+    }
+
+    /**
+     * Change the room icon that is displayed on the no appliances available card.
+     */
+    private static void changeIcon(String type) {
+        switch (type) {
+            case "scenes":
+                currentIcon.setValue(R.drawable.icon_empty_scenes);
+                break;
+            case "LED rings":
+                currentIcon.setValue(R.drawable.icon_empty_led);
+                break;
+            case "lights":
+                currentIcon.setValue(R.drawable.icon_empty_lights);
+                break;
+            case "blinds":
+                currentIcon.setValue(R.drawable.icon_empty_blinds);
+                break;
+            case "projectors":
+                currentIcon.setValue(R.drawable.icon_empty_projector);
+                break;
+            case "sources":
+                currentIcon.setValue(R.drawable.icon_empty_scenes);
+                break;
+            default:
+                currentIcon.setValue(R.drawable.icon_appliance_light_bulb_off);
+        }
     }
 }

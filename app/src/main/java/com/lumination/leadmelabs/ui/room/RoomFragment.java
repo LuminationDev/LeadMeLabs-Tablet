@@ -22,14 +22,18 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
 public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
-    private View view;
-    private RelativeLayout highlight;
+    public WeakReference<View> view;
+    private WeakReference<RelativeLayout> highlight;
+
+    public static RoomFragment instance;
+    public static RoomFragment getInstance() { return instance; }
 
     //Dynamic dimensions
     private int spacing, marginEnd, width, height;
@@ -45,8 +49,8 @@ public class RoomFragment extends Fragment {
         width = Helpers.convertDpToPx(133);
         height = Helpers.convertDpToPx(40);
 
-        view = inflater.inflate(R.layout.fragment_rooms, container, false);
-        return view;
+        view = new WeakReference<>(inflater.inflate(R.layout.fragment_rooms, container, false));
+        return view.get();
     }
 
     @Override
@@ -65,15 +69,17 @@ public class RoomFragment extends Fragment {
                 view.findViewById(R.id.room_fragment).setVisibility(View.INVISIBLE);
             }
 
-            highlight = view.findViewById(R.id.highlight);
+            highlight = new WeakReference<>(view.findViewById(R.id.highlight));
             setupButtons(rooms);
             setupAllButton();
         });
+
+        instance = this;
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupButtons(HashSet<String> rooms) {
-        RelativeLayout layout = view.findViewById(R.id.room_fragment_container);
+        RelativeLayout layout = view.get().findViewById(R.id.room_fragment_container);
 
         //Rooms have already been loaded, do not double up
         //There are two base elements that are always there
@@ -125,7 +131,7 @@ public class RoomFragment extends Fragment {
         if(!Objects.equals(currentType.getValue(), "All") && Objects.equals(currentType.getValue(), name)) {
             RelativeLayout.LayoutParams allParams = new RelativeLayout.LayoutParams(width, height);
             allParams.setMargins((-spacing + (spacing * (idx + 2))),0,0,0);
-            highlight.setLayoutParams(allParams);
+            highlight.get().setLayoutParams(allParams);
         }
     }
 
@@ -133,7 +139,7 @@ public class RoomFragment extends Fragment {
      * Setup the only hardcoded button (All) with the on click listener.
      */
     private void setupAllButton() {
-        androidx.appcompat.widget.AppCompatButton btn = view.findViewById(R.id.all);
+        androidx.appcompat.widget.AppCompatButton btn = view.get().findViewById(R.id.all);
         btn.setOnClickListener(v -> onRoomClick("All", btn.getId()));
     }
 
@@ -161,7 +167,7 @@ public class RoomFragment extends Fragment {
      * @param id An in representing the ID of the element that the highlight should move to.
      */
     private void moveHighlight(int id) {
-        androidx.appcompat.widget.AppCompatButton btn = view.findViewById(id);
-        highlight.animate().x(btn.getX()).y(btn.getY());
+        androidx.appcompat.widget.AppCompatButton btn = view.get().findViewById(id);
+        highlight.get().animate().x(btn.getX()).y(btn.getY());
     }
 }

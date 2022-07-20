@@ -73,4 +73,6 @@
     <string name="lost_server_message_content">Lost connection to server, check power and reconnect. If this problem persists,\nplease contact your IT department.</string>
     <string name="lost_server_connection">Lost server connection</string>
     <string name="close">Close</string>
+    <string name="room_icon">Room icon</string>
+    <string name="switch_room">Switch Room</string>
 </resources>
