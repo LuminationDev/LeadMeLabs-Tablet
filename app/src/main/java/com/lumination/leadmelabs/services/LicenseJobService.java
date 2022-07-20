@@ -11,14 +11,22 @@ import android.util.Log;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 
 /**
- * Once a day use the FirebaseManager to query if the application has a valid license key.
+ * Once a every set time period use the FirebaseManager to query if the application has a valid
+ * license key. The service is registered in the Manifest and is assigned to stop with the task.
  */
 public class LicenseJobService extends JobService {
     private static final String TAG = "LicenseJobService";
     private static final int JOB_ID = 1;
+
+    private static final long MINIMAL_INTERVAL = 15 * 60 * 1000L; // 15 Minutes
     private static final long ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L; // 1 Day
     private static final long ONE_WEEK_INTERVAL = 7 * 24 * 60 * 60 * 1000L; // 1 Week
 
+    /**
+     * Schedule a job to be performed at a periodic time. The timing is inexact so can happen a few
+     * minutes either side of the require interval.
+     * NOTE: the minimal time interval for scheduling is 15 minutes.
+     */
     public static void schedule(Context context) {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
@@ -48,7 +56,7 @@ public class LicenseJobService extends JobService {
         FirebaseManager.validateLicenseKey();
 
         /* condition for finishing it */
-        if (true) { //no finish condition as of yet
+        if (false) { //no finish condition as of yet
             // To finish a periodic JobService,
             // you must cancel it, so it will not be scheduled more.
             LicenseJobService.cancel(this);

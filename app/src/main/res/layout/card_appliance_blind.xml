@@ -68,25 +68,25 @@
                     android:id="@+id/blind_open"
                     style="@style/BlindButton"
                     android:text="Open"
+                    app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium"
-                    app:backgroundTint="@color/white" />
+                    app:rippleColor="@color/grey_medium" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/blind_stop"
                     style="@style/BlindButton"
                     android:text="Stop"
+                    app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium"
-                    app:backgroundTint="@color/white" />
+                    app:rippleColor="@color/grey_medium" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/blind_close"
                     style="@style/BlindButton"
                     android:text="Close"
+                    app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium"
-                    app:backgroundTint="@color/white" />
+                    app:rippleColor="@color/grey_medium" />
 
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>

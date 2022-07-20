@@ -58,6 +58,12 @@ public class ApplianceFragment extends Fragment {
         Bundle bundle = getArguments();
         title = bundle != null ? bundle.getString("title") : null;
         type.setValue(bundle != null ? bundle.getString("type") : null);
+
+        view.findViewById(R.id.switch_to_all).setOnClickListener(v -> {
+            androidx.appcompat.widget.AppCompatButton btn = RoomFragment.getInstance().view.get().findViewById(R.id.all);
+            btn.performClick();
+        });
+
         return view;
     }
 
@@ -164,7 +170,7 @@ public class ApplianceFragment extends Fragment {
         args.putString("type", type.getValue());
 
         ControlPageFragment.childManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
                 .replace(R.id.subpage, ApplianceFragment.class, args)
                 .commitNow();
     }
@@ -193,10 +199,10 @@ public class ApplianceFragment extends Fragment {
             if(appliance.type.equals(type.getValue())) {
                 if(rooms.containsKey(appliance.room)) {
                     rooms.get(appliance.room).add(appliance);
-                    applianceCount.setValue(1);
                 } else {
                     rooms.put(appliance.room, new ArrayList<>(Collections.singleton(appliance)));
                 }
+                applianceCount.setValue(1);
             }
         }
 
