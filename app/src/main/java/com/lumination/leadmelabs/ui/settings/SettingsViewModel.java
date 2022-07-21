@@ -21,6 +21,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> pinCode;
     private MutableLiveData<String> encryptionKey;
     private MutableLiveData<String> licenseKey;
+    private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
 
@@ -28,6 +29,9 @@ public class SettingsViewModel extends AndroidViewModel {
         super(application);
     }
 
+    /**
+     * Get the IP Address that is saved for the NUC.
+     */
     public LiveData<String> getNuc() {
         if (NetworkService.getNUCAddress() == null || NetworkService.getNUCAddress().equals("")) {
             nucAddress = new MutableLiveData<>();
@@ -38,57 +42,11 @@ public class SettingsViewModel extends AndroidViewModel {
         return nucAddress;
     }
 
-    public LiveData<Boolean> getHideStationControls() {
-        if (hideStationControls == null) {
-            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
-            hideStationControls = new MutableLiveData<>(sharedPreferences.getBoolean("hide_station_controls", true));
-        }
-        return hideStationControls;
-    }
-
-    public void setHideStationControls(Boolean value) {
-        hideStationControls.setValue(value);
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("hide_station_controls", value);
-        editor.apply();
-    }
-
-    public LiveData<Boolean> getAnalyticsEnabled() {
-        if (enableAnalyticsCollection == null) {
-            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
-            enableAnalyticsCollection = new MutableLiveData<>(sharedPreferences.getBoolean("enable_analytics_collection", true));
-        }
-        return enableAnalyticsCollection;
-    }
-
-    public void setAnalyticsEnabled(Boolean value) {
-        enableAnalyticsCollection.setValue(value);
-        FirebaseManager.toggleAnalytics(value);
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("enable_analytics_collection", value);
-        editor.apply();
-    }
-
-    public LiveData<String> getLicenseKey() {
-        if (licenseKey == null) {
-            licenseKey = new MutableLiveData<>();
-            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
-            licenseKey.setValue(sharedPreferences.getString("license_key", null));
-        }
-        return licenseKey;
-    }
-
-    public void setLicenseKey(String value) {
-        getLicenseKey(); // to initialize if not already done
-        licenseKey.setValue(value);
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("license_key", value);
-        editor.apply();
-    }
-
+    /**
+     * Set the IP address for the local NUC, after setting the tablet requests the most up to date
+     * information about the Stations list and the Appliance list. Essentially refreshing the current
+     * status of the application.
+     */
     public void setNucAddress(String newValue) {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -100,6 +58,96 @@ public class SettingsViewModel extends AndroidViewModel {
         NetworkService.sendMessage("NUC", "Appliances", "List");
     }
 
+    /**
+     * Get the tablets IP address provided by the Network service. This is used to identify message
+     * communications and displayed on the settings page.
+     */
+    public LiveData<String> getIpAddress() {
+        if(ipAddress == null) {
+            ipAddress = new MutableLiveData<>(NetworkService.getIPAddress());
+        }
+
+        return ipAddress;
+    }
+
+    /**
+     * Determine whether the tablet should be in WallMode. WallMode only shows the
+     * automation controls and settings while Normal Mode gives the user full access.
+     */
+    public LiveData<Boolean> getHideStationControls() {
+        if (hideStationControls == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
+            hideStationControls = new MutableLiveData<>(sharedPreferences.getBoolean("hide_station_controls", true));
+        }
+        return hideStationControls;
+    }
+
+    /**
+     * Set the tablet in to WallMode or Normal Mode.
+     * @param value A boolean to represent if WallMode is active (true) or not (false).
+     */
+    public void setHideStationControls(Boolean value) {
+        hideStationControls.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("hide_station_controls", value);
+        editor.apply();
+    }
+
+    /**
+     * Check to see if the user has disabled analytics. This value represents if the user has opted
+     * out of all analytic collection.
+     */
+    public LiveData<Boolean> getAnalyticsEnabled() {
+        if (enableAnalyticsCollection == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
+            enableAnalyticsCollection = new MutableLiveData<>(sharedPreferences.getBoolean("enable_analytics_collection", true));
+        }
+        return enableAnalyticsCollection;
+    }
+
+    /**
+     * Set whether analytics can be collected or not.
+     */
+    public void setAnalyticsEnabled(Boolean value) {
+        enableAnalyticsCollection.setValue(value);
+        FirebaseManager.toggleAnalytics(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("enable_analytics_collection", value);
+        editor.apply();
+    }
+
+    /**
+     * Get the internally saved License key, if none is found this returns null meaning the key has
+     * not been entered yet.
+     * @return A String representing the key present on the device.
+     */
+    public LiveData<String> getLicenseKey() {
+        if (licenseKey == null) {
+            licenseKey = new MutableLiveData<>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
+            licenseKey.setValue(sharedPreferences.getString("license_key", null));
+        }
+        return licenseKey;
+    }
+
+    /**
+     * Save the license key internally. This key enables the device to be used with the LeadMe Labs
+     * software suite. It is checked against a firebase record to determine if it is valid.
+     */
+    public void setLicenseKey(String value) {
+        getLicenseKey(); // to initialize if not already done
+        licenseKey.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("license_key", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("license_key", value);
+        editor.apply();
+    }
+
+    /**
+     * Retrieve the pin code used to enter into the settings page.
+     */
     public LiveData<String> getPinCode() {
         if (pinCode == null) {
             pinCode = new MutableLiveData<>();
@@ -109,6 +157,9 @@ public class SettingsViewModel extends AndroidViewModel {
         return pinCode;
     }
 
+    /**
+     * Set the pin code that locks the settings page from regular users.
+     */
     public void setPinCode(String value) {
         getPinCode(); // to initialize if not already done
         pinCode.setValue(value);
@@ -118,6 +169,10 @@ public class SettingsViewModel extends AndroidViewModel {
         editor.apply();
     }
 
+    /**
+     * Get the encryption key that is used to encrypt messages travelling between a tablet and
+     * the NUC.
+     */
     public LiveData<String> getEncryptionKey() {
         if (encryptionKey == null) {
             encryptionKey = new MutableLiveData<>();
@@ -127,6 +182,10 @@ public class SettingsViewModel extends AndroidViewModel {
         return encryptionKey;
     }
 
+    /**
+     * Set a new encryption key, WARNING: the key must be the same as present on the local NUC and
+     * all Stations otherwise messages will not be correctly interpreted.
+     */
     public void setEncryptionKey(String value) {
         getEncryptionKey(); // to initialize if not already done
         encryptionKey.setValue(value);
