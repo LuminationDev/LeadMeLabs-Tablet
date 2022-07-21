@@ -302,8 +302,7 @@ public class DialogManager {
         Button refreshAddress = view.findViewById(R.id.refresh_nuc_button);
         refreshAddress.setOnClickListener(v -> {
             if(NetworkService.getNUCAddress() != null) {
-                ApplianceViewModel.init = false;
-                SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
+                NetworkService.refreshNUCAddress();
                 nucDialog.dismiss();
             } else {
                 Toast.makeText(context, "NUC address needs to be set.", Toast.LENGTH_LONG).show();
@@ -459,8 +458,7 @@ public class DialogManager {
             //NetworkService.broadcast("Android");
 
             if(NetworkService.getNUCAddress() != null) {
-                ApplianceViewModel.init = false;
-                SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
+                NetworkService.refreshNUCAddress();
             }
 
             new java.util.Timer().schedule( // turn animations back on after the scenes have updated
