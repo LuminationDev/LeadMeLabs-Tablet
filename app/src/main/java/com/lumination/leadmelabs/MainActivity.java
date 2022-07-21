@@ -20,8 +20,9 @@ import android.view.View;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.services.LicenseJobService;
+import com.lumination.leadmelabs.services.jobServices.LicenseJobService;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         preloadData();
 
         FirebaseManager.validateLicenseKey();
-        LicenseJobService.schedule(this);
+        scheduleJobs();
         FirebaseManager.setupFirebaseManager(FirebaseAnalytics.getInstance(this));
 
         if (savedInstanceState == null) {
@@ -88,6 +89,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
+    }
+
+    /**
+     * Start any long running jobs.
+     */
+    private void scheduleJobs() {
+        LicenseJobService.schedule(this);
+        RefreshJobService.schedule(this);
     }
 
     public static void startNucPingMonitor() {

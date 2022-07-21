@@ -32,7 +32,12 @@
             android:stopWithTask="true"/>
 
         <service
-            android:name=".services.LicenseJobService"
+            android:name=".services.jobServices.LicenseJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="true"/>
+
+        <service
+            android:name=".services.jobServices.RefreshJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:stopWithTask="true"/>
 

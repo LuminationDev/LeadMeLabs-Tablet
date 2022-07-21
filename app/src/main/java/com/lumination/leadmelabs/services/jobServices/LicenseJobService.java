@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.services;
+package com.lumination.leadmelabs.services.jobServices;
 
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
@@ -9,6 +9,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.utilities.Constants;
 
 /**
  * Once a every set time period use the FirebaseManager to query if the application has a valid
@@ -17,10 +18,6 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 public class LicenseJobService extends JobService {
     private static final String TAG = "LicenseJobService";
     private static final int JOB_ID = 1;
-
-    private static final long MINIMAL_INTERVAL = 15 * 60 * 1000L; // 15 Minutes
-    private static final long ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L; // 1 Day
-    private static final long ONE_WEEK_INTERVAL = 7 * 24 * 60 * 60 * 1000L; // 1 Week
 
     /**
      * Schedule a job to be performed at a periodic time. The timing is inexact so can happen a few
@@ -33,7 +30,7 @@ public class LicenseJobService extends JobService {
         ComponentName componentName = new ComponentName(context, LicenseJobService.class);
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, componentName);
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        builder.setPeriodic(ONE_DAY_INTERVAL);
+        builder.setPeriodic(Constants.ONE_DAY_INTERVAL);
         int resultCode = jobScheduler.schedule(builder.build());
 
         if (resultCode == JobScheduler.RESULT_SUCCESS) {

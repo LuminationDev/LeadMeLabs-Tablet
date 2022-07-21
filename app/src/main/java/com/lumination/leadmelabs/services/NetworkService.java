@@ -17,6 +17,8 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import androidx.core.app.NotificationCompat;
 
@@ -76,6 +78,16 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
+    }
+
+    /**
+     * Reset the NUC address to the current value, this re-calls any start up messages and resets
+     * the connection in case the NUC has restarted. Including those to get the current Station
+     * & Appliance lists.
+     */
+    public static void refreshNUCAddress() {
+        ApplianceViewModel.init = false;
+        SettingsFragment.mViewModel.setNucAddress(NetworkService.getNUCAddress());
     }
 
     public static String getNUCAddress() { return NUCAddress; }
