@@ -162,7 +162,8 @@
                     android:id="@+id/shutdown_button"
                     style="@style/ActionCard"
                     android:layout_marginStart="20dp"
-                    app:flexDirection="row">
+                    app:flexDirection="row"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="66dp"
