@@ -42,7 +42,7 @@ public class StationSelectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
+        RecyclerView recyclerView = view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, false);
         stationAdapter.stationList = new ArrayList<>();
         recyclerView.setAdapter(stationAdapter);
@@ -93,26 +93,34 @@ public class StationSelectionFragment extends Fragment {
     private void changeWarningLabel(int numOfStations) {
         StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
         Button playBtn = fragment.getView().findViewById(R.id.select_stations);
-        View container = fragment.getView().findViewById(R.id.not_installed_alert);
         TextView top = fragment.getView().findViewById(R.id.not_installed_alert_top_line);
 
+        View container = fragment.getView().findViewById(R.id.not_installed_alert);
+        container.setVisibility(stationAdapter.isApplicationInstalledOnAll() && numOfStations > 0 ? View.GONE : View.VISIBLE);
+
         TextView bottom = fragment.getView().findViewById(R.id.not_installed_alert_bottom_line);
-        bottom.setVisibility(numOfStations == 0 ? View.GONE : View.VISIBLE);
+        bottom.setVisibility((numOfStations == 0 || stationAdapter.areAllStationsOff()) ? View.GONE : View.VISIBLE);
 
         TextView noStationsAvailable = getView().findViewById(R.id.no_stations_available);
         noStationsAvailable.setVisibility(numOfStations == 0 ? View.VISIBLE : View.GONE);
 
-        if(numOfStations == 0) {
-            container.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_mustard_rounded));
+        if(numOfStations == 0) { //No stations in the room
+            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_mustard_rounded));
             top.setText(R.string.no_stations_available);
-            playBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey_medium));
-        } else {
-            container.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_red_lightest_rounded));
+            playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_medium));
+
+        } else if(stationAdapter.areAllStationsOff()) { //All stations are turned off
+            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_mustard_rounded));
+            top.setText(R.string.all_computers_off);
+            playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_medium));
+
+        } else { //Application not installed on some Station
+            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_red_lightest_rounded));
             top.setText(R.string.not_installed_on_stations);
-            playBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue));
+            playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
         }
 
-        playBtn.setEnabled(numOfStations != 0);
+        playBtn.setEnabled(numOfStations != 0 || stationAdapter.areAllStationsOff());
     }
 
     public ArrayList<Station> getRoomStations()

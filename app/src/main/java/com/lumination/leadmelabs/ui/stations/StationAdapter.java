@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,11 @@ import com.lumination.leadmelabs.models.Station;
 import androidx.core.content.ContextCompat;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
-import com.lumination.leadmelabs.ui.room.RoomFragment;
-import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 
-public class StationAdapter extends RecyclerView.Adapter {
+public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
     private final String TAG = "StationAdapter";
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
@@ -27,7 +26,7 @@ public class StationAdapter extends RecyclerView.Adapter {
     private boolean launchSingleOnTouch = false;
     private final StationsViewModel viewModel;
 
-    StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch) {
+    public StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch) {
         this.launchSingleOnTouch = launchSingleOnTouch;
         this.viewModel = viewModel;
     }
@@ -79,17 +78,16 @@ public class StationAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         CardStationBinding binding = CardStationBinding.inflate(layoutInflater, parent, false);
         return new StationAdapter.StationViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         Station station = getItem(position);
-        StationAdapter.StationViewHolder stationViewHolder = (StationAdapter.StationViewHolder) holder;
-        stationViewHolder.bind(station, position);
+        holder.bind(station, position);
     }
 
     @Override
@@ -104,5 +102,33 @@ public class StationAdapter extends RecyclerView.Adapter {
     @Override
     public long getItemId(int position) {
         return stationList.get(position).id;
+    }
+
+    /**
+     * Detect if any stations do not have the selected steam application.
+     * @return A boolean representing if the Steam Experience is installed.
+     */
+    public boolean isApplicationInstalledOnAll() {
+        for (Station station : stationList) {
+            if(!station.hasSteamApplicationInstalled(viewModel.getSelectedSteamApplicationId())){
+                return false;
+            };
+        }
+
+        return true;
+    }
+
+    /**
+     * Run through the Station and determine if they are all off.
+     * @return A boolean representing if all the Stations are turned off.
+     */
+    public boolean areAllStationsOff() {
+        for (Station station : stationList) {
+            if(!station.status.equals("Off")){
+                return false;
+            };
+        }
+
+        return true;
     }
 }

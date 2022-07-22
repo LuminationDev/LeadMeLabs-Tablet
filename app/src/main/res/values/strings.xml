@@ -84,4 +84,5 @@
     <string name="set_license_key">Set license key</string>
     <string name="hide_station_controls">Hide station controls</string>
     <string name="allow_analytics">Allow Analytics</string>
+    <string name="all_computers_off">All stations in this room are currently turned off.</string>
 </resources>
