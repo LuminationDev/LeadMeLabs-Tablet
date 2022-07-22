@@ -35,6 +35,7 @@ public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.Appl
     public class ApplianceViewHolder extends RecyclerView.ViewHolder {
         private final CardApplianceBinding binding;
         private boolean recentlyClicked = false;
+
         public ApplianceViewHolder(@NonNull CardApplianceBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
