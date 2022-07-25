@@ -90,11 +90,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
-
-        DialogManager.createBasicDialog(
-                "Oh no!",
-                "Station 1's headset has disconnected. Please check the battery is charged."
-        );
     }
 
     /**
