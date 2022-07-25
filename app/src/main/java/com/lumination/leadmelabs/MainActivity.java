@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MainActivity", "NUC Lost");
                     DialogManager.buildReconnectDialog();
                 } else {
-                    handler.postDelayed(this, 500000);
+                    handler.postDelayed(this, 5000);
                 }
             }
         }, 5000);

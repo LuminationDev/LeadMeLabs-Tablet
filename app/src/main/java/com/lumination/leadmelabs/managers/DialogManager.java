@@ -454,7 +454,7 @@ public class DialogManager {
 
         Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
         reconnectButton.setVisibility(View.VISIBLE);
-        reconnectButton.setText(R.string.reconnect);
+        reconnectButton.setText("Switch");
         reconnectButton.setOnClickListener(w -> {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);

@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,8 +64,9 @@ public class BlindStrategy extends AbstractApplianceStrategy {
         TransitionDrawable transition = (TransitionDrawable) blindCard.findViewById(R.id.appliance_card_blind).getBackground();
         transition.startTransition(ApplianceController.fadeTime);
 
-        //If anywhere besides the expanded blind card is touched, remove the view
-        background.setOnTouchListener((v, event) -> {
+        ImageView image = blindCard.findViewById(R.id.icon_appliance);
+
+        View.OnTouchListener closeListener = (v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 transition.reverseTransition(ApplianceController.fadeTime);
                 insertion.postDelayed(() -> insertion.removeView(blindCard), ApplianceController.fadeTime);
@@ -74,7 +76,11 @@ public class BlindStrategy extends AbstractApplianceStrategy {
             }
 
             return false;
-        });
+        };
+
+        //If anywhere besides the expanded blind card is touched or blind icon, remove the view
+        image.setOnTouchListener(closeListener);
+        background.setOnTouchListener(closeListener);
     }
 
     /**
