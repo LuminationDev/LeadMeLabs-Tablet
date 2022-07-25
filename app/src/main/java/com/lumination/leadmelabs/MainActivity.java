@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.jobServices.LicenseJobService;
@@ -89,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
+
+        DialogManager.createBasicDialog(
+                "Oh no!",
+                "Station 1's headset has disconnected. Please check the battery is charged."
+        );
     }
 
     /**
@@ -112,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("MainActivity", "NUC Lost");
                     DialogManager.buildReconnectDialog();
                 } else {
-                    handler.postDelayed(this, 5000);
+                    handler.postDelayed(this, 500000);
                 }
             }
         }, 5000);

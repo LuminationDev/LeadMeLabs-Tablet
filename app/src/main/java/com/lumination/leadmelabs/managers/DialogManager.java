@@ -78,7 +78,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(720, 720);
+        basicDialog.getWindow().setLayout(680, 680);
     }
 
     /**
@@ -114,7 +114,7 @@ public class DialogManager {
      * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
     public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText) {
-        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
+        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_vern, null);
         AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(confirmationDialogView).create();
 
         TextView title = confirmationDialogView.findViewById(R.id.title);
@@ -140,8 +140,9 @@ public class DialogManager {
         });
         cancelButton.setText(cancelButtonText);
 
+        confirmationDialog.setCancelable(false);
         confirmationDialog.show();
-        confirmationDialog.getWindow().setLayout(720, 720);
+        confirmationDialog.getWindow().setLayout(680, 680);
     }
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
@@ -439,7 +440,7 @@ public class DialogManager {
         reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
         reconnectDialog.setCancelable(false);
         reconnectDialog.setCanceledOnTouchOutside(false);
-        reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+//        reconnectDialogView.findViewById(R.id.content_text).setVisibility(View.GONE);
 
         //Configure the text title/content
         TextView title = reconnectDialogView.findViewById(R.id.title);
@@ -448,13 +449,16 @@ public class DialogManager {
         ImageView vernImage = reconnectDialogView.findViewById(R.id.icon_vern);
         vernImage.setBackgroundResource(R.drawable.vern_lost_server);
 
+        TextView content = reconnectDialogView.findViewById(R.id.content_text);
+        content.setText(R.string.lost_server_message_content);
+
         Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
         reconnectButton.setVisibility(View.VISIBLE);
         reconnectButton.setText(R.string.reconnect);
         reconnectButton.setOnClickListener(w -> {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
-            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+            content.setVisibility(View.GONE);
             //NetworkService.broadcast("Android");
 
             if(NetworkService.getNUCAddress() != null) {
@@ -467,7 +471,8 @@ public class DialogManager {
                         public void run() {
                             MainActivity.runOnUI(() -> {
                                 reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                                reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.VISIBLE);
+                                content.setText("Reconnection attempt failed. Try again or contact your IT department.");
+                                content.setVisibility(View.VISIBLE);
                                 reconnectButton.setVisibility(View.VISIBLE);
                             });
                         }
@@ -478,7 +483,7 @@ public class DialogManager {
 
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
         closeReconnectDialogButton.setOnClickListener(w -> {
-            reconnectDialogView.findViewById(R.id.reconnect_failed).setVisibility(View.GONE);
+            content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             reconnectDialog.dismiss();
             MainActivity.hasNotReceivedPing = 0;
@@ -486,7 +491,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(720, 720);
+        reconnectDialog.getWindow().setLayout(680, 680);
     }
 
     /**
