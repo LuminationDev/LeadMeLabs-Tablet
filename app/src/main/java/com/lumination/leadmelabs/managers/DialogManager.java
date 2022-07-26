@@ -26,7 +26,6 @@ import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -440,7 +439,6 @@ public class DialogManager {
         reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
         reconnectDialog.setCancelable(false);
         reconnectDialog.setCanceledOnTouchOutside(false);
-//        reconnectDialogView.findViewById(R.id.content_text).setVisibility(View.GONE);
 
         //Configure the text title/content
         TextView title = reconnectDialogView.findViewById(R.id.title);
@@ -454,7 +452,7 @@ public class DialogManager {
 
         Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
         reconnectButton.setVisibility(View.VISIBLE);
-        reconnectButton.setText("Switch");
+        reconnectButton.setText(R.string.reconnect);
         reconnectButton.setOnClickListener(w -> {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
@@ -471,7 +469,7 @@ public class DialogManager {
                         public void run() {
                             MainActivity.runOnUI(() -> {
                                 reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-                                content.setText("Reconnection attempt failed. Try again or contact your IT department.");
+                                content.setText(R.string.reconnection_failed);
                                 content.setVisibility(View.VISIBLE);
                                 reconnectButton.setVisibility(View.VISIBLE);
                             });

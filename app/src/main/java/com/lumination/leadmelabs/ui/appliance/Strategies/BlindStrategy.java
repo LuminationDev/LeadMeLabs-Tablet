@@ -39,6 +39,19 @@ public class BlindStrategy extends AbstractApplianceStrategy {
     private CardApplianceBinding binding; //The underlying card model the extended blind xml is attached to.
     private Appliance appliance; //The populate appliance model.
     private View blindCard; // The inflated view for controlling the blinds.
+    private final boolean isSceneCard;
+    private String openValue = Constants.APPLIANCE_ON_VALUE;
+    private String stopValue = Constants.BLIND_STOPPED_VALUE;
+    private String closeValue = Constants.APPLIANCE_OFF_VALUE;
+
+    public BlindStrategy(boolean isSceneCard) {
+        this.isSceneCard = isSceneCard;
+        if(isSceneCard) {
+            openValue = "2";
+            stopValue = "1";
+            closeValue = "0";
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -140,9 +153,13 @@ public class BlindStrategy extends AbstractApplianceStrategy {
     private void setupButtons() {
         Button openButton = blindCard.findViewById(R.id.blind_open);
         openButton.setOnClickListener(v -> {
-            blindNetworkCall(appliance, Constants.APPLIANCE_ON_VALUE);
+            blindNetworkCall(appliance, openValue);
 
             if(!Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.APPLIANCE_ON_VALUE)) {
+                if(isSceneCard) {
+                    ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
+                }
+
                 ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
                 coordinateVisuals(R.drawable.transition_appliance_fade, appliance.description.get(0), Constants.ACTIVE);
             }
@@ -150,7 +167,7 @@ public class BlindStrategy extends AbstractApplianceStrategy {
 
         Button stopButton = blindCard.findViewById(R.id.blind_stop);
         stopButton.setOnClickListener(v -> {
-            blindNetworkCall(appliance, Constants.BLIND_STOPPED_VALUE);
+            blindNetworkCall(appliance, stopValue);
 
             if(!Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
                 ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
@@ -160,9 +177,13 @@ public class BlindStrategy extends AbstractApplianceStrategy {
 
         Button closeButton = blindCard.findViewById(R.id.blind_close);
         closeButton.setOnClickListener(v -> {
-            blindNetworkCall(appliance, Constants.APPLIANCE_OFF_VALUE);
+            blindNetworkCall(appliance, closeValue);
 
             if(ApplianceViewModel.activeApplianceList.containsKey(appliance.id)) {
+                if(isSceneCard) {
+                    ApplianceViewModel.activeSceneList.remove(appliance.room);
+                }
+
                 ApplianceViewModel.activeApplianceList.remove(appliance.id);
                 coordinateVisuals(R.drawable.transition_appliance_fade_active, appliance.description.get(1), Constants.INACTIVE);
             }

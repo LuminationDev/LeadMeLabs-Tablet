@@ -15,7 +15,7 @@ public class Appliance {
     public String name;
     public String room;
     public String id;
-    public int value; //used for appliances
+    public String value; //used for appliances
     public int automationGroup;
     public int automationId;
     public int automationValue; //used for scenes
@@ -43,6 +43,12 @@ public class Appliance {
      * Set the custom on and off descriptions for the appliance type.
      */
     private void setDescription(String type) {
+        //Special circumstance for the blind scene card
+        if(name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
+            this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
+            return;
+        }
+
         switch(type) {
             case "blinds":
                 this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));

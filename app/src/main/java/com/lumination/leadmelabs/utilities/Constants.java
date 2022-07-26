@@ -26,4 +26,9 @@ public class Constants {
     public static final long THREE_HOUR_INTERVAL = 3* 60 * 60 * 1000L; // 3 Hours
     public static final long ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L; // 1 Day
     public static final long ONE_WEEK_INTERVAL = 7 * 24 * 60 * 60 * 1000L; // 1 Week
+
+
+    //Scene Subtypes
+    public static String BLIND_SCENE_SUBTYPE = "Blind";
+    public static String BLIND_SCENE_STOPPED = "1";
 }
