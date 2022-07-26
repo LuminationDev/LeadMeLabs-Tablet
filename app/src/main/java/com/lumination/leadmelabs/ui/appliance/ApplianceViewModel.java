@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance;
 
 import android.annotation.SuppressLint;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,8 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
-import io.sentry.protocol.App;
 
 public class ApplianceViewModel extends ViewModel {
     //Use a hash map for active appliances, the id is the key, the value is the CBus value
@@ -200,7 +199,11 @@ public class ApplianceViewModel extends ViewModel {
 
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
-                temp = activeSceneList.put(room, appliance);
+                if(appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
+                    temp = activeSceneList.put(appliance.name, appliance);
+                } else {
+                    temp = activeSceneList.put(room, appliance);
+                }
             }
         }
 
@@ -289,28 +292,24 @@ public class ApplianceViewModel extends ViewModel {
     private String blindException(Appliance appliance, String value) {
         String changed;
 
-        if(Objects.equals(appliance.value, value)) {
-            return "false";
-        }
-
         appliance.value = value;
 
         if (value.equals("0")) {
             activeApplianceList.remove(appliance.id);
-            Appliance temp = activeSceneList.remove(appliance.room);
+            Appliance temp = activeSceneList.remove(appliance.name);
             changed = temp == null ? "false" : "true";
         } else {
             changed = "true";
-            activeSceneList.put(appliance.room, appliance);
+            activeSceneList.put(appliance.name, appliance);
 
-            if(value.equals(Constants.BLIND_STOPPED_VALUE)) {
+            if(value.equals(Constants.BLIND_SCENE_STOPPED)) {
                 activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
             } else {
-                activeApplianceList.put(appliance.id, Constants.APPLIANCE_OFF_VALUE);
+                activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
             }
         }
 
-        delayLoadCall();
+//        delayLoadCall();
         return changed;
     }
 

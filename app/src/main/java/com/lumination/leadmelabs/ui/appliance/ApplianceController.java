@@ -35,7 +35,7 @@ public class ApplianceController {
      */
     public void strategyType(CardApplianceBinding binding, Appliance appliance, View cardLayout) {
         AbstractApplianceStrategy strategy;
-        
+
         switch (appliance.type) {
             case "scenes":
                 strategy = appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE) ? new BlindStrategy(true) :  new SceneStrategy();
@@ -85,9 +85,9 @@ public class ApplianceController {
             String sceneId = appliance.id.substring(0, appliance.id.length() - 1);
             value = ApplianceViewModel.activeScenes.getValue().remove(sceneId);
 
-            if(Objects.equals(value, String.valueOf(appliance.automationValue))) {
-                ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
-            } else if (appliance.name.contains("Blind") && value != null) {
+            if (appliance.name.contains("Blind") && value != null && !value.equals("0")) {
+                ApplianceViewModel.activeSceneList.put(appliance.name, appliance);
+            } else if(Objects.equals(value, String.valueOf(appliance.automationValue))) {
                 ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
             }
         }
@@ -98,7 +98,7 @@ public class ApplianceController {
             }
 
             //Add the scene to the activeApplianceList with the correct value
-            if(ApplianceViewModel.activeSceneList.containsValue(appliance)) {
+            if(ApplianceViewModel.activeSceneList.get(appliance.name) != null) {
                 if(Objects.equals(value, Constants.BLIND_SCENE_STOPPED)) {
                     status = Constants.STOPPED;
                     ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
@@ -108,6 +108,7 @@ public class ApplianceController {
                 }
             } else {
                 status = Constants.INACTIVE;
+                ApplianceViewModel.activeApplianceList.remove(appliance.id);
             }
 
             applianceTransition(status, cardView);

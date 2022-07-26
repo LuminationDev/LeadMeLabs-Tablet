@@ -30,5 +30,7 @@ public class Constants {
 
     //Scene Subtypes
     public static String BLIND_SCENE_SUBTYPE = "Blind";
+    public static String BLIND_SCENE_CLOSE = "0";
     public static String BLIND_SCENE_STOPPED = "1";
+    public static String BLIND_SCENE_OPEN = "2";
 }

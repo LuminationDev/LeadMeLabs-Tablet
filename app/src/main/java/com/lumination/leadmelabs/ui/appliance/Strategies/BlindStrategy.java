@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.TransitionDrawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,7 +158,7 @@ public class BlindStrategy extends AbstractApplianceStrategy {
 
             if(!Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.APPLIANCE_ON_VALUE)) {
                 if(isSceneCard) {
-                    ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
+                    ApplianceViewModel.activeSceneList.put(appliance.name, appliance);
                 }
 
                 ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
@@ -170,6 +171,10 @@ public class BlindStrategy extends AbstractApplianceStrategy {
             blindNetworkCall(appliance, stopValue);
 
             if(!Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
+                if(isSceneCard) {
+                    ApplianceViewModel.activeSceneList.put(appliance.name, appliance);
+                }
+
                 ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
                 coordinateVisuals(R.drawable.transition_blind_stopped, appliance.description.get(2), Constants.STOPPED);
             }
@@ -181,7 +186,7 @@ public class BlindStrategy extends AbstractApplianceStrategy {
 
             if(ApplianceViewModel.activeApplianceList.containsKey(appliance.id)) {
                 if(isSceneCard) {
-                    ApplianceViewModel.activeSceneList.remove(appliance.room);
+                    ApplianceViewModel.activeSceneList.remove(appliance.name);
                 }
 
                 ApplianceViewModel.activeApplianceList.remove(appliance.id);
