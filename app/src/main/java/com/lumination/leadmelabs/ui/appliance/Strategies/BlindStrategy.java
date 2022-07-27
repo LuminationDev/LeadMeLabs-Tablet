@@ -2,7 +2,6 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.TransitionDrawable;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +39,13 @@ public class BlindStrategy extends AbstractApplianceStrategy {
     private CardApplianceBinding binding; //The underlying card model the extended blind xml is attached to.
     private Appliance appliance; //The populate appliance model.
     private View blindCard; // The inflated view for controlling the blinds.
-    private final boolean isSceneCard;
+    private static boolean isSceneCard;
     private String openValue = Constants.APPLIANCE_ON_VALUE;
     private String stopValue = Constants.BLIND_STOPPED_VALUE;
     private String closeValue = Constants.APPLIANCE_OFF_VALUE;
 
     public BlindStrategy(boolean isSceneCard) {
-        this.isSceneCard = isSceneCard;
+        BlindStrategy.isSceneCard = isSceneCard;
         if(isSceneCard) {
             openValue = "2";
             stopValue = "1";
@@ -227,5 +226,10 @@ public class BlindStrategy extends AbstractApplianceStrategy {
                         + blind.room + ":"                      //[6] Appliance room
                         + blind.id + ":"                        //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());       //[8] The IP address of the tablet
+
+        if(isSceneCard) {
+            //Cancel/start the timer to get the latest updated cards
+            ApplianceViewModel.delayLoadCall();
+        }
     }
 }

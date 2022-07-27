@@ -134,7 +134,7 @@ public class ApplianceViewModel extends ViewModel {
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
         HashMap<String, String> activeObjects = new HashMap<>();
         HashMap<String, String> inactiveObjects = new HashMap<>();
-        HashMap<String, String> scenes= new HashMap<>();
+        HashMap<String, String> scenes = new HashMap<>();
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
@@ -155,6 +155,7 @@ public class ApplianceViewModel extends ViewModel {
             }
         }
 
+        //OVER RIDES THE APPLIANCE LIST SO THE BLIND SCENE IS NO LONGER IN IT
         activeAppliances.setValue(activeObjects);
 
         //First connection from the Cbus, updates all Cards
@@ -169,12 +170,43 @@ public class ApplianceViewModel extends ViewModel {
                 ApplianceParentAdapter.getInstance().notifyDataSetChanged();
             }
         } else {
+            clarifyBlindStatus(scenes);
+
             for(String cards : activeObjects.keySet()) {
                 updateIfVisible(cards);
             }
 
             for(String cards : inactiveObjects.keySet()) {
                 updateIfVisible(cards);
+            }
+        }
+    }
+
+    /**
+     * Determine if a blind scene card needs to be updated. As the card is treated as both an appliance
+     * and a scene rewriting the activeAppliances overrides the background value of the scene.
+     */
+    private void clarifyBlindStatus(HashMap<String, String> scenes) {
+        if(this.appliances.getValue() != null) {
+            for (Appliance appliance : this.appliances.getValue()) {
+                if(ApplianceViewModel.activeSceneList.containsKey(appliance.name) && appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
+                    String value = scenes.get(appliance.id.substring(0, appliance.id.length() - 1));
+                    if(value != null) {
+                        appliance.value = value;
+
+                        switch (value) {
+                            case "0":
+                                ApplianceViewModel.activeApplianceList.remove(appliance.id);
+                                break;
+                            case "1":
+                                ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
+                                break;
+                            case "2":
+                                ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
+                                break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -209,7 +241,6 @@ public class ApplianceViewModel extends ViewModel {
 
         // if a scene has changed load the active objects associated with the scene from the CBUS
         if(temp != activeSceneList.get(room)) {
-            delayLoadCall();
             updateIfVisible(id);
 
             if(temp != null) {
@@ -235,8 +266,12 @@ public class ApplianceViewModel extends ViewModel {
      * Aim is to only run once (on the last update).
      */
     public static void delayLoadCall() {
-        timer.cancel();
-        timer.start();
+        try {
+            timer.cancel();
+            timer.start();
+        } catch(Exception e) {
+            Log.e("Error", e.toString());
+        }
     }
 
     /**
@@ -297,19 +332,21 @@ public class ApplianceViewModel extends ViewModel {
         if (value.equals("0")) {
             activeApplianceList.remove(appliance.id);
             Appliance temp = activeSceneList.remove(appliance.name);
-            changed = temp == null ? "false" : "true";
+            changed = temp == null ? null : "true";
         } else {
-            changed = "true";
-            activeSceneList.put(appliance.name, appliance);
-
-            if(value.equals(Constants.BLIND_SCENE_STOPPED)) {
+            if(value.equals(Constants.BLIND_SCENE_STOPPED) && !Objects.equals(activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
+                activeSceneList.put(appliance.name, appliance);
                 activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
-            } else {
+                changed = "true";
+            } else if(!Objects.equals(activeApplianceList.get(appliance.id), Constants.APPLIANCE_ON_VALUE)) {
+                activeSceneList.put(appliance.name, appliance);
                 activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
+                changed = "true";
+            } else {
+                changed = null;
             }
         }
 
-//        delayLoadCall();
         return changed;
     }
 

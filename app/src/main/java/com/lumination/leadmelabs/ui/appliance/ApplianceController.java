@@ -224,7 +224,7 @@ public class ApplianceController {
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_theatremode_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_theatremode_off);
                 break;
-            case "Off":
+            case "All Off":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_power_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_power_off);
                 break;
