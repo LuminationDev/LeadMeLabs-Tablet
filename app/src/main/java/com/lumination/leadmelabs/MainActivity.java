@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.jobServices.LicenseJobService;

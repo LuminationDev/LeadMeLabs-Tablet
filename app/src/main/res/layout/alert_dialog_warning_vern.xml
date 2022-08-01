@@ -45,9 +45,10 @@ android:background="@drawable/bg_alertdialog_vern">
                 android:id="@+id/content_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="35dp"
+                android:paddingHorizontal="25dp"
                 android:text="@string/lost_server_message_content"
                 android:textAlignment="center"
+                android:textSize="13.5sp"
                 android:textColor="@color/black" />
         </com.google.android.flexbox.FlexboxLayout>
 

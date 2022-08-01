@@ -107,7 +107,7 @@ public class UIUpdateManager {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
                                         "Oh no!",
-                                        station.name + " lost connection to the VR headset. Check the battery on the headset, and if this does not work, try restarting the VR system on the station."
+                                        station.name + "'s headset has disconnected. Please check the battery is charged."
                                 );
                             });
                         }

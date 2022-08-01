@@ -46,7 +46,7 @@
             android:visibility="@{appliances.applianceCount > 0 ? View.GONE : View.VISIBLE}">
 
             <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="454dp"
+                android:layout_width="440dp"
                 android:layout_height="345dp"
                 android:layout_gravity="center"
                 android:elevation="1dp"
@@ -56,8 +56,8 @@
                 app:justifyContent="flex_end">
 
                 <ImageView
-                    android:layout_width="135dp"
-                    android:layout_height="135dp"
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
                     android:contentDescription="@string/room_icon"
                     app:imageResource="@{subMenu.currentIcon}"/>
@@ -69,7 +69,7 @@
                     android:layout_marginBottom="20dp"
                     android:textAlignment="center"
                     android:text="@{`There are no ` + appliances.type + (room.currentType.equals(`All`) ? ` currently loaded` : ` in ` + room.currentType) + `.`}"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"/>
 
@@ -82,6 +82,7 @@
                     android:textAllCaps="false"
                     android:enabled="@{!(appliances.applianceCount == 0 &amp;&amp; room.currentType.equals(`All`))}"
                     android:backgroundTint="@{(appliances.applianceCount == 0 &amp;&amp; room.currentType.equals(`All`)) ? @color/grey : @color/blue}"
+                    android:letterSpacing="-0.001"
                     app:cornerRadius="100dp"
                     app:rippleColor="@color/white"/>
             </com.google.android.flexbox.FlexboxLayout>

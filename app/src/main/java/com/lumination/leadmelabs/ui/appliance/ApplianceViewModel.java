@@ -30,8 +30,10 @@ public class ApplianceViewModel extends ViewModel {
     public static HashMap<String, String> activeApplianceList = new HashMap<>();
     //Use a hash map for active scenes, the room is the key, the value is the scene
     public static HashMap<String, Appliance> activeSceneList = new HashMap<>();
+    //Use a hash map for active scenes
+    public static MutableLiveData<HashMap<String, String>> activeScenes;
     private MutableLiveData<HashMap<String, String>> activeAppliances;
-    public static MutableLiveData<HashSet<String>> activeScenes;
+
     private MutableLiveData<List<Appliance>> appliances;
     public static boolean init = false;
 
@@ -84,20 +86,7 @@ public class ApplianceViewModel extends ViewModel {
                     } else {
                         appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
 
-                        if(type.equals(Constants.LED)) {
-                            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-                            if(temp != null) {
-                                temp.associated = appliance;
-                            }
-                        }
-
-                        if(type.equals(Constants.COMPUTER)) {
-                            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-                            if(temp != null) {
-                                temp.automationGroup = appliance.automationGroup;
-                                temp.automationId = appliance.automationId;
-                            }
-                        }
+                        addAssociatedAppliances(type, current, appliance);
                     }
                     st.add(appliance);
                 }
@@ -114,6 +103,26 @@ public class ApplianceViewModel extends ViewModel {
     }
 
     /**
+     * Join any associated objects to the current appliance.
+     */
+    private void addAssociatedAppliances(String type, JSONObject current, Appliance appliance) throws JSONException {
+        if(type.equals(Constants.LED)) {
+            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
+            if(temp != null) {
+                temp.associated = appliance;
+            }
+        }
+
+        if(type.equals(Constants.COMPUTER)) {
+            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
+            if(temp != null) {
+                temp.automationGroup = appliance.automationGroup;
+                temp.automationId = appliance.automationId;
+            }
+        }
+    }
+
+    /**
      * The result of calling the CBUS unit to find what objects are currently active. The JSON array
      * received contains the full list of objects on the CBUS, sorting and filtering needs to be
      * performed. It should only retrieve the scenes when first connecting. UpdateActiveApplianceList
@@ -125,7 +134,7 @@ public class ApplianceViewModel extends ViewModel {
     public void setActiveAppliances(JSONArray appliances) throws JSONException {
         HashMap<String, String> activeObjects = new HashMap<>();
         HashMap<String, String> inactiveObjects = new HashMap<>();
-        HashSet<String> scenes = new HashSet<>();
+        HashMap<String, String> scenes = new HashMap<>();
 
         for (int i = 0; i < appliances.length(); i++) {
             if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
@@ -138,17 +147,18 @@ public class ApplianceViewModel extends ViewModel {
                 } else if (appliances.getJSONObject(i).getJSONObject("data").has("value")) {
                     String value = appliances.getJSONObject(i).getJSONObject("data").getString("value");
                     String id = appliances.getJSONObject(i).getString("id");
-                    String sceneId = id + value;
 
                     if(!value.startsWith("-")) {
-                        scenes.add(sceneId);
+                        scenes.put(id, value);
                     }
                 }
             }
         }
 
+        //OVER RIDES THE APPLIANCE LIST SO THE BLIND SCENE IS NO LONGER IN IT
         activeAppliances.setValue(activeObjects);
 
+        //First connection from the Cbus, updates all Cards
         if(!init) {
             activeScenes.setValue(scenes);
             init = true;
@@ -160,12 +170,43 @@ public class ApplianceViewModel extends ViewModel {
                 ApplianceParentAdapter.getInstance().notifyDataSetChanged();
             }
         } else {
+            clarifyBlindStatus(scenes);
+
             for(String cards : activeObjects.keySet()) {
                 updateIfVisible(cards);
             }
 
             for(String cards : inactiveObjects.keySet()) {
                 updateIfVisible(cards);
+            }
+        }
+    }
+
+    /**
+     * Determine if a blind scene card needs to be updated. As the card is treated as both an appliance
+     * and a scene rewriting the activeAppliances overrides the background value of the scene.
+     */
+    private void clarifyBlindStatus(HashMap<String, String> scenes) {
+        if(this.appliances.getValue() != null) {
+            for (Appliance appliance : this.appliances.getValue()) {
+                if(ApplianceViewModel.activeSceneList.containsKey(appliance.name) && appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
+                    String value = scenes.get(appliance.id.substring(0, appliance.id.length() - 1));
+                    if(value != null) {
+                        appliance.value = value;
+
+                        switch (value) {
+                            case "0":
+                                ApplianceViewModel.activeApplianceList.remove(appliance.id);
+                                break;
+                            case "1":
+                                ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
+                                break;
+                            case "2":
+                                ApplianceViewModel.activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
+                                break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -190,13 +231,16 @@ public class ApplianceViewModel extends ViewModel {
 
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
-                temp = activeSceneList.put(room, appliance);
+                if(appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
+                    temp = activeSceneList.put(appliance.name, appliance);
+                } else {
+                    temp = activeSceneList.put(room, appliance);
+                }
             }
         }
 
         // if a scene has changed load the active objects associated with the scene from the CBUS
         if(temp != activeSceneList.get(room)) {
-            delayLoadCall();
             updateIfVisible(id);
 
             if(temp != null) {
@@ -222,8 +266,12 @@ public class ApplianceViewModel extends ViewModel {
      * Aim is to only run once (on the last update).
      */
     public static void delayLoadCall() {
-        timer.cancel();
-        timer.start();
+        try {
+            timer.cancel();
+            timer.start();
+        } catch(Exception e) {
+            Log.e("Error", e.toString());
+        }
     }
 
     /**
@@ -251,12 +299,16 @@ public class ApplianceViewModel extends ViewModel {
         //Find the appliance with the corresponding ID
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
-                //Set the new value
-                if (value.equals("0")) {
-                    changed = activeApplianceList.remove(id);
-                } else if (!Objects.equals(activeApplianceList.get(id), value)){
-                    changed = "true";
-                    activeApplianceList.put(id, value);
+                //Set the new value - scenes is for the blind card
+                if(appliance.type.equals("scenes")) {
+                    changed = blindException(appliance, value);
+                } else {
+                    if (value.equals("0")) {
+                        changed = activeApplianceList.remove(id);
+                    } else if (!Objects.equals(activeApplianceList.get(id), value)) {
+                        changed = "true";
+                        activeApplianceList.put(id, value);
+                    }
                 }
             }
         }
@@ -265,6 +317,37 @@ public class ApplianceViewModel extends ViewModel {
         if(changed != null) {
             updateIfVisible(id);
         }
+    }
+
+    /**
+     * The blind card on the scene page is treated as both a scene and an appliance. For this reason
+     * there is a special exception that updates the Blind from the appliance updater.
+     * @return A string representing if the appliance has changed value in any way.
+     */
+    private String blindException(Appliance appliance, String value) {
+        String changed;
+
+        appliance.value = value;
+
+        if (value.equals("0")) {
+            activeApplianceList.remove(appliance.id);
+            Appliance temp = activeSceneList.remove(appliance.name);
+            changed = temp == null ? null : "true";
+        } else {
+            if(value.equals(Constants.BLIND_SCENE_STOPPED) && !Objects.equals(activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
+                activeSceneList.put(appliance.name, appliance);
+                activeApplianceList.put(appliance.id, Constants.BLIND_STOPPED_VALUE);
+                changed = "true";
+            } else if(!Objects.equals(activeApplianceList.get(appliance.id), Constants.APPLIANCE_ON_VALUE)) {
+                activeSceneList.put(appliance.name, appliance);
+                activeApplianceList.put(appliance.id, Constants.APPLIANCE_ON_VALUE);
+                changed = "true";
+            } else {
+                changed = null;
+            }
+        }
+
+        return changed;
     }
 
     /**

@@ -70,7 +70,7 @@
     <string name="restart_session_lower">Restart Session</string>
     <string name="identify_station_lower">Identify Station</string>
     <string name="reconnect">Reconnect</string>
-    <string name="lost_server_message_content">Lost connection to server, check power and reconnect. If this problem persists, please contact your IT department.</string>
+    <string name="lost_server_message_content">Check power and reconnect. If this problem persists, please contact your IT department.</string>
     <string name="lost_server_connection">Lost server connection!</string>
     <string name="close">Close</string>
     <string name="room_icon">Room icon</string>
@@ -85,4 +85,5 @@
     <string name="hide_station_controls">Hide station controls</string>
     <string name="allow_analytics">Allow Analytics</string>
     <string name="all_computers_off">All stations in this room are currently turned off.</string>
+    <string name="reconnection_failed">Reconnection attempt failed. Try again or contact your IT department.</string>
 </resources>
