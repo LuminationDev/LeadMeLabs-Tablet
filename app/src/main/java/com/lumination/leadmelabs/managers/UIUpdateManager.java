@@ -112,6 +112,17 @@ public class UIUpdateManager {
                             });
                         }
                     }
+                    if (additionalData.startsWith("HeadsetTimeout")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Oh no!",
+                                        station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
+                                );
+                            });
+                        }
+                    }
                     if (additionalData.startsWith("FailedRestart")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
