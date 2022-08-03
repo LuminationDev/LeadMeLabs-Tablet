@@ -91,7 +91,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/end_session_button"
                     style="@style/ActionCard"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
                     app:flexDirection="row">
 
                     <ImageView
@@ -126,7 +126,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/identify_button"
                     style="@style/ActionCard"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
                     app:flexDirection="row">
 
                     <ImageView
@@ -159,9 +159,48 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/startup_button"
+                    style="@style/ActionCard"
+                    android:layout_marginStart="10dp"
+                    app:flexDirection="row"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="66dp"
+                        android:layout_height="66dp"
+                        android:contentDescription="startup_icon"
+                        android:src="@drawable/icon_startup" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="16dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:id="@+id/startup_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Turn On"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/startup_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Turn on stations"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/shutdown_button"
                     style="@style/ActionCard"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     app:flexDirection="row"
                     android:visibility="gone">
 

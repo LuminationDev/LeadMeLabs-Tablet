@@ -111,6 +111,7 @@ public class DashboardPageFragment extends Fragment {
             Identifier.identifyStations(stations);
         });
 
+        //Shut down all stations
         FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
         TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
         TextView shutdownContent = view.findViewById(R.id.shutdown_content);
@@ -139,6 +140,17 @@ public class DashboardPageFragment extends Fragment {
             }
         });
 
+        //Turn on all stations
+        FlexboxLayout startup = view.findViewById(R.id.startup_button);
+        startup.setOnClickListener(v -> {
+            int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+            String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+            NetworkService.sendMessage("NUC," + stationIdsString,
+                    "WOL",
+                    "Startup" + ":"
+                            + "computer" + ":"
+                            + NetworkService.getIPAddress());
+        });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
