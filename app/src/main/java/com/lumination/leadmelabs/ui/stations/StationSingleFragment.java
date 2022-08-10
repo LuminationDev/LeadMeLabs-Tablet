@@ -123,15 +123,13 @@ public class StationSingleFragment extends Fragment {
                 //additionalData break down
                 //Action : [cbus unit : group address : id address : value] : [type : room : id station]
                 NetworkService.sendMessage("NUC",
-                        "Automation",
-                        "Set" + ":"                         //[0] Action
-                                + "0" + ":"                             //[1] CBUS unit number
-                                + station.automationGroup + ":"         //[2] CBUS group address
-                                + station.automationId  + ":"           //[3] CBUS unit address
-                                + 2 + ":"                               //[4] New value for address
-                                + type + ":"                            //[5] Object type (computer, appliance, scene)
-                                + station.room + ":"                    //[6] Station room
-                                + station.id);                          //[7] CBUS object id/doubles as card id
+                        "WOL",
+                        station.macAddress + ":"            //[0] Station Mac address
+                                + 2 + ":"                               //[1] New value for address (for syncing purposes)
+                                + type + ":"                            //[2] Object type (computer, appliance, scene)
+                                + station.room + ":"                    //[3] Station room
+                                + station.id + ":"                      //[4] CBUS object id/doubles as card id
+                                + NetworkService.getIPAddress());       //[5] IP address of the tablet
 
                 MainActivity.runOnUI(() -> {
                     station.status = "Turning on";
