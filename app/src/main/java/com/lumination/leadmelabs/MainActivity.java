@@ -1,29 +1,31 @@
 package com.lumination.leadmelabs;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.jobServices.LicenseJobService;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
+import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -45,6 +47,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
+    public static AppUpdateManager appUpdateManager;
+
     /**
      * Allows runOnUIThread calls from anywhere in the program.
      */
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         instance = this;
+        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
 
         hideStatusBar();
         startNetworkService();
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
+        startLockTask();
     }
 
     /**
@@ -98,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleJobs() {
         LicenseJobService.schedule(this);
         RefreshJobService.schedule(this);
+        UpdateJobService.schedule(this);
     }
 
     public static void startNucPingMonitor() {
@@ -117,12 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 5000);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopNetworkService();
     }
 
     /**
@@ -238,39 +240,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Change the background of the selected view while a user is touching it.
-     * @param view A view which has an OnTouchListener added.
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    public static void feedback(View view) {
-        view.setOnTouchListener((v, event) -> {
-            switch(event.getAction()) {
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    v.setBackgroundResource(0);
-                    break;
-
-                case MotionEvent.ACTION_DOWN:
-                    v.setBackground(ResourcesCompat.getDrawable(
-                            MainActivity.getInstance().getResources(),
-                            R.drawable.icon_touch_event,
-                            null)
-                    );
-                    break;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.UPDATE_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Log.e("Update", "Update flow failed! Result code: " + resultCode);
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
             }
-
-           return false;
-       });
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopNetworkService();
+    }
 
     /**
-     * On awake check the Cbus to see if any values are not the correct ones.
+     * On awake check the Cbus to see if any values are not the correct ones and if a download has
+     * been initiated.
      */
     @Override
     protected void onResume() {
         super.onResume();
         ApplianceFragment.mViewModel.getActiveAppliances();
+
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+            appUpdateInfo -> {
+                if (appUpdateInfo.updateAvailability()
+                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    // If an in-app update is already running, resume the update.
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.IMMEDIATE,
+                                this,
+                                Constants.UPDATE_REQUEST_CODE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        );
     }
 }

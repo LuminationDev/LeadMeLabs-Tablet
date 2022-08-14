@@ -24,10 +24,10 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.lumination.leadmelabs.utilities.WakeOnLan;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -90,18 +90,15 @@ public class DashboardPageFragment extends Fragment {
 
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
-            BooleanCallbackInterface selectStationsCallback = new BooleanCallbackInterface() {
-                @Override
-                public void callback(boolean confirmationResult) {
-                    if (confirmationResult) {
-                        int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-                        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+            BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+                    String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-                        NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
-                    } else {
-                        ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
-                        DialogManager.createEndSessionDialog(stationsToSelectFrom);
-                    }
+                    NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                } else {
+                    ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
+                    DialogManager.createEndSessionDialog(stationsToSelectFrom);
                 }
             };
             DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences", selectStationsCallback, "End on select", "End on all");
@@ -120,8 +117,8 @@ public class DashboardPageFragment extends Fragment {
         shutdown.setOnClickListener(v -> {
             CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
                 if (seconds <= 0) {
-                    shutdownHeading.setText("Shut Down");
-                    shutdownContent.setText("Shut down stations");
+                    shutdownHeading.setText(R.string.shut_down_space);
+                    shutdownContent.setText(R.string.shut_down_stations);
                 } else {
                     if (!cancelledShutdown) {
                         shutdownHeading.setText("Cancel (" + seconds + ")");
@@ -137,27 +134,14 @@ public class DashboardPageFragment extends Fragment {
                 cancelledShutdown = true;
                 String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
                 NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-                shutdownHeading.setText("Shut Down");
-                shutdownContent.setText("Shut down stations");
+                shutdownHeading.setText(R.string.shut_down_space);
+                shutdownContent.setText(R.string.shut_down_stations);
             }
         });
 
         //Turn on all stations
         FlexboxLayout startup = view.findViewById(R.id.startup_button);
-        startup.setOnClickListener(v -> {
-            int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-            String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("NUC," + stationIdsString,
-                    "WOL",
-                    "Startup" + ":"
-                            + "computer" + ":"
-                            + NetworkService.getIPAddress());
-
-            //Change all stations to turning on status
-            for (int stationId: stationIds ) {
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
-            }
-        });
+        startup.setOnClickListener(v -> WakeOnLan.WakeAll());
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
