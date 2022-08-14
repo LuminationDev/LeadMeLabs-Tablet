@@ -2,10 +2,13 @@ package com.lumination.leadmelabs.ui.stations;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,6 +73,23 @@ public class StationSingleFragment extends Fragment {
 
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
+
+        Button menuButton = view.findViewById(R.id.station_single_menu_button);
+        menuButton.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(getActivity(), menuButton);
+            PopupMenu.OnMenuItemClickListener onMenuItemClickListener = menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case R.id.rename:
+                        DialogManager.buildRenameStationDialog(getContext(), binding);
+                        return true;
+                    default:
+                        return false;
+                }
+            };
+            popupMenu.setOnMenuItemClickListener(onMenuItemClickListener);
+            popupMenu.inflate(R.menu.station_single_menu_actions);
+            popupMenu.show();
+        });
 
         Button pingStation = view.findViewById(R.id.ping_station);
         pingStation.setOnClickListener(v -> {

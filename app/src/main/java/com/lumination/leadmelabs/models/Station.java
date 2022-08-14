@@ -51,6 +51,11 @@ public class Station implements Cloneable {
         this.room = room;
     }
 
+    public void setName(String newName)
+    {
+        name = newName;
+    }
+
     public void setSteamApplicationsFromJsonString(String steamApplicationsJson)
     {
         ArrayList<SteamApplication> newSteamApplications = new ArrayList<>();
