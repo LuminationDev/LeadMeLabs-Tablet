@@ -203,6 +203,9 @@ public class UIUpdateManager {
                 case "gameId":
                     station.gameId = value;
                     break;
+                case "name":
+                    station.setName(value);
+                    break;
                 case "gameName":
                     station.gameName = value;
                     if (value.length() > 0 && !value.equals("No session running")) {

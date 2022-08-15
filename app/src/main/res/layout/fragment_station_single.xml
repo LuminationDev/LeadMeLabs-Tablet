@@ -61,6 +61,20 @@
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/station_single_menu_button"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="0dp"
+                        app:rippleColor="@color/grey"
+                        android:stateListAnimator="@null"
+                        android:textColor="@color/blue_darkest"
+                        app:cornerRadius="2dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:textAllCaps="false"
+                        android:drawableRight="@drawable/icon_cross" />
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout

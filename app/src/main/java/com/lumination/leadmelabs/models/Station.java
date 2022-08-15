@@ -53,6 +53,11 @@ public class Station implements Cloneable {
         this.macAddress = macAddress;
     }
 
+    public void setName(String newName)
+    {
+        name = newName;
+    }
+
     public void setSteamApplicationsFromJsonString(String steamApplicationsJson)
     {
         ArrayList<SteamApplication> newSteamApplications = new ArrayList<>();

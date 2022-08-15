@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Responsible for handling alert dialogs.
@@ -258,6 +259,41 @@ public class DialogManager {
         cancelButton.setOnClickListener(v -> urlDialog.dismiss());
 
         urlDialog.show();
+    }
+
+    /**
+     * Build and show the rename station dialog box.
+     */
+    public static void buildRenameStationDialog(Context context, FragmentStationSingleBinding binding) {
+        View view = View.inflate(context, R.layout.dialog_rename_station, null);
+        AlertDialog renameStationDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+
+        EditText nameInput = view.findViewById(R.id.name_input);
+        nameInput.requestFocus();
+        TextView errorText = view.findViewById(R.id.error_text);
+
+        Button submit = view.findViewById(R.id.submit_button);
+        submit.setOnClickListener(v -> {
+            errorText.setVisibility(View.GONE);
+            String input = nameInput.getText().toString();
+
+            if (Pattern.matches("([A-Za-z0-9 ])+", input)) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.setName(input);
+                StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
+                NetworkService.sendMessage("NUC", "UpdateStation", selectedStation.id + ":SetValue:name:" + input);
+
+                renameStationDialog.dismiss();
+            } else {
+                errorText.setText("Station name can only contains letters, numbers and spaces");
+                errorText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button cancelButton = view.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(v -> renameStationDialog.dismiss());
+
+        renameStationDialog.show();
     }
 
     /**
