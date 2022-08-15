@@ -150,11 +150,16 @@ public class StationsViewModel extends ViewModel {
      * The values for the computer will be in CBUS format i.e. numbers. Therefore run a switch case
      * to determine what the status should be.
      */
-    public void syncStationStatus(String id, String value) {
+    public void syncStationStatus(String id, String value, String ipAddress) {
         Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
         //Exit the function if the tablet is in wall mode.
         if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+            return;
+        }
+
+        //Disregard the message if from the same IP address
+        if(NetworkService.getIPAddress().equals(ipAddress)) {
             return;
         }
 
@@ -169,8 +174,8 @@ public class StationsViewModel extends ViewModel {
                 break;
         }
 
-        //Nothing to update.
-        if(station.status.equals(status)) {
+        //Nothing to update or the station is already on.
+        if(station.status.equals(status) || station.status.equals("On")) {
             return;
         }
 
@@ -211,7 +216,8 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("status"),
                     stationJson.getInt("volume"),
                     stationJson.getInt("theatreId"),
-                    stationJson.getString("room"));
+                    stationJson.getString("room"),
+                    stationJson.getString("macAddress"));
             if (!stationJson.getString("gameName").equals("")) {
                 station.gameName = stationJson.getString("gameName");
             }

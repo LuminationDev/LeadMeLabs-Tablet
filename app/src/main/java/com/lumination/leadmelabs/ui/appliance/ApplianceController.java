@@ -213,6 +213,7 @@ public class ApplianceController {
 
         switch (binding.getAppliance().name) {
             case "Classroom":
+            case "On":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_classroommode_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_classroommode_off);
                 break;
@@ -221,9 +222,11 @@ public class ApplianceController {
                         new MutableLiveData<>(R.drawable.icon_scene_vrmode_off);
                 break;
             case "Theatre":
+            case "Dim":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_theatremode_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_theatremode_off);
                 break;
+            case "Off":
             case "All Off":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_power_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_power_off);

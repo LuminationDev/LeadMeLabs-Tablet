@@ -39,6 +39,7 @@ import com.lumination.leadmelabs.utilities.Helpers;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -46,6 +47,8 @@ import java.util.regex.Pattern;
  * Responsible for handling alert dialogs.
  */
 public class DialogManager {
+    private static final HashMap<String, AlertDialog> openDialogs = new HashMap<>();
+
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
@@ -59,14 +62,56 @@ public class DialogManager {
     private static int pinCodeAttempts = 0;
 
     /**
+     * Dismiss an open dialog that is no longer relevant. Basic dialogs are kept track of within a
+     * hashmap with a combination of the dialog title and station name used as a key.
+     * @param titleKey A string representing the title of the dialog
+     * @param stationName A string representing which station the dialog belongs to
+     */
+    public static void closeOpenDialog(String titleKey, String stationName) {
+        String key = titleKey + ":" + stationName;
+        AlertDialog toBeClosed = openDialogs.remove(key);
+        if(toBeClosed != null) {
+            MainActivity.runOnUI(toBeClosed::dismiss);
+        }
+    }
+
+    /**
+     * Dismiss an open dialog that is no longer relevant. Basic dialogs are kept track of within a
+     * hashmap with a combination of the dialog title and station name used as a key.
+     * @param titleKey A string representing the title of the dialog
+     * @param stationName A string representing which station the dialog belongs to
+     * @param dialog An alert dialog that is to be tracked
+     */
+    public static void trackOpenDialog(String titleKey, String stationName, AlertDialog dialog) {
+        String key = titleKey + ":" + stationName;
+        openDialogs.put(key, dialog);
+    }
+
+    /**
      * Create a basic dialog box with a custom title and content based on the strings that are
      * passed in.
      * @param titleText A string representing what the title shown to the user will be.
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createBasicDialog(String titleText, String contentText) {
+        createBasicDialog(titleText, contentText, null);
+    }
+
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     * @param stationName A string representing if the dialog box reflects a stations status.
+     */
+    public static void createBasicDialog(String titleText, String contentText, String stationName) {
         View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_basic_vern, null);
         AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        if(stationName != null) {
+            trackOpenDialog(titleText, stationName, basicDialog);
+            basicDialog.setOnDismissListener(v -> closeOpenDialog(titleText, stationName));
+        }
 
         TextView title = basicDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -75,7 +120,10 @@ public class DialogManager {
         contentView.setText(contentText);
 
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
-        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+            closeOpenDialog(titleText, stationName);
+        });
 
         basicDialog.show();
         basicDialog.getWindow().setLayout(680, 680);
@@ -521,6 +569,9 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             reconnectDialog.dismiss();
             MainActivity.hasNotReceivedPing = 0;
+        });
+
+        reconnectDialog.setOnDismissListener(v -> {
             MainActivity.startNucPingMonitor();
         });
 

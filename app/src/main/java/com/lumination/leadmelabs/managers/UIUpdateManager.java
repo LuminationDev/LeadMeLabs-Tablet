@@ -106,10 +106,20 @@ public class UIUpdateManager {
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
-                                        "Oh no!",
-                                        station.name + "'s headset has disconnected. Please check the battery is charged."
+                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                                        station.name + "'s headset has disconnected. Please check the battery is charged.",
+                                        station.name
                                 );
                             });
+                        }
+                    }
+                    if (additionalData.startsWith("FoundHeadset")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            //Close the dialog relating to that
+                            DialogManager.closeOpenDialog(
+                                    MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                                    station.name);
                         }
                     }
                     if (additionalData.startsWith("HeadsetTimeout")) {
@@ -117,7 +127,7 @@ public class UIUpdateManager {
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             MainActivity.runOnUI(() -> {
                                 DialogManager.createBasicDialog(
-                                        "Oh no!",
+                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
                                         station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
                                 );
                             });
@@ -253,7 +263,7 @@ public class UIUpdateManager {
 
         switch(values[1]) {
             case "computer":
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(values[3], values[4]);
+                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(values[3], values[4], values[5]);
                 break;
             case "scene":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(values[2], values[3]);

@@ -26,6 +26,7 @@ public class Station implements Cloneable {
     public int automationGroup;
     public int automationId;
     private CountDownTimer timer;
+    public String macAddress;
 
     @Override
     public Station clone() {
@@ -39,7 +40,7 @@ public class Station implements Cloneable {
         return clonedStation;
     }
 
-    public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room) {
+    public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room, String macAddress) {
         this.name = name;
         if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("Off")) {
             this.setSteamApplicationsFromJsonString(steamApplications);
@@ -49,6 +50,7 @@ public class Station implements Cloneable {
         this.volume = volume;
         this.theatreId = theatreId;
         this.room = room;
+        this.macAddress = macAddress;
     }
 
     public void setName(String newName)

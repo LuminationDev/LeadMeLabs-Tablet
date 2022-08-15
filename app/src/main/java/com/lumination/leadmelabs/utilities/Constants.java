@@ -1,6 +1,10 @@
 package com.lumination.leadmelabs.utilities;
 
 public class Constants {
+    //Room Constants
+    public static String VR_ROOM = "VR Room";
+
+
     //Appliance Constants
     public static String SCENE = "scenes";
     public static String LED = "LED rings";
@@ -33,4 +37,8 @@ public class Constants {
     public static String BLIND_SCENE_CLOSE = "0";
     public static String BLIND_SCENE_STOPPED = "1";
     public static String BLIND_SCENE_OPEN = "2";
+
+
+    //Request Codes
+    public static int UPDATE_REQUEST_CODE = 99;
 }

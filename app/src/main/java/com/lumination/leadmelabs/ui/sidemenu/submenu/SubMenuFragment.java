@@ -1,12 +1,15 @@
 package com.lumination.leadmelabs.ui.sidemenu.submenu;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -50,23 +53,49 @@ public class SubMenuFragment extends Fragment {
     }
 
     private void setupButtons() {
-        MainActivity.feedback(view.findViewById(R.id.scene_button));
+        feedback(view.findViewById(R.id.scene_button));
         view.findViewById(R.id.scene_button).setOnClickListener(v -> loadFragment("Scenes", "scenes"));
 
-        MainActivity.feedback(view.findViewById(R.id.light_button));
+        feedback(view.findViewById(R.id.light_button));
         view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Control", "lights"));
 
-        MainActivity.feedback(view.findViewById(R.id.blind_button));
+        feedback(view.findViewById(R.id.blind_button));
         view.findViewById(R.id.blind_button).setOnClickListener(v -> loadFragment("Blind Controls", "blinds"));
 
-        MainActivity.feedback(view.findViewById(R.id.projector_button));
+        feedback(view.findViewById(R.id.projector_button));
         view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projectors"));
 
-        MainActivity.feedback(view.findViewById(R.id.ring_button));
+        feedback(view.findViewById(R.id.ring_button));
         view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "LED rings"));
 
-        MainActivity.feedback(view.findViewById(R.id.source_button));
+        feedback(view.findViewById(R.id.source_button));
         view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
+    }
+
+    /**
+     * Change the background of the selected view while a user is touching it.
+     * @param view A view which has an OnTouchListener added.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public void feedback(View view) {
+        view.setOnTouchListener((v, event) -> {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.setBackgroundResource(0);
+                    break;
+
+                case MotionEvent.ACTION_DOWN:
+                    v.setBackground(ResourcesCompat.getDrawable(
+                            MainActivity.getInstance().getResources(),
+                            R.drawable.icon_touch_event,
+                            null)
+                    );
+                    break;
+            }
+
+            return false;
+        });
     }
 
     /**
