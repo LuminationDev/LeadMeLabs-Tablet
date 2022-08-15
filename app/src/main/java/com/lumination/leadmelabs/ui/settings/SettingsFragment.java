@@ -19,6 +19,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
+import com.lumination.leadmelabs.utilities.WakeOnLan;
 
 public class SettingsFragment extends Fragment {
 
@@ -43,6 +44,11 @@ public class SettingsFragment extends Fragment {
 
         binding.setLifecycleOwner(this);
         binding.setSettings(mViewModel);
+
+        FlexboxLayout wakeUpNUCButton = view.findViewById(R.id.wake_up_nuc);
+        wakeUpNUCButton.setOnClickListener(v -> {
+            WakeOnLan.WakeNUCOnLan();
+        });
 
         FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);
         setNucAddressButton.setOnClickListener(v -> {

@@ -533,6 +533,9 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             reconnectDialog.dismiss();
             MainActivity.hasNotReceivedPing = 0;
+        });
+
+        reconnectDialog.setOnDismissListener(v -> {
             MainActivity.startNucPingMonitor();
         });
 

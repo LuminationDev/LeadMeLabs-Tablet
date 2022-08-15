@@ -13,6 +13,8 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceController;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.WakeOnLan;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -64,6 +66,10 @@ public class SceneStrategy extends AbstractApplianceStrategy {
             for (String cards : updates) {
                 ApplianceParentAdapter.getInstance().updateIfVisible(cards);
             }
+        }
+
+        if(appliance.room.equals(Constants.VR_ROOM) && appliance.name.equals("On")) {
+            WakeOnLan.WakeAll();
         }
     }
 }
