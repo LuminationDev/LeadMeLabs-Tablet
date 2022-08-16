@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
 
         hideStatusBar();
-        startLockTask();
 
         startNetworkService();
         loadNuc();
@@ -97,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         startNucPingMonitor();
+        startLockTask();
     }
 
     /**
