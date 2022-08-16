@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
      * Start any long running jobs.
      */
     private void scheduleJobs() {
-        LicenseJobService.schedule(this);
+//        LicenseJobService.schedule(this);
         RefreshJobService.schedule(this);
 //        UpdateJobService.schedule(this);
     }
