@@ -8,8 +8,10 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.room.RoomViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.io.IOException;
@@ -17,24 +19,35 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.List;
 
 public class WakeOnLan {
     /**
      * Turn on all computers in the currently selected room with the Wake On Lan function that
-     * extends from the NUC.
+     * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
      */
     public static void WakeAll() {
-        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+        String room = ViewModelProviders.of(MainActivity.getInstance()).get(RoomViewModel.class).getSelectedRoom().getValue();
+        List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
+
+        if(stations == null || room == null) {
+            return;
+        }
+
+        int[] stationIds = stations.stream().filter(station -> station.room.equals(room) || room.equals("All")).mapToInt(station -> station.id).toArray();
         String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+
         NetworkService.sendMessage("NUC," + stationIdsString,
                 "WOL",
                 "Startup" + ":"
                         + "computer" + ":"
                         + NetworkService.getIPAddress());
 
-        //Change all stations to turning on status
-        for (int stationId: stationIds ) {
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
+        //Change all stations to turning on status if not in wall mode
+        if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+            for (int stationId : stationIds) {
+                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
+            }
         }
     }
 
@@ -43,9 +56,8 @@ public class WakeOnLan {
      * turned on.
      */
     public static void WakeNUCOnLan() {
-        String mac = "7c-10-c9-40-18-98"; //TODO Load from saved Memory in the future
+        String mac = ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getNucMac().getValue();
 
-        Log.d("JavaWakeOnLan", "method started");
         if (mac == null) {
             Log.d("Mac error at wakeup", "mac = null");
             return;

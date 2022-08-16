@@ -45,9 +45,9 @@ public class SettingsFragment extends Fragment {
         binding.setLifecycleOwner(this);
         binding.setSettings(mViewModel);
 
-        FlexboxLayout wakeUpNUCButton = view.findViewById(R.id.wake_up_nuc);
-        wakeUpNUCButton.setOnClickListener(v -> {
-            WakeOnLan.WakeNUCOnLan();
+        FlexboxLayout nucDetails = view.findViewById(R.id.nuc_details);
+        nucDetails.setOnClickListener(v -> {
+            DialogManager.buildNucDetailsDialog(getContext());
         });
 
         FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);

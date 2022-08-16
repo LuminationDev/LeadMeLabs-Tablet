@@ -35,6 +35,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.lumination.leadmelabs.utilities.WakeOnLan;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -319,6 +320,42 @@ public class DialogManager {
             shutdownTimer.cancel();
             confirmDialog.dismiss();
         });
+    }
+
+    /**
+     * Build the set NUC dialog. A user is able to auto scan for nearby NUC's or input the IP address
+     * manually.
+     */
+    public static void buildNucDetailsDialog(Context context) {
+        View view = View.inflate(context, R.layout.dialog_nuc_details, null);
+        AlertDialog nucDetailsDialog = new AlertDialog.Builder(context).setView(view).create();
+
+        SettingsFragment.mViewModel.getNuc().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
+            TextView textView = view.findViewById(R.id.nuc_ip_address);
+            textView.setText(nucAddress);
+        });
+
+        SettingsFragment.mViewModel.getNucMac().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucMacAddress -> {
+            TextView textView = view.findViewById(R.id.nuc_mac_address);
+            textView.setText(nucMacAddress);
+        });
+
+        EditText newMacAddress = view.findViewById(R.id.nuc_address_input);
+        Button setAddress = view.findViewById(R.id.set_nuc_mac_button);
+        setAddress.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString());
+        });
+
+        Button wakeNuc = view.findViewById(R.id.wake_nuc_button);
+        wakeNuc.setOnClickListener(v -> {
+            if(SettingsFragment.mViewModel.getNucMac().getValue() != null) {
+                WakeOnLan.WakeNUCOnLan();
+            } else {
+                Toast.makeText(context, "NUC MAC address needs to be set.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        nucDetailsDialog.show();
     }
 
     /**
