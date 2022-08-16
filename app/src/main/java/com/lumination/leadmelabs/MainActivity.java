@@ -289,18 +289,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ApplianceFragment.mViewModel.getActiveAppliances();
 
-        if(appUpdateManager == null) {
-            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
-        }
-
-        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-            appUpdateInfo -> {
-                if (appUpdateInfo.updateAvailability()
-                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    // If an in-app update is already running, resume the update.
-                    UpdateJobService.runUpdate(appUpdateInfo);
-                }
-            }
-        );
+//        if(appUpdateManager == null) {
+//            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
+//        }
+//
+//        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+//            appUpdateInfo -> {
+//                if (appUpdateInfo.updateAvailability()
+//                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+//                    // If an in-app update is already running, resume the update.
+//                    UpdateJobService.runUpdate(appUpdateInfo);
+//                }
+//            }
+//        );
     }
 }
