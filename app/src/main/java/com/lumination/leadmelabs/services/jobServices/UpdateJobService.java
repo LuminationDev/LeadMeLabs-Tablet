@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.services.jobServices;
 
+import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -11,7 +12,6 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateOptions;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.lumination.leadmelabs.MainActivity;
@@ -79,6 +79,7 @@ public class UpdateJobService extends JobService {
 
     private static void checkForUpdate() {
         Log.i("Update", "Checking for update");
+
         // Returns an intent object that you use to check for an update.
         Task<AppUpdateInfo> appUpdateInfoTask = MainActivity.appUpdateManager.getAppUpdateInfo();
 
@@ -87,23 +88,31 @@ public class UpdateJobService extends JobService {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                     && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                 // Request the update.
-                try {
-                    MainActivity.appUpdateManager.startUpdateFlowForResult(
-                            appUpdateInfo,
-                            AppUpdateType.IMMEDIATE,
-                            MainActivity.getInstance(),
-                            Constants.UPDATE_REQUEST_CODE);
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
-                }
+                runUpdate(appUpdateInfo);
             }
-
-            Log.i("Update Availability", String.valueOf(appUpdateInfo.updateAvailability()));
-            Log.i("Update Priority", String.valueOf(appUpdateInfo.updatePriority()));
         });
 
         appUpdateInfoTask.addOnFailureListener(appUpdateInfo ->
-                Log.i("Update", "No update available: " + appUpdateInfo.toString())
+                Log.e("Update", "No update available: " + appUpdateInfo.toString())
         );
+    }
+
+    /**
+     * Run an update as an immediate update type.
+     * @param appUpdateInfo Information relating to the application update.
+     */
+    public static void runUpdate(AppUpdateInfo appUpdateInfo) {
+        //Unpin the screen for the update to proceed
+        MainActivity.UIHandler.postDelayed(() -> MainActivity.getInstance().stopLockTask(), 5000);
+
+        try {
+            MainActivity.appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    AppUpdateType.IMMEDIATE,
+                    MainActivity.getInstance(),
+                    Constants.UPDATE_REQUEST_CODE);
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
     }
 }

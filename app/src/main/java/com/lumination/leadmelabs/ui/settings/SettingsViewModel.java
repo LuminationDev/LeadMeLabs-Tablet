@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.services.NetworkService;
  */
 public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> nucAddress;
+    private MutableLiveData<String> nucMacAddress;
     private MutableLiveData<String> pinCode;
     private MutableLiveData<String> encryptionKey;
     private MutableLiveData<String> licenseKey;
@@ -68,6 +69,30 @@ public class SettingsViewModel extends AndroidViewModel {
         }
 
         return ipAddress;
+    }
+
+    /**
+     * Get the MAC Address that is saved for the NUC.
+     */
+    public LiveData<String> getNucMac() {
+        if (nucMacAddress == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_mac_address", Context.MODE_PRIVATE);
+            nucMacAddress = new MutableLiveData<>(sharedPreferences.getString("nuc_mac_address", null));
+        }
+
+        return nucMacAddress;
+    }
+
+    /**
+     * Set the MAC address of the NUC, this is used for a wake on lan command in case the NUC is
+     * ever down.
+     */
+    public void setNucMacAddress(String newValue) {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_mac_address", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("nuc_mac_address", newValue);
+        editor.apply();
+        nucMacAddress.setValue(newValue);
     }
 
     /**

@@ -7,17 +7,16 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
 
         hideStatusBar();
+
         startNetworkService();
         loadNuc();
 
@@ -103,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
      * Start any long running jobs.
      */
     private void scheduleJobs() {
-        LicenseJobService.schedule(this);
+//        LicenseJobService.schedule(this);
         RefreshJobService.schedule(this);
-        UpdateJobService.schedule(this);
+//        UpdateJobService.schedule(this);
     }
 
     public static void startNucPingMonitor() {
@@ -240,14 +240,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Restart the activity after an update.
+     */
+    private void restart() {
+        Intent intent = new Intent(this, MainActivity.class);
+        this.startActivity(intent);
+        this.finishAffinity();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.UPDATE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Log.e("Update", "Update flow success! Result code: " + resultCode);
+                // If the update succeeds, relaunch the application
+                restart();
+            }
+
+            if  (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Update cancelled, auto retry in 3 hours.", Toast.LENGTH_LONG).show();
+                UIHandler.postDelayed(this::startLockTask, 5000);
+
+            }
+
             if (resultCode != RESULT_OK) {
-                Log.e("Update", "Update flow failed! Result code: " + resultCode);
+                Toast.makeText(this, "Update failed, auto retry in 3 hours.", Toast.LENGTH_LONG).show();
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
+                UIHandler.postDelayed(this::startLockTask, 5000);
             }
         }
     }
@@ -267,22 +289,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ApplianceFragment.mViewModel.getActiveAppliances();
 
-        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-            appUpdateInfo -> {
-                if (appUpdateInfo.updateAvailability()
-                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                    // If an in-app update is already running, resume the update.
-                    try {
-                        appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                AppUpdateType.IMMEDIATE,
-                                this,
-                                Constants.UPDATE_REQUEST_CODE);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        );
+//        if(appUpdateManager == null) {
+//            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
+//        }
+//
+//        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+//            appUpdateInfo -> {
+//                if (appUpdateInfo.updateAvailability()
+//                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+//                    // If an in-app update is already running, resume the update.
+//                    UpdateJobService.runUpdate(appUpdateInfo);
+//                }
+//            }
+//        );
     }
 }
