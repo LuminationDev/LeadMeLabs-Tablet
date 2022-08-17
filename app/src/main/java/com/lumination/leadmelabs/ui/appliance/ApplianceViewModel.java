@@ -82,9 +82,9 @@ public class ApplianceViewModel extends ViewModel {
                     Appliance appliance;
 
                     if(type.equals(Constants.SCENE)) {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationBase"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
                     } else {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
+                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationBase"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
 
                         addAssociatedAppliances(type, current, appliance);
                     }
@@ -116,6 +116,7 @@ public class ApplianceViewModel extends ViewModel {
         if(type.equals(Constants.COMPUTER)) {
             Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
             if(temp != null) {
+                temp.automationBase = appliance.automationBase;
                 temp.automationGroup = appliance.automationGroup;
                 temp.automationId = appliance.automationId;
             }

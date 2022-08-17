@@ -10,6 +10,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
@@ -44,7 +45,7 @@ public class SceneStrategy extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                             //[0] Action
-                        + "0" + ":"                                 //[1] CBUS unit number
+                        + appliance.automationBase + ":"            //[1] CBUS unit number
                         + appliance.automationGroup + ":"           //[2] CBUS group address
                         + appliance.automationId  + ":"             //[3] CBUS unit address
                         + appliance.automationValue + ":"           //[4] New value for address
@@ -57,8 +58,10 @@ public class SceneStrategy extends AbstractApplianceStrategy {
         //Cancel/start the timer to get the latest updated cards
         ApplianceViewModel.delayLoadCall();
 
+        String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+
         //Check what sort of RecyclerView is active then update the card's appearance if visible
-        if(!Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
+        if((!Objects.equals(roomType, "All")  || ApplianceFragment.overrideRoom != null) && !ApplianceFragment.checkForEmptyRooms(roomType)) {
             for (String cards : updates) {
                 ApplianceAdapter.getInstance().updateIfVisible(cards);
             }

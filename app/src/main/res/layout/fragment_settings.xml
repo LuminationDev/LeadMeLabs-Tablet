@@ -57,7 +57,7 @@
                 app:alignItems="center"
                 android:padding="15dp"
                 android:layout_marginBottom="15dp"
-                android:visibility="gone">
+                android:visibility="visible">
                 <TextView
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"

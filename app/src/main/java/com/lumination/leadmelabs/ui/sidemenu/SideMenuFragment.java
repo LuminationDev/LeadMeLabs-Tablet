@@ -55,7 +55,7 @@ public class SideMenuFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
 
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setSideMenu(mViewModel);
         binding.setSettings(SettingsFragment.mViewModel);
 

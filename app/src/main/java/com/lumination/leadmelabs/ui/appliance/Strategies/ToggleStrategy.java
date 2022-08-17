@@ -39,7 +39,7 @@ public class ToggleStrategy  extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + "0" + ":"                             //[1] CBUS unit number
+                        + appliance.automationBase + ":"        //[1] CBUS unit number
                         + appliance.automationGroup + ":"       //[2] CBUS group address
                         + appliance.automationId  + ":"         //[3] CBUS unit address
                         + value + ":"                           //[4] New value for address

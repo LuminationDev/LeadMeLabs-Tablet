@@ -218,7 +218,7 @@ public class BlindStrategy extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + "0" + ":"                             //[1] CBUS unit number
+                        + blind.automationBase + ":"            //[1] CBUS unit number
                         + blind.automationGroup + ":"           //[2] CBUS group address
                         + blind.automationId  + ":"             //[3] CBUS unit address
                         + value + ":"                           //[4] New value for address
