@@ -63,7 +63,7 @@ public class RoomFragment extends Fragment {
         }
 
         mViewModel.getRooms().observe(getViewLifecycleOwner(), rooms -> {
-            if(rooms.size() > 0) {
+            if(rooms.size() > 1) {
                 view.findViewById(R.id.room_fragment).setVisibility(View.VISIBLE);
             } else {
                 view.findViewById(R.id.room_fragment).setVisibility(View.INVISIBLE);
@@ -147,6 +147,9 @@ public class RoomFragment extends Fragment {
         if(Objects.equals(currentType.getValue(), roomName)) {
             return;
         }
+
+        //Reset any overrides from the appliance adapters
+        ApplianceFragment.overrideRoom = null;
 
         mViewModel.setSelectedRoom(roomName);
         currentType.setValue(roomName);

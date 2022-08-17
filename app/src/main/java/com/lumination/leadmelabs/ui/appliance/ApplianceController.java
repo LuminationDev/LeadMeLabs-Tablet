@@ -231,6 +231,7 @@ public class ApplianceController {
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_power_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_power_off);
                 break;
+            case "Window Blinds":
             case "Blind Control":
                 if(status.equals(Constants.ACTIVE)) {
                     icon = new MutableLiveData<>(R.drawable.icon_appliance_blind_open);

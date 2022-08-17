@@ -23,6 +23,7 @@ public class Station implements Cloneable {
     public int theatreId;
     public boolean selected = false;
     public Appliance associated = null;
+    public int automationBase;
     public int automationGroup;
     public int automationId;
     private CountDownTimer timer;

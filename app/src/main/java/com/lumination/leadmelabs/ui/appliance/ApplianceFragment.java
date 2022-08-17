@@ -26,8 +26,10 @@ import com.lumination.leadmelabs.ui.room.RoomFragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ApplianceFragment extends Fragment {
     public static ApplianceViewModel mViewModel;
@@ -39,6 +41,7 @@ public class ApplianceFragment extends Fragment {
     public static ApplianceAdapter applianceAdapter;
 
     public static ArrayMap<String, ArrayList<Appliance>> rooms = new ArrayMap<>();
+    public static String overrideRoom = null;
 
     public FragmentApplianceBinding binding;
 
@@ -71,20 +74,22 @@ public class ApplianceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         TextView titleView = view.findViewById(R.id.appliance_title);
         titleView.setText(title);
 
+        String roomType = RoomFragment.currentType.getValue();
         //If all rooms are selected break the recycler views into children
-        if(Objects.equals(RoomFragment.currentType.getValue(), "All")) {
+        //Or if there is nothing present in other rooms display the single
+        if(Objects.equals(roomType, "All") && checkForEmptyRooms(roomType)) {
             loadMultiRecycler(view);
         } else {
             loadSingleRecycler(view);
         }
 
         //Only add objects that are of the same sub type as the supplied argument
-        mViewModel.getAppliances().observe(getViewLifecycleOwner(), this::reloadData);
+        mViewModel.getAppliances().observe(getViewLifecycleOwner(), active -> reloadData(active, view));
 
         mViewModel.getActiveAppliances().observe(getViewLifecycleOwner(), active -> {
             ApplianceViewModel.activeApplianceList = active;
@@ -136,6 +141,41 @@ public class ApplianceFragment extends Fragment {
     }
 
     /**
+     * Cycle through the appliances and check if there are any other objects in the room.
+     * @return A boolean representing if there are other rooms with appliances of the same type.
+     */
+    public static boolean checkForEmptyRooms(String roomType) {
+        Set<String> rooms = new HashSet<>();
+
+        //If the room is not all, return
+        if(!Objects.equals(roomType, "All")) {
+            return false;
+        }
+
+        List<Appliance> allAppliances = mViewModel.getAppliances().getValue();
+
+        if(allAppliances == null) {
+            return true;
+        }
+
+        for (Appliance appliance: allAppliances) {
+            if(appliance.type.equals(type.getValue())) {
+                rooms.add(appliance.room);
+            }
+        }
+
+        //Change the room type selected to the only room that exists
+        if(rooms.size() == 1) {
+            Object[] room = rooms.toArray();
+            overrideRoom = room[0].toString();
+        } else {
+            overrideRoom = null;
+        }
+
+        return rooms.size() > 1;
+    }
+
+    /**
      * If the lambda from observer does not access anything then it compiles as a singleton and
      * does not allow for movement between subpages. Instantiating a class bypasses this base
      * behaviour.
@@ -148,7 +188,9 @@ public class ApplianceFragment extends Fragment {
          *             to information changing.
          */
         public filler(HashMap<String, String> active) {
-            if(!Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
+            String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+
+            if((!Objects.equals(roomType, "All") || overrideRoom != null) && !checkForEmptyRooms(roomType)) {
                 for (String cards : active.keySet()) {
                     ApplianceAdapter.getInstance().updateIfVisible(cards);
                 }
@@ -175,16 +217,20 @@ public class ApplianceFragment extends Fragment {
                 .commitNow();
     }
 
-    private void reloadData(List<Appliance> appliances) {
+    private void reloadData(List<Appliance> appliances, View view) {
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+        if(overrideRoom != null) {
+            roomType = overrideRoom;
+        }
+
         if(roomType == null) {
             roomType = "All";
         }
 
-        if(roomType.equals("All")) {
+        if(roomType.equals("All") && checkForEmptyRooms(roomType)) {
             loadAllRoomData(appliances);
         } else {
-            loadSingleRoomData(appliances, roomType);
+            loadSingleRoomData(appliances, roomType, view);
         }
     }
 
@@ -214,7 +260,11 @@ public class ApplianceFragment extends Fragment {
      * @param appliances A list of all appliances which may be in the room.
      * @param roomType A string representing what room is being loaded.
      */
-    private void loadSingleRoomData(List<Appliance> appliances, String roomType) {
+    private void loadSingleRoomData(List<Appliance> appliances, String roomType, View view) {
+        if(applianceAdapter == null) {
+            loadSingleRecycler(view);
+        }
+
         ArrayList<Appliance> subtype = new ArrayList<>();
 
         for(Appliance appliance : appliances) {

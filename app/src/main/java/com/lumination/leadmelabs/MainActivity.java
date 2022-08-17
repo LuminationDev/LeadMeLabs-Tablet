@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -288,6 +289,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ApplianceFragment.mViewModel.getActiveAppliances();
+
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if(am.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_PINNED) {
+            startLockTask();
+        }
 
 //        if(appUpdateManager == null) {
 //            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
