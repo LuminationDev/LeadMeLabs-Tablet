@@ -52,6 +52,29 @@ public class WakeOnLan {
     }
 
     /**
+     * Turn on all computers in the currently selected room with the Wake On Lan function that
+     * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
+     */
+    public static void WakeStation(int stationId) {
+        List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
+
+        if(stations == null) {
+            return;
+        }
+
+        NetworkService.sendMessage("NUC," + stationId,
+                "WOL",
+                "Startup" + ":"
+                        + "computer" + ":"
+                        + NetworkService.getIPAddress());
+
+        //Change all stations to turning on status if not in wall mode
+        if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
+        }
+    }
+
+    /**
      * Send a Wake On Lan command from the Android Tablet aimed at the NUC so it can be remotely
      * turned on.
      */

@@ -6,7 +6,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
@@ -14,11 +17,19 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A scene can be re-triggered if active, as sub elements can be changed while a scene is
@@ -27,6 +38,55 @@ import java.util.Objects;
 public class SceneStrategy extends AbstractApplianceStrategy {
     @Override
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+        ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
+        ArrayList<JSONObject> stationsToTurnOn = new ArrayList<>();
+
+        if (appliance.stations != null && appliance.stations.length() > 0) {
+            for (int i = 0; i < appliance.stations.length(); i++) {
+                try {
+                    JSONObject station = appliance.stations.getJSONObject(i);
+                    if (!station.has("action")) {
+                        continue;
+                    }
+                    if (station.getString("action").equals("Off")) {
+                        stationsToTurnOff.add(station);
+                    }
+                    if (station.getString("action").equals("On")) {
+                        stationsToTurnOn.add(station);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String stationIdsString = String.join(", ", stationsToTurnOff.stream().map(station -> {
+                try {
+                    return station.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return "";
+            }).toArray(String[]::new));
+
+            BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    performAction(binding, appliance, finalResult, stationsToTurnOff, stationsToTurnOn);
+                } else {
+                    return;
+                }
+            };
+            if (stationsToTurnOff.size() > 0) {
+                // todo - handle station names in here
+                DialogManager.createConfirmationDialog("Confirm station shutdown", "Station(s) " + stationIdsString + " will shutdown. Please confirm this scene.", confirmShutdownCallback, "Cancel", "Confirm");
+                return;
+            }
+        }
+
+        performAction(binding, appliance, finalResult, stationsToTurnOff, stationsToTurnOn);
+    }
+
+    private void performAction(CardApplianceBinding binding, Appliance appliance, View finalResult, ArrayList<JSONObject> stationsToTurnOff, ArrayList<JSONObject> stationsToTurnOn)
+    {
         HashSet<String> updates = new HashSet<>();
         String type = "scene";
 
@@ -55,6 +115,28 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
 
+        if (stationsToTurnOff.size() > 0) {
+            String shutdownIdsString = String.join(", ", stationsToTurnOff.stream().map(station -> {
+                try {
+                    return station.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return "";
+            }).toArray(String[]::new));
+            NetworkService.sendMessage("Station," + shutdownIdsString, "CommandLine", "Shutdown");
+        }
+        if (stationsToTurnOn.size() > 0) {
+            stationsToTurnOn.forEach((station) -> {
+                try {
+                    WakeOnLan.WakeStation(Integer.parseInt(station.getString("id")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+
         //Cancel/start the timer to get the latest updated cards
         ApplianceViewModel.delayLoadCall();
 
@@ -69,10 +151,6 @@ public class SceneStrategy extends AbstractApplianceStrategy {
             for (String cards : updates) {
                 ApplianceParentAdapter.getInstance().updateIfVisible(cards);
             }
-        }
-
-        if(appliance.room.equals(Constants.VR_ROOM) && appliance.name.equals("On")) {
-            WakeOnLan.WakeAll();
         }
     }
 }

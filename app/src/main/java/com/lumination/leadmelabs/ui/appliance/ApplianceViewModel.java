@@ -79,13 +79,21 @@ public class ApplianceViewModel extends ViewModel {
                     JSONObject current = currentObjectList.getJSONObject(x);
                     rooms.add(current.getString("room"));
 
-                    Appliance appliance;
+                    Appliance appliance = new Appliance(
+                            type,
+                            current.getString("name"),
+                            current.getString("room"),
+                            current.getString("id"),
+                            current.getInt("automationBase"),
+                            current.getInt("automationGroup"),
+                            current.getInt("automationId"),
+                            type.equals(Constants.SCENE) ? current.getInt("automationValue") : 0
+                    );
+                    if (current.has("stations") && current.getJSONArray("stations").length() > 0) {
+                        appliance.setStations(current.getJSONArray("stations"));
+                    }
 
-                    if(type.equals(Constants.SCENE)) {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationBase"), current.getInt("automationGroup"), current.getInt("automationId"), current.getInt("automationValue"));
-                    } else {
-                        appliance = new Appliance(type, current.getString("name"), current.getString("room"), current.getString("id"), current.getInt("automationBase"), current.getInt("automationGroup"), current.getInt("automationId"), 0);
-
+                    if(!type.equals(Constants.SCENE)) {
                         addAssociatedAppliances(type, current, appliance);
                     }
                     st.add(appliance);

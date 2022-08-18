@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.utilities.Constants;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,6 +22,7 @@ public class Appliance {
     public int automationGroup;
     public int automationId;
     public int automationValue; //used for scenes
+    public JSONArray stations;
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
@@ -39,6 +42,10 @@ public class Appliance {
 
         icon = new MutableLiveData<>(null);
         status = new MutableLiveData<>(Constants.INACTIVE);
+    }
+
+    public void setStations(JSONArray stations) {
+        this.stations = stations;
     }
 
     /**
