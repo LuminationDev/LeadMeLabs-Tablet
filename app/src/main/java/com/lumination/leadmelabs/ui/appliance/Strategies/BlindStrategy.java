@@ -218,13 +218,8 @@ public class BlindStrategy extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + blind.automationBase + ":"            //[1] CBUS unit number
-                        + blind.automationGroup + ":"           //[2] CBUS group address
-                        + blind.automationId  + ":"             //[3] CBUS unit address
+                        + blind.id + ":"
                         + value + ":"                           //[4] New value for address
-                        + type + ":"                            //[5] Object type (computer, appliance, scene)
-                        + blind.room + ":"                      //[6] Appliance room
-                        + blind.id + ":"                        //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());       //[8] The IP address of the tablet
 
         if(isSceneCard) {

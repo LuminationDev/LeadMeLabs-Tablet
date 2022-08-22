@@ -146,9 +146,6 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Automation":
-                    if (additionalData.startsWith("Appliances")) {
-                        cbusActiveAppliances(additionalData);
-                    }
                     if (additionalData.startsWith("Update")) {
                         syncAppliances(additionalData);
                     }
@@ -232,22 +229,6 @@ public class UIUpdateManager {
     }
 
     /**
-     * Update the appliance list with the most active directly from the CBUS.
-     */
-    private static void cbusActiveAppliances(String jsonString) throws JSONException {
-        String requiredString = jsonString.substring(jsonString.indexOf("["), jsonString.indexOf("]") + 1);
-        JSONArray json = new JSONArray(requiredString);
-
-        MainActivity.runOnUI(() -> {
-            try {
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setActiveAppliances(json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    /**
      * Another tablet has set a new value for a CBUS object, determine what it was and what cards
      * need updating.
      * @param additionalData A string containing the values necessary to update the cards.
@@ -260,16 +241,20 @@ public class UIUpdateManager {
      */
     private static void syncAppliances(String additionalData) {
         String[] values = additionalData.split(":");
+        String id = values[1];
+        String value = values[2];
+        String ipAddress = values[3];
+        String group = id.split("-")[0];
 
-        switch(values[1]) {
+        switch(group) {
             case "computer":
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(values[3], values[4], values[5]);
+                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(id, value, ipAddress);
                 break;
             case "scene":
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(values[2], values[3]);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(id, value);
                 break;
             case "appliance":
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(values[3], values[4], values[5]);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(id, value, ipAddress);
                 break;
         }
     }

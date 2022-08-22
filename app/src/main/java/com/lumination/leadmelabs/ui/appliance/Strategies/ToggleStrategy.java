@@ -39,13 +39,8 @@ public class ToggleStrategy  extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + appliance.automationBase + ":"        //[1] CBUS unit number
-                        + appliance.automationGroup + ":"       //[2] CBUS group address
-                        + appliance.automationId  + ":"         //[3] CBUS unit address
-                        + value + ":"                           //[4] New value for address
-                        + type + ":"                            //[5] Object type (computer, appliance, scene)
-                        + appliance.room + ":"                  //[6] Appliance room
-                        + appliance.id + ":"                    //[7] CBUS object id/doubles as card id
+                        + appliance.id + ":"        //[1] CBUS unit number
+                        + value + ":"                  //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());       //[8] The IP address of the tablet
     }
 }

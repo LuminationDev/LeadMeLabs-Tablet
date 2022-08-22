@@ -82,12 +82,12 @@ public class ApplianceController {
 
         //This is applicable when first starting up the application
         if(ApplianceViewModel.activeScenes.getValue() != null) {
-            String sceneId = appliance.id.substring(0, appliance.id.length() - 1);
-            value = ApplianceViewModel.activeScenes.getValue().remove(sceneId);
+            String sceneId = appliance.id;
+            value = ApplianceViewModel.activeScenes.getValue().get(sceneId);
 
             if (appliance.name.contains("Blind") && value != null && !value.equals("0")) {
                 ApplianceViewModel.activeSceneList.put(appliance.name, appliance);
-            } else if(Objects.equals(value, String.valueOf(appliance.automationValue))) {
+            } else if(Objects.equals(value, "On")) {
                 ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
             }
         }
