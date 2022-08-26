@@ -11,6 +11,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
@@ -43,11 +44,14 @@ public class WakeOnLan {
                         + "computer" + ":"
                         + NetworkService.getIPAddress());
 
+
+        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+            return;
+        }
+
         //Change all stations to turning on status if not in wall mode
-        if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
-            for (int stationId : stationIds) {
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
-            }
+        for (int stationId : stationIds) {
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
         }
     }
 
