@@ -36,12 +36,11 @@ public class WakeOnLan {
         }
 
         int[] stationIds = stations.stream().filter(station -> station.room.equals(room) || room.equals("All")).mapToInt(station -> station.id).toArray();
-        String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+        String stationIdsString = String.join(",", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("NUC," + stationIdsString,
+        NetworkService.sendMessage("NUC",
                 "WOL",
-                "Startup" + ":"
-                        + "computer" + ":"
+                stationIdsString + ":"
                         + NetworkService.getIPAddress());
 
 
@@ -66,10 +65,9 @@ public class WakeOnLan {
             return;
         }
 
-        NetworkService.sendMessage("NUC," + stationId,
+        NetworkService.sendMessage("NUC",
                 "WOL",
-                "Startup" + ":"
-                        + "computer" + ":"
+                stationId + ":"
                         + NetworkService.getIPAddress());
 
         //Change all stations to turning on status if not in wall mode

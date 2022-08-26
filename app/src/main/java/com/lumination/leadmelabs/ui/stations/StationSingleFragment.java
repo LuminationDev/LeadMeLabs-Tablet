@@ -144,12 +144,8 @@ public class StationSingleFragment extends Fragment {
                 //Action : [cbus unit : group address : id address : value] : [type : room : id station]
                 NetworkService.sendMessage("NUC",
                         "WOL",
-                        station.macAddress + ":"            //[0] Station Mac address
-                                + 2 + ":"                               //[1] New value for address (for syncing purposes)
-                                + type + ":"                            //[2] Object type (computer, appliance, scene)
-                                + station.room + ":"                    //[3] Station room
-                                + station.id + ":"                      //[4] CBUS object id/doubles as card id
-                                + NetworkService.getIPAddress());       //[5] IP address of the tablet
+                        station.id + ":"
+                                + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
                     station.status = "Turning on";
@@ -176,7 +172,9 @@ public class StationSingleFragment extends Fragment {
                     cancelledShutdown = true;
                     String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
                     NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-                    DialogManager.shutdownTimer.cancel();
+                    if (DialogManager.shutdownTimer != null) {
+                        DialogManager.shutdownTimer.cancel();
+                    }
                     shutdownButton.setText("Shut Down Station");
                 }
             }

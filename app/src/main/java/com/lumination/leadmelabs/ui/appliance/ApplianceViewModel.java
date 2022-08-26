@@ -83,11 +83,7 @@ public class ApplianceViewModel extends ViewModel {
                     current.getString("type"),
                     current.getString("name"),
                     current.getString("room"),
-                    current.getString("id"),
-                    current.getInt("automationBase"),
-                    current.getInt("automationGroup"),
-                    current.getInt("automationId"),
-                    current.getString("type").equals(Constants.SCENE) ? current.getInt("automationValue") : 0
+                    current.getString("id")
             );
             if (current.has("stations") && !current.isNull("stations") && current.getJSONArray("stations").length() > 0) {
                 appliance.setStations(current.getJSONArray("stations"));
@@ -163,11 +159,6 @@ public class ApplianceViewModel extends ViewModel {
 
         if(type.equals(Constants.COMPUTER)) {
             Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-            if(temp != null) {
-                temp.automationBase = appliance.automationBase;
-                temp.automationGroup = appliance.automationGroup;
-                temp.automationId = appliance.automationId;
-            }
         }
     }
 

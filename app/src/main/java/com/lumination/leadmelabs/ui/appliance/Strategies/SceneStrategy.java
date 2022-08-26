@@ -103,11 +103,12 @@ public class SceneStrategy extends AbstractApplianceStrategy {
         ApplianceViewModel.activeScenes.getValue().put(appliance.id, "On");
 
         //Action : [cbus unit : group address : id address : scene value] : [type : room : id scene]
+        String automationValue = appliance.id.substring(appliance.id.length() -1 , appliance.id.length());
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                             //[0] Action
                         + appliance.id + ":"            //[1] CBUS unit number
-                        + appliance.automationValue + ":"                      //[7] CBUS object id/doubles as card id
+                        + automationValue + ":"                      //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
 

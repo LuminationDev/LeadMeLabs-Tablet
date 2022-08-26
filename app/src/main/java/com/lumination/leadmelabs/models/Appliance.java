@@ -18,25 +18,17 @@ public class Appliance {
     public String room;
     public String id;
     public String value; //used for appliances
-    public int automationBase;
-    public int automationGroup;
-    public int automationId;
-    public int automationValue; //used for scenes
     public JSONArray stations;
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
     public MutableLiveData<String> status;
 
-    public Appliance(String type, String name, String room, String id, int automationBase, int automationGroup, int automationId, int automationValue) {
+    public Appliance(String type, String name, String room, String id) {
         this.type = type;
         this.name = name;
         this.room = room;
         this.id = id;
-        this.automationBase = automationBase;
-        this.automationGroup = automationGroup;
-        this.automationId = automationId;
-        this.automationValue = automationValue;
 
         setDescription(type);
 
