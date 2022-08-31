@@ -18,7 +18,6 @@ public class Appliance {
     public String room;
     public String id;
     public String value; //used for appliances
-    public JSONArray stations;
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
@@ -34,10 +33,6 @@ public class Appliance {
 
         icon = new MutableLiveData<>(null);
         status = new MutableLiveData<>(Constants.INACTIVE);
-    }
-
-    public void setStations(JSONArray stations) {
-        this.stations = stations;
     }
 
     /**

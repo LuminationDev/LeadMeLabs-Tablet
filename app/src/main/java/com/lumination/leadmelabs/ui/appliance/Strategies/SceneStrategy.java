@@ -38,54 +38,10 @@ import java.util.stream.Collectors;
 public class SceneStrategy extends AbstractApplianceStrategy {
     @Override
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
-        ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
-        ArrayList<JSONObject> stationsToTurnOn = new ArrayList<>();
-
-        if (appliance.stations != null && appliance.stations.length() > 0) {
-            for (int i = 0; i < appliance.stations.length(); i++) {
-                try {
-                    JSONObject station = appliance.stations.getJSONObject(i);
-                    if (!station.has("action")) {
-                        continue;
-                    }
-                    if (station.getString("action").equals("Off")) {
-                        stationsToTurnOff.add(station);
-                    }
-                    if (station.getString("action").equals("On")) {
-                        stationsToTurnOn.add(station);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            String stationIdsString = String.join(", ", stationsToTurnOff.stream().map(station -> {
-                try {
-                    return station.getString("id");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return "";
-            }).toArray(String[]::new));
-
-            BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
-                if (confirmationResult) {
-                    performAction(binding, appliance, finalResult, stationsToTurnOff, stationsToTurnOn);
-                } else {
-                    return;
-                }
-            };
-            if (stationsToTurnOff.size() > 0) {
-                // todo - handle station names in here
-                DialogManager.createConfirmationDialog("Confirm station shutdown", "Station(s) " + stationIdsString + " will shutdown. Please confirm this scene.", confirmShutdownCallback, "Cancel", "Confirm");
-                return;
-            }
-        }
-
-        performAction(binding, appliance, finalResult, stationsToTurnOff, stationsToTurnOn);
+        performAction(binding, appliance, finalResult);
     }
 
-    private void performAction(CardApplianceBinding binding, Appliance appliance, View finalResult, ArrayList<JSONObject> stationsToTurnOff, ArrayList<JSONObject> stationsToTurnOn)
+    private void performAction(CardApplianceBinding binding, Appliance appliance, View finalResult)
     {
         HashSet<String> updates = new HashSet<>();
         String type = "scene";
@@ -110,29 +66,6 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                         + appliance.id + ":"            //[1] CBUS unit number
                         + automationValue + ":"                      //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
-
-
-        if (stationsToTurnOff.size() > 0) {
-            String shutdownIdsString = String.join(", ", stationsToTurnOff.stream().map(station -> {
-                try {
-                    return station.getString("id");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return "";
-            }).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + shutdownIdsString, "CommandLine", "Shutdown");
-        }
-        if (stationsToTurnOn.size() > 0) {
-            stationsToTurnOn.forEach((station) -> {
-                try {
-                    WakeOnLan.WakeStation(Integer.parseInt(station.getString("id")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-
 
         //Cancel/start the timer to get the latest updated cards
         ApplianceViewModel.delayLoadCall();

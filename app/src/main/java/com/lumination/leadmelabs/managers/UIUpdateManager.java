@@ -243,7 +243,7 @@ public class UIUpdateManager {
         String[] values = additionalData.split(":");
         String id = values[1];
         String value = values[2];
-        String ipAddress = values[3];
+        String ipAddress = values.length > 3 ? values[3] : null;
         String group = id.split("-")[0];
 
         switch(group) {

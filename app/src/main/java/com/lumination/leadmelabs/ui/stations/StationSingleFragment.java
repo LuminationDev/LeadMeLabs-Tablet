@@ -137,8 +137,6 @@ public class StationSingleFragment extends Fragment {
             if (station.status.equals("Off")) {
                 station.powerStatusCheck();
 
-                String type = "computer";
-
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
                 //Action : [cbus unit : group address : id address : value] : [type : room : id station]
