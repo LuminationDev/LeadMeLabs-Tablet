@@ -121,7 +121,7 @@ public class BlindStrategy extends AbstractApplianceStrategy {
             params.leftMargin = Helpers.convertDpToPx(110) + 200 + 70; //sub menu + full regular menu + card spacing
         }
 
-        params.rightMargin = 45;
+        params.rightMargin = 45 + 80 + 45;
         params.topMargin = out[1];
 
         //Add the blind card to the background view
