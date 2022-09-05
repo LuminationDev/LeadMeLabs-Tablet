@@ -118,10 +118,10 @@ public class BlindStrategy extends AbstractApplianceStrategy {
         if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
             params.leftMargin = Helpers.convertDpToPx(110) + 275 + 70; //sub menu + regular menu + card spacing
         } else {
-            params.leftMargin = Helpers.convertDpToPx(110) + 200 + 70; //sub menu + full regular menu + card spacing
+            params.leftMargin = Helpers.convertDpToPx(110) + 175 + 70; //sub menu + full regular menu + card spacing
         }
 
-        params.rightMargin = 45;
+        params.rightMargin = 45 + 125; //card spacing + container end margin
         params.topMargin = out[1];
 
         //Add the blind card to the background view
