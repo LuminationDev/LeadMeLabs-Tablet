@@ -332,7 +332,7 @@ public class ApplianceViewModel extends ViewModel {
      * through the multi adapters.
      */
     private void updateIfVisible(String id) {
-        if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
+        if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All") && ApplianceFragment.checkForEmptyRooms(RoomFragment.mViewModel.getSelectedRoom().getValue())) {
             if(ApplianceParentAdapter.getInstance() != null) {
                 ApplianceParentAdapter.getInstance().updateIfVisible(id);
             }

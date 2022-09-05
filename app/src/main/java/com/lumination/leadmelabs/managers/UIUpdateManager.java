@@ -253,7 +253,11 @@ public class UIUpdateManager {
             case "scene":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(id, value);
                 break;
-            case "appliance":
+            case "projectors":
+            case "LED rings":
+            case "lights":
+            case "sources":
+            case "blinds":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(id, value, ipAddress);
                 break;
         }
