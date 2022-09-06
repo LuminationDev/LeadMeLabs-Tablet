@@ -38,6 +38,45 @@ import java.util.stream.Collectors;
 public class SceneStrategy extends AbstractApplianceStrategy {
     @Override
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+
+        ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
+
+        if (appliance.stations != null && appliance.stations.length() > 0) {
+            for (int i = 0; i < appliance.stations.length(); i++) {
+                try {
+                    JSONObject station = appliance.stations.getJSONObject(i);
+                    if (!station.has("action")) {
+                        continue;
+                    }
+                    if (station.getString("action").equals("Off")) {
+                        stationsToTurnOff.add(station);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String stationIdsString = String.join(", ", stationsToTurnOff.stream().map(station -> {
+                try {
+                    return station.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return "";
+            }).toArray(String[]::new));
+
+            BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    performAction(binding, appliance, finalResult);
+                } else {
+                    return;
+                }
+            };
+            if (stationsToTurnOff.size() > 0) {
+                DialogManager.createConfirmationDialog("Confirm station shutdown", "Station(s) " + stationIdsString + " will shutdown. Please confirm this scene.", confirmShutdownCallback, "Cancel", "Confirm");
+                return;
+            }
+        }
         performAction(binding, appliance, finalResult);
     }
 
