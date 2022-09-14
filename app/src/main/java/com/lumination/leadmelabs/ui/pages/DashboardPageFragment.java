@@ -1,5 +1,8 @@
 package com.lumination.leadmelabs.ui.pages;
 
+import static android.content.Context.BATTERY_SERVICE;
+
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +49,10 @@ public class DashboardPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_dashboard, container, false);
         childManager = getChildFragmentManager();
+        TextView batteryLevelView = view.findViewById(R.id.battery_level);
+        BatteryManager bm = (BatteryManager) getContext().getSystemService(BATTERY_SERVICE);
+        batteryLevelView.setText("Battery level: " + bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) + "%");
+        MainActivity.batteryLevelReceiver.setBatteryTextView(batteryLevelView);
         return view;
     }
 

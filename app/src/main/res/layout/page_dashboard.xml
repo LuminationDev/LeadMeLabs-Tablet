@@ -32,6 +32,13 @@
                 android:text="Tuesday 26th April 2022"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/battery_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Battery level: 0%"
+                />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
