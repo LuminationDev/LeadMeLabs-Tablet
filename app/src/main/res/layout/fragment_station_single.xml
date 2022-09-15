@@ -64,17 +64,17 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/station_single_menu_button"
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:elevation="0dp"
-                        app:rippleColor="@color/grey"
-                        android:stateListAnimator="@null"
-                        android:textColor="@color/blue_darkest"
-                        app:cornerRadius="2dp"
                         android:backgroundTint="@android:color/transparent"
+                        android:drawableRight="@drawable/icon_cross"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null"
                         android:textAllCaps="false"
-                        android:drawableRight="@drawable/icon_cross" />
+                        android:textColor="@color/blue_darkest"
+                        android:visibility="gone"
+                        app:cornerRadius="2dp"
+                        app:rippleColor="@color/grey" />
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -234,18 +234,16 @@
                             app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/ping_station"
+                            style="@style/StationSingleButton"
+                            android:drawableTop="@drawable/ic_identify_station"
+                            android:text="@string/identify_station_lower" />
+
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/enter_url"
                             style="@style/StationSingleButton"
                             android:drawableTop="@drawable/ic_launch_website"
                             android:text="@string/launch_website_lower" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/station_restart_vr"
-                            style="@style/StationSingleButton"
-                            android:backgroundTint="@color/orange"
-                            android:drawableTop="@drawable/ic_restart"
-                            android:text="@string/restart_vr_system"
-                            app:rippleColor="@color/orange_light" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_restart_session"
@@ -256,10 +254,12 @@
                             app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/ping_station"
+                            android:id="@+id/station_restart_vr"
                             style="@style/StationSingleButton"
-                            android:drawableTop="@drawable/ic_identify_station"
-                            android:text="@string/identify_station_lower" />
+                            android:backgroundTint="@color/orange"
+                            android:drawableTop="@drawable/ic_restart"
+                            android:text="@string/restart_vr_system"
+                            app:rippleColor="@color/orange_light" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/shutdown_station"
