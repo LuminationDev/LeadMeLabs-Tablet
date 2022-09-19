@@ -31,6 +31,8 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:drawablePadding="-25dp"
+            android:textSize="13dp"
+            android:text="99"
             android:drawableTop="@drawable/ic_battery_level_green"
             />
     </com.google.android.flexbox.FlexboxLayout>

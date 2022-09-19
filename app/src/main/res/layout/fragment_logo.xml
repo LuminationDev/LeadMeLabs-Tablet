@@ -8,6 +8,8 @@
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
+    android:layout_marginBottom="26dp"
+    android:paddingBottom="26dp"
     tools:context=".ui.logo.LogoFragment">
 
     <ImageView
