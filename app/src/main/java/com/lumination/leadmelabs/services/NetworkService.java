@@ -41,6 +41,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import io.sentry.Sentry;
+
 /**
  * A service responsible for the receiving and sending of messages.
  */
@@ -170,7 +172,8 @@ public class NetworkService extends Service {
                         //blocks the thread until client is accepted
                         clientSocket = mServerSocket.accept();
                     } catch (IOException e) {
-                        throw new RuntimeException("Error creating client", e);
+                        Sentry.captureException(e);
+                        return;
                     }
 
                     Log.d(TAG, "run: client connected: " + clientSocket.toString());

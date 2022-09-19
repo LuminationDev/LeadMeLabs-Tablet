@@ -15,10 +15,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="75dp"/>
 
-    <ImageView
-        style="@style/LogoImage"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/logo" />
+    <RelativeLayout
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/system_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
