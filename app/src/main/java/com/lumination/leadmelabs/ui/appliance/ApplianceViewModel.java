@@ -85,6 +85,9 @@ public class ApplianceViewModel extends ViewModel {
                     current.getString("room"),
                     current.getString("id")
             );
+            if (current.has("stations") && !current.isNull("stations") && current.getJSONArray("stations").length() > 0) {
+                appliance.setStations(current.getJSONArray("stations"));
+            }
             if (current.has("value") && !current.isNull("value")) {
                 appliance.value = current.getString("value");
             }
