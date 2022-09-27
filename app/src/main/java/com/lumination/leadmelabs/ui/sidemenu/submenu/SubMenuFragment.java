@@ -2,23 +2,36 @@ package com.lumination.leadmelabs.ui.sidemenu.submenu;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class SubMenuFragment extends Fragment {
 
@@ -35,7 +48,6 @@ public class SubMenuFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_menu_sub, container, false);
         binding = DataBindingUtil.bind(view);
 
-        setupButtons();
         return view;
     }
 
@@ -46,30 +58,117 @@ public class SubMenuFragment extends Fragment {
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setSubMenu(mViewModel);
 
-        //load the default fragment
+        mViewModel.getSubObjects().observe(getViewLifecycleOwner(), this::createSubObjects);
+
         mViewModel.setSelectedPage("scenes");
         currentType = "scenes";
         currentIcon.setValue(R.drawable.icon_empty_scenes);
     }
 
-    private void setupButtons() {
-        feedback(view.findViewById(R.id.scene_button));
-        view.findViewById(R.id.scene_button).setOnClickListener(v -> loadFragment("Scenes", "scenes"));
+    /**
+     * For each appliance type that is sent through, create a Submenu option for it, appending it
+     * to the menu with functionality.
+     * @param applianceTypes A HashSet containing the different appliance types.
+     */
+    private void createSubObjects(HashSet<String> applianceTypes) {
+        if(applianceTypes.size() > 0) {
+            HashMap<String, TextView> options = new HashMap<>();
+            List<TextView> orderedOptions = new ArrayList<>();
 
-        feedback(view.findViewById(R.id.light_button));
-        view.findViewById(R.id.light_button).setOnClickListener(v -> loadFragment("Lighting Control", "lights"));
+            //Not sure if we want this moving forward
+            applianceTypes.remove("computers");
 
-        feedback(view.findViewById(R.id.blind_button));
-        view.findViewById(R.id.blind_button).setOnClickListener(v -> loadFragment("Blind Controls", "blinds"));
+            for(String type: applianceTypes) {
+                options.put(type, createObject(type));
+            }
 
-        feedback(view.findViewById(R.id.projector_button));
-        view.findViewById(R.id.projector_button).setOnClickListener(v -> loadFragment("Projector Controls", "projectors"));
+            //Organise the list into typical order
+            orderedOptions.add(options.remove("scenes"));
+            orderedOptions.add(options.remove("lights"));
 
-        feedback(view.findViewById(R.id.ring_button));
-        view.findViewById(R.id.ring_button).setOnClickListener(v -> loadFragment("LED Ring Controls", "LED rings"));
+            //Add the rest
+            for(Map.Entry<String, TextView> entry : options.entrySet()) {
+                orderedOptions.add(entry.getValue());
+            }
 
-        feedback(view.findViewById(R.id.source_button));
-        view.findViewById(R.id.source_button).setOnClickListener(v -> loadFragment("Source Controls", "sources"));
+            //Append the options
+            FlexboxLayout menu = view.findViewById(R.id.side_menu_options);
+            menu.removeAllViews();
+            for(TextView option: orderedOptions) {
+                if(option != null) {
+                    menu.addView(option);
+                }
+            }
+        }
+    }
+
+    /**
+     * Create a TextView layout that acts as the SubMenu option.
+     * @param type A string describing the type of object that requires a page.
+     * @return A TextView layout.
+     */
+    private TextView createObject(String type) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, Helpers.convertDpToPx(40));
+
+        TextView tv = new TextView(MainActivity.getInstance());
+        tv.setLayoutParams(params);
+        //Capitalise the first letter of the type
+        tv.setText(MessageFormat.format("{0}{1}", type.substring(0, 1).toUpperCase(), type.substring(1)));
+
+        //Scenes is always the first item selected
+        tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), type.equals("scenes") ? R.color.blue : R.color.black));
+
+        tv.setId(View.generateViewId());
+        tv.setPadding(Helpers.convertDpToPx(15), 0 , Helpers.convertDpToPx(15), 0);
+        tv.setGravity(Gravity.CENTER_VERTICAL);
+
+        tv.setOnClickListener(v -> {
+            loadFragment(getTitle(type), type);
+            changeHighlight();
+            tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
+        });
+        feedback(tv);
+
+        return tv;
+    }
+
+    /**
+     * Change the current highlighted option
+     */
+    private void changeHighlight() {
+        FlexboxLayout layout = view.findViewById(R.id.side_menu_options);
+        int count = layout.getChildCount();
+        TextView tv;
+        for(int i=0; i<count; i++) {
+            tv = (TextView) layout.getChildAt(i);
+            tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.black));
+        }
+    }
+
+    /**
+     * Determine the title of the fragment page that will result from a selected appliance type
+     * being selected for preview.
+     * @param type A string representing a type of appliance.
+     * @return A string representing the title of the subpage fragment.
+     */
+    private String getTitle(String type) {
+        switch (type) {
+            case "scenes":
+                return "Scenes";
+            case "lights":
+                return "Lighting Control";
+            case "blinds":
+                return "Blind Controls";
+            case "projectors":
+                return "Projector Controls";
+            case "LED rings":
+                return "LED Ring Controls";
+            case "sources":
+                return "Source Control";
+            default:
+                return null;
+        }
     }
 
     /**
