@@ -24,7 +24,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/appliance_card"
             style="@style/ApplianceCardContainer"
-            android:background="@drawable/transition_appliance_fade"
+            android:background="@drawable/transition_appliance_grey_to_blue"
             app:flexDirection="column"
             app:alignItems="flex_start"
             app:justifyContent="space_between"

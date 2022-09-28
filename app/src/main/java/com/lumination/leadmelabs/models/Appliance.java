@@ -46,17 +46,17 @@ public class Appliance {
     private void setDescription(String type) {
         //Special circumstance for the blind scene card
         if(name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
-            this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
+            this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOP"));
             return;
         }
 
         switch(type) {
             case "blinds":
-                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
+                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOP"));
                 break;
 
             case "sources":
-                this.description = new ArrayList<>(Arrays.asList("HDMI 1", "HDMI 2"));
+                this.description = new ArrayList<>(Arrays.asList("HDMI 1", "HDMI 2", "HDMI 3"));
                 break;
 
             case "scenes":
