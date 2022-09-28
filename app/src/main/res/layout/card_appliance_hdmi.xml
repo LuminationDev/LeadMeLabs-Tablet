@@ -26,10 +26,10 @@
 
                 <ImageView
                     android:id="@+id/icon_appliance"
-                    android:layout_width="64dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="64dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/icon_appliance_blind_closed"
+                    android:background="@drawable/icon_appliance_source_1"
                     android:contentDescription="@string/scene_icon" />
 
                 <LinearLayout
@@ -68,7 +68,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/first_option"
                     style="@style/BlindButton"
-                    android:text="Open"
+                    android:text="HDMI 1"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
                     app:rippleColor="@color/grey_medium" />
@@ -76,7 +76,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/second_option"
                     style="@style/BlindButton"
-                    android:text="Stop"
+                    android:text="HDMI 2"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
                     app:rippleColor="@color/grey_medium" />
@@ -84,7 +84,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/third_option"
                     style="@style/BlindButton"
-                    android:text="Close"
+                    android:text="HDMI 3"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="100dp"
                     app:rippleColor="@color/grey_medium" />

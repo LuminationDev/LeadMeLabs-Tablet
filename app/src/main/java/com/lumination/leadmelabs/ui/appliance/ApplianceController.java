@@ -12,6 +12,7 @@ import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.appliance.Strategies.BlindStrategy;
+import com.lumination.leadmelabs.ui.appliance.Strategies.HDMIStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.SceneStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.ToggleStrategy;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -45,7 +46,10 @@ public class ApplianceController {
                 strategy = new BlindStrategy(false);
                 break;
 
-            case "source":
+            case "sources":
+                strategy = new HDMIStrategy(false);
+                break;
+
             default:
                 strategy = new ToggleStrategy();
                 break;
@@ -128,6 +132,9 @@ public class ApplianceController {
 
         if(appliance.type.equals(Constants.BLIND) && Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
             status = Constants.STOPPED;
+        }
+        else if (appliance.type.equals(Constants.SOURCE) && Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.SOURCE_HDMI_3)) {
+            status = Constants.STOPPED;
         } else {
             status = ApplianceViewModel.activeApplianceList.containsKey(appliance.id) ? Constants.ACTIVE : Constants.INACTIVE;
         }
@@ -142,13 +149,13 @@ public class ApplianceController {
      */
     private void applianceTransition(String status, View cardView) {
         if(status.equals(Constants.ACTIVE)) {
-            applianceTransition(cardView, R.drawable.transition_appliance_fade);
+            applianceTransition(cardView, R.drawable.transition_appliance_grey_to_blue);
 
         } else if(status.equals(Constants.STOPPED)) {
-            applianceTransition(cardView, R.drawable.transition_blind_stopped);
+            applianceTransition(cardView, R.drawable.transition_appliance_none_to_navy);
 
         } else {
-            applianceTransition(cardView, R.drawable.transition_appliance_fade_active);
+            applianceTransition(cardView, R.drawable.transition_appliance_blue_to_grey);
         }
     }
 
@@ -167,27 +174,27 @@ public class ApplianceController {
     private void sceneTransition(String status, String id, View finalResult) {
         // just turned on
         if (latestOn.contains(id)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_fade, null));
+            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.startTransition(fadeTime);
             latestOn.remove(id);
 
             //just turned off
         } else if (latestOff.contains(id)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_fade_active, null));
+            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_blue_to_grey, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.startTransition(fadeTime);
             latestOff.remove(id);
 
             //already active
         } else if(status.equals(Constants.ACTIVE)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_fade_active, null));
+            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_blue_to_grey, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.resetTransition();
 
             //not active
         } else {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_fade, null));
+            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.resetTransition();
         }

@@ -16,7 +16,7 @@ import com.lumination.leadmelabs.utilities.Constants;
 /*
  * Toggle strategy that determines custom values for on and off.
  */
-public class ToggleStrategy  extends AbstractApplianceStrategy {
+public class ToggleStrategy extends AbstractApplianceStrategy {
     @Override
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
         String type = "appliance";
@@ -24,12 +24,12 @@ public class ToggleStrategy  extends AbstractApplianceStrategy {
 
         if(ApplianceViewModel.activeApplianceList.containsKey(appliance.id)) {
             binding.setStatus(new MutableLiveData<>(Constants.INACTIVE));
-            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_fade_active);
+            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_blue_to_grey);
             value = "0";
             ApplianceViewModel.activeApplianceList.remove(appliance.id);
         } else {
             binding.setStatus(new MutableLiveData<>(Constants.ACTIVE));
-            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_fade);
+            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_grey_to_blue);
             value = appliance.type.equals(Constants.LED) ? Constants.LED_ON_VALUE : Constants.APPLIANCE_ON_VALUE; //TODO this needs to be scalable
             ApplianceViewModel.activeApplianceList.put(appliance.id, value);
         }

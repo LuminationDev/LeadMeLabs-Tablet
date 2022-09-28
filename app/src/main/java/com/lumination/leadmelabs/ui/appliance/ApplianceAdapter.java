@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 
