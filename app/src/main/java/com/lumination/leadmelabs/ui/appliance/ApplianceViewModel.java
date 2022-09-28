@@ -12,6 +12,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
@@ -67,6 +68,8 @@ public class ApplianceViewModel extends ViewModel {
      */
     @SuppressLint("NotifyDataSetChanged")
     public void setAppliances(JSONArray applianceList) throws JSONException {
+        HashSet<String> types = new HashSet<>(); // Save the different types for the submenu options
+
         List<Appliance> st = new ArrayList<>();
         HashSet<String> rooms = new HashSet<>();
 
@@ -77,6 +80,7 @@ public class ApplianceViewModel extends ViewModel {
         //Iterator over the outer loop - different appliance types
         for (int i = 0; i < applianceList.length(); i++) {
             JSONObject current = applianceList.getJSONObject(i);
+            types.add(current.getString("type"));
             rooms.add(current.getString("room"));
 
             Appliance appliance = new Appliance(
@@ -110,11 +114,8 @@ public class ApplianceViewModel extends ViewModel {
             rooms.add("All");
         }
 
-        RoomFragment.mViewModel.setRooms(rooms);
         ApplianceFragment.applianceCount.setValue(st.size());
         appliances.setValue(st);
-
-
 
         //OVER RIDES THE APPLIANCE LIST SO THE BLIND SCENE IS NO LONGER IN IT
         activeAppliances.setValue(activeObjects);
@@ -123,6 +124,8 @@ public class ApplianceViewModel extends ViewModel {
         activeScenes.setValue(scenes);
         if(!init) {
             init = true;
+            RoomFragment.mViewModel.setRooms(rooms);
+            SubMenuFragment.mViewModel.setSubObjects(types);
 
             if(ApplianceAdapter.getInstance() != null) {
                 ApplianceAdapter.getInstance().notifyDataSetChanged();
@@ -141,9 +144,6 @@ public class ApplianceViewModel extends ViewModel {
                 updateIfVisible(cards);
             }
         }
-
-
-
     }
 
     /**
