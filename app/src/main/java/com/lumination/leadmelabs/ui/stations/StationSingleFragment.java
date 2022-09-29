@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -33,6 +34,7 @@ import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class StationSingleFragment extends Fragment {
@@ -109,6 +111,10 @@ public class StationSingleFragment extends Fragment {
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Steam", "Launch:" + binding.getSelectedStation().gameId);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                 DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
+                HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                    put("station_id", String.valueOf(binding.getSelectedStation().id));
+                }};
+                FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
             }
         });
 
@@ -116,6 +122,10 @@ public class StationSingleFragment extends Fragment {
         restartVr.setOnClickListener(v -> {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
             DialogManager.awaitStationRestartSession(new int[] { binding.getSelectedStation().id });
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(binding.getSelectedStation().id));
+            }};
+            FirebaseManager.logAnalyticEvent("station_vr_system_restarted", analyticsAttributes);
         });
 
         Button endGame = view.findViewById(R.id.station_end_session);

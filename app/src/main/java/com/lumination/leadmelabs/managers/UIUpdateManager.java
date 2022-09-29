@@ -16,6 +16,8 @@ import org.json.JSONException;
 
 import android.view.View;
 
+import java.util.HashMap;
+
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
@@ -77,6 +79,11 @@ public class UIUpdateManager {
                                 );
                             });
                         }
+
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("station_id", String.valueOf(station.id));
+                        }};
+                        FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
                     }
                     if (additionalData.startsWith("AlreadyLaunchingGame")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
@@ -99,6 +106,11 @@ public class UIUpdateManager {
                                         "A Steam error occurred on " + station.name + ". Check the station for more details."
                                 );
                             });
+
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
                         }
                     }
                     if (additionalData.startsWith("LostHeadset")) {
@@ -111,6 +123,11 @@ public class UIUpdateManager {
                                         station.name
                                 );
                             });
+
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("headset_disconnected", analyticsAttributes);
                         }
                     }
                     if (additionalData.startsWith("FoundHeadset")) {
@@ -120,6 +137,11 @@ public class UIUpdateManager {
                             DialogManager.closeOpenDialog(
                                     MainActivity.getInstance().getResources().getString(R.string.oh_no),
                                     station.name);
+
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("headset_reconnected", analyticsAttributes);
                         }
                     }
                     if (additionalData.startsWith("HeadsetTimeout")) {
@@ -142,6 +164,11 @@ public class UIUpdateManager {
                                         station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
                                 );
                             });
+
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
                         }
                     }
                     break;
@@ -151,6 +178,8 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("Update")) {
                         syncAppliances(additionalData);
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{}};
+                        FirebaseManager.logAnalyticEvent("appliances_updated", analyticsAttributes);
                     }
 
                     break;
@@ -188,6 +217,11 @@ public class UIUpdateManager {
                 case "session":
                     if (value.equals("Ended")) {
                         DialogManager.sessionEndedOnStation(station.id);
+
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("station_id", String.valueOf(station.id));
+                        }};
+                        FirebaseManager.logAnalyticEvent("session_ended", analyticsAttributes);
                     }
                     if (value.equals("Restarted")) {
                         DialogManager.sessionRestartedOnStation(station.id);
@@ -199,6 +233,12 @@ public class UIUpdateManager {
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);
+
+                    HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                        put("station_id", String.valueOf(station.id));
+                        put("volume_level", value);
+                    }};
+                    FirebaseManager.logAnalyticEvent("volume_changed", analyticsAttributes);
                     break;
                 case "gameId":
                     station.gameId = value;
@@ -210,6 +250,12 @@ public class UIUpdateManager {
                     station.gameName = value;
                     if (value.length() > 0 && !value.equals("No session running")) {
                         DialogManager.gameLaunchedOnStation(station.id);
+
+                        HashMap<String, String> analyticsAttributes2 = new HashMap<String, String>() {{
+                           put("experience_name", value);
+                           put("station_id", String.valueOf(station.id));
+                        }};
+                        FirebaseManager.logAnalyticEvent("experience_launched", analyticsAttributes2);
                     }
                     break;
                 case "steamApplications":

@@ -16,6 +16,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
@@ -25,6 +26,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -231,5 +233,13 @@ public class BlindStrategy extends AbstractApplianceStrategy {
             //Cancel/start the timer to get the latest updated cards
             ApplianceViewModel.delayLoadCall();
         }
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("appliance_type", blind.type);
+            put("appliance_room", blind.room);
+            put("appliance_new_value", blind.value);
+            put("appliance_action_type", "radio");
+        }};
+        FirebaseManager.logAnalyticEvent("appliance_value_changed", analyticsAttributes);
     }
 }
