@@ -1,5 +1,8 @@
 package com.lumination.leadmelabs.ui.pages;
 
+import static android.content.Context.BATTERY_SERVICE;
+
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
@@ -159,6 +163,7 @@ public class DashboardPageFragment extends Fragment {
         childManager.beginTransaction()
                 .replace(R.id.stations, StationsFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.system_status, SystemStatusFragment.class, null)
                 .replace(R.id.rooms, RoomFragment.class, null)
                 .commitNow();
     }

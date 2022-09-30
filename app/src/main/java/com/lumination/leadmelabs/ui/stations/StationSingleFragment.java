@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
@@ -28,8 +29,10 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.Arrays;
@@ -42,12 +45,14 @@ public class StationSingleFragment extends Fragment {
     public static StationsViewModel mViewModel;
     private FragmentStationSingleBinding binding;
     private static boolean cancelledShutdown = false;
+    public static FragmentManager childManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_station_single, container, false);
+        childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -72,6 +77,13 @@ public class StationSingleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            childManager.beginTransaction()
+                    .replace(R.id.logo, LogoFragment.class, null)
+                    .replace(R.id.system_status, SystemStatusFragment.class, null)
+                    .commitNow();
+        }
 
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);

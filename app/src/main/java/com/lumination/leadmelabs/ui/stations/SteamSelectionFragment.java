@@ -19,12 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +40,7 @@ public class SteamSelectionFragment extends Fragment {
     private static ArrayList<SteamApplication> steamApplicationList;
     private static int stationId = 0;
     private static FragmentSteamSelectionBinding binding;
+    public static FragmentManager childManager;
 
     public static void setStationId (int stationId) {
         SteamSelectionFragment.stationId = stationId;
@@ -58,6 +62,7 @@ public class SteamSelectionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_steam_selection, container, false);
+        childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -79,6 +84,13 @@ public class SteamSelectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            childManager.beginTransaction()
+                    .replace(R.id.logo, LogoFragment.class, null)
+                    .replace(R.id.system_status, SystemStatusFragment.class, null)
+                    .commitNow();
+        }
 
         GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
         steamApplicationAdapter = new SteamApplicationAdapter(getContext());

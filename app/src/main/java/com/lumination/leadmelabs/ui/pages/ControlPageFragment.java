@@ -14,6 +14,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 public class ControlPageFragment extends Fragment {
     public static FragmentManager childManager;
@@ -48,6 +49,7 @@ public class ControlPageFragment extends Fragment {
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(R.id.subpage, ApplianceFragment.class, args)
                 .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.system_status, SystemStatusFragment.class, null)
                 .replace(R.id.rooms, RoomFragment.class, null)
                 .addToBackStack("submenu:" + "scenes")
                 .commit();

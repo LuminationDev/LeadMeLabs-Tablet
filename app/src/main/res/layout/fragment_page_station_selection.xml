@@ -188,9 +188,8 @@
             android:textAllCaps="false" />
     </RelativeLayout>
 
-    <ImageView
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="@string/logo"
-        style="@style/LogoImage" />
+    <RelativeLayout
+        android:id="@+id/system_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

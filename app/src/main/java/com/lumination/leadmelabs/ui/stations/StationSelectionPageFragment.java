@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.ArrayList;
@@ -122,6 +123,7 @@ public class StationSelectionPageFragment extends Fragment {
     private void loadFragments() {
         childManager.beginTransaction()
                 .replace(R.id.station_selection_list_container, StationSelectionFragment.class, null)
+                .replace(R.id.system_status, SystemStatusFragment.class, null)
                 .commitNow();
     }
 }
