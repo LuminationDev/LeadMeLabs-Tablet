@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.managers;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -8,6 +9,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import io.sentry.Sentry;
 
 public class FirebaseManager {
     private static final String TAG = "Firebase Manager";
@@ -52,14 +58,25 @@ public class FirebaseManager {
 
     /**
      * Create a manual log, only enter the log if analytics is enabled.
-     * @param name A name to describe the what the event is.
      * @param event A FirebaseAnalytics.Event describing what a user has just interacted with.
      */
-    public static void logAnalyticEvent(String name, String event) {
-        if(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
-            mFirebaseAnalytics.logEvent(event, bundle);
+    public static void logAnalyticEvent(String event, Map<String, String> attributes) {
+        try {
+            Thread thread = new Thread(() -> {
+                if(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue()) {
+                    Bundle bundle = new Bundle();
+
+                    // add custom attributes
+                    for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+                        bundle.putString(attribute.getKey(), attribute.getValue());
+                    }
+
+                    mFirebaseAnalytics.logEvent(event, bundle);
+                }
+            });
+            thread.start();
+        } catch (Exception e) {
+            Sentry.captureException(e);
         }
     }
 

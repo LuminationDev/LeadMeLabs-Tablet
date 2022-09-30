@@ -355,6 +355,11 @@ public class DialogManager {
             countdownCallbackInterface.callback(0);
             shutdownTimer.cancel();
             confirmDialog.dismiss();
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_ids", stationIdsString);
+            }};
+            FirebaseManager.logAnalyticEvent("shutdown_cancelled", analyticsAttributes);
         });
     }
 

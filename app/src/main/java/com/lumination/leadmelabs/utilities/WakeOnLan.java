@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
@@ -20,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class WakeOnLan {
@@ -42,6 +44,11 @@ public class WakeOnLan {
                 "WOL",
                 stationIdsString + ":"
                         + NetworkService.getIPAddress());
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("station_ids", stationIdsString);
+        }};
+        FirebaseManager.logAnalyticEvent("stations_turned_on", analyticsAttributes);
 
 
         if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
@@ -69,6 +76,11 @@ public class WakeOnLan {
                 "WOL",
                 stationId + ":"
                         + NetworkService.getIPAddress());
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("station_id", String.valueOf(stationId));
+        }};
+        FirebaseManager.logAnalyticEvent("station_turned_on", analyticsAttributes);
 
         //Change all stations to turning on status if not in wall mode
         if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {

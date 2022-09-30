@@ -8,6 +8,7 @@ import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -121,5 +123,13 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                 ApplianceParentAdapter.getInstance().updateIfVisible(cards);
             }
         }
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("appliance_type", appliance.type);
+            put("appliance_room", appliance.room);
+            put("appliance_new_value", appliance.value);
+            put("appliance_action_type", "scene");
+        }};
+        FirebaseManager.logAnalyticEvent("scene_updated", analyticsAttributes);
     }
 }
