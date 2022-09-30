@@ -18,12 +18,14 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 public class ExtendedApplianceCard extends AbstractApplianceStrategy {
@@ -311,5 +313,12 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
             //Cancel/start the timer to get the latest updated cards
             ApplianceViewModel.delayLoadCall();
         }
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("appliance_type", appliance.type);
+            put("appliance_room", appliance.room);
+            put("appliance_new_value", appliance.value);
+            put("appliance_action_type", "radio");
+        }};
+        FirebaseManager.logAnalyticEvent("appliance_value_changed", analyticsAttributes);
     }
 }
