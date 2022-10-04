@@ -18,14 +18,11 @@ import android.widget.Toast;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.services.jobServices.LicenseJobService;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
-import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -210,6 +207,16 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Start the network service.
      */
@@ -218,6 +225,22 @@ public class MainActivity extends AppCompatActivity {
 
         Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
         startForegroundService(network_intent);
+    }
+
+    /**
+     * Start the network service.
+     */
+    public void restartNetworkService() {
+        if (!isServiceRunning(NetworkService.class)) {
+            return;
+        }
+        Log.d(TAG, "restartNetworkService: ");
+
+        stopNetworkService();
+
+        Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
+        startForegroundService(network_intent);
+        NetworkService.refreshNUCAddress();
     }
 
     /**

@@ -18,25 +18,17 @@ public class Appliance {
     public String room;
     public String id;
     public String value; //used for appliances
-    public int automationBase;
-    public int automationGroup;
-    public int automationId;
-    public int automationValue; //used for scenes
     public JSONArray stations;
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
     public MutableLiveData<String> status;
 
-    public Appliance(String type, String name, String room, String id, int automationBase, int automationGroup, int automationId, int automationValue) {
+    public Appliance(String type, String name, String room, String id) {
         this.type = type;
         this.name = name;
         this.room = room;
         this.id = id;
-        this.automationBase = automationBase;
-        this.automationGroup = automationGroup;
-        this.automationId = automationId;
-        this.automationValue = automationValue;
 
         setDescription(type);
 
@@ -54,17 +46,17 @@ public class Appliance {
     private void setDescription(String type) {
         //Special circumstance for the blind scene card
         if(name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
-            this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
+            this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOP"));
             return;
         }
 
         switch(type) {
             case "blinds":
-                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOPPED"));
+                this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOP"));
                 break;
 
             case "sources":
-                this.description = new ArrayList<>(Arrays.asList("HDMI 1", "HDMI 2"));
+                this.description = new ArrayList<>(Arrays.asList("HDMI 1", "HDMI 2", "HDMI 3"));
                 break;
 
             case "scenes":

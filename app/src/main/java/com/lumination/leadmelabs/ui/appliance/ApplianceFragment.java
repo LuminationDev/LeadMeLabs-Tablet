@@ -142,7 +142,7 @@ public class ApplianceFragment extends Fragment {
 
     /**
      * Cycle through the appliances and check if there are any other objects in the room.
-     * @return A boolean representing if there are other rooms with appliances of the same type.
+     * @return True; if there is more than 1 room with the same object type.
      */
     public static boolean checkForEmptyRooms(String roomType) {
         Set<String> rooms = new HashSet<>();
@@ -165,6 +165,10 @@ public class ApplianceFragment extends Fragment {
         }
 
         //Change the room type selected to the only room that exists
+        if(rooms.size() == 0) {
+            overrideRoom = "No Items";
+            return true;
+        }
         if(rooms.size() == 1) {
             Object[] room = rooms.toArray();
             overrideRoom = room[0].toString();
@@ -190,7 +194,8 @@ public class ApplianceFragment extends Fragment {
         public filler(HashMap<String, String> active) {
             String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
 
-            if((!Objects.equals(roomType, "All") || overrideRoom != null) && !checkForEmptyRooms(roomType)) {
+            boolean roomCheck = checkForEmptyRooms(roomType);
+            if((!Objects.equals(roomType, "All") || overrideRoom != null) && !roomCheck) {
                 for (String cards : active.keySet()) {
                     ApplianceAdapter.getInstance().updateIfVisible(cards);
                 }

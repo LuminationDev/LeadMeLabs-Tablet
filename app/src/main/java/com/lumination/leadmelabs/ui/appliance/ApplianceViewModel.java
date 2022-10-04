@@ -12,6 +12,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
@@ -38,6 +39,9 @@ public class ApplianceViewModel extends ViewModel {
     public static boolean init = false;
 
     public LiveData<List<Appliance>> getAppliances() {
+        if (activeScenes == null) {
+            activeScenes = new MutableLiveData<>();
+        }
         if (appliances == null) {
             appliances = new MutableLiveData<>();
             loadAppliances();
@@ -49,7 +53,6 @@ public class ApplianceViewModel extends ViewModel {
     public LiveData<HashMap<String, String>> getActiveAppliances() {
         if (activeAppliances == null) {
             activeAppliances = new MutableLiveData<>();
-            activeScenes = new MutableLiveData<>();
             loadActiveAppliances();
         }
 
@@ -63,114 +66,66 @@ public class ApplianceViewModel extends ViewModel {
      *                      to be controlled.
      * @throws JSONException If the JSON is not in the correct format an exception is thrown.
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setAppliances(JSONArray applianceList) throws JSONException {
+        HashSet<String> types = new HashSet<>(); // Save the different types for the submenu options
+
         List<Appliance> st = new ArrayList<>();
         HashSet<String> rooms = new HashSet<>();
 
+        HashMap<String, String> activeObjects = new HashMap<>();
+        HashMap<String, String> inactiveObjects = new HashMap<>();
+        HashMap<String, String> scenes = new HashMap<>();
+
         //Iterator over the outer loop - different appliance types
         for (int i = 0; i < applianceList.length(); i++) {
-            String type = applianceList.getJSONObject(i).getString("name");
+            JSONObject current = applianceList.getJSONObject(i);
+            types.add(current.getString("type"));
+            rooms.add(current.getString("room"));
 
-            JSONArray currentObjectList = applianceList.getJSONObject(i).getJSONArray("objects");
-
-            if(currentObjectList.length() > 0) {
-                //Iterator over the child objects
-                for(int x = 0; x < currentObjectList.length(); x++) {
-                    JSONObject current = currentObjectList.getJSONObject(x);
-                    rooms.add(current.getString("room"));
-
-                    Appliance appliance = new Appliance(
-                            type,
-                            current.getString("name"),
-                            current.getString("room"),
-                            current.getString("id"),
-                            current.getInt("automationBase"),
-                            current.getInt("automationGroup"),
-                            current.getInt("automationId"),
-                            type.equals(Constants.SCENE) ? current.getInt("automationValue") : 0
-                    );
-                    if (current.has("stations") && current.getJSONArray("stations").length() > 0) {
-                        appliance.setStations(current.getJSONArray("stations"));
-                    }
-
-                    if(!type.equals(Constants.SCENE)) {
-                        addAssociatedAppliances(type, current, appliance);
-                    }
-                    st.add(appliance);
-                }
+            Appliance appliance = new Appliance(
+                    current.getString("type"),
+                    current.getString("name"),
+                    current.getString("room"),
+                    current.getString("id")
+            );
+            if (current.has("stations") && !current.isNull("stations") && current.getJSONArray("stations").length() > 0) {
+                appliance.setStations(current.getJSONArray("stations"));
             }
+            if (current.has("value") && !current.isNull("value")) {
+                appliance.value = current.getString("value");
+            }
+            if (appliance.value.equals("0") || appliance.value.equals("")) {
+                inactiveObjects.put(appliance.id, "0");
+            } else {
+                activeObjects.put(appliance.id, appliance.value);
+            }
+            if (appliance.type.equals(Constants.SCENE) && appliance.value.equals("On")) {
+                scenes.put(appliance.id, appliance.value);
+            }
+
+            if(!current.getString("type").equals(Constants.SCENE)) {
+                addAssociatedAppliances(current.getString("type"), current, appliance);
+            }
+            st.add(appliance);
         }
 
         if(rooms.size() > 1) {
             rooms.add("All");
         }
 
-        RoomFragment.mViewModel.setRooms(rooms);
         ApplianceFragment.applianceCount.setValue(st.size());
         appliances.setValue(st);
-    }
-
-    /**
-     * Join any associated objects to the current appliance.
-     */
-    private void addAssociatedAppliances(String type, JSONObject current, Appliance appliance) throws JSONException {
-        if(type.equals(Constants.LED)) {
-            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-            if(temp != null) {
-                temp.associated = appliance;
-            }
-        }
-
-        if(type.equals(Constants.COMPUTER)) {
-            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-            if(temp != null) {
-                temp.automationBase = appliance.automationBase;
-                temp.automationGroup = appliance.automationGroup;
-                temp.automationId = appliance.automationId;
-            }
-        }
-    }
-
-    /**
-     * The result of calling the CBUS unit to find what objects are currently active. The JSON array
-     * received contains the full list of objects on the CBUS, sorting and filtering needs to be
-     * performed. It should only retrieve the scenes when first connecting. UpdateActiveApplianceList
-     * handles the tablet syncing.
-     * @param appliances A JSON received from the NUC containing all CBUS objects.
-     * @throws JSONException If the JSON is not in the correct format an exception is thrown.
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    public void setActiveAppliances(JSONArray appliances) throws JSONException {
-        HashMap<String, String> activeObjects = new HashMap<>();
-        HashMap<String, String> inactiveObjects = new HashMap<>();
-        HashMap<String, String> scenes = new HashMap<>();
-
-        for (int i = 0; i < appliances.length(); i++) {
-            if(appliances.getJSONObject(i).getString("is_user_parameter").equals("false")) {
-                if (appliances.getJSONObject(i).getJSONObject("data").has("target")) {
-                    if (!appliances.getJSONObject(i).getJSONObject("data").getString("target").equals("0")) {
-                        activeObjects.put(appliances.getJSONObject(i).getString("id"), appliances.getJSONObject(i).getJSONObject("data").getString("target"));
-                    } else {
-                        inactiveObjects.put(appliances.getJSONObject(i).getString("id"), "0");
-                    }
-                } else if (appliances.getJSONObject(i).getJSONObject("data").has("value")) {
-                    String value = appliances.getJSONObject(i).getJSONObject("data").getString("value");
-                    String id = appliances.getJSONObject(i).getString("id");
-
-                    if(!value.startsWith("-")) {
-                        scenes.put(id, value);
-                    }
-                }
-            }
-        }
 
         //OVER RIDES THE APPLIANCE LIST SO THE BLIND SCENE IS NO LONGER IN IT
         activeAppliances.setValue(activeObjects);
 
         //First connection from the Cbus, updates all Cards
+        activeScenes.setValue(scenes);
         if(!init) {
-            activeScenes.setValue(scenes);
             init = true;
+            RoomFragment.mViewModel.setRooms(rooms);
+            SubMenuFragment.mViewModel.setSubObjects(types);
 
             if(ApplianceAdapter.getInstance() != null) {
                 ApplianceAdapter.getInstance().notifyDataSetChanged();
@@ -188,6 +143,22 @@ public class ApplianceViewModel extends ViewModel {
             for(String cards : inactiveObjects.keySet()) {
                 updateIfVisible(cards);
             }
+        }
+    }
+
+    /**
+     * Join any associated objects to the current appliance.
+     */
+    private void addAssociatedAppliances(String type, JSONObject current, Appliance appliance) throws JSONException {
+        if(type.equals(Constants.LED)) {
+            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
+            if(temp != null) {
+                temp.associated = appliance;
+            }
+        }
+
+        if(type.equals(Constants.COMPUTER)) {
+            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
         }
     }
 
@@ -364,7 +335,7 @@ public class ApplianceViewModel extends ViewModel {
      * through the multi adapters.
      */
     private void updateIfVisible(String id) {
-        if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All")) {
+        if(Objects.equals(RoomFragment.mViewModel.getSelectedRoom().getValue(), "All") && ApplianceFragment.checkForEmptyRooms(RoomFragment.mViewModel.getSelectedRoom().getValue())) {
             if(ApplianceParentAdapter.getInstance() != null) {
                 ApplianceParentAdapter.getInstance().updateIfVisible(id);
             }

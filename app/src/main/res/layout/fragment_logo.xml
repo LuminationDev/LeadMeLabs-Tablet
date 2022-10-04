@@ -3,13 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/logo_fragment"
-    style="@style/LogoContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="26dp"
+    android:paddingBottom="26dp"
     tools:context=".ui.logo.LogoFragment">
 
     <ImageView
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/logo"
-        style="@style/LogoImage" />
+        style="@style/LogoImageWhite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

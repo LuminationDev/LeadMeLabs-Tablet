@@ -10,12 +10,13 @@ public class Constants {
     public static String LED = "LED rings";
     public static String BLIND = "blinds";
     public static String COMPUTER = "computers";
+    public static String SOURCE = "sources";
 
 
     //Status Constants
-    public static String ACTIVE = "active";
-    public static String INACTIVE = "inactive";
-    public static String STOPPED = "stopped";
+    public static final String ACTIVE = "active";
+    public static final String INACTIVE = "inactive";
+    public static final String STOPPED = "stopped";
 
 
     //Value Constants
@@ -33,11 +34,16 @@ public class Constants {
 
 
     //Scene Subtypes
+    //BLIND VALUES
     public static String BLIND_SCENE_SUBTYPE = "Blind";
     public static String BLIND_SCENE_CLOSE = "0";
     public static String BLIND_SCENE_STOPPED = "1";
     public static String BLIND_SCENE_OPEN = "2";
 
+    //HDMI VALUES
+    public static String SOURCE_HDMI_1 = "255";
+    public static String SOURCE_HDMI_2 = "0";
+    public static String SOURCE_HDMI_3 = "127";
 
     //Request Codes
     public static int UPDATE_REQUEST_CODE = 99;

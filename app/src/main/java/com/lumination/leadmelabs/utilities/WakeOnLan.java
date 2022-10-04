@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
@@ -20,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class WakeOnLan {
@@ -36,13 +38,17 @@ public class WakeOnLan {
         }
 
         int[] stationIds = stations.stream().filter(station -> station.room.equals(room) || room.equals("All")).mapToInt(station -> station.id).toArray();
-        String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+        String stationIdsString = String.join(",", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("NUC," + stationIdsString,
+        NetworkService.sendMessage("NUC",
                 "WOL",
-                "Startup" + ":"
-                        + "computer" + ":"
+                stationIdsString + ":"
                         + NetworkService.getIPAddress());
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("station_ids", stationIdsString);
+        }};
+        FirebaseManager.logAnalyticEvent("stations_turned_on", analyticsAttributes);
 
 
         if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
@@ -66,11 +72,15 @@ public class WakeOnLan {
             return;
         }
 
-        NetworkService.sendMessage("NUC," + stationId,
+        NetworkService.sendMessage("NUC",
                 "WOL",
-                "Startup" + ":"
-                        + "computer" + ":"
+                stationId + ":"
                         + NetworkService.getIPAddress());
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("station_id", String.valueOf(stationId));
+        }};
+        FirebaseManager.logAnalyticEvent("station_turned_on", analyticsAttributes);
 
         //Change all stations to turning on status if not in wall mode
         if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {

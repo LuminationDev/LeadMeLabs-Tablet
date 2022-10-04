@@ -4,9 +4,11 @@ import android.os.CountDownTimer;
 import android.widget.Toast;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import java.util.HashMap;
 import java.util.List;
 /**
  * Class used to identify different areas of the lab. This can be built out to identify different
@@ -35,12 +37,14 @@ public class Identifier {
                     return;
                 }
                 Station station = stations.get((stations.size() - 1) - index[0]);
-                NetworkService.sendMessage("Station," + station.id, "CommandLine", "IdentifyStation");
-                if(station.associated != null) {
-                    NetworkService.sendMessage("NUC", "Automation", "Script:0:127:1:" + station.associated.automationId);
-                }
+                NetworkService.sendMessage("NUC", "IdentifyStation", station.id + "");
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Successfully located " + station.name, Toast.LENGTH_SHORT).show();
                 index[0]--;
+
+                HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                    put("station_id", String.valueOf(station.id));
+                }};
+                FirebaseManager.logAnalyticEvent("identify_station", analyticsAttributes);
             }
 
             @Override

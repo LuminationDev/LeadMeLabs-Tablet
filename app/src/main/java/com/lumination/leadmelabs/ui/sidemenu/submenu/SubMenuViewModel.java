@@ -4,22 +4,24 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.lumination.leadmelabs.models.Station;
+
+import java.util.HashSet;
 import java.util.List;
 
 public class SubMenuViewModel extends ViewModel {
-    private MutableLiveData<List<String>> info;
+    private MutableLiveData<HashSet<String>> subObjects = new MutableLiveData<>();
     private MutableLiveData<String> selectedPage = new MutableLiveData<>();
 
-    public LiveData<List<String>> getInfo() {
-        if (info == null) {
-            info = new MutableLiveData<>();
-            loadInfo();
+    public LiveData<HashSet<String>> getSubObjects() {
+        if (subObjects == null) {
+            subObjects = new MutableLiveData<>(new HashSet<>()); //Create empty hashset
         }
-        return info;
+        return subObjects;
     }
 
-    private void loadInfo() {
-        // Do an asynchronous operation to fetch saved stations from NUC.
+    public void setSubObjects(HashSet<String> applianceTypes) {
+        subObjects.setValue(applianceTypes);
     }
 
     //Light is the default when opening the sub menu

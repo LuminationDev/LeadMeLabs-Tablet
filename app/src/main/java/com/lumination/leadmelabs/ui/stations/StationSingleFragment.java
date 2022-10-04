@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
@@ -24,15 +25,19 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class StationSingleFragment extends Fragment {
@@ -40,12 +45,14 @@ public class StationSingleFragment extends Fragment {
     public static StationsViewModel mViewModel;
     private FragmentStationSingleBinding binding;
     private static boolean cancelledShutdown = false;
+    public static FragmentManager childManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_station_single, container, false);
+        childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;
     }
@@ -70,6 +77,13 @@ public class StationSingleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState == null) {
+            childManager.beginTransaction()
+                    .replace(R.id.logo, LogoFragment.class, null)
+                    .replace(R.id.system_status, SystemStatusFragment.class, null)
+                    .commitNow();
+        }
 
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
@@ -109,6 +123,10 @@ public class StationSingleFragment extends Fragment {
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Steam", "Launch:" + binding.getSelectedStation().gameId);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                 DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
+                HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                    put("station_id", String.valueOf(binding.getSelectedStation().id));
+                }};
+                FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
             }
         });
 
@@ -116,6 +134,10 @@ public class StationSingleFragment extends Fragment {
         restartVr.setOnClickListener(v -> {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
             DialogManager.awaitStationRestartSession(new int[] { binding.getSelectedStation().id });
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(binding.getSelectedStation().id));
+            }};
+            FirebaseManager.logAnalyticEvent("station_vr_system_restarted", analyticsAttributes);
         });
 
         Button endGame = view.findViewById(R.id.station_end_session);
@@ -137,19 +159,13 @@ public class StationSingleFragment extends Fragment {
             if (station.status.equals("Off")) {
                 station.powerStatusCheck();
 
-                String type = "computer";
-
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
                 //Action : [cbus unit : group address : id address : value] : [type : room : id station]
                 NetworkService.sendMessage("NUC",
                         "WOL",
-                        station.macAddress + ":"            //[0] Station Mac address
-                                + 2 + ":"                               //[1] New value for address (for syncing purposes)
-                                + type + ":"                            //[2] Object type (computer, appliance, scene)
-                                + station.room + ":"                    //[3] Station room
-                                + station.id + ":"                      //[4] CBUS object id/doubles as card id
-                                + NetworkService.getIPAddress());       //[5] IP address of the tablet
+                        station.id + ":"
+                                + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
                     station.status = "Turning on";
@@ -176,7 +192,9 @@ public class StationSingleFragment extends Fragment {
                     cancelledShutdown = true;
                     String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
                     NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-                    DialogManager.shutdownTimer.cancel();
+                    if (DialogManager.shutdownTimer != null) {
+                        DialogManager.shutdownTimer.cancel();
+                    }
                     shutdownButton.setText("Shut Down Station");
                 }
             }

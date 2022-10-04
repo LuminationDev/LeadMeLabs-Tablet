@@ -7,16 +7,19 @@ import androidx.lifecycle.MutableLiveData;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 
+import java.util.HashMap;
+
 /*
  * Toggle strategy that determines custom values for on and off.
  */
-public class ToggleStrategy  extends AbstractApplianceStrategy {
+public class ToggleStrategy extends AbstractApplianceStrategy {
     @Override
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
         String type = "appliance";
@@ -24,12 +27,12 @@ public class ToggleStrategy  extends AbstractApplianceStrategy {
 
         if(ApplianceViewModel.activeApplianceList.containsKey(appliance.id)) {
             binding.setStatus(new MutableLiveData<>(Constants.INACTIVE));
-            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_fade_active);
+            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_blue_to_grey);
             value = "0";
             ApplianceViewModel.activeApplianceList.remove(appliance.id);
         } else {
             binding.setStatus(new MutableLiveData<>(Constants.ACTIVE));
-            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_fade);
+            ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_grey_to_blue);
             value = appliance.type.equals(Constants.LED) ? Constants.LED_ON_VALUE : Constants.APPLIANCE_ON_VALUE; //TODO this needs to be scalable
             ApplianceViewModel.activeApplianceList.put(appliance.id, value);
         }
@@ -39,13 +42,16 @@ public class ToggleStrategy  extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + appliance.automationBase + ":"        //[1] CBUS unit number
-                        + appliance.automationGroup + ":"       //[2] CBUS group address
-                        + appliance.automationId  + ":"         //[3] CBUS unit address
-                        + value + ":"                           //[4] New value for address
-                        + type + ":"                            //[5] Object type (computer, appliance, scene)
-                        + appliance.room + ":"                  //[6] Appliance room
-                        + appliance.id + ":"                    //[7] CBUS object id/doubles as card id
+                        + appliance.id + ":"        //[1] CBUS unit number
+                        + value + ":"                  //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());       //[8] The IP address of the tablet
+
+        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+            put("appliance_type", appliance.type);
+            put("appliance_room", appliance.room);
+            put("appliance_new_value", appliance.value);
+            put("appliance_action_type", "toggle");
+        }};
+        FirebaseManager.logAnalyticEvent("appliance_value_changed", analyticsAttributes);
     }
 }
