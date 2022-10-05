@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         instance = this;
-        updateSetup();
+//        updateSetup();
 
         hideStatusBar();
 
@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
         startLockTask();
     }
 
+    /**
+     * Setup the required listeners and variables for handling an in-app update.
+     */
     private void updateSetup() {
         appUpdateManager = AppUpdateManagerFactory.create(this);
         installStateUpdatedListener = state -> {
