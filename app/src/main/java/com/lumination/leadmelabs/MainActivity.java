@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,13 +17,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
+import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
     public static AppUpdateManager appUpdateManager;
+    private InstallStateUpdatedListener installStateUpdatedListener;
 
     /**
      * Allows runOnUIThread calls from anywhere in the program.
@@ -75,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         instance = this;
-        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
+        updateSetup();
 
         hideStatusBar();
 
@@ -95,6 +102,51 @@ public class MainActivity extends AppCompatActivity {
 
         startNucPingMonitor();
         startLockTask();
+    }
+
+    private void updateSetup() {
+        appUpdateManager = AppUpdateManagerFactory.create(this);
+        installStateUpdatedListener = state -> {
+            switch(state.installStatus()) {
+                case InstallStatus.PENDING:
+                    Toast.makeText(getApplicationContext(), "Download pending..", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case InstallStatus.DOWNLOADING:
+                    Toast.makeText(getApplicationContext(), "Downloading..", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case InstallStatus.DOWNLOADED:
+                    popupSnackBarForCompleteUpdate();
+                    break;
+
+                case InstallStatus.INSTALLED:
+                    removeInstallStateUpdateListener();
+                    break;
+
+                case InstallStatus.FAILED:
+                    Toast.makeText(getApplicationContext(), "Error: Download failed", Toast.LENGTH_LONG).show();
+                    break;
+
+                case InstallStatus.CANCELED:
+                    Toast.makeText(getApplicationContext(), "Error: Download cancelled", Toast.LENGTH_LONG).show();
+                    break;
+
+                case InstallStatus.INSTALLING:
+                case InstallStatus.UNKNOWN:
+                case InstallStatus.REQUIRES_UI_INTENT:
+                default:
+                    Log.d("Update", "Other state: " + state.installStatus());
+                    break;
+            }
+        };
+        appUpdateManager.registerListener(installStateUpdatedListener);
+    }
+
+    private void removeInstallStateUpdateListener() {
+        if (appUpdateManager != null) {
+            appUpdateManager.unregisterListener(installStateUpdatedListener);
+        }
     }
 
     /**
@@ -137,10 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentCount.setValue(fragmentManager.getBackStackEntryCount())
         );
 
-        //Load the side menu as a separate transaction as this is not kept on the back stack.
-        fragmentManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.class, null)
-                .commitNow();
+        Bundle args = new Bundle();
 
         //Loading the home screen
         if (ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue()) {
@@ -151,12 +200,19 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                     .commitNow();
+
+            args.putString("menuSize", "mini");
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.main, DashboardPageFragment.class, null)
                     .addToBackStack("menu:dashboard")
                     .commit();
         }
+
+        //Load the side menu as a separate transaction as this is not kept on the back stack.
+        fragmentManager.beginTransaction()
+                .replace(R.id.side_menu, SideMenuFragment.class, args)
+                .commitNow();
     }
 
     //TODO APPLIANCES DO NOT UPDATE IF A USER HAS NOT CLICKED ON ROOM CONTROLS TO START WITH
@@ -265,12 +321,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Restart the activity after an update.
+     * Present the user with an option to restart the application
      */
-    private void restart() {
-        Intent intent = new Intent(this, MainActivity.class);
-        this.startActivity(intent);
-        this.finishAffinity();
+    public static void popupSnackBarForCompleteUpdate() {
+        Snackbar.make(MainActivity.getInstance().findViewById(android.R.id.content).getRootView(), "Update is ready to install!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("RESTART", view -> {
+                    MainActivity.UIHandler.post(() -> MainActivity.getInstance().stopLockTask());
+                    if (appUpdateManager != null) {
+                        appUpdateManager.completeUpdate();
+                    }
+                })
+                .setActionTextColor(ResourcesCompat.getColor(MainActivity.getInstance().getResources(), R.color.orange, null))
+                .show();
     }
 
     @Override
@@ -278,9 +340,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.UPDATE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Log.e("Update", "Update flow success! Result code: " + resultCode);
+                Toast.makeText(this,"Update success!", Toast.LENGTH_LONG).show();
                 // If the update succeeds, relaunch the application
-                restart();
             }
 
             if  (resultCode == RESULT_CANCELED) {
@@ -318,18 +379,18 @@ public class MainActivity extends AppCompatActivity {
             startLockTask();
         }
 
-//        if(appUpdateManager == null) {
-//            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
-//        }
-//
-//        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-//            appUpdateInfo -> {
-//                if (appUpdateInfo.updateAvailability()
-//                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-//                    // If an in-app update is already running, resume the update.
-//                    UpdateJobService.runUpdate(appUpdateInfo);
-//                }
-//            }
-//        );
+        if(appUpdateManager == null) {
+            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
+        }
+
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+            appUpdateInfo -> {
+                if (appUpdateInfo.updateAvailability()
+                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    // If an in-app update is already running, resume the update.
+                    UpdateJobService.runUpdate(appUpdateInfo);
+                }
+            }
+        );
     }
 }

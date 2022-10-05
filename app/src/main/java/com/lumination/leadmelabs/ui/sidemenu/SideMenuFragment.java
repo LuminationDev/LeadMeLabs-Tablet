@@ -37,6 +37,7 @@ public class SideMenuFragment extends Fragment {
     private View view;
     private FragmentMenuSideBinding binding;
     private ViewGroup.LayoutParams layout;
+    private String menuSize;
     public static String currentType;
 
     @Nullable
@@ -46,6 +47,10 @@ public class SideMenuFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_menu_side, container, false);
         binding = DataBindingUtil.bind(view);
         layout = view.getLayoutParams();
+
+        Bundle bundle = getArguments();
+        menuSize = bundle != null ? bundle.getString("menuSize") : null;
+
         setupButtons();
         return view;
     }
@@ -61,6 +66,10 @@ public class SideMenuFragment extends Fragment {
 
         mViewModel.setSelectedIcon(settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard");
         currentType = settingsViewModel.getHideStationControls().getValue() ? "controls" : "dashboard";
+
+        if(menuSize != null) {
+            changeViewParams(150, 22);
+        }
 
         mViewModel.getInfo().observe(getViewLifecycleOwner(), info -> {
             // update UI elements

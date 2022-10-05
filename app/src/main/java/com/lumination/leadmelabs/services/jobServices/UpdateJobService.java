@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.services.jobServices;
 
-import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -10,10 +9,11 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.util.Log;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.utilities.Constants;
 
@@ -85,10 +85,15 @@ public class UpdateJobService extends JobService {
 
         // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            Log.e("Available", String.valueOf(appUpdateInfo.updateAvailability()));
+            Log.e("Version Code", String.valueOf(appUpdateInfo.availableVersionCode()));
+
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                 // Request the update.
                 runUpdate(appUpdateInfo);
+            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                MainActivity.popupSnackBarForCompleteUpdate();
             }
         });
 
@@ -102,13 +107,10 @@ public class UpdateJobService extends JobService {
      * @param appUpdateInfo Information relating to the application update.
      */
     public static void runUpdate(AppUpdateInfo appUpdateInfo) {
-        //Unpin the screen for the update to proceed
-        MainActivity.UIHandler.postDelayed(() -> MainActivity.getInstance().stopLockTask(), 5000);
-
         try {
             MainActivity.appUpdateManager.startUpdateFlowForResult(
                     appUpdateInfo,
-                    AppUpdateType.IMMEDIATE,
+                    AppUpdateType.FLEXIBLE,
                     MainActivity.getInstance(),
                     Constants.UPDATE_REQUEST_CODE);
         } catch (IntentSender.SendIntentException e) {
