@@ -37,6 +37,7 @@ public class SideMenuFragment extends Fragment {
     private View view;
     private FragmentMenuSideBinding binding;
     private ViewGroup.LayoutParams layout;
+    private String menuSize;
     public static String currentType;
 
     @Nullable
@@ -44,8 +45,15 @@ public class SideMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_menu_side, container, false);
+
+        Bundle bundle = getArguments();
+        menuSize = bundle != null ? bundle.getString("menuSize") : null;
         binding = DataBindingUtil.bind(view);
         layout = view.getLayoutParams();
+        if(menuSize != null) {
+            changeViewParams(150, 22);
+        }
+        
         setupButtons();
         return view;
     }
@@ -106,7 +114,7 @@ public class SideMenuFragment extends Fragment {
         View settingsBtn = view.findViewById(R.id.settings_button);
         buttonFeedback(settingsBtn, "settings");
         settingsBtn.setOnClickListener(v ->
-                DialogManager.confirmPinCode(this, "replace")
+            DialogManager.confirmPinCode(this, "replace")
         );
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->

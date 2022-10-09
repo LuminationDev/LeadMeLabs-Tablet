@@ -44,6 +44,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 public class MainActivity extends AppCompatActivity {
@@ -137,13 +138,11 @@ public class MainActivity extends AppCompatActivity {
                 fragmentCount.setValue(fragmentManager.getBackStackEntryCount())
         );
 
-        //Load the side menu as a separate transaction as this is not kept on the back stack.
-        fragmentManager.beginTransaction()
-                .replace(R.id.side_menu, SideMenuFragment.class, null)
-                .commitNow();
+        Bundle args = new Bundle();
 
         //Loading the home screen
         if (ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+            args.putString("menuSize", "mini");
             fragmentManager.beginTransaction()
                     .replace(R.id.main, ControlPageFragment.class, null)
                     .addToBackStack("menu:controls")
@@ -157,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
                     .addToBackStack("menu:dashboard")
                     .commit();
         }
+
+        //Load the side menu as a separate transaction as this is not kept on the back stack.
+        fragmentManager.beginTransaction()
+                .replace(R.id.side_menu, SideMenuFragment.class, args)
+                .replace(R.id.system_status, SystemStatusFragment.class, null)
+                .commitNow();
     }
 
     //TODO APPLIANCES DO NOT UPDATE IF A USER HAS NOT CLICKED ON ROOM CONTROLS TO START WITH

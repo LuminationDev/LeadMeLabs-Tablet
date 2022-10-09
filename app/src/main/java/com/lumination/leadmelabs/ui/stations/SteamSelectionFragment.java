@@ -27,7 +27,6 @@ import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +87,6 @@ public class SteamSelectionFragment extends Fragment {
         if (savedInstanceState == null) {
             childManager.beginTransaction()
                     .replace(R.id.logo, LogoFragment.class, null)
-                    .replace(R.id.system_status, SystemStatusFragment.class, null)
                     .commitNow();
         }
 

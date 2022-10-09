@@ -32,7 +32,6 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import java.util.Arrays;
@@ -81,7 +80,6 @@ public class StationSingleFragment extends Fragment {
         if (savedInstanceState == null) {
             childManager.beginTransaction()
                     .replace(R.id.logo, LogoFragment.class, null)
-                    .replace(R.id.system_status, SystemStatusFragment.class, null)
                     .commitNow();
         }
 

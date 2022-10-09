@@ -72,6 +72,7 @@ public class SystemStatusFragment extends Fragment {
                 }
             }
         };
+
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getContext().getSystemService(ConnectivityManager.class);
         connectivityManager.requestNetwork(networkRequest, networkCallback);

@@ -12,10 +12,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 public class SessionPageFragment extends Fragment {
     private View view;
@@ -48,7 +46,6 @@ public class SessionPageFragment extends Fragment {
                 .replace(R.id.stations, StationsFragment.class, null)
                 .replace(R.id.session_controls, SessionControlsFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
-                .replace(R.id.system_status, SystemStatusFragment.class, null)
                 .commitNow();
     }
 }

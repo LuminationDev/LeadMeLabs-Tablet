@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 public class SettingsPageFragment extends Fragment {
     private FragmentManager childManager;
@@ -43,7 +42,6 @@ public class SettingsPageFragment extends Fragment {
         childManager.beginTransaction()
                 .replace(R.id.settings_menu, SettingsFragment.class, null)
                 .replace(R.id.logo, LogoFragment.class, null)
-                .replace(R.id.system_status, SystemStatusFragment.class, null)
                 .commitNow();
     }
 }
