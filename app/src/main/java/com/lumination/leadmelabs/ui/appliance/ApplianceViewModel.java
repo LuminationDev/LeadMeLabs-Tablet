@@ -196,10 +196,8 @@ public class ApplianceViewModel extends ViewModel {
      * Update the necessary object based on the supplied Id.
      * @param id An int representing the Id of the appliance, relates directly to the Id in the
      *           supplied JSON file.
-     * @param room A string representing what room the appliance belongs to. Only applicable for the
-     *             scene subtype.
      */
-    public void updateActiveSceneList(String room, String id) {
+    public void updateActiveSceneList(String id) {
         if(appliances.getValue() == null) {
             getAppliances();
             loadActiveAppliances();
@@ -209,8 +207,12 @@ public class ApplianceViewModel extends ViewModel {
         //Detect whether the set has changed
         Appliance temp = null;
 
+        //Store the room value
+        String room = null;
+
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
+                room = appliance.room;
                 if(appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
                     temp = activeSceneList.put(appliance.name, appliance);
                 } else {
@@ -224,6 +226,7 @@ public class ApplianceViewModel extends ViewModel {
             updateIfVisible(id);
 
             if(temp != null) {
+                activeScenes.getValue().remove(temp.id);
                 updateIfVisible(temp.id);
             }
         }

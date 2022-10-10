@@ -2,15 +2,12 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.view.View;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceController;
@@ -18,20 +15,14 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.utilities.Constants;
-import com.lumination.leadmelabs.utilities.WakeOnLan;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * A scene can be re-triggered if active, as sub elements can be changed while a scene is
@@ -85,12 +76,10 @@ public class SceneStrategy extends AbstractApplianceStrategy {
     private void performAction(CardApplianceBinding binding, Appliance appliance, View finalResult)
     {
         HashSet<String> updates = new HashSet<>();
-        String type = "scene";
-
-        binding.setStatus(new MutableLiveData<>("active"));
-        Appliance last = ApplianceViewModel.activeSceneList.put(appliance.room, appliance);
+        Appliance last = ApplianceViewModel.activeSceneList.get(appliance.room);
 
         if(last != null && last != appliance) {
+            ApplianceViewModel.activeScenes.getValue().remove(last.id);
             ApplianceController.latestOff.add(last.id);
             updates.add(last.id);
         }
@@ -109,7 +98,7 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
         //Cancel/start the timer to get the latest updated cards
-        ApplianceViewModel.delayLoadCall();
+        //ApplianceViewModel.delayLoadCall();
 
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
 

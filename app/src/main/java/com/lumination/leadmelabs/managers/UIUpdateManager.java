@@ -297,7 +297,7 @@ public class UIUpdateManager {
                 ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(id, value, ipAddress);
                 break;
             case "scenes":
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(id, value);
+                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(id);
                 break;
             case "projectors":
             case "LED rings":
