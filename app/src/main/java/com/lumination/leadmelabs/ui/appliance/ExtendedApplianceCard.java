@@ -309,10 +309,6 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
                         + value + ":"                           //[4] New value for address
                         + NetworkService.getIPAddress());       //[8] The IP address of the tablet
 
-        if(this.isSceneCard) {
-            //Cancel/start the timer to get the latest updated cards
-            ApplianceViewModel.delayLoadCall();
-        }
         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
             put("appliance_type", appliance.type);
             put("appliance_room", appliance.room);

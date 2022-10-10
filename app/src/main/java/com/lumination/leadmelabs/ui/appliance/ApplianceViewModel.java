@@ -196,10 +196,8 @@ public class ApplianceViewModel extends ViewModel {
      * Update the necessary object based on the supplied Id.
      * @param id An int representing the Id of the appliance, relates directly to the Id in the
      *           supplied JSON file.
-     * @param room A string representing what room the appliance belongs to. Only applicable for the
-     *             scene subtype.
      */
-    public void updateActiveSceneList(String room, String id) {
+    public void updateActiveSceneList(String id) {
         if(appliances.getValue() == null) {
             getAppliances();
             loadActiveAppliances();
@@ -209,8 +207,12 @@ public class ApplianceViewModel extends ViewModel {
         //Detect whether the set has changed
         Appliance temp = null;
 
+        //Store the room value
+        String room = null;
+
         for(Appliance appliance : appliances.getValue()) {
             if(appliance.id.equals(id)) {
+                room = appliance.room;
                 if(appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE)) {
                     temp = activeSceneList.put(appliance.name, appliance);
                 } else {
@@ -224,33 +226,9 @@ public class ApplianceViewModel extends ViewModel {
             updateIfVisible(id);
 
             if(temp != null) {
+                activeScenes.getValue().remove(temp.id);
                 updateIfVisible(temp.id);
             }
-        }
-    }
-
-    private static final CountDownTimer timer = new CountDownTimer(2000, 1000) {
-        @Override
-        public void onTick(long l) {
-        }
-
-        @Override
-        public void onFinish() {
-            loadActiveAppliances();
-        }
-    };
-
-    /**
-     * Delay a call to the CBUS to get the active appliances, stops the unit from overloading if
-     * the scenes are switched rapidly as it cancels any previous call.
-     * Aim is to only run once (on the last update).
-     */
-    public static void delayLoadCall() {
-        try {
-            timer.cancel();
-            timer.start();
-        } catch(Exception e) {
-            Log.e("Error", e.toString());
         }
     }
 
