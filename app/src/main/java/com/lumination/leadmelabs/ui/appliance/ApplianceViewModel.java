@@ -232,31 +232,6 @@ public class ApplianceViewModel extends ViewModel {
         }
     }
 
-    private static final CountDownTimer timer = new CountDownTimer(2000, 1000) {
-        @Override
-        public void onTick(long l) {
-        }
-
-        @Override
-        public void onFinish() {
-            loadActiveAppliances();
-        }
-    };
-
-    /**
-     * Delay a call to the CBUS to get the active appliances, stops the unit from overloading if
-     * the scenes are switched rapidly as it cancels any previous call.
-     * Aim is to only run once (on the last update).
-     */
-    public static void delayLoadCall() {
-        try {
-            timer.cancel();
-            timer.start();
-        } catch(Exception e) {
-            Log.e("Error", e.toString());
-        }
-    }
-
     /**
      * Receiving a message from the NUC after another tablet has activated something on the CBUS.
      * Update the necessary object based on the supplied Id.

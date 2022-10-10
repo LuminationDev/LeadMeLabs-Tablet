@@ -97,9 +97,6 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                         + automationValue + ":"                      //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
-        //Cancel/start the timer to get the latest updated cards
-        //ApplianceViewModel.delayLoadCall();
-
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
 
         //Check what sort of RecyclerView is active then update the card's appearance if visible
