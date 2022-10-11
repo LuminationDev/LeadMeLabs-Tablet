@@ -156,10 +156,6 @@ public class ApplianceViewModel extends ViewModel {
                 temp.associated = appliance;
             }
         }
-
-        if(type.equals(Constants.COMPUTER)) {
-            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-        }
     }
 
     /**

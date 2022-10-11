@@ -284,6 +284,11 @@ public class ApplianceController {
                         new MutableLiveData<>(R.drawable.icon_appliance_projector_off);
                 break;
 
+            case "computers":
+                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_appliance_projector_on) :
+                        new MutableLiveData<>(R.drawable.icon_appliance_projector_off);
+                break;
+
             case "LED rings":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_appliance_ring_on) :
                         new MutableLiveData<>(R.drawable.icon_appliance_ring_off);

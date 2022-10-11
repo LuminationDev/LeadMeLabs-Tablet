@@ -293,13 +293,11 @@ public class UIUpdateManager {
         String group = id.split("-")[0];
 
         switch(group) {
-            case "computers":
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(id, value, ipAddress);
-                break;
             case "scenes":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveSceneList(id, value);
                 break;
             case "projectors":
+            case "computers":
             case "LED rings":
             case "lights":
             case "sources":
