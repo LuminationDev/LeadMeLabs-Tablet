@@ -138,6 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:backgroundTint="@color/blue"
+                android:includeFontPadding="false"
                 android:letterSpacing="0.02"
                 android:paddingHorizontal="50dp"
                 android:paddingVertical="10dp"
@@ -155,7 +156,8 @@
                 android:paddingVertical="10dp"
                 android:text="Cancel"
                 android:textAllCaps="false"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:includeFontPadding="false"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 

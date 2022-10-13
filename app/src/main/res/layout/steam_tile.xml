@@ -49,7 +49,8 @@
                 android:stateListAnimator="@null"
                 android:backgroundTint="@android:color/white"
                 android:textAllCaps="false"
-                android:text="Play"/>
+                android:text="Play"
+                android:includeFontPadding="false"/>
 
 <!--            <com.google.android.material.button.MaterialButton-->
 <!--                android:id="@+id/steam_info_button"-->

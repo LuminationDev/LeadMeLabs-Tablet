@@ -90,7 +90,8 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Update"/>
+            android:text="Update"
+            android:includeFontPadding="false"/>
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -141,6 +142,7 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Wake"/>
+            android:text="Wake"
+            android:includeFontPadding="false"/>
     </com.google.android.flexbox.FlexboxLayout>
 </com.google.android.flexbox.FlexboxLayout>

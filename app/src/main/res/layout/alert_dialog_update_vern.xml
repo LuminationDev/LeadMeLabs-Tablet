@@ -20,8 +20,8 @@
             android:layout_width="140dp"
             android:layout_height="100dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/vern_out_of_charge"
-            android:contentDescription="@string/vern_out_of_charge"
+            android:background="@drawable/vern_warning"
+            android:contentDescription="@string/vern_warning"
             android:orientation="horizontal" />
 
         <com.google.android.flexbox.FlexboxLayout

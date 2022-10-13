@@ -131,6 +131,31 @@ public class DialogManager {
     }
 
     /**
+     * Create a dialog box associated with a tablet update with a custom title and content based on
+     * the strings that are passed in.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     */
+    public static void createUpdateDialog(String titleText, String contentText) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_update_vern, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+        });
+
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(680, 680);
+    }
+
+    /**
      * Create a basic dialog box with a custom title and content based on the strings that are
      * passed in.
      * @param titleText A string representing what the title shown to the user will be.

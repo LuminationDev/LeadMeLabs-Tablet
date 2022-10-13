@@ -48,8 +48,8 @@ android:background="@drawable/bg_alertdialog_vern">
                 android:paddingHorizontal="25dp"
                 android:text="@string/lost_server_message_content"
                 android:textAlignment="center"
-                android:textSize="13.5sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="13.5sp" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
@@ -98,6 +98,7 @@ android:background="@drawable/bg_alertdialog_vern">
                 android:text="@string/reconnect"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
+                android:includeFontPadding="false"
                 app:backgroundTint="@color/blue"
                 app:cornerRadius="10dp"
                 app:layout_flexShrink="0"
@@ -115,6 +116,7 @@ android:background="@drawable/bg_alertdialog_vern">
                 android:text="@string/dismiss"
                 android:textAllCaps="false"
                 android:textColor="@color/blue"
+                android:includeFontPadding="false"
                 app:cornerRadius="10dp"
                 app:layout_flexShrink="0"
                 app:rippleColor="@color/grey"

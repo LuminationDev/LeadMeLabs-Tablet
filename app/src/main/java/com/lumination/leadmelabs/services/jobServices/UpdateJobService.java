@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.services.jobServices;
 
-import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -10,11 +9,13 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.util.Log;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 /**
@@ -85,10 +86,10 @@ public class UpdateJobService extends JobService {
 
         // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                // Request the update.
-                runUpdate(appUpdateInfo);
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                SettingsFragment.mViewModel.setUpdateAvailable(true);
+                // Show that there is an update available.
+                showUpdateMessage();
             }
         });
 
@@ -98,21 +99,12 @@ public class UpdateJobService extends JobService {
     }
 
     /**
-     * Run an update as an immediate update type.
-     * @param appUpdateInfo Information relating to the application update.
+     * Create a basic dialog to alert the user that there is an update available.
      */
-    public static void runUpdate(AppUpdateInfo appUpdateInfo) {
-        //Unpin the screen for the update to proceed
-        MainActivity.UIHandler.postDelayed(() -> MainActivity.getInstance().stopLockTask(), 5000);
-
-        try {
-            MainActivity.appUpdateManager.startUpdateFlowForResult(
-                    appUpdateInfo,
-                    AppUpdateType.IMMEDIATE,
-                    MainActivity.getInstance(),
-                    Constants.UPDATE_REQUEST_CODE);
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }
+    public static void showUpdateMessage() {
+        DialogManager.createUpdateDialog(
+                "Update Available",
+                "There is an update available on the Play Store please contact your IT department to update."
+        );
     }
 }
