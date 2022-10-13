@@ -48,8 +48,8 @@ android:background="@drawable/bg_alertdialog_vern">
                 android:paddingHorizontal="25dp"
                 android:text="@string/lost_server_message_content"
                 android:textAlignment="center"
-                android:textSize="13.5sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="13.5sp" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout

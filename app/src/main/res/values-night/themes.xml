@@ -18,5 +18,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <!-- Remove the padding for centering buttons/views-->
+        <item name="android:includeFontPadding">false</item>
     </style>
 </resources>

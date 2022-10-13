@@ -26,7 +26,7 @@
             app:rippleColor="@color/grey"
             android:stateListAnimator="@null"
             android:backgroundTint="@android:color/white"
-            android:text="Close" />
+            android:text="Close"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </com.google.android.flexbox.FlexboxLayout>

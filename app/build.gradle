@@ -42,7 +42,7 @@ android {
 
 dependencies {
     //For play store updates
-    implementation 'com.google.android.play:app-update:2.0.0'
+    implementation 'com.google.android.play:core:1.10.3'
 
     //For firebase
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
