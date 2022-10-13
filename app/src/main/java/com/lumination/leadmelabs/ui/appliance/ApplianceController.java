@@ -265,8 +265,8 @@ public class ApplianceController {
         //Add to this in the future
         switch(binding.getAppliance().type) {
             case "lights":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_on) :
-                        new MutableLiveData<>(R.drawable.icon_appliance_light_bulb_off);
+                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_computer_on) :
+                        new MutableLiveData<>(R.drawable.icon_computer_off);
                 break;
 
             case "blinds":
@@ -285,8 +285,8 @@ public class ApplianceController {
                 break;
 
             case "computers":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_appliance_projector_on) :
-                        new MutableLiveData<>(R.drawable.icon_appliance_projector_off);
+                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_computer_on) :
+                        new MutableLiveData<>(R.drawable.icon_computer_off);
                 break;
 
             case "LED rings":
