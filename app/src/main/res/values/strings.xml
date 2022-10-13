@@ -91,4 +91,6 @@
     <string name="shut_down_stations">Shut down stations</string>
     <string name="vern_warning">vern warning</string>
     <string name="vern_happy">vern happy</string>
+    <string name="update_available">Update available</string>
+    <string name="update_message">There is an update available on the Google Play Store. Please contact your IT department to install it.</string>
 </resources>

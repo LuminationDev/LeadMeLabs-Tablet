@@ -84,8 +84,7 @@
                     android:backgroundTint="@{(appliances.applianceCount == 0 &amp;&amp; room.currentType.equals(`All`)) ? @color/grey : @color/blue}"
                     android:letterSpacing="-0.001"
                     app:cornerRadius="100dp"
-                    app:rippleColor="@color/white"
-                    android:includeFontPadding="false"/>
+                    app:rippleColor="@color/white"/>
             </com.google.android.flexbox.FlexboxLayout>
         </LinearLayout>
 

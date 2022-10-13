@@ -86,8 +86,7 @@
                         android:paddingTop="2dp"
                         android:paddingEnd="2dp"
                         android:textColorHint="@color/grey_hint"
-                        android:textSize="15sp"
-                        android:includeFontPadding="false"/>
+                        android:textSize="15sp"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/refresh_steam_btn"
@@ -95,7 +94,6 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
                         android:background="@drawable/bg_blue_refresh"
-                        android:includeFontPadding="false"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:text="@string/refresh"

@@ -68,8 +68,7 @@
             app:strokeWidth="1dp"
             app:strokeColor="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Cancel"
-            android:includeFontPadding="false"/>
+            android:text="Cancel"/>
 
         <com.google.android.material.button.MaterialButton
             app:layout_flexShrink="0"
@@ -83,8 +82,7 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Submit"
-            android:includeFontPadding="false"/>
+            android:text="Submit"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </com.google.android.flexbox.FlexboxLayout>

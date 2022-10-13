@@ -55,8 +55,7 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Auto-scan"
-            android:includeFontPadding="false"/>
+            android:text="Auto-scan"/>
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -111,8 +110,7 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Update"
-            android:includeFontPadding="false"/>
+            android:text="Update"/>
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -162,7 +160,6 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Refresh"
-            android:includeFontPadding="false"/>
+            android:text="Refresh"/>
     </com.google.android.flexbox.FlexboxLayout>
 </com.google.android.flexbox.FlexboxLayout>

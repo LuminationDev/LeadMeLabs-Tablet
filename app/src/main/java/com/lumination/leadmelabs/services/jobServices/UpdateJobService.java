@@ -102,9 +102,6 @@ public class UpdateJobService extends JobService {
      * Create a basic dialog to alert the user that there is an update available.
      */
     public static void showUpdateMessage() {
-        DialogManager.createUpdateDialog(
-                "Update available",
-                "There is an update available on the Play Store please contact your IT department to update."
-        );
+        DialogManager.createUpdateDialog();
     }
 }

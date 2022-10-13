@@ -148,8 +148,7 @@
                         android:textColor="@color/black"
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
-                        android:text="@string/hide_station_controls"
-                        android:includeFontPadding="false"/>
+                        android:text="@string/hide_station_controls"/>
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/hide_station_controls_toggle"
                         app:thumbTint="@color/blue"
