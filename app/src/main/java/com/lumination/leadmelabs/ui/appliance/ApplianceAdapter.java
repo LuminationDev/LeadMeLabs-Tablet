@@ -59,6 +59,10 @@ public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.Appl
                     timeout = 10000;
                     content = "The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off.";
                 }
+                if (appliance.type.equals("computers")) {
+                    timeout = 20000;
+                    content = "The automation system performs best when appliances are not repeatedly turned on and off. Computers need up to 20 seconds between turning on and off.";
+                }
                 if (recentlyClicked) {
                     DialogManager.createBasicDialog(title, content);
                     return;

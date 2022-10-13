@@ -15,6 +15,7 @@
     <string name="lights">Lights</string>
     <string name="blinds">Blinds</string>
     <string name="projectors">Projectors</string>
+    <string name="computers">Computers</string>
     <string name="led_rings">LED Rings</string>
     <string name="source">Source</string>
     <string name="shutdown">Shutdown</string>

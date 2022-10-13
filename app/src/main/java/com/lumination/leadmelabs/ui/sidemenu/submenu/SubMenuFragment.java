@@ -75,9 +75,6 @@ public class SubMenuFragment extends Fragment {
             HashMap<String, TextView> options = new HashMap<>();
             List<TextView> orderedOptions = new ArrayList<>();
 
-            //Not sure if we want this moving forward
-            applianceTypes.remove("computers");
-
             for(String type: applianceTypes) {
                 options.put(type, createObject(type));
             }
@@ -160,6 +157,8 @@ public class SubMenuFragment extends Fragment {
                 return "Lighting Control";
             case "blinds":
                 return "Blind Controls";
+            case "computers":
+                return "Computer Controls";
             case "projectors":
                 return "Projector Controls";
             case "LED rings":
@@ -241,6 +240,9 @@ public class SubMenuFragment extends Fragment {
                 break;
             case "blinds":
                 currentIcon.setValue(R.drawable.icon_empty_blinds);
+                break;
+            case "computers":
+                currentIcon.setValue(R.drawable.icon_empty_projector);
                 break;
             case "projectors":
                 currentIcon.setValue(R.drawable.icon_empty_projector);
