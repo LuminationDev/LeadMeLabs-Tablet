@@ -20,8 +20,8 @@
             android:layout_width="140dp"
             android:layout_height="100dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/vern_warning"
-            android:contentDescription="@string/vern_warning"
+            android:background="@drawable/vern_happy"
+            android:contentDescription="@string/vern_happy"
             android:orientation="horizontal" />
 
         <com.google.android.flexbox.FlexboxLayout

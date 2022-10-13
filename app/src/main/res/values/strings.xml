@@ -90,4 +90,5 @@
     <string name="shut_down_space">Shut Down</string>
     <string name="shut_down_stations">Shut down stations</string>
     <string name="vern_warning">vern warning</string>
+    <string name="vern_happy">vern happy</string>
 </resources>
