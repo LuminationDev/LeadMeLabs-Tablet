@@ -103,7 +103,7 @@ public class UpdateJobService extends JobService {
      */
     public static void showUpdateMessage() {
         DialogManager.createUpdateDialog(
-                "Update Available",
+                "Update available",
                 "There is an update available on the Play Store please contact your IT department to update."
         );
     }
