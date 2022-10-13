@@ -25,222 +25,177 @@
             android:textSize="32sp" />
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="300dp"
+            android:layout_width="600dp"
             android:layout_height="wrap_content"
-            app:flexDirection="column">
+            app:flexDirection="row">
 
             <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/ip_address"
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:clickable="false"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/ip_address"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_height="25dp"
+                        android:text="@{`IP Address: ` + settings.ipAddress }"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/nuc_details"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="NUC Details"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_nuc_address"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_nuc_address"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:visibility="gone"
+                    android:id="@+id/how_to_button"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/how_to_use_leadme_labs"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_pin_code"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_pin_code"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_encryption_key"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_encryption_key"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_lab_location"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_lab_location"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_license_key"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_license_key"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/update_leadme"
+                    style="@style/SettingsItemContainer"
+                    android:background="@{settings.updateAvailable ? @drawable/card_ripple_update_rounded : @drawable/card_ripple_white_rounded}"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@{settings.updateAvailable ? `Update available` : `Go to Play Store`}"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/hide_station_controls"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="55dp"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/hide_station_controls"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/hide_station_controls_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/enable_analytical_collection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@{`IP Address: ` + settings.ipAddress }"/>
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/allow_analytics"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/enable_analytical_collection_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.analyticsEnabled}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
             </com.google.android.flexbox.FlexboxLayout>
 
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/nuc_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp"
-                android:visibility="visible">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="NUC Details"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/set_nuc_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/set_nuc_address"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:visibility="gone"
-                android:id="@+id/how_to_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/how_to_use_leadme_labs"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/set_pin_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/set_pin_code"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/set_encryption_key"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/set_encryption_key"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/set_lab_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/set_lab_location"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/set_license_key"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                android:padding="15dp"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/set_license_key"
-                    app:drawableRightCompat="@drawable/icon_menu_right" />
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/hide_station_controls"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                app:justifyContent="space_between"
-                android:layout_marginBottom="15dp">
-                <TextView
-                    android:padding="15dp"
-                    app:layout_flexShrink="0"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/hide_station_controls"/>
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/hide_station_controls_toggle"
-                    app:thumbTint="@color/blue"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
-            </com.google.android.flexbox.FlexboxLayout>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/enable_analytical_collection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/card_ripple_white_rounded"
-                app:alignItems="center"
-                app:justifyContent="space_between">
-                <TextView
-                    android:padding="15dp"
-                    app:layout_flexShrink="0"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"
-                    android:background="@android:color/transparent"
-                    android:text="@string/allow_analytics"/>
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/enable_analytical_collection_toggle"
-                    app:thumbTint="@color/blue"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:checked="@{settings.analyticsEnabled}"/>
-            </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

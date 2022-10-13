@@ -142,7 +142,7 @@
                                     android:backgroundTint="@color/blue"
                                     android:letterSpacing="0.02"
                                     android:text="@string/choose_new"
-                                    android:textAllCaps="false" />
+                                    android:textAllCaps="false"/>
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
 

@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
+import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleJobs() {
 //        LicenseJobService.schedule(this);
         RefreshJobService.schedule(this);
-//        UpdateJobService.schedule(this);
+        UpdateJobService.schedule(this);
     }
 
     public static void startNucPingMonitor() {
@@ -269,40 +270,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Restart the activity after an update.
-     */
-    private void restart() {
-        Intent intent = new Intent(this, MainActivity.class);
-        this.startActivity(intent);
-        this.finishAffinity();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.UPDATE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Log.e("Update", "Update flow success! Result code: " + resultCode);
-                // If the update succeeds, relaunch the application
-                restart();
-            }
-
-            if  (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Update cancelled, auto retry in 3 hours.", Toast.LENGTH_LONG).show();
-                UIHandler.postDelayed(this::startLockTask, 5000);
-
-            }
-
-            if (resultCode != RESULT_OK) {
-                Toast.makeText(this, "Update failed, auto retry in 3 hours.", Toast.LENGTH_LONG).show();
-                // If the update is cancelled or fails,
-                // you can request to start the update again.
-                UIHandler.postDelayed(this::startLockTask, 5000);
-            }
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -322,19 +289,5 @@ public class MainActivity extends AppCompatActivity {
         if(am.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_PINNED) {
             startLockTask();
         }
-
-//        if(appUpdateManager == null) {
-//            appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
-//        }
-//
-//        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-//            appUpdateInfo -> {
-//                if (appUpdateInfo.updateAvailability()
-//                        == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-//                    // If an in-app update is already running, resume the update.
-//                    UpdateJobService.runUpdate(appUpdateInfo);
-//                }
-//            }
-//        );
     }
 }

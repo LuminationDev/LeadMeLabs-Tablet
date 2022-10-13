@@ -86,7 +86,7 @@
                         android:paddingTop="2dp"
                         android:paddingEnd="2dp"
                         android:textColorHint="@color/grey_hint"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/refresh_steam_btn"

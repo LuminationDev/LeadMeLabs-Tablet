@@ -1,6 +1,9 @@
 package com.lumination.leadmelabs.ui.settings;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +117,21 @@ public class SettingsFragment extends Fragment {
         enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setAnalyticsEnabled(isChecked)
         );
+
+        //Send the user to the play store listing of LeadMe Labs whilst unpinning the application
+        FlexboxLayout updateLeadMeButton = view.findViewById(R.id.update_leadme);
+        updateLeadMeButton.setOnClickListener(v -> MainActivity.UIHandler.post(() -> {
+            //Unpin the application
+            MainActivity.getInstance().stopLockTask();
+
+            //Send the user to the Play Store: getPackageName() from Context or Activity object
+            final String appPackageName = MainActivity.getInstance().getPackageName();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException e) {
+                Log.e("Activity Not found", e.getLocalizedMessage());
+            }
+        }));
 
         instance = this;
     }

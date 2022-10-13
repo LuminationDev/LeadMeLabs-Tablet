@@ -155,7 +155,7 @@
                 android:paddingVertical="10dp"
                 android:text="Cancel"
                 android:textAllCaps="false"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 

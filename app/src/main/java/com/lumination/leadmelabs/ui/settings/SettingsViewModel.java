@@ -26,6 +26,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
+    private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
 
     public SettingsViewModel(@NonNull Application application) {
         super(application);
@@ -244,5 +245,23 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lab_location", value);
         editor.apply();
+    }
+
+    /**
+     *
+     */
+    public LiveData<Boolean> getUpdateAvailable() {
+        if (updateAvailable == null) {
+            updateAvailable = new MutableLiveData<>(false);
+        }
+
+        return updateAvailable;
+    }
+
+    /**
+     *
+     */
+    public void setUpdateAvailable(Boolean newValue) {
+        updateAvailable.setValue(newValue);
     }
 }

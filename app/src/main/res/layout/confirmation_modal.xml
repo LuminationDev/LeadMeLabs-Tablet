@@ -48,7 +48,7 @@
                     android:paddingVertical="10dp"
                     android:text="Example"
                     android:textAllCaps="false"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"/>
 
                 <Button
                     android:id="@+id/modal_cancel_button"
@@ -58,7 +58,7 @@
                     android:paddingHorizontal="40dp"
                     android:paddingVertical="10dp"
                     android:text="Cancel"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"/>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
         <ImageButton
