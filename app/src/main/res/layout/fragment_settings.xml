@@ -102,6 +102,17 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_lab_location"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@string/set_lab_location"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/set_license_key"
                     style="@style/SettingsItemContainer"
                     android:background="@drawable/card_ripple_white_rounded"
