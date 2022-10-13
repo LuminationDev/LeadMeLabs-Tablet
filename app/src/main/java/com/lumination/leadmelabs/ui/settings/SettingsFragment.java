@@ -65,6 +65,11 @@ public class SettingsFragment extends Fragment {
             DialogManager.buildSetEncryptionKeyDialog(getContext())
         );
 
+        FlexboxLayout setLabLocationButton = view.findViewById(R.id.set_lab_location);
+        setLabLocationButton.setOnClickListener(v ->
+                DialogManager.buildSetLabLocationDialog(getContext())
+        );
+
         FlexboxLayout setLicenseKeyButton = view.findViewById(R.id.set_license_key);
         setLicenseKeyButton.setOnClickListener(v ->
             DialogManager.buildSetLicenseKeyDialog(getContext())

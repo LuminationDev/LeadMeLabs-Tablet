@@ -82,6 +82,7 @@
     <string name="how_to_use_leadme_labs">How to use LeadMe Labs</string>
     <string name="set_pin_code">Set PIN code</string>
     <string name="set_encryption_key">Set encryption key</string>
+    <string name="set_lab_location">Set lab location</string>
     <string name="set_license_key">Set license key</string>
     <string name="hide_station_controls">Hide station controls</string>
     <string name="allow_analytics">Allow Analytics</string>

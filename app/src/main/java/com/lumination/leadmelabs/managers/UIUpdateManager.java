@@ -247,12 +247,6 @@ public class UIUpdateManager {
                     station.gameName = value;
                     if (value.length() > 0 && !value.equals("No session running")) {
                         DialogManager.gameLaunchedOnStation(station.id);
-
-                        HashMap<String, String> analyticsAttributes2 = new HashMap<String, String>() {{
-                           put("experience_name", value);
-                           put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_launched", analyticsAttributes2);
                     }
                     break;
                 case "steamApplications":

@@ -21,6 +21,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> nucMacAddress;
     private MutableLiveData<String> pinCode;
     private MutableLiveData<String> encryptionKey;
+    private MutableLiveData<String> labLocation;
     private MutableLiveData<String> licenseKey;
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
@@ -217,6 +218,31 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("encryption_key", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("encryption_key", value);
+        editor.apply();
+    }
+
+    /**
+     * Get the lab location
+     */
+    public LiveData<String> getLabLocation() {
+        if (labLocation == null) {
+            labLocation = new MutableLiveData<>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("lab_location", Context.MODE_PRIVATE);
+            labLocation.setValue(sharedPreferences.getString("lab_location", null));
+            FirebaseManager.setDefaultAnalyticsParameter("lab_location", labLocation.getValue());
+        }
+        return labLocation;
+    }
+
+    /**
+     * Set the lab location
+     */
+    public void setLabLocation(String value) {
+        getLabLocation(); // to initialize if not already done
+        labLocation.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("lab_location", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("lab_location", value);
         editor.apply();
     }
 }

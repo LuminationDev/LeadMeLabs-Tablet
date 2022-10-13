@@ -517,6 +517,25 @@ public class DialogManager {
     }
 
     /**
+     * Build the set encryption key dialog. The encryption keys is what encodes and decodes messages
+     * between the tablet, NUC & stations.
+     */
+    public static void buildSetLabLocationDialog(Context context) {
+        View view = View.inflate(context, R.layout.dialog_set_lab_location, null);
+        AlertDialog labLocationDialog = new AlertDialog.Builder(context).setView(view).create();
+
+        EditText newLabLocation = view.findViewById(R.id.lab_location_input);
+
+        Button confirmButton = view.findViewById(R.id.lab_location_confirm);
+        confirmButton.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setLabLocation(newLabLocation.getText().toString());
+            labLocationDialog.dismiss();
+        });
+
+        labLocationDialog.show();
+    }
+
+    /**
      * Build the set license key dialog. The license key is what determines if the program is running
      * with a valid license.
      */
@@ -690,6 +709,12 @@ public class DialogManager {
         for (int i : stationIds)
         {
             gameLaunchStationIds.add(i);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("experience_name", gameName);
+                put("station_id", String.valueOf(i));
+            }};
+            FirebaseManager.logAnalyticEvent(restarting ? "experience_restarted" : "experience_launched", analyticsAttributes);
         }
 
         Button confirmButton = gameLaunchDialogView.findViewById(R.id.confirm_button);

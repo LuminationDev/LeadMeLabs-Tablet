@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.managers;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +11,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import io.sentry.Sentry;
@@ -78,6 +78,12 @@ public class FirebaseManager {
         } catch (Exception e) {
             Sentry.captureException(e);
         }
+    }
+
+    public static void setDefaultAnalyticsParameter(String key, String value) {
+        Bundle bundle = new Bundle();
+        bundle.putString(key, value);
+        mFirebaseAnalytics.setDefaultEventParameters(bundle);
     }
 
     /**
