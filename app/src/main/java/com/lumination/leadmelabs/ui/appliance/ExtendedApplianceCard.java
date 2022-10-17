@@ -145,12 +145,7 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
 
         //Set the layout parameters for where to add the view
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, Helpers.convertDpToPx(190));
-        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
-            params.leftMargin = Helpers.convertDpToPx(110) + 275 + 70; //sub menu + regular menu + card spacing
-        } else {
-            params.leftMargin = Helpers.convertDpToPx(110) + 200 + 70; //sub menu + full regular menu + card spacing
-        }
-
+        params.leftMargin = Helpers.convertDpToPx(120) + 200 + 70; //sub menu + regular menu + card spacing
         params.rightMargin = 45 + 125; //card spacing + container end margin
         params.topMargin = out[1];
 
