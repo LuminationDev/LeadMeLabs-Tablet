@@ -1,9 +1,6 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.annotation.SuppressLint;
-import android.os.CountDownTimer;
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
