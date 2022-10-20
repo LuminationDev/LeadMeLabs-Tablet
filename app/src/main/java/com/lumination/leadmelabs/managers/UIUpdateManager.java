@@ -78,12 +78,11 @@ public class UIUpdateManager {
                                         "Launch of " + data[1] + " failed on " + station.name
                                 );
                             });
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
                         }
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
                     }
                     if (additionalData.startsWith("AlreadyLaunchingGame")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
@@ -215,10 +214,12 @@ public class UIUpdateManager {
                     if (value.equals("Ended")) {
                         DialogManager.sessionEndedOnStation(station.id);
 
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("session_ended", analyticsAttributes);
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("session_ended", analyticsAttributes);
+                        }
                     }
                     if (value.equals("Restarted")) {
                         DialogManager.sessionRestartedOnStation(station.id);
@@ -231,11 +232,13 @@ public class UIUpdateManager {
                 case "volume":
                     station.volume = Integer.parseInt(value);
 
-                    HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                        put("station_id", String.valueOf(station.id));
-                        put("volume_level", value);
-                    }};
-                    FirebaseManager.logAnalyticEvent("volume_changed", analyticsAttributes);
+                    if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("station_id", String.valueOf(station.id));
+                            put("volume_level", value);
+                        }};
+                        FirebaseManager.logAnalyticEvent("volume_changed", analyticsAttributes);
+                    }
                     break;
                 case "gameId":
                     station.gameId = value;
