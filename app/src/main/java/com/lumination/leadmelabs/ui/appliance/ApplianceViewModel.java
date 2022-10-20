@@ -1,6 +1,8 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -18,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,6 +109,24 @@ public class ApplianceViewModel extends ViewModel {
             }
             if (appliance.type.equals(Constants.SCENE) && appliance.value.equals("On")) {
                 scenes.put(appliance.id, appliance.value);
+            }
+
+            if (appliance.type.equals((Constants.SOURCE))) {
+                if(!current.has("labels")) {
+                    continue;
+                }
+                String labels = current.getString("labels");
+                if(labels.equals("null")) {
+                    continue;
+                }
+                ArrayList<String> customLabels = new ArrayList<>();
+                JSONObject jObj = new JSONObject(labels);
+
+                customLabels.add(!jObj.getString("hdmi1").equals("null") ? jObj.getString("hdmi1") : "HDMI 1");
+                customLabels.add(!jObj.getString("hdmi2").equals("null") ? jObj.getString("hdmi2") : "HDMI 2");
+                customLabels.add(!jObj.getString("hdmi3").equals("null") ? jObj.getString("hdmi3") : "HDMI 3");
+
+                appliance.description = customLabels;
             }
 
             if(!current.getString("type").equals(Constants.SCENE)) {
