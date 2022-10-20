@@ -228,6 +228,7 @@ public class ApplianceController {
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_vrmode_on) :
                         new MutableLiveData<>(R.drawable.icon_scene_vrmode_off);
                 break;
+            case "Apple TV":
             case "Theatre":
             case "Dim":
                 icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_theatremode_on) :
