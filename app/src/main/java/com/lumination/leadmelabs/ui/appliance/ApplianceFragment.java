@@ -159,7 +159,7 @@ public class ApplianceFragment extends Fragment {
         }
 
         for (Appliance appliance: allAppliances) {
-            if(appliance.type.equals(type.getValue())) {
+            if(appliance.matchesDisplayCategory(type.getValue())) {
                 rooms.add(appliance.room);
             }
         }
@@ -247,7 +247,7 @@ public class ApplianceFragment extends Fragment {
         rooms = new ArrayMap<>(); //reset the rooms as to no double up on the appliances
 
         for(Appliance appliance : appliances) {
-            if(appliance.type.equals(type.getValue())) {
+            if(appliance.matchesDisplayCategory(type.getValue())) {
                 if(rooms.containsKey(appliance.room)) {
                     rooms.get(appliance.room).add(appliance);
                 } else {
@@ -273,7 +273,8 @@ public class ApplianceFragment extends Fragment {
         ArrayList<Appliance> subtype = new ArrayList<>();
 
         for(Appliance appliance : appliances) {
-            if(appliance.type.equals(type.getValue()) && appliance.room.equals(roomType)) {
+            if(appliance.matchesDisplayCategory(type.getValue()) &&
+                    appliance.room.equals(roomType)) {
                 subtype.add(appliance);
             }
         }

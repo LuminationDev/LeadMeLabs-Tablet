@@ -77,7 +77,11 @@ public class ApplianceViewModel extends ViewModel {
         //Iterator over the outer loop - different appliance types
         for (int i = 0; i < applianceList.length(); i++) {
             JSONObject current = applianceList.getJSONObject(i);
-            types.add(current.getString("type"));
+            if (current.has("displayType") && !current.isNull("displayType")) {
+                types.add(current.getString("displayType"));
+            } else {
+                types.add(current.getString("type"));
+            }
             rooms.add(current.getString("room"));
 
             Appliance appliance = new Appliance(
@@ -88,6 +92,9 @@ public class ApplianceViewModel extends ViewModel {
             );
             if (current.has("stations") && !current.isNull("stations") && current.getJSONArray("stations").length() > 0) {
                 appliance.setStations(current.getJSONArray("stations"));
+            }
+            if (current.has("displayType") && !current.isNull("displayType")) {
+                appliance.displayType = current.getString("displayType");
             }
             if (current.has("value") && !current.isNull("value")) {
                 appliance.value = current.getString("value");
