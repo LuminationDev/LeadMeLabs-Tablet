@@ -18,6 +18,7 @@ public class Appliance {
     public String room;
     public String id;
     public String value; //used for appliances
+    public String displayType;
     public JSONArray stations;
 
     public ArrayList<String> description;
@@ -34,6 +35,14 @@ public class Appliance {
 
         icon = new MutableLiveData<>(null);
         status = new MutableLiveData<>(Constants.INACTIVE);
+    }
+
+    public boolean matchesDisplayCategory(String type)
+    {
+        if (this.displayType != null) {
+            return this.displayType.equals(type);
+        }
+        return this.type.equals(type);
     }
 
     public void setStations(JSONArray stations) {
@@ -53,6 +62,10 @@ public class Appliance {
         switch(type) {
             case "blinds":
                 this.description = new ArrayList<>(Arrays.asList("OPEN", "CLOSE", "STOP"));
+                break;
+
+            case "splicers":
+                this.description = new ArrayList<>(Arrays.asList("STRETCH", "MIRROR"));
                 break;
 
             case "sources":

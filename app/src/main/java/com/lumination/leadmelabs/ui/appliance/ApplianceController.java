@@ -299,6 +299,11 @@ public class ApplianceController {
                         new MutableLiveData<>(R.drawable.icon_appliance_source_1);
                 break;
 
+            case "splicers":
+                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_splicer_white) :
+                        new MutableLiveData<>(R.drawable.icon_splicer_grey);
+                break;
+
             default:
                 icon = new MutableLiveData<>(R.drawable.icon_settings);
                 break;
