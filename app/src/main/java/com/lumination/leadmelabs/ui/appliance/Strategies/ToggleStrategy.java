@@ -29,11 +29,20 @@ public class ToggleStrategy extends AbstractApplianceStrategy {
             binding.setStatus(new MutableLiveData<>(Constants.INACTIVE));
             ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_blue_to_grey);
             value = "0";
+            if (appliance.type.equals(Constants.SPLICERS)) {
+                value = Constants.SPLICER_MIRROR;
+            }
             ApplianceViewModel.activeApplianceList.remove(appliance.id);
         } else {
             binding.setStatus(new MutableLiveData<>(Constants.ACTIVE));
             ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_grey_to_blue);
-            value = appliance.type.equals(Constants.LED) ? Constants.LED_ON_VALUE : Constants.APPLIANCE_ON_VALUE; //TODO this needs to be scalable
+            value = Constants.APPLIANCE_ON_VALUE;
+            if (appliance.type.equals(Constants.LED)) {
+                value = Constants.LED_ON_VALUE;
+            }
+            if (appliance.type.equals(Constants.SPLICERS)) {
+                value = Constants.SPLICER_STRETCH;
+            }
             ApplianceViewModel.activeApplianceList.put(appliance.id, value);
         }
 
