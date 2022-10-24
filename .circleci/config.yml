@@ -34,6 +34,9 @@ jobs:
       - image: cimg/android:2022.09.2
     steps:
       - configure
+      - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
       - run: fastlane build_test_apk
       - store_artifacts:
           path: core/build/outputs/apk/release
@@ -43,10 +46,6 @@ workflows:
     jobs:
       - hold:
           type: approval
-          filters:
-            branches:
-              only:
-                - main
       - build:
           requires:
             - hold
