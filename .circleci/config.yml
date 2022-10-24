@@ -46,7 +46,7 @@ workflows:
           filters:
             branches:
               only:
-                - development
+                - main
       - build:
           requires:
             - hold
@@ -57,7 +57,7 @@ workflows:
           filters:
             branches:
               only:
-                - development
+                - main
       - deploy:
           requires:
             - hold
