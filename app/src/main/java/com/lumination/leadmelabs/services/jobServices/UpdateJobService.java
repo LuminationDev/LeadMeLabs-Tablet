@@ -13,6 +13,7 @@ import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
+import com.lumination.leadmelabs.BuildConfig;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -80,6 +81,10 @@ public class UpdateJobService extends JobService {
 
     private static void checkForUpdate() {
         Log.i("Update", "Checking for update");
+        if (BuildConfig.VERSION_CODE <= 14) {
+            Log.i("Update", "Not updating as version is older than initial play store release.");
+            return;
+        }
 
         // Returns an intent object that you use to check for an update.
         Task<AppUpdateInfo> appUpdateInfoTask = MainActivity.appUpdateManager.getAppUpdateInfo();
