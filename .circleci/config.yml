@@ -50,14 +50,6 @@ workflows:
       - build:
           requires:
             - hold
-  build_apk_restricted:
-    jobs:
-      - hold:
-          context: OverlayStandard
-          type: approval
-      - build:
-          requires:
-            - hold
   deploy:
     jobs:
       - hold:
