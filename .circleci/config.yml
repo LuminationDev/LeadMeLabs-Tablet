@@ -21,6 +21,9 @@ commands:
       - run:
           name: Decode Android key store
           command: cd app && echo $BASE64_KEYSTORE | base64 -d > keystore.jks && cd ..
+      - run:
+          name: chmod permissions for gradlew
+          command: chmod +x ./gradlew
 
 jobs:
   deploy:
@@ -36,17 +39,14 @@ jobs:
       - configure
       - run: fastlane build_test_apk
       - store_artifacts:
-          path: core/build/outputs/apk/release
+          path: app/build/outputs/apk/release
 
 workflows:
   build_apk:
     jobs:
       - hold:
+          context: LeadMeDeployers
           type: approval
-          filters:
-            branches:
-              only:
-                - main
       - build:
           requires:
             - hold
