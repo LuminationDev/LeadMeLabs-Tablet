@@ -41,8 +41,7 @@ platform :android do
     gradle(task: "clean")
     gradle(task: "bundle", build_type: "Release")
     upload_to_play_store(
-        track: 'internal',
-        release_status: 'draft'
+        track: 'production'
     )
   end
 end
