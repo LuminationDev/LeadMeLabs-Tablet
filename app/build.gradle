@@ -4,6 +4,10 @@ plugins {
 
 apply plugin: 'com.google.gms.google-services'
 
+def keyStorePropertiesFile = rootProject.file("keystore.properties")
+def keyStoreProperties = new Properties()
+keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
+
 android {
     compileSdk 31
 
