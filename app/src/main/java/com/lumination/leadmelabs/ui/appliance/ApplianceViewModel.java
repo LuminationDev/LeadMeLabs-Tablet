@@ -111,6 +111,24 @@ public class ApplianceViewModel extends ViewModel {
                 scenes.put(appliance.id, appliance.value);
             }
 
+            if (appliance.type.equals((Constants.BLIND))) {
+                if(!current.has("labels")) {
+                    continue;
+                }
+                String labels = current.getString("labels");
+                if(labels.equals("null")) {
+                    continue;
+                }
+                ArrayList<String> customLabels = new ArrayList<>();
+                JSONObject jObj = new JSONObject(labels);
+
+                customLabels.add(!jObj.getString("open").equals("null") ? jObj.getString("open") : "OPEN");
+                customLabels.add(!jObj.getString("close").equals("null") ? jObj.getString("close") : "CLOSE");
+                customLabels.add(!jObj.getString("stop").equals("null") ? jObj.getString("stop") : "STOP");
+
+                appliance.description = customLabels;
+            }
+
             if (appliance.type.equals((Constants.SOURCE))) {
                 if(!current.has("labels")) {
                     continue;
