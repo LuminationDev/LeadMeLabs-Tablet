@@ -300,7 +300,7 @@ public class ApplianceViewModel extends ViewModel {
                 if(appliance.type.equals("scenes")) {
                     changed = blindException(appliance, value);
                 } else {
-                    if (value.equals("0")) {
+                    if (value.equals("0") || value.equals("1")) {
                         changed = activeApplianceList.remove(id);
                     } else if (!Objects.equals(activeApplianceList.get(id), value)) {
                         changed = "true";
