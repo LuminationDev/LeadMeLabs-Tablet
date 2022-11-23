@@ -112,39 +112,36 @@ public class ApplianceViewModel extends ViewModel {
             }
 
             if (appliance.type.equals((Constants.BLIND))) {
-                if(!current.has("labels")) {
-                    continue;
-                }
-                String labels = current.getString("labels");
-                if(labels.equals("null")) {
-                    continue;
-                }
-                ArrayList<String> customLabels = new ArrayList<>();
-                JSONObject jObj = new JSONObject(labels);
+                if(current.has("labels")) {
+                    String labels = current.getString("labels");
+                    if(!labels.equals("null")) {
+                        ArrayList<String> customLabels = new ArrayList<>();
+                        JSONObject jObj = new JSONObject(labels);
 
-                customLabels.add(!jObj.getString("open").equals("null") ? jObj.getString("open") : "OPEN");
-                customLabels.add(!jObj.getString("close").equals("null") ? jObj.getString("close") : "CLOSE");
-                customLabels.add(!jObj.getString("stop").equals("null") ? jObj.getString("stop") : "STOP");
+                        customLabels.add(!jObj.getString("open").equals("null") ? jObj.getString("open") : "OPEN");
+                        customLabels.add(!jObj.getString("close").equals("null") ? jObj.getString("close") : "CLOSE");
+                        customLabels.add(!jObj.getString("stop").equals("null") ? jObj.getString("stop") : "STOP");
 
-                appliance.description = customLabels;
+                        appliance.description = customLabels;
+                    }
+                }
+
             }
 
             if (appliance.type.equals((Constants.SOURCE))) {
-                if(!current.has("labels")) {
-                    continue;
-                }
-                String labels = current.getString("labels");
-                if(labels.equals("null")) {
-                    continue;
-                }
-                ArrayList<String> customLabels = new ArrayList<>();
-                JSONObject jObj = new JSONObject(labels);
+                if(current.has("labels")) {
+                    String labels = current.getString("labels");
+                    if(!labels.equals("null")) {
+                        ArrayList<String> customLabels = new ArrayList<>();
+                        JSONObject jObj = new JSONObject(labels);
 
-                customLabels.add(!jObj.getString("hdmi1").equals("null") ? jObj.getString("hdmi1") : "HDMI 1");
-                customLabels.add(!jObj.getString("hdmi2").equals("null") ? jObj.getString("hdmi2") : "HDMI 2");
-                customLabels.add(!jObj.getString("hdmi3").equals("null") ? jObj.getString("hdmi3") : "HDMI 3");
+                        customLabels.add(!jObj.getString("hdmi1").equals("null") ? jObj.getString("hdmi1") : "HDMI 1");
+                        customLabels.add(!jObj.getString("hdmi2").equals("null") ? jObj.getString("hdmi2") : "HDMI 2");
+                        customLabels.add(!jObj.getString("hdmi3").equals("null") ? jObj.getString("hdmi3") : "HDMI 3");
 
-                appliance.description = customLabels;
+                        appliance.description = customLabels;
+                    }
+                }
             }
 
             if(!current.getString("type").equals(Constants.SCENE)) {
