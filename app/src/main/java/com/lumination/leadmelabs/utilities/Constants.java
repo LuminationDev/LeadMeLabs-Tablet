@@ -8,6 +8,7 @@ public class Constants {
     //Appliance Constants
     public static String SCENE = "scenes";
     public static String LED = "LED rings";
+    public static String LED_WALLS = "LED walls";
     public static String SPLICERS = "splicers";
     public static String BLIND = "blinds";
     public static String COMPUTER = "computers";

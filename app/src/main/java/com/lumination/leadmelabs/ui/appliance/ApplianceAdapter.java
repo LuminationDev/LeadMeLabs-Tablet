@@ -6,14 +6,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 
@@ -22,18 +18,13 @@ import java.util.ArrayList;
  * displayed. When 'All' rooms are chosen it acts as a regular class access through references in
  * the parent adapter class.
  */
-public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.ApplianceViewHolder> {
-    public static ApplianceAdapter instance;
-    public static ApplianceAdapter getInstance() { return instance; }
+public class ApplianceAdapter extends BaseAdapter {
     private final ApplianceController applianceController = new ApplianceController();
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
 
-    public ApplianceAdapter() {
-        instance = this;
-    }
 
-    public class ApplianceViewHolder extends RecyclerView.ViewHolder {
+    public class ApplianceViewHolder extends BaseAdapter.BaseViewHolder {
         private final CardApplianceBinding binding;
         private boolean recentlyClicked = false;
 
@@ -81,6 +72,15 @@ public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.Appl
         }
     }
 
+    @Override
+    public ArrayList<Appliance> getApplianceList() {
+        return applianceList;
+    }
+    @Override
+    public void setApplianceList(ArrayList<Appliance> newAppliances) {
+        applianceList = newAppliances;
+    }
+
     @NonNull
     @Override
     public ApplianceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -90,39 +90,9 @@ public class ApplianceAdapter extends RecyclerView.Adapter<ApplianceAdapter.Appl
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ApplianceViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+        ApplianceViewHolder applianceViewHolder = (ApplianceViewHolder) holder;
         Appliance appliance = getItem(position);
-        holder.bind(appliance);
-    }
-
-    //Accessors
-    @Override
-    public int getItemCount() {
-        return applianceList != null ? applianceList.size() : 0;
-    }
-
-    public Appliance getItem(int position) {
-        return applianceList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    /**
-     * Update the data set only if the card with the supplied ID is visible otherwise it will be
-     * update when it is next visible automatically with the new ViewHolder creation.
-     * @param id A string representing the ID of the appliance.
-     */
-    public void updateIfVisible(String id) {
-        for(int i=0; i < applianceList.size(); i++) {
-            if(applianceList.get(i).id.equals(id)) {
-                int finalI = i;
-                MainActivity.runOnUI(() ->
-                    notifyItemChanged(finalI)
-                );
-            }
-        }
+        applianceViewHolder.bind(appliance);
     }
 }
