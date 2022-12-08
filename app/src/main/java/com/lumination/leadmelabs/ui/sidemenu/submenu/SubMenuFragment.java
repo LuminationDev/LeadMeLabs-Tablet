@@ -154,7 +154,7 @@ public class SubMenuFragment extends Fragment {
             case "scenes":
                 return "Scenes";
             case "lights":
-                return "Lighting Control";
+                return "Lighting Controls";
             case "blinds":
                 return "Blind Controls";
             case "computers":
@@ -163,8 +163,10 @@ public class SubMenuFragment extends Fragment {
                 return "Projector Controls";
             case "LED rings":
                 return "LED Ring Controls";
+            case "LED walls":
+                return "LED Wall Controls";
             case "sources":
-                return "Source Control";
+                return "Source Controls";
             default:
                 return null;
         }
@@ -233,6 +235,9 @@ public class SubMenuFragment extends Fragment {
                 currentIcon.setValue(R.drawable.icon_empty_scenes);
                 break;
             case "LED rings":
+                currentIcon.setValue(R.drawable.icon_empty_led);
+                break;
+            case "LED walls":
                 currentIcon.setValue(R.drawable.icon_empty_led);
                 break;
             case "lights":

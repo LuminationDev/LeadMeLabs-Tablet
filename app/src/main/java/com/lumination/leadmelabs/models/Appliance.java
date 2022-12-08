@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +22,20 @@ public class Appliance {
     public String value; //used for appliances
     public String displayType;
     public JSONArray stations;
+    public ArrayList<Option> options;
 
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
     public MutableLiveData<String> status;
+
+    public class Option {
+        public int id;
+        public String name;
+        public Option(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+    }
 
     public Appliance(String type, String name, String room, String id) {
         this.type = type;
@@ -47,6 +59,15 @@ public class Appliance {
 
     public void setStations(JSONArray stations) {
         this.stations = stations;
+    }
+
+    public void setOptions(JSONArray options) throws JSONException {
+        int length = options.length();
+        this.options = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            JSONObject option = options.getJSONObject(i);
+            this.options.add(new Option(option.getInt("id"), option.getString("name")));
+        }
     }
 
     /**

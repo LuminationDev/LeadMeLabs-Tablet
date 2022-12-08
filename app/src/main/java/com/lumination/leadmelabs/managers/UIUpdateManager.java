@@ -300,6 +300,7 @@ public class UIUpdateManager {
             case "sources":
             case "splicers":
             case "blinds":
+            case "LED walls":
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(id, value, ipAddress);
                 break;
         }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <data>
+        <import type="com.lumination.leadmelabs.utilities.Constants" />
+        <import type="com.lumination.leadmelabs.models.Appliance" />
+        <variable
+            name="appliance"
+            type="com.lumination.leadmelabs.models.Appliance" />
+
+        <variable
+            name="status"
+            type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
+
+        <variable
+            name="icon"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="600dp"
+        android:background="@color/grey"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:background="@color/grey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </RadioGroup>
+    </RelativeLayout>
+</layout>

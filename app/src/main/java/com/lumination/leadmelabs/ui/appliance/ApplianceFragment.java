@@ -22,6 +22,7 @@ import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class ApplianceFragment extends Fragment {
     public static MutableLiveData<String> type = new MutableLiveData<>();
     public static MutableLiveData<Integer> applianceCount = new MutableLiveData<>(0);
     public static ApplianceParentAdapter applianceParentAdapter;
-    public static ApplianceAdapter applianceAdapter;
+    public static BaseAdapter applianceAdapter;
 
     public static ArrayMap<String, ArrayList<Appliance>> rooms = new ArrayMap<>();
     public static String overrideRoom = null;
@@ -85,7 +86,7 @@ public class ApplianceFragment extends Fragment {
         if(Objects.equals(roomType, "All") && checkForEmptyRooms(roomType)) {
             loadMultiRecycler(view);
         } else {
-            loadSingleRecycler(view);
+            loadSingleRecycler(view, type.getValue());
         }
 
         //Only add objects that are of the same sub type as the supplied argument
@@ -127,17 +128,21 @@ public class ApplianceFragment extends Fragment {
      * Load a single RecyclerView that presents the appliance cards in a list that expands vertically
      * once the boundaries are reached (Grid-Like).
      */
-    private void loadSingleRecycler(View view) {
+    private void loadSingleRecycler(View view, String roomType) {
         RecyclerView recyclerView = view.findViewById(R.id.appliance_list);
         recyclerView.setVisibility(View.VISIBLE);
 
         int numberOfColumns = 4;
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
-        applianceAdapter = new ApplianceAdapter();
-        applianceAdapter.applianceList = new ArrayList<>();
+        if (roomType.equals(Constants.LED_WALLS)) {
+            applianceAdapter = new RadioAdapter();
+        } else {
+            applianceAdapter = new ApplianceAdapter();
+        }
+        applianceAdapter.setApplianceList(new ArrayList<>());
         recyclerView.setAdapter(applianceAdapter);
 
-        applianceCount.setValue(applianceAdapter.applianceList.size());
+        applianceCount.setValue(applianceAdapter.getApplianceList().size());
     }
 
     /**
@@ -267,7 +272,7 @@ public class ApplianceFragment extends Fragment {
      */
     private void loadSingleRoomData(List<Appliance> appliances, String roomType, View view) {
         if(applianceAdapter == null) {
-            loadSingleRecycler(view);
+            loadSingleRecycler(view, appliances.get(0).type);
         }
 
         ArrayList<Appliance> subtype = new ArrayList<>();
@@ -280,6 +285,6 @@ public class ApplianceFragment extends Fragment {
         }
 
         applianceCount.setValue(subtype.size());
-        applianceAdapter.applianceList = subtype;
+        applianceAdapter.setApplianceList(subtype);
     }
 }

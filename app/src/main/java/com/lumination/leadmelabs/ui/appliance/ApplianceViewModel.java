@@ -99,6 +99,9 @@ public class ApplianceViewModel extends ViewModel {
             if (current.has("displayType") && !current.isNull("displayType")) {
                 appliance.displayType = current.getString("displayType");
             }
+            if (current.has("options") && !current.isNull("options")) {
+                appliance.setOptions(current.getJSONArray("options"));
+            }
             if (current.has("value") && !current.isNull("value")) {
                 appliance.value = current.getString("value");
             }
@@ -354,8 +357,8 @@ public class ApplianceViewModel extends ViewModel {
                 ApplianceParentAdapter.getInstance().updateIfVisible(id);
             }
         } else {
-            if(ApplianceAdapter.getInstance() != null) {
-                ApplianceAdapter.getInstance().updateIfVisible(id);
+            if(BaseAdapter.getInstance() != null) {
+                BaseAdapter.getInstance().updateIfVisible(id);
             }
         }
     }

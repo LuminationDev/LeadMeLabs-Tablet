@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.appliance.Strategies.BlindStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.HDMIStrategy;
+import com.lumination.leadmelabs.ui.appliance.Strategies.RadioStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.SceneStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.ToggleStrategy;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -57,6 +58,16 @@ public class ApplianceController {
 
         strategy.trigger(binding, appliance, cardLayout);
         setIcon(binding);
+    }
+
+    /**
+     * Determine the type of strategy to use for the on click listener.
+     * @param appliance The model populate with particular details of an appliance.
+     * @param value The value that the appliance is being set to
+     */
+    public void triggerRadioAppliance(Appliance appliance, String value) {
+        RadioStrategy strategy = new RadioStrategy();
+        strategy.trigger(appliance, value);
     }
 
     /**

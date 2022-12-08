@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.utilities.Constants;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
     public static ApplianceParentAdapter getInstance() { return instance; }
 
     public ArrayMap<String, ArrayList<Appliance>> parentModelArrayList;
-    public ArrayList<ApplianceAdapter> adapters = new ArrayList<>();
+    public ArrayList<BaseAdapter> adapters = new ArrayList<>();
 
     public static class ParentViewHolder extends RecyclerView.ViewHolder {
         public TextView category;
@@ -62,9 +64,10 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
     public void onBindViewHolder(ParentViewHolder holder, int position) {
         String currentItem = parentModelArrayList.keyAt(position);
         holder.category.setText(currentItem);
+        String type = parentModelArrayList.valueAt(position).get(0).type;
 
-        ApplianceAdapter applianceAdapter = new ApplianceAdapter();
-        applianceAdapter.applianceList = parentModelArrayList.valueAt(position);
+        BaseAdapter applianceAdapter = type.equals(Constants.LED_WALLS) ? new RadioAdapter() : new ApplianceAdapter();
+        applianceAdapter.setApplianceList(parentModelArrayList.valueAt(position));
         holder.childRecyclerView.setAdapter(applianceAdapter);
 
         if(parentModelArrayList.valueAt(position).size() == 0) {
@@ -79,7 +82,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
      * Cycle through the associated adapters and reload the related card with the supplied ID.
      */
     public void updateIfVisible(String id) {
-        for (ApplianceAdapter adapter : adapters) {
+        for (BaseAdapter adapter : adapters) {
             adapter.updateIfVisible(id);
         }
     }
