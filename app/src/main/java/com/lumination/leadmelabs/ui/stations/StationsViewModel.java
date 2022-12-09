@@ -188,9 +188,9 @@ public class StationsViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Station> selectStation(int index) {
+    public LiveData<Station> selectStation(int id) {
         this.getSelectedStation();
-        this.setSelectedStation(this.stations.getValue().get(index));
+        this.setSelectedStation(this.stations.getValue().stream().filter(station -> station.id == id).findFirst().get());
         return this.getSelectedStation();
     }
 

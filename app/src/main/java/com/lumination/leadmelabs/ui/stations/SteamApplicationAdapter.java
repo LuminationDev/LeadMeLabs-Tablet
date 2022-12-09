@@ -83,6 +83,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
 
             gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
             gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
+            gamesWithAdditionalStepsRequired.add(1053760); // Arkio
 
             if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
                 BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
