@@ -59,6 +59,15 @@ public class UIUpdateManager {
                     if (additionalData.startsWith("List")) {
                         updateAppliances(additionalData.split(":", 2)[1]);
                     }
+                    if (additionalData.startsWith("ProjectorSlowDown")) {
+                        String projectorName = additionalData.split(",")[1];
+                        MainActivity.runOnUI(() -> {
+                            DialogManager.createBasicDialog(
+                                    "Warning",
+                                    projectorName + " has already been powered on or off in the last 10 seconds. The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off."
+                            );
+                        });
+                    }
                     break;
                 case "Station":
                     if (additionalData.startsWith("SetValue")) {

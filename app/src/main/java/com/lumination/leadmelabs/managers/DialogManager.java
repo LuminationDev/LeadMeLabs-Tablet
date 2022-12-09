@@ -664,28 +664,6 @@ public class DialogManager {
     }
 
     /**
-     * Build the launch confirmation dialog when launching a new steam experience from the station
-     * selection screen.
-     */
-    public static void buildSelectionLaunch(Context context, ArrayList<String> theatreStations, int steamGameId, int[] selectedIds)  {
-        View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
-        AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
-
-        TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-        headingText.setText(R.string.exit_theatre);
-
-        TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-        contentText.setText(MessageFormat.format("{0}{1} currently in theatre mode. Are you sure you want to exit theatre mode?", String.join(", ", theatreStations), theatreStations.size() > 1 ? " are" : " is"));
-
-        Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> StationSelectionPageFragment.getInstance().confirmLaunchGame(selectedIds, steamGameId, confirmDialog));
-
-        Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-        confirmDialog.show();
-    }
-
-    /**
      * Build the launch confirmation dialog when launching a new steam experience.
      */
     public static void buildLaunchExperienceDialog(Context context, SteamApplication steamApplication, Station station) {

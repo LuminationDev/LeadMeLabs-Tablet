@@ -39,6 +39,14 @@ public class StationSelectionPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         childManager = getChildFragmentManager();
 
+        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
+        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+        stations = (ArrayList<Station>) stations.clone();
+        for (Station station:stations) {
+            station.selected = false;
+            mViewModel.updateStationById(station.id, station);
+        }
+
         return inflater.inflate(R.layout.fragment_page_station_selection, container, false);
     }
 
@@ -50,7 +58,7 @@ public class StationSelectionPageFragment extends Fragment {
 
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
-            ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+            ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             stations = (ArrayList<Station>) stations.clone();
             for (Station station:stations) {
                 if (!station.status.equals("Off") && station.hasSteamApplicationInstalled(mViewModel.getSelectedSteamApplicationId())) {
@@ -71,18 +79,7 @@ public class StationSelectionPageFragment extends Fragment {
             int steamGameId = mViewModel.getSelectedSteamApplicationId();
             int[] selectedIds = mViewModel.getSelectedStationIds();
             if (selectedIds.length > 0) {
-                ArrayList<String> theatreStations = new ArrayList<>();
-                for (Station station:mViewModel.getSelectedStations()) {
-                    if (station.theatreText != null) {
-                        theatreStations.add(station.name);
-                    }
-                }
-
-                if (theatreStations.size() > 0) {
-                    DialogManager.buildSelectionLaunch(getContext(), theatreStations, steamGameId, selectedIds);
-                } else {
-                    confirmLaunchGame(selectedIds, steamGameId);
-                }
+                confirmLaunchGame(selectedIds, steamGameId);
             }
         });
 
