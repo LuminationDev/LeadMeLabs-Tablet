@@ -93,6 +93,17 @@ public class UIUpdateManager {
                             FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
                         }
                     }
+                    if (additionalData.startsWith("PopupDetected")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "Cannot launch experience",
+                                        "The experience launching on " + station.name + " requires additional input from the keyboard."
+                                );
+                            });
+                        }
+                    }
                     if (additionalData.startsWith("AlreadyLaunchingGame")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
