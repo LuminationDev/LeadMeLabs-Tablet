@@ -66,7 +66,7 @@ public class Appliance {
         this.options = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             JSONObject option = options.getJSONObject(i);
-            this.options.add(new Option(option.getInt("id"), option.getString("name")));
+            this.options.add(new Option(option.getInt("presetId"), option.getString("name")));
         }
     }
 

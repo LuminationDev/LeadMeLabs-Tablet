@@ -79,11 +79,11 @@ public class RadioAdapter extends BaseAdapter {
                         if (checked) {
                             radioButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.on_text,0);
                             compoundButton.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_radio_blue_to_grey, null));
+                            applianceController.triggerRadioAppliance(appliance, compoundButton.getId() + "");
                         } else {
                             radioButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.off_text,0);
                             compoundButton.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_radio_grey_to_blue, null));
                         }
-                        applianceController.triggerRadioAppliance(appliance, compoundButton.getId() + "");
                     }
                 });
 
