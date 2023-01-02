@@ -43,7 +43,11 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             if (launchSingleOnTouch) {
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
+<<<<<<< Updated upstream
                     viewModel.selectStation(station.id);
+=======
+                    viewModel.selectStation(position); //todo do not set with the position use station id
+>>>>>>> Stashed changes
                     MainActivity.fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
                             .setCustomAnimations(android.R.anim.fade_in,
