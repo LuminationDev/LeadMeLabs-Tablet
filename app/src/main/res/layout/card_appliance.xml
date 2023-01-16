@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/white"
-                    android:text="@{status.equals(Constants.ACTIVE) ? appliance.description.get(0) : (status.equals(Constants.INACTIVE) ? appliance.description.get(1) : appliance.description.get(2)), default=`Loading`}"/>
+                    android:text="@{status.equals(Constants.ACTIVE) ? appliance.getLabelForIndex(0) : (status.equals(Constants.INACTIVE) ? appliance.getLabelForIndex(1) : appliance.getLabelForIndex(2)), default=`Loading`}"/>
             </LinearLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </RelativeLayout>

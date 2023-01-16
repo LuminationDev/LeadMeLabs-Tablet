@@ -84,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
         startNetworkService();
         loadNuc();
 
+        FirebaseManager.setupFirebaseManager(FirebaseAnalytics.getInstance(this));
+
         preloadViewModels();
         preloadData();
 
         FirebaseManager.validateLicenseKey();
         scheduleJobs();
-        FirebaseManager.setupFirebaseManager(FirebaseAnalytics.getInstance(this));
 
         if (savedInstanceState == null) {
             setupFragmentManager();
@@ -190,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void preloadData() {
         SettingsFragment.mViewModel.getNuc();
+        SettingsFragment.mViewModel.getLabLocation();
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();

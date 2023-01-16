@@ -19,9 +19,15 @@ public class HDMIStrategy extends ExtendedApplianceCard {
 
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
         super.trigger(binding, appliance, finalResult);
-        super.setupFirstButton(Constants.SOURCE_HDMI_1, appliance.description.get(0));
-        super.setupSecondButton(Constants.SOURCE_HDMI_2, appliance.description.get(1));
-        super.setupThirdButton(Constants.SOURCE_HDMI_3, appliance.description.get(2));
+        if (appliance.options != null) {
+            for (int i = 0; i < appliance.options.size(); i++) {
+                super.setupButton(i, appliance.options.get(i).id, appliance.options.get(i).name);
+            }
+        } else {
+            super.setupButton(0, Constants.SOURCE_HDMI_1, appliance.description.get(0));
+            super.setupButton(1, Constants.SOURCE_HDMI_2, appliance.description.get(1));
+            super.setupButton(2, Constants.SOURCE_HDMI_3, appliance.description.get(2));
+        }
     }
 }
 

@@ -143,6 +143,19 @@ public class ApplianceController {
 
         if(appliance.type.equals(Constants.BLIND) && Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.BLIND_STOPPED_VALUE)) {
             status = Constants.STOPPED;
+        } else if (appliance.options != null) {
+            String currentValue = ApplianceViewModel.activeApplianceList.get(appliance.id);
+            if (currentValue == null) {
+                status = Constants.ACTIVE;
+            } else if (appliance.options.size() > 0 && currentValue.equals(appliance.options.get(0).id)) {
+                status = Constants.ACTIVE;
+            } else if (appliance.options.size() > 1 && currentValue.equals(appliance.options.get(1).id)) {
+                status = Constants.INACTIVE;
+            } else if (appliance.options.size() > 2 && currentValue.equals(appliance.options.get(2).id)) {
+                status = Constants.STOPPED;
+            } else {
+                status = Constants.ACTIVE;
+            }
         }
         else if (appliance.type.equals(Constants.SOURCE) && Objects.equals(ApplianceViewModel.activeApplianceList.get(appliance.id), Constants.SOURCE_HDMI_3)) {
             status = Constants.STOPPED;

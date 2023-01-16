@@ -131,6 +131,7 @@ public class ApplianceViewModel extends ViewModel {
 
             }
 
+            // this is deprecated as of January 2023. Please delete if more than 2 releases have occured since.
             if (appliance.type.equals((Constants.SOURCE))) {
                 if(current.has("labels")) {
                     String labels = current.getString("labels");
