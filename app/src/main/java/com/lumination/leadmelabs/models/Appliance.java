@@ -29,9 +29,9 @@ public class Appliance {
     public MutableLiveData<String> status;
 
     public class Option {
-        public int id;
+        public String id;
         public String name;
-        public Option(int id, String name) {
+        public Option(String id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -66,7 +66,15 @@ public class Appliance {
         this.options = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             JSONObject option = options.getJSONObject(i);
-            this.options.add(new Option(option.getInt("id"), option.getString("name")));
+            this.options.add(new Option(option.getString("id"), option.getString("name")));
+        }
+    }
+
+    public String getLabelForIndex(int index) {
+        if (this.options != null) {
+            return this.options.get(index).name;
+        } else {
+            return this.description.get(index);
         }
     }
 

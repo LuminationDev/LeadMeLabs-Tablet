@@ -217,9 +217,17 @@
 
     <style name="BlindButton">
         <item name="android:layout_height">60dp</item>
-        <item name="android:layout_width">118dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:bottomLeftRadius">100dp</item>
+        <item name="android:topLeftRadius">100dp</item>
+        <item name="android:topRightRadius">100dp</item>
+        <item name="android:bottomRightRadius">100dp</item>
+        <item name="rippleColor">@color/grey_medium</item>
     </style>
 
     <style name="SettingsItemContainer">

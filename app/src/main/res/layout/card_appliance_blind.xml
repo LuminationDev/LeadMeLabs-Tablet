@@ -58,38 +58,13 @@
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="100dp"
                 app:alignItems="center"
                 app:flexDirection="row"
-                app:justifyContent="space_between">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/first_option"
-                    style="@style/BlindButton"
-                    android:text="Open"
-                    app:backgroundTint="@color/white"
-                    app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/second_option"
-                    style="@style/BlindButton"
-                    android:text="Stop"
-                    app:backgroundTint="@color/white"
-                    app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/third_option"
-                    style="@style/BlindButton"
-                    android:text="Close"
-                    app:backgroundTint="@color/white"
-                    app:cornerRadius="100dp"
-                    app:rippleColor="@color/grey_medium" />
-
-            </com.google.android.flexbox.FlexboxLayout>
+                app:justifyContent="space_between"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

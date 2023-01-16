@@ -25,8 +25,9 @@ public class BlindStrategy extends ExtendedApplianceCard {
 
     public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
         super.trigger(binding, appliance, finalResult);
-        super.setupFirstButton(super.isSceneCard ? openValue : Constants.APPLIANCE_ON_VALUE, appliance.description.get(0));
-        super.setupSecondButton(super.isSceneCard ? closeValue : Constants.APPLIANCE_OFF_VALUE, appliance.description.get(1));
-        super.setupThirdButton(super.isSceneCard ? stopValue : Constants.BLIND_STOPPED_VALUE, appliance.description.get(2));
+
+        super.setupButton(0, super.isSceneCard ? openValue : Constants.APPLIANCE_ON_VALUE, appliance.description.get(0));
+        super.setupButton(1, super.isSceneCard ? closeValue : Constants.APPLIANCE_OFF_VALUE, appliance.description.get(1));
+        super.setupButton(2, super.isSceneCard ? stopValue : Constants.BLIND_STOPPED_VALUE, appliance.description.get(2));
     }
 }

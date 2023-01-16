@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.TransitionDrawable;
+import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,44 +87,35 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
         background.setOnTouchListener(closeListener);
     }
 
-    protected void setupFirstButton(String applianceValue, String applianceDescription) {
-        Button firstButton = cardView.findViewById(R.id.first_option);
-        firstButton.setText(applianceDescription);
-        firstButton.setOnClickListener(v -> {
+    protected void setupButton(int index, String applianceValue, String applianceDescription) {
+        FlexboxLayout buttonLayout = cardView.findViewById(R.id.button_layout);
+        Button mb = new Button(new ContextThemeWrapper(buttonLayout.getContext(), R.style.BlindButton));
+
+        mb.setText(applianceDescription);
+        mb.setOnClickListener(v -> {
             if(this.isSceneCard) {
                 ApplianceViewModel.activeSceneList.put(appliance.name, appliance);
             }
 
-            interChangeDrawable(binding.getStatus().getValue(), Constants.ACTIVE);
+            String drawableConstant = Constants.ACTIVE;
+            int drawableTransition = R.drawable.transition_appliance_grey_to_blue;
+            if (index == 1) {
+                drawableConstant = Constants.INACTIVE;
+                drawableTransition = R.drawable.transition_appliance_blue_to_grey;
+            }
+            if (index == 2) {
+                drawableConstant = Constants.STOPPED;
+                drawableTransition = R.drawable.transition_appliance_none_to_navy;
+            }
+
+            interChangeDrawable(binding.getStatus().getValue(), drawableConstant);
             applianceNetworkCall(appliance, applianceValue);
 
             ApplianceViewModel.activeApplianceList.put(appliance.id, applianceValue);
-            coordinateVisuals(R.drawable.transition_appliance_grey_to_blue, applianceDescription, Constants.ACTIVE);
+            coordinateVisuals(drawableTransition, applianceDescription, drawableConstant);
         });
-    }
 
-    protected void setupSecondButton(String applianceValue, String applianceDescription) {
-        Button secondButton = cardView.findViewById(R.id.second_option);
-        secondButton.setText(applianceDescription);
-        secondButton.setOnClickListener(v -> {
-            interChangeDrawable(binding.getStatus().getValue(), Constants.INACTIVE);
-            applianceNetworkCall(appliance, applianceValue);
-
-            ApplianceViewModel.activeApplianceList.remove(appliance.id);
-            coordinateVisuals(R.drawable.transition_appliance_blue_to_grey, applianceDescription, Constants.INACTIVE);
-        });
-    }
-
-    protected void setupThirdButton(String applianceValue, String applianceDescription) {
-        Button thirdButton = cardView.findViewById(R.id.third_option);
-        thirdButton.setText(applianceDescription);
-        thirdButton.setOnClickListener(v -> {
-            interChangeDrawable(binding.getStatus().getValue(), Constants.STOPPED);
-            applianceNetworkCall(appliance, applianceValue);
-
-            ApplianceViewModel.activeApplianceList.put(appliance.id, applianceValue);
-            coordinateVisuals(R.drawable.transition_appliance_none_to_navy, applianceDescription, Constants.STOPPED);
-        });
+        buttonLayout.addView(mb);
     }
 
     /**
@@ -164,13 +156,25 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
         String status;
 
         if (Objects.equals(binding.getStatus().getValue(), Constants.ACTIVE)) {
-            statusContent = appliance.description.get(0);
+            if (appliance.options != null) {
+                statusContent = appliance.options.get(0).name;
+            } else {
+                statusContent = appliance.description.get(0);
+            }
             status = Constants.ACTIVE;
         } else if (Objects.equals(binding.getStatus().getValue(), Constants.INACTIVE)) {
-            statusContent = appliance.description.get(1);
+            if (appliance.options != null) {
+                statusContent = appliance.options.get(1).name;
+            } else {
+                statusContent = appliance.description.get(1);
+            }
             status = Constants.INACTIVE;
         } else {
-            statusContent = appliance.description.get(2);
+            if (appliance.options != null) {
+                statusContent = appliance.options.get(2).name;
+            } else {
+                statusContent = appliance.description.get(2);
+            }
             status = Constants.STOPPED;
         }
         statusTitle = cardView.findViewById(R.id.appliance_status);
