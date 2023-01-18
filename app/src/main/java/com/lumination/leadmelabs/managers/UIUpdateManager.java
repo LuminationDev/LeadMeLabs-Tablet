@@ -132,6 +132,22 @@ public class UIUpdateManager {
                             FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
                         }
                     }
+                    if (additionalData.startsWith("HighTemperature")) {
+                        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                            MainActivity.runOnUI(() -> {
+                                DialogManager.createBasicDialog(
+                                        "High Temperature",
+                                        station.name + " is running at a high temperature. It might need more ventilation."
+                                );
+                            });
+
+                            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                                put("station_id", String.valueOf(station.id));
+                            }};
+                            FirebaseManager.logAnalyticEvent("high_temperature", analyticsAttributes);
+                        }
+                    }
                     if (additionalData.startsWith("LostHeadset")) {
                         Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                         if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
