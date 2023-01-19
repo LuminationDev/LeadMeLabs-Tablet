@@ -20,6 +20,9 @@ commands:
           command: echo $GOOGLE_PLAY_KEY > google-play-key.json
       - run:
           name: Decode Android key store
+          command: cd app && echo $BASE64_KEYSTORE
+      - run:
+          name: Decode Android key store
           command: cd app && echo $BASE64_KEYSTORE | base64 -d > keystore.jks && cd ..
       - run:
           name: chmod permissions for gradlew
