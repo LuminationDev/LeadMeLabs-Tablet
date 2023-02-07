@@ -86,11 +86,19 @@ public class UpdateJobService extends JobService {
             return;
         }
 
+        if(MainActivity.appUpdateManager == null) {
+            return;
+        }
+
         // Returns an intent object that you use to check for an update.
         Task<AppUpdateInfo> appUpdateInfoTask = MainActivity.appUpdateManager.getAppUpdateInfo();
 
         // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if(appUpdateInfo == null) {
+                return;
+            }
+
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 SettingsFragment.mViewModel.setUpdateAvailable(true);
                 // Show that there is an update available.
@@ -98,9 +106,13 @@ public class UpdateJobService extends JobService {
             }
         });
 
-        appUpdateInfoTask.addOnFailureListener(appUpdateInfo ->
-                Log.e("Update", "No update available: " + appUpdateInfo.toString())
-        );
+        aappUpdateInfoTask.addOnFailureListener(appUpdateInfo -> {
+            if (appUpdateInfo == null) {
+                return;
+            }
+
+            Log.e("Update", "No update available: " + appUpdateInfo);
+        });
     }
 
     /**
