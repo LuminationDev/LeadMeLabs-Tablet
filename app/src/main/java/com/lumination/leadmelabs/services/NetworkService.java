@@ -171,7 +171,10 @@ public class NetworkService extends Service {
                     try {
                         //blocks the thread until client is accepted
                         clientSocket = mServerSocket.accept();
-                    } catch (IOException e) {
+                    } catch (SocketException e) {
+                        Log.e(TAG, e.toString());
+                        return;
+                    } catch (Exception e) {
                         Sentry.captureException(e);
                         return;
                     }
