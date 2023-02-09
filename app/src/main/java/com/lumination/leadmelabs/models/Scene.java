@@ -7,13 +7,11 @@ public class Scene {
     public int number;
     public String value;
     public MutableLiveData<Boolean> isActive;
-    public int[] theatreIds;
 
-    public Scene(String name, int number, String value, int[] theatreIds) {
+    public Scene(String name, int number, String value) {
         this.name = name;
         this.number = number;
         this.value = value;
-        this.theatreIds = theatreIds;
 
         isActive = new MutableLiveData<>(false);
     }

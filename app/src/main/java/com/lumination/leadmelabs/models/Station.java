@@ -17,10 +17,8 @@ public class Station implements Cloneable {
     public String room;
     public String gameName = null;
     public String gameId;
-    public String theatreText;
     public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
-    public int theatreId;
     public boolean selected = false;
     public Appliance associated = null;
     private CountDownTimer timer;
@@ -39,7 +37,7 @@ public class Station implements Cloneable {
         return clonedStation;
     }
 
-    public Station(String name, String steamApplications, int id, String status, int volume, int theatreId, String room, String ledRingId, String macAddress) {
+    public Station(String name, String steamApplications, int id, String status, int volume, String room, String ledRingId, String macAddress) {
         this.name = name;
         if (steamApplications != null && steamApplications.length() > 0 && !steamApplications.equals("Off")) {
             this.setSteamApplicationsFromJsonString(steamApplications);
@@ -47,7 +45,6 @@ public class Station implements Cloneable {
         this.id = id;
         this.status = status;
         this.volume = volume;
-        this.theatreId = theatreId;
         this.room = room;
         this.macAddress = macAddress;
         this.ledRingId = ledRingId;

@@ -119,9 +119,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
     private void completeSelectApplicationAction(SteamApplication steamApplication) {
         if (stationId > 0) {
             Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
-            if (station != null && station.theatreText != null) {
-                DialogManager.buildLaunchExperienceDialog(MainActivity.getInstance().getApplicationContext(), steamApplication, station);
-            } else if(station != null) {
+            if (station != null) {
                 NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
                 DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);

@@ -30,7 +30,6 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
-import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
@@ -433,12 +432,6 @@ public class DialogManager {
         SettingsFragment.mViewModel.getNuc().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
             TextView textView = view.findViewById(R.id.nuc_address);
             textView.setText(nucAddress);
-        });
-
-        Button scan_button = view.findViewById(R.id.scan_nuc_address);
-        scan_button.setOnClickListener(v -> {
-            NetworkService.broadcast("Android");
-            nucDialog.dismiss();
         });
 
         EditText newAddress = view.findViewById(R.id.nuc_address_input);

@@ -6,14 +6,12 @@ import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.IntentSender;
 import android.util.Log;
 
 import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
-import com.lumination.leadmelabs.BuildConfig;
+import com.google.firebase.appcheck.interop.BuildConfig;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -106,7 +104,7 @@ public class UpdateJobService extends JobService {
             }
         });
 
-        aappUpdateInfoTask.addOnFailureListener(appUpdateInfo -> {
+        appUpdateInfoTask.addOnFailureListener(appUpdateInfo -> {
             if (appUpdateInfo == null) {
                 return;
             }

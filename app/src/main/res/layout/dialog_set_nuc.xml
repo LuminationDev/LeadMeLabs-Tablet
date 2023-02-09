@@ -43,49 +43,6 @@
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:justifyContent="center">
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/scan_nuc_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:elevation="0dp"
-            app:cornerRadius="2dp"
-            app:rippleColor="@color/grey"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@color/blue_darkest"
-            android:textAllCaps="false"
-            android:text="Auto-scan"/>
-    </com.google.android.flexbox.FlexboxLayout>
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:flexDirection="column"
-        app:alignItems="center"
-        app:justifyContent="center">
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginHorizontal="140dp"
-            android:layout_marginVertical="10dp"
-            android:background="@color/grey"
-            app:flexDirection="column"
-            app:alignItems="center"
-            app:justifyContent="center"/>
-        <TextView
-            android:layout_marginTop="-27dp"
-            android:paddingVertical="5dp"
-            android:paddingHorizontal="15dp"
-            android:background="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="or"/>
-    </com.google.android.flexbox.FlexboxLayout>
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         app:flexDirection="column"
         app:alignItems="center">
         <TextView
