@@ -215,7 +215,6 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
                     stationJson.getInt("volume"),
-                    stationJson.getInt("theatreId"),
                     stationJson.getString("room"),
                     stationJson.getString("ledRingId"),
                     stationJson.getString("macAddress"));
@@ -228,28 +227,6 @@ public class StationsViewModel extends ViewModel {
             st.add(station);
         }
         this.setStations(st);
-    }
-
-    public void setActiveTheatres(int[] theatreIds, int[] zoneTheatreIds) {
-        ArrayList<Station> stationArrayList = (ArrayList<Station>) getStations().getValue();
-        stationArrayList = (ArrayList<Station>) stationArrayList.clone();
-        for (Station s:stationArrayList) {
-            boolean containsTheatre = false;
-            for (int id:theatreIds) {
-                if (s.theatreId == id) {
-                    containsTheatre = true;
-                    s.theatreText = "Theatre " + s.theatreId;
-                }
-            }
-            if (!containsTheatre && s.theatreText != null) {
-                for (int id:zoneTheatreIds) {
-                    if (s.theatreId == id) {
-                        s.theatreText = null;
-                    }
-                }
-            }
-        }
-        setStations(stationArrayList);
     }
 
     public void setStations(List<Station> stations) {

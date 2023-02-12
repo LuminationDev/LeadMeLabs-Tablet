@@ -43,16 +43,6 @@
                 android:layout_height="wrap_content"
                 app:flexDirection="column">
 
-                <TextView
-                    android:id="@+id/theatre_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{station.theatreText}"
-                    android:textColor="@color/blue"
-                    android:textFontWeight="600"
-                    android:textSize="11sp"
-                    android:visibility="@{station.theatreText != null ? View.VISIBLE : View.GONE}" />
-
                 <ImageView
                     android:id="@+id/station_vr_icon"
                     android:layout_width="52dp"

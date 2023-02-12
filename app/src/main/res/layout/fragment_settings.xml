@@ -53,7 +53,7 @@
                     app:alignItems="center">
                     <TextView
                         style="@style/SettingsText"
-                        android:text="NUC Details"
+                        android:text="@string/set_nuc_mac"
                         app:drawableRightCompat="@drawable/icon_menu_right" />
                 </com.google.android.flexbox.FlexboxLayout>
 
