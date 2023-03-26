@@ -640,6 +640,14 @@ public class DialogManager {
             );
         });
 
+        Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
+        ignoreReconnectDialogButton.setOnClickListener(w -> {
+            content.setText(R.string.lost_server_message_content);
+            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+            reconnectDialog.dismiss();
+            MainActivity.reconnectionIgnored = true;
+        });
+
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
         closeReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
@@ -653,7 +661,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(680, 680);
+        reconnectDialog.getWindow().setLayout(680, 720);
     }
 
     /**
