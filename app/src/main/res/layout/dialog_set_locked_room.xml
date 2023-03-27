@@ -12,23 +12,50 @@
         android:layout_height="wrap_content"
         app:flexDirection="column">
         <TextView
-            android:id="@+id/heading_text"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set the encryption key"
+            android:text="Set the locked rooms"
             android:textColor="@color/black"
             android:textSize="30sp">
         </TextView>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/content_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:text="Currently locked rooms: ">
+            </TextView>
+            <TextView
+                android:id="@+id/locked_room_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="">
+            </TextView>
+        </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 
-    <EditText
-        android:id="@+id/encryption_key_input"
-        android:layout_width="300dp"
-        android:backgroundTint="@color/blue_darkest"
-        android:foregroundTint="@color/blue_darkest"
+    <TextView
+        android:id="@+id/room_status_prompt"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter encryption key...">
-    </EditText>
+        android:layout_marginVertical="20dp"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:text="">
+    </TextView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/room_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
@@ -37,7 +64,7 @@
         android:layout_marginTop="20dp">
         <com.google.android.material.button.MaterialButton
             app:layout_flexShrink="0"
-            android:id="@+id/encryption_key_confirm"
+            android:id="@+id/room_lock_confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

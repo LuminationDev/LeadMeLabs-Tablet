@@ -134,5 +134,22 @@ public class SettingsFragment extends Fragment {
         }));
 
         instance = this;
+
+        //The toggle for turning room lock on and off
+        FlexboxLayout enableRoomLockLayout = view.findViewById(R.id.enable_room_lock);
+        SwitchCompat enableRoomLockToggle = view.findViewById(R.id.enable_room_lock_toggle);
+        enableRoomLockToggle.setChecked(mViewModel.getAnalyticsEnabled().getValue());
+        enableRoomLockLayout.setOnClickListener(v ->
+                enableRoomLockToggle.setChecked(!enableRoomLockToggle.isChecked())
+        );
+
+        enableRoomLockToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setRoomLockEnabled(isChecked)
+        );
+
+        FlexboxLayout setLockedRoomButton = view.findViewById(R.id.set_locked_room);
+        setLockedRoomButton.setOnClickListener(v ->
+                DialogManager.buildLockedRoomDialog(getContext())
+        );
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <import type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
         <variable
             name="settings"
@@ -192,6 +192,45 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:checked="@{settings.analyticsEnabled}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/enable_room_lock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="Room lock"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/enable_room_lock_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.roomLockEnabled}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/set_locked_room"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    android:visibility="@{settings.roomLockEnabled ? View.VISIBLE : View.GONE}"
+                    app:alignItems="center">
+                    <TextView
+                        style="@style/SettingsText"
+                        android:text="@{`Locked rooms: ` + settings.lockedRoom.toString()}"
+                        app:drawableRightCompat="@drawable/icon_menu_right" />
                 </com.google.android.flexbox.FlexboxLayout>
 
             </com.google.android.flexbox.FlexboxLayout>

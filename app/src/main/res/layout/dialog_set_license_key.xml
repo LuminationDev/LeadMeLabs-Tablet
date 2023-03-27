@@ -47,7 +47,7 @@
             android:stateListAnimator="@null"
             app:backgroundTint="@color/blue_darkest"
             android:textAllCaps="false"
-            android:text="Save"/>
+            android:text="@string/save"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </com.google.android.flexbox.FlexboxLayout>

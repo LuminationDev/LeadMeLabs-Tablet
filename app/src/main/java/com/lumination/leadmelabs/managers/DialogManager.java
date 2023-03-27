@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -27,6 +28,8 @@ import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
@@ -36,10 +39,13 @@ import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
+import org.w3c.dom.Text;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -591,6 +597,57 @@ public class DialogManager {
     }
 
     /**
+     * Build the set locked room dialog. Users can set what room a tablet is locked to, once locked
+     * the tablet will only display, interact and receive information about that particular room.
+     */
+    public static void buildLockedRoomDialog(Context context) {
+        View view = View.inflate(context, R.layout.dialog_set_locked_room, null);
+        AlertDialog lockedRoomDialog = new AlertDialog.Builder(context).setView(view).create();
+
+        //Get the currently selected value for the locked room or 'None' if nothing has been selected
+        TextView preview = view.findViewById(R.id.locked_room_preview);
+        preview.setText(SettingsFragment.mViewModel.getLockedRoom().getValue().toString());
+
+        //TODO TESTING - DELETE LATER
+        HashSet<String> rooms = new HashSet<>();
+        rooms.add("Classroom 1");
+        rooms.add("Classroom 2");
+        rooms.add("Classroom 3");
+        rooms.add("Classroom 4");
+
+        //HashSet<String> rooms = RoomFragment.mViewModel.getRooms().getValue();
+
+        RecyclerView roomRecyclerView = view.findViewById(R.id.room_list);
+        TextView roomStatus = view.findViewById(R.id.room_status_prompt);
+
+        //Show the empty room list prompt or set the rooms the recycler view
+        if((rooms != null ? rooms.size() : 0) == 0) {
+            roomStatus.setText("There are currently no rooms. Please check that the NUC is connected.");
+            roomStatus.setVisibility(View.VISIBLE);
+            roomRecyclerView.setVisibility(View.GONE);
+        }
+        else if (rooms.size() == 1) {
+            roomStatus.setText("There is only one room available. Lock will not affect anything.");
+            roomStatus.setVisibility(View.VISIBLE);
+            roomRecyclerView.setVisibility(View.GONE);
+        } else {
+            roomStatus.setVisibility(View.GONE);
+            int numberOfColumns = 1;
+            roomRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.getInstance().getApplicationContext(), numberOfColumns));
+            RoomAdapter roomAdapter = new RoomAdapter(preview, rooms);
+            roomRecyclerView.setAdapter(roomAdapter);
+        }
+
+        Button roomConfirmButton = view.findViewById(R.id.room_lock_confirm_button);
+        roomConfirmButton.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setLockedRoom(preview.getText().toString());
+            lockedRoomDialog.dismiss();
+        });
+
+        lockedRoomDialog.show();
+    }
+
+    /**
      * Build and display the reconnection dialog. Can either be dismissed through the close button
      * or a user can select reconnect, sending a UDP broadcast out from the network service looking
      * for active NUCs.
@@ -644,7 +701,9 @@ public class DialogManager {
         ignoreReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-            reconnectDialog.dismiss();
+            new Handler().postDelayed(() -> {
+                reconnectDialog.dismiss();
+            }, 200);
             MainActivity.reconnectionIgnored = true;
         });
 
@@ -652,7 +711,8 @@ public class DialogManager {
         closeReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-            reconnectDialog.dismiss();
+
+            new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
         });
 
