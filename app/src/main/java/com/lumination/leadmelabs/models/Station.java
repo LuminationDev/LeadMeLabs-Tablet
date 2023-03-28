@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ public class Station implements Cloneable {
     public int volume;
     public ArrayList<SteamApplication> steamApplications = new ArrayList<>();
     public boolean selected = false;
-    public Appliance associated = null;
     private CountDownTimer timer;
     public String macAddress;
     public String ledRingId;
@@ -86,6 +86,9 @@ public class Station implements Cloneable {
      * within the time limit (3mins) then something has gone wrong and alert the user.
      */
     public void powerStatusCheck() {
+        //Cancel any previous power checks before starting a new one
+        cancelStatusCheck();
+
         timer = new CountDownTimer(3 * 1000 * 60, 1000) {
             @Override
             public void onTick(long l) {
@@ -93,6 +96,10 @@ public class Station implements Cloneable {
 
             @Override
             public void onFinish() {
+                if(!SettingsFragment.checkLockedRooms(room)) {
+                    return;
+                }
+
                 DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
                 MainActivity.runOnUI(() -> {
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);

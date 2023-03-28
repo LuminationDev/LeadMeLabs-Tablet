@@ -1,7 +1,5 @@
 package com.lumination.leadmelabs.managers;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -63,7 +61,7 @@ public class FirebaseManager {
     public static void logAnalyticEvent(String event, Map<String, String> attributes) {
         try {
             Thread thread = new Thread(() -> {
-                if(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue()) {
+                if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
                     Bundle bundle = new Bundle();
 
                     // add custom attributes

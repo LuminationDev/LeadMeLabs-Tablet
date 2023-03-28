@@ -12,6 +12,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * Only responsible for setting the address as it is saved in shared
  * preferences afterwards which can be loaded at the application start.
@@ -26,6 +29,8 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
+    private MutableLiveData<Boolean> enableRoomLock;
+    private MutableLiveData<HashSet<String>> lockedRooms;
     private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
 
     public SettingsViewModel(@NonNull Application application) {
@@ -66,7 +71,7 @@ public class SettingsViewModel extends AndroidViewModel {
      * communications and displayed on the settings page.
      */
     public LiveData<String> getIpAddress() {
-        if(ipAddress == null) {
+        if (ipAddress == null) {
             ipAddress = new MutableLiveData<>(NetworkService.getIPAddress());
         }
 
@@ -111,6 +116,7 @@ public class SettingsViewModel extends AndroidViewModel {
 
     /**
      * Set the tablet in to WallMode or Normal Mode.
+     *
      * @param value A boolean to represent if WallMode is active (true) or not (false).
      */
     public void setHideStationControls(Boolean value) {
@@ -148,6 +154,7 @@ public class SettingsViewModel extends AndroidViewModel {
     /**
      * Get the internally saved License key, if none is found this returns null meaning the key has
      * not been entered yet.
+     *
      * @return A String representing the key present on the device.
      */
     public LiveData<String> getLicenseKey() {
@@ -263,5 +270,95 @@ public class SettingsViewModel extends AndroidViewModel {
      */
     public void setUpdateAvailable(Boolean newValue) {
         updateAvailable.setValue(newValue);
+    }
+
+
+    /**
+     * Check to see if the user has enabled the room lock. This value represents if the user has
+     * selected to only control one room from the tablet, ignoring all other information from the
+     * NUC about different rooms.
+     */
+    public LiveData<Boolean> getRoomLockEnabled() {
+        if (enableRoomLock == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_room_lock", Context.MODE_PRIVATE);
+            enableRoomLock = new MutableLiveData<>(sharedPreferences.getBoolean("enable_room_lock", true));
+        }
+        return enableRoomLock;
+    }
+
+    /**
+     * Set whether the room lock is engaged.
+     */
+    public void setRoomLockEnabled(Boolean value) {
+        enableRoomLock.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_room_lock", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("enable_room_lock", value);
+        editor.apply();
+    }
+
+    /**
+     * This value represents that the user has selected to only control the one specific room from
+     * the tablet, ignoring all other information from the NUC about different rooms.
+     */
+    public LiveData<HashSet<String>> getLockedRooms() {
+        if (lockedRooms == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_rooms", Context.MODE_PRIVATE);
+            String hashSetString = sharedPreferences.getString("locked_rooms", "None");
+
+            if(hashSetString.equals("None")) {
+                lockedRooms = new MutableLiveData<>(new HashSet<>());
+            } else {
+                lockedRooms = new MutableLiveData<>(StringToHashSet(hashSetString));
+            }
+        }
+
+        return lockedRooms;
+    }
+
+    /**
+     * Detect if the locked toggle is set to on or off in the settings and respond to the locked
+     * room query appropriately.
+     * @return An empty hashset if the toggle is off and the hashset of rooms if the toggle is on.
+     */
+    public LiveData<HashSet<String>> getLockedIfEnabled() {
+        //Early exit if the toggle is off
+        if(Boolean.FALSE.equals(getRoomLockEnabled().getValue())) {
+            return new MutableLiveData<>(new HashSet<>());
+        }
+
+        return getLockedRooms();
+    }
+
+    /**
+     * Set which room name is locked.
+     */
+    public void setLockedRooms(String value) {
+        String entry = value;
+
+        if(value.equals("[]")) {
+            entry = "None";
+            lockedRooms.setValue(new HashSet<>());
+        } else {
+            lockedRooms.setValue(StringToHashSet(value));
+        }
+
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_rooms", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("locked_rooms", entry);
+        editor.apply();
+    }
+
+    /**
+     * Transform a String into a HashSet.
+     * @param value A toString() version of a HashSet.
+     * @return A HashSet with the appropriate values as per the supplied string.
+     */
+    private HashSet<String> StringToHashSet(String value) {
+        return new HashSet<>(Arrays.asList(value
+                .replace("[", "")
+                .replace("]", "")
+                .replace(", ", ",")
+                .split(",")));
     }
 }

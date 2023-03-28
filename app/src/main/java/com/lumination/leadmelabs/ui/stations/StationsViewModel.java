@@ -105,8 +105,9 @@ public class StationsViewModel extends ViewModel {
             return new ArrayList<>();
         }
         for (Station station: stations.getValue()) {
-            //Check if station does not have any loaded games?
-            hashSet.addAll(station.steamApplications);
+            if(SettingsFragment.checkLockedRooms(station.room)) {
+                hashSet.addAll(station.steamApplications);
+            }
         }
         ArrayList<SteamApplication> list = new ArrayList<>(hashSet);
         list.sort((steamApplication, steamApplication2) -> steamApplication.name.compareToIgnoreCase(steamApplication2.name));
@@ -154,7 +155,7 @@ public class StationsViewModel extends ViewModel {
         Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
         //Exit the function if the tablet is in wall mode.
-        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+        if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getHideStationControls().getValue())) {
             return;
         }
 

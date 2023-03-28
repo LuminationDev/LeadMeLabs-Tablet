@@ -22,7 +22,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
-import com.lumination.leadmelabs.utilities.WakeOnLan;
+
+import java.util.HashSet;
 
 public class SettingsFragment extends Fragment {
 
@@ -49,9 +50,9 @@ public class SettingsFragment extends Fragment {
         binding.setSettings(mViewModel);
 
         FlexboxLayout nucDetails = view.findViewById(R.id.nuc_details);
-        nucDetails.setOnClickListener(v -> {
-            DialogManager.buildNucDetailsDialog(getContext());
-        });
+        nucDetails.setOnClickListener(v ->
+            DialogManager.buildNucDetailsDialog(getContext())
+        );
 
         FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);
         setNucAddressButton.setOnClickListener(v ->
@@ -86,7 +87,7 @@ public class SettingsFragment extends Fragment {
         //The toggle for turning wall mode on and off
         FlexboxLayout hideStationControlsLayout = view.findViewById(R.id.hide_station_controls);
         SwitchCompat hideStationControlsToggle = view.findViewById(R.id.hide_station_controls_toggle);
-        hideStationControlsToggle.setChecked(mViewModel.getHideStationControls().getValue());
+        hideStationControlsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getHideStationControls().getValue()));
         hideStationControlsLayout.setOnClickListener(v ->
             hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked())
         );
@@ -109,7 +110,7 @@ public class SettingsFragment extends Fragment {
         //The toggle for turning analytics on and off
         FlexboxLayout enableAnalyticsLayout = view.findViewById(R.id.enable_analytical_collection);
         SwitchCompat enableAnalyticsToggle = view.findViewById(R.id.enable_analytical_collection_toggle);
-        enableAnalyticsToggle.setChecked(mViewModel.getAnalyticsEnabled().getValue());
+        enableAnalyticsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getAnalyticsEnabled().getValue()));
         enableAnalyticsLayout.setOnClickListener(v ->
                 enableAnalyticsToggle.setChecked(!enableAnalyticsToggle.isChecked())
         );
@@ -134,5 +135,34 @@ public class SettingsFragment extends Fragment {
         }));
 
         instance = this;
+
+        //The toggle for turning room lock on and off
+        FlexboxLayout enableRoomLockLayout = view.findViewById(R.id.enable_room_lock);
+        SwitchCompat enableRoomLockToggle = view.findViewById(R.id.enable_room_lock_toggle);
+        enableRoomLockToggle.setChecked(Boolean.TRUE.equals(mViewModel.getAnalyticsEnabled().getValue()));
+        enableRoomLockLayout.setOnClickListener(v ->
+                enableRoomLockToggle.setChecked(!enableRoomLockToggle.isChecked())
+        );
+
+        enableRoomLockToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setRoomLockEnabled(isChecked)
+        );
+
+        FlexboxLayout setLockedRoomButton = view.findViewById(R.id.set_locked_room);
+        setLockedRoomButton.setOnClickListener(v ->
+                DialogManager.buildLockedRoomDialog(getContext())
+        );
+    }
+
+    /**
+     * Check whether a supplied object's room is held within a locked room or if there are no
+     * locked rooms.
+     */
+    public static boolean checkLockedRooms(String room) {
+        //Only add the appliance if it is in the locked room or there is no current locked rooms
+        HashSet<String> locked = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
+        if(locked == null) { //need to have a null check
+            return true;
+        } else return locked.size() == 0 || locked.contains(room);
     }
 }

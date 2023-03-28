@@ -22,6 +22,7 @@ import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
@@ -163,9 +164,12 @@ public class ApplianceFragment extends Fragment {
             return true;
         }
 
+        //Check that the room matches the display or type and that it is in a locked room
         for (Appliance appliance: allAppliances) {
             if(appliance.matchesDisplayCategory(type.getValue())) {
-                rooms.add(appliance.room);
+                if(SettingsFragment.checkLockedRooms(appliance.room)) {
+                    rooms.add(appliance.room);
+                }
             }
         }
 
@@ -249,17 +253,21 @@ public class ApplianceFragment extends Fragment {
      * @param appliances A list of all appliances which may be in the room.
      */
     private void loadAllRoomData(List<Appliance> appliances) {
-        rooms = new ArrayMap<>(); //reset the rooms as to no double up on the appliances
+        rooms = new ArrayMap<>(); //reset the rooms as to not double up on the appliances
 
         for(Appliance appliance : appliances) {
-            if(appliance.matchesDisplayCategory(type.getValue())) {
-                if(rooms.containsKey(appliance.room)) {
-                    rooms.get(appliance.room).add(appliance);
-                } else {
+            if(!appliance.matchesDisplayCategory(type.getValue())) {
+                continue;
+            }
+
+            if(rooms.containsKey(appliance.room)) {
+                rooms.get(appliance.room).add(appliance);
+            } else {
+                if(SettingsFragment.checkLockedRooms(appliance.room)) {
                     rooms.put(appliance.room, new ArrayList<>(Collections.singleton(appliance)));
                 }
-                applianceCount.setValue(1);
             }
+            applianceCount.setValue(1);
         }
 
         applianceParentAdapter.parentModelArrayList = rooms;
@@ -278,8 +286,9 @@ public class ApplianceFragment extends Fragment {
         ArrayList<Appliance> subtype = new ArrayList<>();
 
         for(Appliance appliance : appliances) {
-            if(appliance.matchesDisplayCategory(type.getValue()) &&
-                    appliance.room.equals(roomType)) {
+            if(appliance.matchesDisplayCategory(type.getValue())
+                    && appliance.room.equals(roomType)
+                    && SettingsFragment.checkLockedRooms(appliance.room)) {
                 subtype.add(appliance);
             }
         }

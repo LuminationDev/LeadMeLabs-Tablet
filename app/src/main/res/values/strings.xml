@@ -86,7 +86,7 @@
     <string name="set_lab_location">Set lab location</string>
     <string name="set_license_key">Set license key</string>
     <string name="hide_station_controls">Hide station controls</string>
-    <string name="allow_analytics">Allow Analytics</string>
+    <string name="allow_analytics">Allow analytics</string>
     <string name="all_computers_off">All stations in this room are currently turned off.</string>
     <string name="reconnection_failed">Reconnection attempt failed. Try again or contact your IT department.</string>
     <string name="oh_no">Oh no!</string>
@@ -97,4 +97,6 @@
     <string name="update_available">Update available</string>
     <string name="update_message">There is an update available on the Google Play Store. Please contact your IT department to install it.</string>
     <string name="set_nuc_mac">Set NUC MAC address</string>
+    <string name="ignore">Ignore</string>
+    <string name="save">Save</string>
 </resources>

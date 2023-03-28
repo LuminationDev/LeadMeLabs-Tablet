@@ -37,7 +37,6 @@ public class SideMenuFragment extends Fragment {
     private View view;
     private FragmentMenuSideBinding binding;
     private ViewGroup.LayoutParams layout;
-    private String menuSize;
     public static String currentType;
 
     @Nullable
@@ -47,7 +46,7 @@ public class SideMenuFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_menu_side, container, false);
 
         Bundle bundle = getArguments();
-        menuSize = bundle != null ? bundle.getString("menuSize") : null;
+        String menuSize = bundle != null ? bundle.getString("menuSize") : null;
         binding = DataBindingUtil.bind(view);
         layout = view.getLayoutParams();
         if(menuSize != null) {

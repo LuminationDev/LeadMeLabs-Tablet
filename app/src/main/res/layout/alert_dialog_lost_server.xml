@@ -118,6 +118,31 @@ android:background="@drawable/bg_alertdialog_vern">
                 app:layout_flexShrink="0"
                 app:rippleColor="@color/grey"
                 app:strokeColor="@color/blue" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ignore_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="228dp"
+                android:layout_height="60dp"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/ignore"
+                android:textAllCaps="false"
+                android:textColor="@color/red"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/red" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ignoring stops the connection prompt for 10 minutes."
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
         </com.google.android.flexbox.FlexboxLayout>
 
     </com.google.android.flexbox.FlexboxLayout>

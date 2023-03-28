@@ -1,13 +1,12 @@
 package com.lumination.leadmelabs.ui.room;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import java.util.HashSet;
 
@@ -17,9 +16,33 @@ public class RoomViewModel extends ViewModel {
 
     public LiveData<HashSet<String>> getRooms() {
         if (rooms == null) {
-            HashSet<String> start = new HashSet<>();
-            rooms = new MutableLiveData<>(start);
+            rooms = new MutableLiveData<>(new HashSet<>());
         }
+
+        //Check if the lockedRooms size is 0
+        HashSet<String> locked = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
+        if(locked == null) { // need to include a null check first
+            return rooms;
+        } else if(locked.size() == 0) {
+            return rooms;
+        } else {
+            //Check against the locked rooms and minus all else
+            HashSet<String> lRooms = new HashSet<>(rooms.getValue());
+            lRooms.retainAll(SettingsFragment.mViewModel.getLockedIfEnabled().getValue());
+
+            return new MutableLiveData<>(lRooms);
+        }
+    }
+
+    /**
+     * Collect all the stored rooms regardless of if they are the locked rooms or not.
+     * @return A HashSet containing all the rooms a Lab has.
+     */
+    public LiveData<HashSet<String>> getAllRooms() {
+        if (rooms == null) {
+            rooms = new MutableLiveData<>(new HashSet<>());
+        }
+
         return rooms;
     }
 
@@ -27,7 +50,11 @@ public class RoomViewModel extends ViewModel {
         if (rooms == null || rooms.getValue().size() == 0) {
             lateLoadScenes();
         }
+
         rooms.setValue(values);
+
+        //Manually trigger the rooms
+        RoomFragment.ManualRoomTrigger();
     }
 
     public LiveData<String> getSelectedRoom() {

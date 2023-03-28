@@ -22,8 +22,11 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
+import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.text.MessageFormat;
@@ -40,6 +43,7 @@ public class SubMenuFragment extends Fragment {
     private FragmentMenuSubBinding binding;
     private static String currentType;
     public static MutableLiveData<Integer> currentIcon = new MutableLiveData<>();
+    public static HashSet<String> checkedApplianceTypes;
 
     @Nullable
     @Override
@@ -72,10 +76,34 @@ public class SubMenuFragment extends Fragment {
      */
     private void createSubObjects(HashSet<String> applianceTypes) {
         if(applianceTypes.size() > 0) {
+            checkedApplianceTypes = new HashSet<>();
             HashMap<String, TextView> options = new HashMap<>();
             List<TextView> orderedOptions = new ArrayList<>();
 
-            for(String type: applianceTypes) {
+            //Loop through the stored appliances and check if there is any pages without a linked
+            //appliance. This would occur when there are locked rooms set.
+            HashSet<String> lockedRooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
+            if(lockedRooms == null) { //need to perform a null check first
+                checkedApplianceTypes = applianceTypes;
+            } else if(lockedRooms.size() == 0) {
+                checkedApplianceTypes = applianceTypes;
+            } else {
+                List<Appliance> appliances = ApplianceFragment.mViewModel.getAppliances().getValue();
+
+                if(appliances != null) {
+                    for (Appliance appliance : appliances) {
+                        if (SettingsFragment.mViewModel.getLockedIfEnabled().getValue().contains(appliance.room)) {
+                            if (appliance.displayType != null) {
+                                checkedApplianceTypes.add(appliance.displayType);
+                            } else {
+                                checkedApplianceTypes.add(appliance.type);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for(String type: checkedApplianceTypes) {
                 options.put(type, createObject(type));
             }
 
@@ -122,8 +150,8 @@ public class SubMenuFragment extends Fragment {
 
         tv.setOnClickListener(v -> {
             loadFragment(getTitle(type), type);
-            changeHighlight();
-            tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
+            changeHighlight(type);
+
         });
         feedback(tv);
 
@@ -133,13 +161,18 @@ public class SubMenuFragment extends Fragment {
     /**
      * Change the current highlighted option
      */
-    private void changeHighlight() {
+    private void changeHighlight(String type) {
         FlexboxLayout layout = view.findViewById(R.id.side_menu_options);
         int count = layout.getChildCount();
         TextView tv;
         for(int i=0; i<count; i++) {
             tv = (TextView) layout.getChildAt(i);
-            tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.black));
+
+            if(tv.getText().toString().toLowerCase().equals(type)) {
+                tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
+            } else {
+                tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.black));
+            }
         }
     }
 
@@ -149,7 +182,7 @@ public class SubMenuFragment extends Fragment {
      * @param type A string representing a type of appliance.
      * @return A string representing the title of the subpage fragment.
      */
-    private String getTitle(String type) {
+    public static String getTitle(String type) {
         switch (type) {
             case "scenes":
                 return "Scenes";
@@ -167,6 +200,8 @@ public class SubMenuFragment extends Fragment {
                 return "LED Wall Controls";
             case "sources":
                 return "Source Controls";
+            case "splicers":
+                return "Splicer Controls";
             default:
                 return null;
         }
@@ -232,11 +267,11 @@ public class SubMenuFragment extends Fragment {
     private static void changeIcon(String type) {
         switch (type) {
             case "scenes":
+            case "splicers":
+            case "sources":
                 currentIcon.setValue(R.drawable.icon_empty_scenes);
                 break;
             case "LED rings":
-                currentIcon.setValue(R.drawable.icon_empty_led);
-                break;
             case "LED walls":
                 currentIcon.setValue(R.drawable.icon_empty_led);
                 break;
@@ -247,13 +282,8 @@ public class SubMenuFragment extends Fragment {
                 currentIcon.setValue(R.drawable.icon_empty_blinds);
                 break;
             case "computers":
-                currentIcon.setValue(R.drawable.icon_empty_projector);
-                break;
             case "projectors":
                 currentIcon.setValue(R.drawable.icon_empty_projector);
-                break;
-            case "sources":
-                currentIcon.setValue(R.drawable.icon_empty_scenes);
                 break;
             default:
                 currentIcon.setValue(R.drawable.icon_appliance_light_bulb_off);

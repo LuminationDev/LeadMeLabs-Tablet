@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -18,15 +19,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
@@ -40,6 +43,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,6 +64,7 @@ public class DialogManager {
     public static CountDownTimer shutdownTimer;
 
     private static int pinCodeAttempts = 0;
+    private static boolean missingEncryptionAlerted = false;
 
     /**
      * Dismiss an open dialog that is no longer relevant. Basic dialogs are kept track of within a
@@ -85,6 +90,35 @@ public class DialogManager {
     public static void trackOpenDialog(String titleKey, String stationName, AlertDialog dialog) {
         String key = titleKey + ":" + stationName;
         openDialogs.put(key, dialog);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createMissingEncryptionDialog(String titleText, String contentText) {
+        if(missingEncryptionAlerted) {
+            return;
+        }
+
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_basic_vern, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+            missingEncryptionAlerted = false;
+        });
+
+        missingEncryptionAlerted = true;
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(680, 680);
     }
 
     /**
@@ -386,8 +420,7 @@ public class DialogManager {
     }
 
     /**
-     * Build the set NUC dialog. A user is able to auto scan for nearby NUC's or input the IP address
-     * manually.
+     * Build the set NUC dialog. A user is able to input the MAC address manually.
      */
     public static void buildNucDetailsDialog(Context context) {
         View view = View.inflate(context, R.layout.dialog_nuc_details, null);
@@ -422,8 +455,7 @@ public class DialogManager {
     }
 
     /**
-     * Build the set NUC dialog. A user is able to auto scan for nearby NUC's or input the IP address
-     * manually.
+     * Build the set NUC dialog. A user is able to input the IP address manually.
      */
     public static void buildSetNucDialog(Context context) {
         View view = View.inflate(context, R.layout.dialog_set_nuc, null);
@@ -437,7 +469,7 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString());
+            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
             nucDialog.dismiss();
         });
 
@@ -591,6 +623,50 @@ public class DialogManager {
     }
 
     /**
+     * Build the set locked room dialog. Users can set what room a tablet is locked to, once locked
+     * the tablet will only display, interact and receive information about that particular room.
+     */
+    public static void buildLockedRoomDialog(Context context) {
+        View view = View.inflate(context, R.layout.dialog_set_locked_room, null);
+        AlertDialog lockedRoomDialog = new AlertDialog.Builder(context).setView(view).create();
+
+        //Get the currently selected value for the locked room or 'None' if nothing has been selected
+        TextView preview = view.findViewById(R.id.locked_room_preview);
+        preview.setText(SettingsFragment.mViewModel.getLockedRooms().getValue().toString());
+
+        HashSet<String> rooms = RoomFragment.mViewModel.getAllRooms().getValue();
+
+        RecyclerView roomRecyclerView = view.findViewById(R.id.room_list);
+        TextView roomStatus = view.findViewById(R.id.room_status_prompt);
+
+        //Show the empty room list prompt or set the rooms the recycler view
+        if((rooms != null ? rooms.size() : 0) == 0) {
+            roomStatus.setText("There are currently no rooms. Please check that the NUC is connected.");
+            roomStatus.setVisibility(View.VISIBLE);
+            roomRecyclerView.setVisibility(View.GONE);
+        }
+        else if (rooms.size() == 1) {
+            roomStatus.setText("There is only one room available. Lock will not affect anything.");
+            roomStatus.setVisibility(View.VISIBLE);
+            roomRecyclerView.setVisibility(View.GONE);
+        } else {
+            roomStatus.setVisibility(View.GONE);
+            int numberOfColumns = 1;
+            roomRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.getInstance().getApplicationContext(), numberOfColumns));
+            RoomAdapter roomAdapter = new RoomAdapter(preview, rooms);
+            roomRecyclerView.setAdapter(roomAdapter);
+        }
+
+        Button roomConfirmButton = view.findViewById(R.id.room_lock_confirm_button);
+        roomConfirmButton.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setLockedRooms(preview.getText().toString());
+            lockedRoomDialog.dismiss();
+        });
+
+        lockedRoomDialog.show();
+    }
+
+    /**
      * Build and display the reconnection dialog. Can either be dismissed through the close button
      * or a user can select reconnect, sending a UDP broadcast out from the network service looking
      * for active NUCs.
@@ -640,11 +716,22 @@ public class DialogManager {
             );
         });
 
+        Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
+        ignoreReconnectDialogButton.setOnClickListener(w -> {
+            content.setText(R.string.lost_server_message_content);
+            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+            new Handler().postDelayed(() -> {
+                reconnectDialog.dismiss();
+            }, 200);
+            MainActivity.reconnectionIgnored = true;
+        });
+
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
         closeReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-            reconnectDialog.dismiss();
+
+            new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
         });
 
@@ -653,7 +740,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(680, 680);
+        reconnectDialog.getWindow().setLayout(680, 720);
     }
 
     /**
@@ -803,6 +890,11 @@ public class DialogManager {
         restartSessionDialog.getWindow().setLayout(1200, 380);
     }
 
+    /**
+     * Dismiss the restart session loading screen as it has successfully restarted the applications
+     * or an error has occurred and another popup is about to be shown.
+     * @param stationId An integer of the ID of a station which has relaunched/encountered an error.
+     */
     public static void sessionRestartedOnStation(int stationId) {
         if (restartSessionStationIds != null) {
             restartSessionStationIds.removeIf(id -> id == stationId);

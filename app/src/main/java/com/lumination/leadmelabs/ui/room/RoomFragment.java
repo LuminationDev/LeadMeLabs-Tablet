@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.room;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +23,17 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
 public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
-    public WeakReference<View> view;
-    private WeakReference<RelativeLayout> highlight;
+
+    public SoftReference<View> view;
+    private SoftReference<RelativeLayout> highlight;
 
     public static RoomFragment instance;
     public static RoomFragment getInstance() { return instance; }
@@ -49,7 +52,7 @@ public class RoomFragment extends Fragment {
         width = Helpers.convertDpToPx(133);
         height = Helpers.convertDpToPx(40);
 
-        view = new WeakReference<>(inflater.inflate(R.layout.fragment_rooms, container, false));
+        view = new SoftReference<>(inflater.inflate(R.layout.fragment_rooms, container, false));
         return view.get();
     }
 
@@ -69,12 +72,33 @@ public class RoomFragment extends Fragment {
                 view.findViewById(R.id.room_fragment).setVisibility(View.INVISIBLE);
             }
 
-            highlight = new WeakReference<>(view.findViewById(R.id.highlight));
+            highlight = new SoftReference<>(view.findViewById(R.id.highlight));
+
             setupButtons(rooms);
             setupAllButton();
         });
 
         instance = this;
+    }
+
+    /**
+     * If the lifecycle has not resumed when the tablet receives the rooms from the NUC the rooms
+     * are not displayed until the page is swapped. Here we can manually trigger the rooms to
+     * appear.
+     */
+    public static void ManualRoomTrigger() {
+        HashSet<String> rooms = mViewModel.getRooms().getValue();
+        if(rooms == null) return;
+
+        if(rooms.size() > 1) {
+            instance.view.get().findViewById(R.id.room_fragment).setVisibility(View.VISIBLE);
+        } else {
+            instance.view.get().findViewById(R.id.room_fragment).setVisibility(View.INVISIBLE);
+        }
+
+        instance.highlight = new SoftReference<>(instance.view.get().findViewById(R.id.highlight));
+        instance.setupButtons(rooms);
+        instance.setupAllButton();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,7 +111,9 @@ public class RoomFragment extends Fragment {
             return;
         }
 
+        // Copy the HashSet into an iterable list and sort into Alphabetical order
         ArrayList<String> roomSet = new ArrayList<>(rooms);
+        Collections.sort(roomSet);
 
         //Hashset does not always maintain the order, always make sure the All is last
         roomSet.remove("All");

@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -48,6 +47,10 @@ import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
 
@@ -58,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     public static FragmentManager fragmentManager;
     public static MutableLiveData<Integer> fragmentCount;
     public static int hasNotReceivedPing = 0;
+    public static boolean reconnectionIgnored = false;
+
+    private static ScheduledExecutorService scheduler;
 
     public static Handler handler;
 
@@ -117,12 +123,39 @@ public class MainActivity extends AppCompatActivity {
 
         handler.postDelayed(new Runnable() {
             public void run() {
+                //The prompt has been ignored, try again in 10 minutes
+                if(reconnectionIgnored) {
+                    Log.e("MainActivity", "Reconnection Ignored");
+                    handler.postDelayed(this, 10 * 60000);
+                    reconnectionIgnored = false;
+                    return;
+                }
+
                 hasNotReceivedPing += 1;
                 if (hasNotReceivedPing > 3) {
                     Log.e("MainActivity", "NUC Lost");
                     DialogManager.buildReconnectDialog();
+
+                    //Wait 10 minutes and then try to reconnect every 10 minutes - this will stop
+                    //the popup occurring over night when the NUC restarts. The scheduler will be
+                    //shutdown upon a successful reconnection.
+                    if(scheduler != null) {
+                        if(!scheduler.isShutdown()) {
+                            scheduler.shutdownNow();
+                        }
+                    }
+
+                    scheduler = Executors.newSingleThreadScheduledExecutor();
+                    scheduler.scheduleWithFixedDelay(() -> {
+                        if(NetworkService.getNUCAddress() != null) {
+                            NetworkService.refreshNUCAddress();
+                        }
+                    }, 10, 10, TimeUnit.MINUTES);
                 } else {
                     handler.postDelayed(this, 5000);
+                    if(scheduler == null) return;
+                    if(scheduler.isShutdown()) return;
+                    scheduler.shutdownNow();
                 }
             }
         }, 5000);
