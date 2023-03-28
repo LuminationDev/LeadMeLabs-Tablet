@@ -110,7 +110,7 @@ public class UIUpdateManager {
 
                     //Everything below should only trigger if within the locked room
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                    HashSet<String> rooms = SettingsFragment.mViewModel.getLockedRooms().getValue();
+                    HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
 
                     //Check if the computer is in the locked room
                     if(rooms != null) {
@@ -288,7 +288,7 @@ public class UIUpdateManager {
                     if(value.equals("Turning On") && station.status.equals("On")) {
                         return;
                     }
-                    
+
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
                     if(value.equals("Turning On")) { station.powerStatusCheck(); }

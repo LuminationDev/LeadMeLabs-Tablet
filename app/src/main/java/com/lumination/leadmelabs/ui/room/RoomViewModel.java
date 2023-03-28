@@ -20,7 +20,7 @@ public class RoomViewModel extends ViewModel {
         }
 
         //Check if the lockedRooms size is 0
-        HashSet<String> locked = SettingsFragment.mViewModel.getLockedRooms().getValue();
+        HashSet<String> locked = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
         if(locked == null) { // need to include a null check first
             return rooms;
         } else if(locked.size() == 0) {
@@ -28,7 +28,7 @@ public class RoomViewModel extends ViewModel {
         } else {
             //Check against the locked rooms and minus all else
             HashSet<String> lRooms = new HashSet<>(rooms.getValue());
-            lRooms.retainAll(SettingsFragment.mViewModel.getLockedRooms().getValue());
+            lRooms.retainAll(SettingsFragment.mViewModel.getLockedIfEnabled().getValue());
 
             return new MutableLiveData<>(lRooms);
         }

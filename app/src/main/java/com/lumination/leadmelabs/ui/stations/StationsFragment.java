@@ -89,8 +89,22 @@ public class StationsFragment extends Fragment {
         binding.setStationsLoaded(true);
     }
 
+    /**
+     * Collect the current stations from the current room. Double check that the room is within the
+     * locked rooms in case 'All' is selected.
+     * @return An arraylist of station objects.
+     */
     public ArrayList<Station> getRoomStations()
     {
-        return stationAdapter.stationList;
+        ArrayList<Station> checkList = new ArrayList<>();
+
+        //Limit to the locked rooms
+        for(Station station: stationAdapter.stationList) {
+            if(SettingsFragment.checkLockedRooms(station.room)) {
+                checkList.add(station);
+            }
+        }
+
+        return checkList;
     }
 }

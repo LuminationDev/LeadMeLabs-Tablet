@@ -41,7 +41,8 @@ public class ControlPageFragment extends Fragment {
     }
 
     /**
-     * Load in the initial fragments for the main view and replace the side menu.
+     * Load in the initial fragments for the main view and replace the side menu. Check what page
+     * type actually has appliances and load that first so there is no blank page to start with.
      */
     private void loadScenes() {
         HashSet<String> types = SubMenuFragment.checkedApplianceTypes;

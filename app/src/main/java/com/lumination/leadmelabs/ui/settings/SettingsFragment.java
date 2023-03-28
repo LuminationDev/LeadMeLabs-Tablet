@@ -160,7 +160,7 @@ public class SettingsFragment extends Fragment {
      */
     public static boolean checkLockedRooms(String room) {
         //Only add the appliance if it is in the locked room or there is no current locked rooms
-        HashSet<String> locked = SettingsFragment.mViewModel.getLockedRooms().getValue();
+        HashSet<String> locked = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
         if(locked == null) { //need to have a null check
             return true;
         } else return locked.size() == 0 || locked.contains(room);

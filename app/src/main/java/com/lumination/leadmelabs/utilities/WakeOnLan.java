@@ -14,6 +14,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class WakeOnLan {
             return;
         }
 
-        int[] stationIds = stations.stream().filter(station -> station.room.equals(room) || room.equals("All")).mapToInt(station -> station.id).toArray();
+        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
         String stationIdsString = String.join(",", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
         NetworkService.sendMessage("NUC",
@@ -51,39 +52,12 @@ public class WakeOnLan {
         FirebaseManager.logAnalyticEvent("stations_turned_on", analyticsAttributes);
 
 
-        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+        if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getHideStationControls().getValue())) {
             return;
         }
 
         //Change all stations to turning on status if not in wall mode
         for (int stationId : stationIds) {
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
-        }
-    }
-
-    /**
-     * Turn on all computers in the currently selected room with the Wake On Lan function that
-     * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
-     */
-    public static void WakeStation(int stationId) {
-        List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
-
-        if(stations == null) {
-            return;
-        }
-
-        NetworkService.sendMessage("NUC",
-                "WOL",
-                stationId + ":"
-                        + NetworkService.getIPAddress());
-
-        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-            put("station_id", String.valueOf(stationId));
-        }};
-        FirebaseManager.logAnalyticEvent("station_turned_on", analyticsAttributes);
-
-        //Change all stations to turning on status if not in wall mode
-        if(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
         }
     }

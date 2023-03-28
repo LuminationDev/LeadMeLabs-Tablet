@@ -302,11 +302,6 @@ public class SettingsViewModel extends AndroidViewModel {
      * the tablet, ignoring all other information from the NUC about different rooms.
      */
     public LiveData<HashSet<String>> getLockedRooms() {
-        //Early exit if the toggle is off
-        if(Boolean.FALSE.equals(getRoomLockEnabled().getValue())) {
-            return new MutableLiveData<>(new HashSet<>());
-        }
-
         if (lockedRooms == null) {
             SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_rooms", Context.MODE_PRIVATE);
             String hashSetString = sharedPreferences.getString("locked_rooms", "None");
@@ -319,6 +314,20 @@ public class SettingsViewModel extends AndroidViewModel {
         }
 
         return lockedRooms;
+    }
+
+    /**
+     * Detect if the locked toggle is set to on or off in the settings and respond to the locked
+     * room query appropriately.
+     * @return An empty hashset if the toggle is off and the hashset of rooms if the toggle is on.
+     */
+    public LiveData<HashSet<String>> getLockedIfEnabled() {
+        //Early exit if the toggle is off
+        if(Boolean.FALSE.equals(getRoomLockEnabled().getValue())) {
+            return new MutableLiveData<>(new HashSet<>());
+        }
+
+        return getLockedRooms();
     }
 
     /**

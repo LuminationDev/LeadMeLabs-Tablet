@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
@@ -29,6 +30,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
 
         //Do not want to collect the 'All' rooms
         mData.remove("All");
+
+        Collections.sort(mData);
     }
 
     @NonNull

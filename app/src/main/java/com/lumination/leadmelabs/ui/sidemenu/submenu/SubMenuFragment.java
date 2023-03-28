@@ -82,18 +82,25 @@ public class SubMenuFragment extends Fragment {
 
             //Loop through the stored appliances and check if there is any pages without a linked
             //appliance. This would occur when there are locked rooms set.
-            if(SettingsFragment.mViewModel.getLockedRooms().getValue().size() > 0) {
-                for (Appliance appliance : ApplianceFragment.mViewModel.getAppliances().getValue()) {
-                    if (SettingsFragment.mViewModel.getLockedRooms().getValue().contains(appliance.room)) {
-                        if (appliance.displayType != null) {
-                            checkedApplianceTypes.add(appliance.displayType);
-                        } else {
-                            checkedApplianceTypes.add(appliance.type);
+            HashSet<String> lockedRooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
+            if(lockedRooms == null) { //need to perform a null check first
+                checkedApplianceTypes = applianceTypes;
+            } else if(lockedRooms.size() == 0) {
+                checkedApplianceTypes = applianceTypes;
+            } else {
+                List<Appliance> appliances = ApplianceFragment.mViewModel.getAppliances().getValue();
+
+                if(appliances != null) {
+                    for (Appliance appliance : appliances) {
+                        if (SettingsFragment.mViewModel.getLockedIfEnabled().getValue().contains(appliance.room)) {
+                            if (appliance.displayType != null) {
+                                checkedApplianceTypes.add(appliance.displayType);
+                            } else {
+                                checkedApplianceTypes.add(appliance.type);
+                            }
                         }
                     }
                 }
-            } else {
-                checkedApplianceTypes = applianceTypes;
             }
 
             for(String type: checkedApplianceTypes) {
