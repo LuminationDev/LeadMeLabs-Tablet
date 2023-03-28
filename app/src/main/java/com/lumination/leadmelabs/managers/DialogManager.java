@@ -64,6 +64,7 @@ public class DialogManager {
     public static CountDownTimer shutdownTimer;
 
     private static int pinCodeAttempts = 0;
+    private static boolean missingEncryptionAlerted = false;
 
     /**
      * Dismiss an open dialog that is no longer relevant. Basic dialogs are kept track of within a
@@ -89,6 +90,35 @@ public class DialogManager {
     public static void trackOpenDialog(String titleKey, String stationName, AlertDialog dialog) {
         String key = titleKey + ":" + stationName;
         openDialogs.put(key, dialog);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createMissingEncryptionDialog(String titleText, String contentText) {
+        if(missingEncryptionAlerted) {
+            return;
+        }
+
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_basic_vern, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+            missingEncryptionAlerted = false;
+        });
+
+        missingEncryptionAlerted = true;
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(680, 680);
     }
 
     /**
