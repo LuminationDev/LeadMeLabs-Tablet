@@ -2,7 +2,7 @@ package com.lumination.leadmelabs.ui.room;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +12,11 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentRoomsBinding;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -26,7 +24,6 @@ import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -77,8 +74,6 @@ public class RoomFragment extends Fragment {
 
             highlight = new SoftReference<>(view.findViewById(R.id.highlight));
 
-            Log.e("ADDING", rooms.toString());
-
             setupButtons(rooms);
             setupAllButton();
         });
@@ -102,9 +97,6 @@ public class RoomFragment extends Fragment {
         }
 
         instance.highlight = new SoftReference<>(instance.view.get().findViewById(R.id.highlight));
-
-        Log.e("ADDING", rooms.toString());
-
         instance.setupButtons(rooms);
         instance.setupAllButton();
     }

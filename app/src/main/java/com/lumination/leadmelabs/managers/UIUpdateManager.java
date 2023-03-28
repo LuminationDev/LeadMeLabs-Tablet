@@ -285,8 +285,14 @@ public class UIUpdateManager {
                     }
                     break;
                 case "status":
+                    if(value.equals("Turning On") && station.status.equals("On")) {
+                        return;
+                    }
+                    
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
+                    if(value.equals("Turning On")) { station.powerStatusCheck(); }
+                    if(value.equals("Off")) { station.cancelStatusCheck(); }
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);

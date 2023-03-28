@@ -390,8 +390,7 @@ public class DialogManager {
     }
 
     /**
-     * Build the set NUC dialog. A user is able to auto scan for nearby NUC's or input the IP address
-     * manually.
+     * Build the set NUC dialog. A user is able to input the MAC address manually.
      */
     public static void buildNucDetailsDialog(Context context) {
         View view = View.inflate(context, R.layout.dialog_nuc_details, null);
@@ -426,8 +425,7 @@ public class DialogManager {
     }
 
     /**
-     * Build the set NUC dialog. A user is able to auto scan for nearby NUC's or input the IP address
-     * manually.
+     * Build the set NUC dialog. A user is able to input the IP address manually.
      */
     public static void buildSetNucDialog(Context context) {
         View view = View.inflate(context, R.layout.dialog_set_nuc, null);
@@ -441,7 +439,7 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString());
+            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
             nucDialog.dismiss();
         });
 
