@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.appliance;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -20,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -148,9 +146,6 @@ public class ApplianceViewModel extends ViewModel {
                 }
             }
 
-            if(!current.getString("type").equals(Constants.SCENE)) {
-                addAssociatedAppliances(current.getString("type"), current, appliance);
-            }
             st.add(appliance);
         }
 
@@ -186,18 +181,6 @@ public class ApplianceViewModel extends ViewModel {
 
             for(String cards : inactiveObjects.keySet()) {
                 updateIfVisible(cards);
-            }
-        }
-    }
-
-    /**
-     * Join any associated objects to the current appliance.
-     */
-    private void addAssociatedAppliances(String type, JSONObject current, Appliance appliance) throws JSONException {
-        if(type.equals(Constants.LED)) {
-            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-            if(temp != null) {
-                temp.associated = appliance;
             }
         }
     }

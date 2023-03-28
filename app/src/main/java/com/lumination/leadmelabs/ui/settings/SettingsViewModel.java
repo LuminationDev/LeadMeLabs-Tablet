@@ -30,7 +30,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
     private MutableLiveData<Boolean> enableRoomLock;
-    private MutableLiveData<HashSet<String>> lockedRoom;
+    private MutableLiveData<HashSet<String>> lockedRooms;
     private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
 
     public SettingsViewModel(@NonNull Application application) {
@@ -301,37 +301,55 @@ public class SettingsViewModel extends AndroidViewModel {
      * This value represents that the user has selected to only control the one specific room from
      * the tablet, ignoring all other information from the NUC about different rooms.
      */
-    public LiveData<HashSet<String>> getLockedRoom() {
-        if (lockedRoom == null) {
-            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_room", Context.MODE_PRIVATE);
-            String hashSetString = sharedPreferences.getString("locked_room", "None");
+    public LiveData<HashSet<String>> getLockedRooms() {
+        //Early exit if the toggle is off
+        if(Boolean.FALSE.equals(getRoomLockEnabled().getValue())) {
+            return new MutableLiveData<>(new HashSet<>());
+        }
 
-            if(hashSetString.startsWith("None")) {
-                lockedRoom = new MutableLiveData<>(new HashSet<>());
+        if (lockedRooms == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_rooms", Context.MODE_PRIVATE);
+            String hashSetString = sharedPreferences.getString("locked_rooms", "None");
+
+            if(hashSetString.equals("None")) {
+                lockedRooms = new MutableLiveData<>(new HashSet<>());
             } else {
-                lockedRoom = new MutableLiveData<>(new HashSet<>(Arrays.asList(hashSetString
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(", ", ",")
-                        .split(","))));
+                lockedRooms = new MutableLiveData<>(StringToHashSet(hashSetString));
             }
         }
-        return lockedRoom;
+
+        return lockedRooms;
     }
 
     /**
-     * Set whether which room name is locked.
+     * Set which room name is locked.
      */
-    public void setLockedRoom(String value) {
-        lockedRoom.setValue(new HashSet<>(Arrays.asList(value
+    public void setLockedRooms(String value) {
+        String entry = value;
+
+        if(value.equals("[]")) {
+            entry = "None";
+            lockedRooms.setValue(new HashSet<>());
+        } else {
+            lockedRooms.setValue(StringToHashSet(value));
+        }
+
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_rooms", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("locked_rooms", entry);
+        editor.apply();
+    }
+
+    /**
+     * Transform a String into a HashSet.
+     * @param value A toString() version of a HashSet.
+     * @return A HashSet with the appropriate values as per the supplied string.
+     */
+    private HashSet<String> StringToHashSet(String value) {
+        return new HashSet<>(Arrays.asList(value
                 .replace("[", "")
                 .replace("]", "")
                 .replace(", ", ",")
-                .split(","))));
-
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("locked_room", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("locked_room", value);
-        editor.apply();
+                .split(",")));
     }
 }

@@ -16,6 +16,7 @@ import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class StationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.stations_list);
+        RecyclerView recyclerView = view.findViewById(R.id.stations_list);
         stationAdapter = new StationAdapter(mViewModel, true);
         stationAdapter.stationList = new ArrayList<>();
         binding.setStationsLoaded(false);
@@ -74,7 +75,9 @@ public class StationsFragment extends Fragment {
 
         for(Station station : stations) {
             if(roomType.equals("All")) {
-                stationRoom.add(station);
+                if(SettingsFragment.checkLockedRooms(station.room)) {
+                    stationRoom.add(station);
+                }
             } else if(station.room.equals(roomType)) {
                 stationRoom.add(station);
             }

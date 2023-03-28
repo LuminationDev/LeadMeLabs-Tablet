@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.lumination.leadmelabs.models.Station;
-
 import java.util.HashSet;
-import java.util.List;
 
 public class SubMenuViewModel extends ViewModel {
     private MutableLiveData<HashSet<String>> subObjects = new MutableLiveData<>();

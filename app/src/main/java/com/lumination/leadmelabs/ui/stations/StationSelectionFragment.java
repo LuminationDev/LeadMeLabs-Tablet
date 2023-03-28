@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,9 @@ public class StationSelectionFragment extends Fragment {
 
         for(Station station : stations) {
             if(roomType.equals("All")) {
-                stationRoom.add(station);
+                if(SettingsFragment.checkLockedRooms(station.room)) {
+                    stationRoom.add(station);
+                }
             } else if(station.room.equals(roomType)) {
                 stationRoom.add(station);
             }

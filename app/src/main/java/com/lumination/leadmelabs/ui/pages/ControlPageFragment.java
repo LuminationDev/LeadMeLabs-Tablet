@@ -14,6 +14,10 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
+
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class ControlPageFragment extends Fragment {
     public static FragmentManager childManager;
@@ -40,16 +44,40 @@ public class ControlPageFragment extends Fragment {
      * Load in the initial fragments for the main view and replace the side menu.
      */
     private void loadScenes() {
+        HashSet<String> types = SubMenuFragment.checkedApplianceTypes;
         Bundle args = new Bundle();
-        args.putString("title", "Scenes");
-        args.putString("type", "scenes");
+
+        //Defaults
+        String title = "Scenes";
+        String type = "scenes";
+
+        if(types != null) {
+            //Check for lights and scenes first as this is the natural order
+            if(types.contains("scenes")) {
+                title = "Scenes";
+                type = "scenes";
+            } else if(types.contains("lights")) {
+                title = SubMenuFragment.getTitle("lights");
+                type = "lights";
+            } else {
+                Iterator<String> iterator = types.iterator();
+                if (iterator.hasNext()) {
+                    String firstType = iterator.next();
+                    title = SubMenuFragment.getTitle(firstType);
+                    type = firstType;
+                }
+            }
+        }
+
+        args.putString("title", title);
+        args.putString("type", type);
 
         childManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .replace(R.id.subpage, ApplianceFragment.class, args)
                 .replace(R.id.logo, LogoFragment.class, null)
                 .replace(R.id.rooms, RoomFragment.class, null)
-                .addToBackStack("submenu:" + "scenes")
+                .addToBackStack("submenu:" + type)
                 .commit();
 
         childManager.executePendingTransactions();

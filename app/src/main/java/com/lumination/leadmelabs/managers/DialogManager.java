@@ -19,11 +19,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -38,8 +38,6 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
-
-import org.w3c.dom.Text;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -606,16 +604,9 @@ public class DialogManager {
 
         //Get the currently selected value for the locked room or 'None' if nothing has been selected
         TextView preview = view.findViewById(R.id.locked_room_preview);
-        preview.setText(SettingsFragment.mViewModel.getLockedRoom().getValue().toString());
+        preview.setText(SettingsFragment.mViewModel.getLockedRooms().getValue().toString());
 
-        //TODO TESTING - DELETE LATER
-        HashSet<String> rooms = new HashSet<>();
-        rooms.add("Classroom 1");
-        rooms.add("Classroom 2");
-        rooms.add("Classroom 3");
-        rooms.add("Classroom 4");
-
-        //HashSet<String> rooms = RoomFragment.mViewModel.getRooms().getValue();
+        HashSet<String> rooms = RoomFragment.mViewModel.getAllRooms().getValue();
 
         RecyclerView roomRecyclerView = view.findViewById(R.id.room_list);
         TextView roomStatus = view.findViewById(R.id.room_status_prompt);
@@ -640,7 +631,7 @@ public class DialogManager {
 
         Button roomConfirmButton = view.findViewById(R.id.room_lock_confirm_button);
         roomConfirmButton.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setLockedRoom(preview.getText().toString());
+            SettingsFragment.mViewModel.setLockedRooms(preview.getText().toString());
             lockedRoomDialog.dismiss();
         });
 
@@ -871,6 +862,11 @@ public class DialogManager {
         restartSessionDialog.getWindow().setLayout(1200, 380);
     }
 
+    /**
+     * Dismiss the restart session loading screen as it has successfully restarted the applications
+     * or an error has occurred and another popup is about to be shown.
+     * @param stationId An integer of the ID of a station which has relaunched/encountered an error.
+     */
     public static void sessionRestartedOnStation(int stationId) {
         if (restartSessionStationIds != null) {
             restartSessionStationIds.removeIf(id -> id == stationId);

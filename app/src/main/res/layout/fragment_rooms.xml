@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.room.RoomFragment"
-    android:id="@+id/room_fragment"
-    style="@style/RoomContainer"
-    android:orientation="horizontal"
-    android:visibility="visible">
-
-        <RelativeLayout
-            android:id="@+id/room_fragment_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    style="?android:attr/borderlessButtonStyle"
-                    android:orientation="horizontal"
-                    android:id="@+id/all"
-                    android:gravity="center"
-                    android:layout_width="133dp"
-                    android:layout_height="40dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="0dp"
-                    android:layout_marginEnd="25dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/black"
-                    android:text="@string/room_all"
-                    android:textAllCaps="false"
-                    android:background="@drawable/card_ripple_white_room_button">
-                </androidx.appcompat.widget.AppCompatButton>
+<layout>
+        <data>
+                <variable
+                    name="data"
+                    type="com.lumination.leadmelabs.ui.room.RoomViewModel"/>
+        </data>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            tools:context=".ui.room.RoomFragment"
+            android:id="@+id/room_fragment"
+            style="@style/RoomContainer"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
                 <RelativeLayout
-                    android:id="@+id/highlight"
-                    android:translationZ="1dp"
-                    android:layout_width="133dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="25dp"
-                    android:background="@drawable/card_blue_room_highlight"
-                    android:gravity="center">
+                    android:id="@+id/room_fragment_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="?android:attr/borderlessButtonStyle"
+                            android:orientation="horizontal"
+                            android:id="@+id/all"
+                            android:gravity="center"
+                            android:layout_width="133dp"
+                            android:layout_height="40dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="0dp"
+                            android:layout_marginEnd="25dp"
+                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:text="@string/room_all"
+                            android:textAllCaps="false"
+                            android:background="@drawable/card_ripple_white_room_button">
+                        </androidx.appcompat.widget.AppCompatButton>
+
+                        <RelativeLayout
+                            android:id="@+id/highlight"
+                            android:translationZ="1dp"
+                            android:layout_width="133dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="25dp"
+                            android:background="@drawable/card_blue_room_highlight"
+                            android:gravity="center">
+                        </RelativeLayout>
                 </RelativeLayout>
-        </RelativeLayout>
-</LinearLayout>
+        </LinearLayout>
+</layout>

@@ -14,6 +14,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
@@ -25,6 +26,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         mData = new ArrayList<>(data);
         mSelectedRooms = new HashSet<>();
         mPreview = preview;
+
+        //Do not want to collect the 'All' rooms
+        mData.remove("All");
     }
 
     @NonNull
@@ -39,7 +43,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         holder.textView.setText(mData.get(position));
         String hashSetString = mPreview.getText().toString();
 
-        if(hashSetString.contains(mData.get(position))) {
+        HashSet<String> entries = new HashSet<>(Arrays.asList(hashSetString
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace(", ", ",")
+                    .split(",")));
+
+        if(entries.contains(mData.get(position))) {
             mSelectedRooms.add(mData.get(position));
         }
 
