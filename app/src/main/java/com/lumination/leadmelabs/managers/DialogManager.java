@@ -535,7 +535,6 @@ public class DialogManager {
                     errorMessage.setVisibility(View.VISIBLE);
                 }
             }
-            //TODO delete after testing - lets user through without inputting a pin
             else {
                 sideMenuFragment.navigateToSettingsPage(navigationType);
                 pinDialog.dismiss();
@@ -694,7 +693,6 @@ public class DialogManager {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
             content.setVisibility(View.GONE);
-            //NetworkService.broadcast("Android");
 
             if(NetworkService.getNUCAddress() != null) {
                 NetworkService.refreshNUCAddress();
