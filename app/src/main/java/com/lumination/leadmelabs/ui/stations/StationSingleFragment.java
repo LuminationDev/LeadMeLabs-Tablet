@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
@@ -31,6 +32,7 @@ import com.lumination.leadmelabs.models.SteamApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
@@ -141,7 +143,26 @@ public class StationSingleFragment extends Fragment {
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+            if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
+                return;
+            }
+
+            if(SettingsFragment.checkAdditionalExitPrompts()) {
+                BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                    if (confirmationResult) {
+                        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+                    }
+                };
+
+                DialogManager.createConfirmationDialog(
+                        "Confirm experience exit",
+                        "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
+                        confirmAppExitCallback,
+                        "Cancel",
+                        "Confirm");
+            } else {
+                NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+            }
         });
 
         Button button = view.findViewById(R.id.enter_url);
@@ -173,27 +194,32 @@ public class StationSingleFragment extends Fragment {
             } else if(station.status.equals("Turning On")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
+                //Send the WOL command again, in case a user shutdown and started up to quickly
+                NetworkService.sendMessage("NUC",
+                        "WOL",
+                        station.id + ":"
+                                + NetworkService.getIPAddress());
             } else {
-                CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
-                    if (seconds <= 0) {
-                        shutdownButton.setText("Shut Down Station");
-                    } else {
-                        if (!cancelledShutdown) {
-                            shutdownButton.setText("Cancel (" + seconds + ")");
+                if(SettingsFragment.checkAdditionalExitPrompts() && station.gameName != null) {
+                    //No game is present, shutdown is okay to continue
+                    if(station.gameName.length() == 0) {
+                        shutdownStation(shutdownButton, id);
+                    }
+
+                    BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                        if (confirmationResult) {
+                            shutdownStation(shutdownButton, id);
                         }
-                    }
-                };
-                if (shutdownButton.getText().toString().startsWith("Shut Down")) {
-                    cancelledShutdown = false;
-                    DialogManager.buildShutdownDialog(getContext(), new int[]{id}, shutdownCountDownCallback);
+                    };
+
+                    DialogManager.createConfirmationDialog(
+                            "Confirm shutdown",
+                            "Are you sure you want to shutdown? An experience is still running. Please confirm this action.",
+                            confirmAppExitCallback,
+                            "Cancel",
+                            "Confirm");
                 } else {
-                    cancelledShutdown = true;
-                    String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
-                    NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-                    if (DialogManager.shutdownTimer != null) {
-                        DialogManager.shutdownTimer.cancel();
-                    }
-                    shutdownButton.setText("Shut Down Station");
+                    shutdownStation(shutdownButton, id);
                 }
             }
         });
@@ -207,5 +233,35 @@ public class StationSingleFragment extends Fragment {
                 gameControlImage.setImageDrawable(null);
             }
         });
+    }
+
+    /**
+     * Shutdown a station, allowing a user to cancel the command within a set period of time.
+     * @param shutdownButton A Material button which has the text changed to reflect the current
+     *                       shutdown status.
+     * @param id An integer representing the ID of the station.
+     */
+    private void shutdownStation(MaterialButton shutdownButton, int id) {
+        CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
+            if (seconds <= 0) {
+                shutdownButton.setText("Shut Down Station");
+            } else {
+                if (!cancelledShutdown) {
+                    shutdownButton.setText("Cancel (" + seconds + ")");
+                }
+            }
+        };
+        if (shutdownButton.getText().toString().startsWith("Shut Down")) {
+            cancelledShutdown = false;
+            DialogManager.buildShutdownDialog(getContext(), new int[]{id}, shutdownCountDownCallback);
+        } else {
+            cancelledShutdown = true;
+            String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            if (DialogManager.shutdownTimer != null) {
+                DialogManager.shutdownTimer.cancel();
+            }
+            shutdownButton.setText("Shut Down Station");
+        }
     }
 }

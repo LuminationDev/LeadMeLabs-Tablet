@@ -45,7 +45,6 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
-import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
 
         //Loading the home screen
-        if (ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+        if (Boolean.TRUE.equals(ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue())) {
             args.putString("menuSize", "mini");
             fragmentManager.beginTransaction()
                     .replace(R.id.main, ControlPageFragment.class, null)

@@ -193,10 +193,7 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createConfirmationDialog(String titleText, String contentText) {
-        BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
-            @Override
-            public void callback(boolean result) { }
-        };
+        BooleanCallbackInterface booleanCallbackInterface = result -> { };
         createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
     }
 
@@ -270,10 +267,23 @@ public class DialogManager {
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            int[] selectedIds = Helpers.cloneStationList(stationAdapter.stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
-            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+            if(SettingsFragment.checkAdditionalExitPrompts()) {
+                BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                    if (confirmationResult) {
+                        endSession(stationAdapter.stationList);
+                    }
+                };
 
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                DialogManager.createConfirmationDialog(
+                        "Confirm experience exit",
+                        "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
+                        confirmAppExitCallback,
+                        "Cancel",
+                        "Confirm");
+            } else {
+                endSession(stationAdapter.stationList);
+            }
+
             endSessionDialog.dismiss();
         });
 
@@ -281,6 +291,17 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> endSessionDialog.dismiss());
 
         endSessionDialog.show();
+    }
+
+    /**
+     * End the current session on the stations supplied in the station list.
+     * @param stationList An Arraylist of Station objects.
+     */
+    private static void endSession(ArrayList<Station> stationList) {
+        int[] selectedIds = Helpers.cloneStationList(stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
+        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+        NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
     }
 
     /**
@@ -535,7 +556,6 @@ public class DialogManager {
                     errorMessage.setVisibility(View.VISIBLE);
                 }
             }
-            //TODO delete after testing - lets user through without inputting a pin
             else {
                 sideMenuFragment.navigateToSettingsPage(navigationType);
                 pinDialog.dismiss();
@@ -694,7 +714,6 @@ public class DialogManager {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
             content.setVisibility(View.GONE);
-            //NetworkService.broadcast("Android");
 
             if(NetworkService.getNUCAddress() != null) {
                 NetworkService.refreshNUCAddress();
