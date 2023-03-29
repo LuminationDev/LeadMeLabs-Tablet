@@ -99,4 +99,7 @@
     <string name="set_nuc_mac">Set NUC MAC address</string>
     <string name="ignore">Ignore</string>
     <string name="save">Save</string>
+    <string name="room_lock">Room lock</string>
+    <string name="additional_exit_prompts">Additional exit prompts</string>
+    <string name="cancel_shut_down">Cancel shut down</string>
 </resources>

@@ -1,9 +1,8 @@
 package com.lumination.leadmelabs.ui.pages;
 
-import static android.content.Context.BATTERY_SERVICE;
-
-import android.os.BatteryManager;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
@@ -25,6 +23,7 @@ import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
@@ -85,20 +84,19 @@ public class DashboardPageFragment extends Fragment {
         TextView dateMessageView = view.findViewById(R.id.date_message);
         dateMessageView.setText(dateMessage);
 
+        //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
             SteamSelectionFragment.setStationId(0);
         });
 
+        //End session on all/selected stations
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
             BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
                 if (confirmationResult) {
-                    int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-                    String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-
-                    NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                    endAllSessionsConfirmation();
                 } else {
                     ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
                     DialogManager.createEndSessionDialog(stationsToSelectFrom);
@@ -107,6 +105,7 @@ public class DashboardPageFragment extends Fragment {
             DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences", selectStationsCallback, "End on select", "End on all");
         });
 
+        //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
@@ -118,27 +117,35 @@ public class DashboardPageFragment extends Fragment {
         TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
         TextView shutdownContent = view.findViewById(R.id.shutdown_content);
         shutdown.setOnClickListener(v -> {
-            CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
-                if (seconds <= 0) {
-                    shutdownHeading.setText(R.string.shut_down_space);
-                    shutdownContent.setText(R.string.shut_down_stations);
-                } else {
-                    if (!cancelledShutdown) {
-                        shutdownHeading.setText("Cancel (" + seconds + ")");
-                        shutdownContent.setText("Cancel shut down");
-                    }
+            ArrayList<Integer> active = new ArrayList<>();
+
+            //Check what stations are still running an experience
+            ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
+            for(Station station: stations) {
+                if(station.gameName == null) {
+                    continue;
                 }
-            };
-            int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-            if (shutdownHeading.getText().toString().startsWith("Shut Down")) {
-                cancelledShutdown = false;
-                DialogManager.buildShutdownDialog(getContext(), stationIds, shutdownCountDownCallback);
+                if(station.gameName.length() == 0 || station.gameName.equals("null")) {
+                    continue;
+                }
+                active.add(station.id);
+            }
+
+            if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
+                BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                    if (confirmationResult) {
+                        shutdownAllStations(shutdownHeading, shutdownContent);
+                    }
+                };
+
+                DialogManager.createConfirmationDialog(
+                        "Confirm shutdown",
+                        "Are you sure you want to shutdown? Experiences are still running on " + (active.size() > 1 ? "stations " : "station ") + TextUtils.join(", ", active) + ". Please confirm this action.",
+                        confirmAppExitCallback,
+                        "Cancel",
+                        "Confirm");
             } else {
-                cancelledShutdown = true;
-                String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
-                NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-                shutdownHeading.setText(R.string.shut_down_space);
-                shutdownContent.setText(R.string.shut_down_stations);
+                shutdownAllStations(shutdownHeading, shutdownContent);
             }
         });
 
@@ -153,6 +160,56 @@ public class DashboardPageFragment extends Fragment {
             View stations = view.findViewById(R.id.stations);
             stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
+    }
+
+    /**
+     * If Additional exit prompts are turned on in the settings. Ask the user if they are sure they
+     * want to exit the current experiences.
+     */
+    private void endAllSessionsConfirmation() {
+        if(SettingsFragment.checkAdditionalExitPrompts()) {
+            BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+                    String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+                    NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                }
+            };
+
+            DialogManager.createConfirmationDialog(
+                    "Confirm experience exit",
+                    "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
+                    confirmAppExitCallback,
+                    "Cancel",
+                    "Confirm");
+        }
+    }
+
+    private void shutdownAllStations(TextView shutdownHeading, TextView shutdownContent) {
+        CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
+            if (seconds <= 0) {
+                shutdownHeading.setText(R.string.shut_down_space);
+                shutdownContent.setText(R.string.shut_down_stations);
+            } else {
+                if (!cancelledShutdown) {
+                    shutdownHeading.setText("Cancel (" + seconds + ")");
+                    shutdownContent.setText(R.string.cancel_shut_down);
+                }
+            }
+        };
+
+        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+        if (shutdownHeading.getText().toString().startsWith("Shut Down")) {
+            cancelledShutdown = false;
+            DialogManager.buildShutdownDialog(getContext(), stationIds, shutdownCountDownCallback);
+        } else {
+            cancelledShutdown = true;
+            String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            shutdownHeading.setText(R.string.shut_down_space);
+            shutdownContent.setText(R.string.shut_down_stations);
+        }
     }
 
     /**

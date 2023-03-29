@@ -28,6 +28,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> licenseKey;
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
+    private MutableLiveData<Boolean> additionalExitPrompts;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
     private MutableLiveData<Boolean> enableRoomLock;
     private MutableLiveData<HashSet<String>> lockedRooms;
@@ -116,7 +117,6 @@ public class SettingsViewModel extends AndroidViewModel {
 
     /**
      * Set the tablet in to WallMode or Normal Mode.
-     *
      * @param value A boolean to represent if WallMode is active (true) or not (false).
      */
     public void setHideStationControls(Boolean value) {
@@ -124,6 +124,30 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("hide_station_controls", value);
+        editor.apply();
+    }
+
+    /**
+     * Determine whether the tablet should ask the user if they are sure they want to exit the
+     * current application as a VR user may need to save their progress.
+     */
+    public LiveData<Boolean> getAdditionalExitPrompts() {
+        if (additionalExitPrompts == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
+            additionalExitPrompts = new MutableLiveData<>(sharedPreferences.getBoolean("additional_exit_prompts", false));
+        }
+        return additionalExitPrompts;
+    }
+
+    /**
+     * Ask the user if they are sure they want to exit an experience.
+     * @param value A boolean to represent if Additional prompts is active (true) or not (false).
+     */
+    public void setAdditionalExitPrompts(Boolean value) {
+        additionalExitPrompts.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("additional_exit_prompts", value);
         editor.apply();
     }
 
