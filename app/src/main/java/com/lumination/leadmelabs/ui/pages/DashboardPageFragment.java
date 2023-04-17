@@ -183,6 +183,11 @@ public class DashboardPageFragment extends Fragment {
                     confirmAppExitCallback,
                     "Cancel",
                     "Confirm");
+        } else {
+            int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+            String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
+
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
         }
     }
 
