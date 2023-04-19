@@ -102,4 +102,6 @@
     <string name="room_lock">Room lock</string>
     <string name="additional_exit_prompts">Additional exit prompts</string>
     <string name="cancel_shut_down">Cancel shut down</string>
+    <string name="developer_traffic">Developer traffic</string>
+    <string name="internal_traffic">Internal traffic</string>
 </resources>

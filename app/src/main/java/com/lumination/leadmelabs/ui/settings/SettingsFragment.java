@@ -46,6 +46,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ipAddressPresses = 0;
 
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setSettings(mViewModel);

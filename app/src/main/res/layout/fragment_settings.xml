@@ -239,7 +239,7 @@
                         android:textColor="@color/black"
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
-                        android:text="@string/room_lock"/>
+                        android:text="@string/internal_traffic"/>
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/internal_traffic_toggle"
                         app:thumbTint="@color/blue"
@@ -267,7 +267,7 @@
                         android:textColor="@color/black"
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
-                        android:text="@string/room_lock"/>
+                        android:text="@string/developer_traffic"/>
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/developer_traffic_toggle"
                         app:thumbTint="@color/blue"
