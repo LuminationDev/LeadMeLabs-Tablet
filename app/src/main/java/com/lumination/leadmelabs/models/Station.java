@@ -25,7 +25,6 @@ public class Station implements Cloneable {
     private CountDownTimer timer;
     public String macAddress;
     public String ledRingId;
-    public Date gameStartTime = null;
 
     @Override
     public Station clone() {
