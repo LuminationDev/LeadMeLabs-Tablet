@@ -46,6 +46,7 @@ public class ControlPageFragment extends Fragment {
      */
     private void loadScenes() {
         HashSet<String> types = SubMenuFragment.checkedApplianceTypes;
+
         Bundle args = new Bundle();
 
         //Defaults

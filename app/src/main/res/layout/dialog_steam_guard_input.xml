@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reconnect_overlay"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:background="@drawable/bg_alertdialog_vern">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        app:alignItems="center"
+        app:flexDirection="column"
+        app:justifyContent="space_between">
+
+        <ImageView
+            android:id="@+id/icon_vern"
+            android:layout_width="150dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/vern_lost_server"
+            android:contentDescription="@string/vern_lost_the_server"
+            android:orientation="horizontal" />
+
+        <ProgressBar
+            android:id="@+id/waiting_for_result"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/steam_guard_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="Please enter the Steam guard"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:textSize="25sp" />
+
+            <com.alimuzaffar.lib.pin.PinEntryEditText
+                android:id="@+id/steam_guard_key"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:cursorVisible="false"
+                android:hint=""
+                android:inputType="textCapCharacters"
+                android:layoutDirection="ltr"
+                android:maxLength="5"
+                android:textIsSelectable="true"
+                app:pinBackgroundDrawable="@drawable/bg_steam_guard_input"
+                app:pinBackgroundIsSquare="false"
+                app:pinLineColors="@color/black"
+                app:pinLineStroke="2dp"
+                app:pinLineStrokeSelected="4dp"
+                app:pinTextBottomPadding="10dp" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirm_button"
+                android:layout_width="228dp"
+                android:layout_height="60dp"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/grey"
+                android:enabled="false"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/close_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="228dp"
+                android:layout_height="60dp"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/dismiss"
+                android:textAllCaps="false"
+                android:textColor="@color/blue"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/blue" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

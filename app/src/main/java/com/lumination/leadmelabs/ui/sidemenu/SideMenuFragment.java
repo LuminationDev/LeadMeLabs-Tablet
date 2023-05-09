@@ -27,7 +27,7 @@ import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 
 import java.util.Objects;
 
@@ -52,7 +52,7 @@ public class SideMenuFragment extends Fragment {
         if(menuSize != null) {
             changeViewParams(150, 22);
         }
-        
+
         setupButtons();
         return view;
     }
@@ -99,8 +99,8 @@ public class SideMenuFragment extends Fragment {
         buttonFeedback(sessionBtn, "session");
         sessionBtn.setOnClickListener(v -> {
             removeSubMenu();
-            loadFragment(SteamSelectionFragment.class, "session");
-            SteamSelectionFragment.setStationId(0);
+            loadFragment(ApplicationSelectionFragment.class, "session");
+            ApplicationSelectionFragment.setStationId(0);
         });
 
         View controlsBtn = view.findViewById(R.id.controls_button);
@@ -113,11 +113,11 @@ public class SideMenuFragment extends Fragment {
         View settingsBtn = view.findViewById(R.id.settings_button);
         buttonFeedback(settingsBtn, "settings");
         settingsBtn.setOnClickListener(v ->
-            DialogManager.confirmPinCode(this, "replace")
+                DialogManager.confirmPinCode(this, "replace")
         );
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
-            handleBackState()
+                handleBackState()
         );
     }
 
@@ -157,7 +157,7 @@ public class SideMenuFragment extends Fragment {
             return;
         }
         currentType = type;
-        
+
         if(type.equals("dashboard")) {
             clearBackStack();
         }

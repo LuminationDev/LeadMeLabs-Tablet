@@ -2,7 +2,6 @@ package com.lumination.leadmelabs.ui.room;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,6 @@ import java.util.Objects;
 
 public class RoomFragment extends Fragment {
     public static RoomViewModel mViewModel;
-
     public SoftReference<View> view;
     private SoftReference<RelativeLayout> highlight;
 
@@ -73,7 +71,6 @@ public class RoomFragment extends Fragment {
             }
 
             highlight = new SoftReference<>(view.findViewById(R.id.highlight));
-
             setupButtons(rooms);
             setupAllButton();
         });

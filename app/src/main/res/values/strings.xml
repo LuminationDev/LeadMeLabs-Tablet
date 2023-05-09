@@ -92,14 +92,21 @@
     <string name="oh_no">Oh no!</string>
     <string name="shut_down_space">Shut Down</string>
     <string name="shut_down_stations">Shut down stations</string>
+    <string name="shut_down_station">Shut Down Station</string>
     <string name="vern_warning">vern warning</string>
     <string name="vern_happy">vern happy</string>
     <string name="update_available">Update available</string>
     <string name="update_message">There is an update available on the Google Play Store. Please contact your IT department to install it.</string>
-    <string name="set_nuc_mac">Set NUC MAC address</string>
     <string name="ignore">Ignore</string>
     <string name="save">Save</string>
-    <string name="room_lock">Room lock</string>
+    <string name="station_name_warning">Station name can only contains letters, numbers and spaces</string>
     <string name="additional_exit_prompts">Additional exit prompts</string>
+    <string name="room_lock">Room lock</string>
     <string name="cancel_shut_down">Cancel shut down</string>
+    <string name="developer_traffic">Developer traffic</string>
+    <string name="internal_traffic">Internal traffic</string>
+    <string name="set_nuc_mac_address">Set NUC MAC address</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_rooms">There are currently no rooms. Please check that the NUC is connected.</string>
+    <string name="one_room">There is only one room available. Lock will not affect anything.</string>
 </resources>

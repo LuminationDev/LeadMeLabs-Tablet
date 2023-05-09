@@ -8,6 +8,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -16,18 +18,20 @@ import android.util.Log;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 
 import androidx.core.app.NotificationCompat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -36,6 +40,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -92,7 +97,7 @@ public class NetworkService extends Service {
     }
 
     public static String getNUCAddress() { return NUCAddress; }
-    
+
     public static String getIPAddress() {
         if(IPAddress == null) {
             IPAddress = collectIpAddress();
@@ -107,7 +112,7 @@ public class NetworkService extends Service {
     }
 
     /**
-     * Send a message to the NUC's server.
+     * Send a message to the NUCs server.
      */
     public static void sendMessage(String destination, String actionNamespace, String additionalData) {
 
@@ -127,19 +132,30 @@ public class NetworkService extends Service {
         backgroundExecutor.submit(() -> {
             try {
                 InetAddress serverAddress = InetAddress.getByName(NUCAddress);
-                Socket soc = new Socket();
-                soc.connect(new InetSocketAddress(serverAddress, port), 4000);
+                Socket socket = new Socket();
+                socket.connect(new InetSocketAddress(serverAddress, port), 4000);
 
-                OutputStream toServer = soc.getOutputStream();
-                PrintWriter output = new PrintWriter(toServer);
-                output.println(finalMessage);
-                DataOutputStream out = new DataOutputStream(toServer);
-                out.writeBytes(finalMessage);
+                OutputStream outputStream = socket.getOutputStream();
 
-                toServer.close();
-                output.close();
-                out.close();
-                soc.close();
+                // Construct the header
+                String headerMessageType = "text";
+                byte[] headerMessageTypeBytes = headerMessageType.getBytes();
+                byte[] headerMessageTypeLengthBytes = ByteBuffer.allocate(4).putInt(headerMessageTypeBytes.length).array();
+
+                // Transform the message to a byte array.
+                byte[] messageBytes = finalMessage.getBytes();
+
+                // Send the header message type length
+                outputStream.write(headerMessageTypeLengthBytes, 0, headerMessageTypeLengthBytes.length);
+                // Send the header message type
+                outputStream.write(headerMessageTypeBytes, 0, headerMessageTypeBytes.length);
+
+                // Send the message
+                outputStream.write(messageBytes, 0, messageBytes.length);
+
+                // Close the output stream and socket
+                outputStream.close();
+                socket.close();
 
                 Log.d(TAG, "Message sent closing socket");
             } catch (IOException e) {
@@ -179,7 +195,7 @@ public class NetworkService extends Service {
 
                     Log.d(TAG, "run: client connected: " + clientSocket.toString());
 
-                    backgroundExecutor.submit(() -> receiveMessage(clientSocket));
+                    backgroundExecutor.submit(() -> determineMessageType(clientSocket));
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error creating ServerSocket: ", e);
@@ -212,45 +228,135 @@ public class NetworkService extends Service {
     }
 
     /**
-     * Read what a client has sent to the server.
+     * Determine what is being sent to the Android tablet by reading the header from the
+     * input stream.
      * @param clientSocket A socket representing the latest connection.
      */
-    private void receiveMessage(Socket clientSocket) {
+    private void determineMessageType(Socket clientSocket) {
         try {
-            // get the input stream from the connected socket
-            InputStream inputStream = clientSocket.getInputStream();
-            // read from the stream
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
 
-            byte[] content = new byte[ 2048 ];
-            int bytesRead;
+            // Read the header length
+            byte[] headerLengthBuffer = new byte[4];
+            inputStream.readFully(headerLengthBuffer);
+            int headerLength = ByteBuffer.wrap(headerLengthBuffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
 
-            while( ( bytesRead = inputStream.read( content ) ) != -1 ) {
-                baos.write( content, 0, bytesRead );
+            // Read the header
+            byte[] headerBuffer = new byte[headerLength];
+            inputStream.readFully(headerBuffer);
+            String headerMessageType = new String(headerBuffer, StandardCharsets.UTF_8);
+
+            Log.d(TAG, "Incoming connection attempt: " + headerMessageType);
+
+            if(headerMessageType.equals("text")) {
+                receiveMessage(clientSocket, inputStream);
+            }
+            else if(headerMessageType.equals("image")) {
+                receiveImage(clientSocket, inputStream);
+            }
+            else {
+                Log.e(TAG, "Unknown connection attempt: " + headerMessageType);
             }
 
-            String message = baos.toString();
-            if (getEncryptionKey().length() == 0) {
-                DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
-                return;
-            }
-            message = EncryptionHelper.decrypt(message, getEncryptionKey());
-
-            //Get the IP address used to determine who has just connected.
-            String ipAddress = clientSocket.getInetAddress().getHostAddress();
-
-            //Message has been received close the socket
-            clientSocket.close();
-
-            //Pass the message of to the UI updater
-            UIUpdateManager.determineUpdate(message);
-
-            Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
-
-        } catch (IOException e) {
+        }  catch (IOException e) {
             Log.e(TAG, "Unable to process client request");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Read what a client has sent to the server.
+     * @param clientSocket A socket representing the latest connection.
+     */
+    private void receiveMessage(Socket clientSocket, DataInputStream inputStream) throws IOException {
+        // Read the rest of the stream
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        byte[] content = new byte[ 2048 ];
+        int bytesRead;
+
+        while( ( bytesRead = inputStream.read( content ) ) != -1 ) {
+            byteArrayOutputStream.write( content, 0, bytesRead );
+        }
+
+        String message = byteArrayOutputStream.toString();
+
+        if (getEncryptionKey().length() == 0) {
+            DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
+            return;
+        }
+        message = EncryptionHelper.decrypt(message, getEncryptionKey());
+
+        //Get the IP address used to determine who has just connected.
+        String ipAddress = clientSocket.getInetAddress().getHostAddress();
+
+        //Message has been received close the socket
+        clientSocket.close();
+
+        //Pass the message of to the UI updater
+        UIUpdateManager.determineUpdate(message);
+
+        Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
+    }
+
+    /**
+     * Convert a binary message a client has sent to the server into an image.
+     * @param clientSocket A socket representing the latest connection.
+     */
+    private void receiveImage(Socket clientSocket, DataInputStream inputStream) throws IOException {
+        // Read the file name length
+        byte[] fileNameLengthBuffer = new byte[4];
+        inputStream.readFully(fileNameLengthBuffer);
+        int headerLength = ByteBuffer.wrap(fileNameLengthBuffer).order(ByteOrder.LITTLE_ENDIAN).getInt();
+
+        // Read the file name
+        byte[] fileNameBuffer = new byte[headerLength];
+        inputStream.readFully(fileNameBuffer);
+        String fileName = new String(fileNameBuffer, StandardCharsets.UTF_8);
+
+        // Read the rest of the payload
+        ByteArrayOutputStream payloadStream = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[ 1024 ];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            // Write the data to the payload stream
+            payloadStream.write(buffer, 0, bytesRead);
+        }
+        byte[] imageData = payloadStream.toByteArray();
+
+        // Create a Bitmap object from the byte array
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
+        // Get the app's internal directory
+        File directory = getApplicationContext().getFilesDir();
+
+        // Create a file object for the image
+        File file = new File(directory, fileName);
+
+        // Create an output stream for the file
+        FileOutputStream outputStream = new FileOutputStream(file);
+
+        // Compress the bitmap and write it to the output stream
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        //Remove from the requested images list (fileName is in the format name_header.jpg
+        String[] name = fileName.split("_");
+        ImageManager.requestedImages.remove(name[0]);
+
+        try {
+            //Notify the ApplicationAdapter that the data has changed
+            if (ApplicationSelectionFragment.installedApplicationAdapter != null) {
+                MainActivity.runOnUI(() -> ApplicationSelectionFragment.installedApplicationAdapter.notifyDataSetChanged());
+            }
+        }
+        catch (Exception e) {
+            Log.e(TAG, "Thumbnail refresh exception: " + e);
+        }
+
+        //Message has been received close the byte array stream and the socket
+        outputStream.close();
+        clientSocket.close();
     }
 
     /**

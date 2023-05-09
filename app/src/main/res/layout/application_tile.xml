@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="steamApplication"
-            type="com.lumination.leadmelabs.models.SteamApplication" />
+            name="application"
+            type="com.lumination.leadmelabs.models.applications.Application" />
     </data>
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/logo_fragment"
@@ -20,14 +20,14 @@
         android:elevation="10dp">
         <ImageView
             android:layout_marginBottom="15dp"
-            android:id="@+id/steam_image"
+            android:id="@+id/experience_image"
             android:layout_height="130dp"
             android:layout_width="285dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="@{steamApplication.name, default=Google}"/>
+            android:text="@{application.name, default=Google}"/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             app:justifyContent="space_between">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/steam_play_button"
+                android:id="@+id/experience_play_button"
                 android:layout_width="wrap_content"
                 app:strokeColor="@color/blue"
                 app:strokeWidth="2dp"

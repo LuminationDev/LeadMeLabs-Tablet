@@ -30,6 +30,7 @@ public class SettingsFragment extends Fragment {
     public static SettingsViewModel mViewModel;
     private FragmentSettingsBinding binding;
 
+    private static int ipAddressPresses = 0;
     public static SettingsFragment instance;
     public static SettingsFragment getInstance() { return instance; }
 
@@ -51,22 +52,22 @@ public class SettingsFragment extends Fragment {
 
         FlexboxLayout nucDetails = view.findViewById(R.id.nuc_details);
         nucDetails.setOnClickListener(v ->
-            DialogManager.buildNucDetailsDialog(getContext())
+                DialogManager.buildNucDetailsDialog(getContext())
         );
 
         FlexboxLayout setNucAddressButton = view.findViewById(R.id.set_nuc_address);
         setNucAddressButton.setOnClickListener(v ->
-            DialogManager.buildSetNucDialog(getContext())
+                DialogManager.buildSetNucDialog(getContext())
         );
 
         FlexboxLayout setPinCodeButton = view.findViewById(R.id.set_pin_code);
         setPinCodeButton.setOnClickListener(v ->
-            DialogManager.buildSetPINCodeDialog(getContext())
+                DialogManager.buildSetPINCodeDialog(getContext())
         );
 
         FlexboxLayout setEncryptionKeyButton = view.findViewById(R.id.set_encryption_key);
         setEncryptionKeyButton.setOnClickListener(v ->
-            DialogManager.buildSetEncryptionKeyDialog(getContext())
+                DialogManager.buildSetEncryptionKeyDialog(getContext())
         );
 
         FlexboxLayout setLabLocationButton = view.findViewById(R.id.set_lab_location);
@@ -76,12 +77,12 @@ public class SettingsFragment extends Fragment {
 
         FlexboxLayout setLicenseKeyButton = view.findViewById(R.id.set_license_key);
         setLicenseKeyButton.setOnClickListener(v ->
-            DialogManager.buildSetLicenseKeyDialog(getContext())
+                DialogManager.buildSetLicenseKeyDialog(getContext())
         );
 
         FlexboxLayout howToButton = view.findViewById(R.id.how_to_button);
         howToButton.setOnClickListener(v ->
-            DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/1OSnrUnQwggod2IwialnfbJ32nT-1q9mQ/view?usp=sharing")
+                DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/1OSnrUnQwggod2IwialnfbJ32nT-1q9mQ/view?usp=sharing")
         );
 
         //The toggle for turning wall mode on and off
@@ -89,7 +90,7 @@ public class SettingsFragment extends Fragment {
         SwitchCompat hideStationControlsToggle = view.findViewById(R.id.hide_station_controls_toggle);
         hideStationControlsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getHideStationControls().getValue()));
         hideStationControlsLayout.setOnClickListener(v ->
-            hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked())
+                hideStationControlsToggle.setChecked(!hideStationControlsToggle.isChecked())
         );
 
         CompoundButton.OnCheckedChangeListener hideStationControlsToggleListener = (compoundButton, isChecked) -> {
@@ -107,18 +108,6 @@ public class SettingsFragment extends Fragment {
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
 
-        //The toggle for turning exit prompts on and off
-        FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
-        SwitchCompat enableExitPromptsToggle = view.findViewById(R.id.exit_prompt_controls_toggle);
-        enableExitPromptsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getAdditionalExitPrompts().getValue()));
-        enableExitPromptsLayout.setOnClickListener(v ->
-                enableExitPromptsToggle.setChecked(!enableExitPromptsToggle.isChecked())
-        );
-
-        enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                mViewModel.setAdditionalExitPrompts(isChecked)
-        );
-
         //The toggle for turning analytics on and off
         FlexboxLayout enableAnalyticsLayout = view.findViewById(R.id.enable_analytical_collection);
         SwitchCompat enableAnalyticsToggle = view.findViewById(R.id.enable_analytical_collection_toggle);
@@ -129,6 +118,18 @@ public class SettingsFragment extends Fragment {
 
         enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setAnalyticsEnabled(isChecked)
+        );
+
+        //The toggle for turning exit prompts on and off
+        FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
+        SwitchCompat enableExitPromptsToggle = view.findViewById(R.id.exit_prompt_controls_toggle);
+        enableExitPromptsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getAdditionalExitPrompts().getValue()));
+        enableExitPromptsLayout.setOnClickListener(v ->
+                enableExitPromptsToggle.setChecked(!enableExitPromptsToggle.isChecked())
+        );
+
+        enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setAdditionalExitPrompts(isChecked)
         );
 
         //Send the user to the play store listing of LeadMe Labs whilst unpinning the application
@@ -164,6 +165,41 @@ public class SettingsFragment extends Fragment {
         setLockedRoomButton.setOnClickListener(v ->
                 DialogManager.buildLockedRoomDialog(getContext())
         );
+
+        FlexboxLayout internalTrafficLayout = view.findViewById(R.id.internal_traffic);
+        SwitchCompat internalTrafficToggle = view.findViewById(R.id.internal_traffic_toggle);
+        internalTrafficToggle.setChecked(Boolean.TRUE.equals(mViewModel.getInternalTrafficValue().getValue()));
+        internalTrafficLayout.setOnClickListener(v ->
+                internalTrafficToggle.setChecked(!internalTrafficToggle.isChecked())
+        );
+
+        internalTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setInternalTrafficValue(isChecked)
+        );
+
+        FlexboxLayout developerTrafficLayout = view.findViewById(R.id.developer_traffic);
+        SwitchCompat developerTrafficToggle = view.findViewById(R.id.developer_traffic_toggle);
+        developerTrafficToggle.setChecked(Boolean.TRUE.equals(mViewModel.getDeveloperTrafficValue().getValue()));
+        developerTrafficLayout.setOnClickListener(v ->
+                developerTrafficToggle.setChecked(!developerTrafficToggle.isChecked())
+        );
+
+        developerTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setDeveloperTrafficValue(isChecked)
+        );
+
+        FlexboxLayout ipAddress = view.findViewById(R.id.ip_address);
+        ipAddress.setOnClickListener(l -> {
+            ipAddressPresses++;
+            if (ipAddressPresses == 20) {
+                internalTrafficLayout.setVisibility(View.VISIBLE);
+                developerTrafficLayout.setVisibility(View.VISIBLE);
+            }
+            if (ipAddressPresses == 21) {
+                internalTrafficLayout.setVisibility(View.GONE);
+                developerTrafficLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**

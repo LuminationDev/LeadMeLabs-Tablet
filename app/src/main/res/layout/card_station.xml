@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.lumination.leadmelabs.models.Station" />
         <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.Station" />
         <variable
             name="station"
             type="com.lumination.leadmelabs.models.Station" />
@@ -15,8 +15,7 @@
         android:layout_height="178dp">
 
         <RelativeLayout
-            android:id="@+id/station_card_alert"
-            android:visibility="gone"
+            android:visibility="@{station.requiresSteamGuard ? View.VISIBLE : View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:translationZ="5dp"
@@ -25,7 +24,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/icon_alert"
+                android:src="@drawable/icon_alert_major"
                 android:contentDescription="@string/alert_icon" />
         </RelativeLayout>
 

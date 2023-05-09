@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.ui.settings;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -28,8 +29,10 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> licenseKey;
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
-    private MutableLiveData<Boolean> additionalExitPrompts;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
+    private MutableLiveData<Boolean> additionalExitPrompts;
+    private MutableLiveData<Boolean> internalTraffic;
+    private MutableLiveData<Boolean> developerTraffic;
     private MutableLiveData<Boolean> enableRoomLock;
     private MutableLiveData<HashSet<String>> lockedRooms;
     private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
@@ -128,30 +131,6 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Determine whether the tablet should ask the user if they are sure they want to exit the
-     * current application as a VR user may need to save their progress.
-     */
-    public LiveData<Boolean> getAdditionalExitPrompts() {
-        if (additionalExitPrompts == null) {
-            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
-            additionalExitPrompts = new MutableLiveData<>(sharedPreferences.getBoolean("additional_exit_prompts", false));
-        }
-        return additionalExitPrompts;
-    }
-
-    /**
-     * Ask the user if they are sure they want to exit an experience.
-     * @param value A boolean to represent if Additional prompts is active (true) or not (false).
-     */
-    public void setAdditionalExitPrompts(Boolean value) {
-        additionalExitPrompts.setValue(value);
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("additional_exit_prompts", value);
-        editor.apply();
-    }
-
-    /**
      * Check to see if the user has disabled analytics. This value represents if the user has opted
      * out of all analytic collection.
      */
@@ -176,9 +155,32 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
+     * Determine whether the tablet should ask the user if they are sure they want to exit the
+     * current application as a VR user may need to save their progress.
+     */
+    public LiveData<Boolean> getAdditionalExitPrompts() {
+        if (additionalExitPrompts == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
+            additionalExitPrompts = new MutableLiveData<>(sharedPreferences.getBoolean("additional_exit_prompts", false));
+        }
+        return additionalExitPrompts;
+    }
+
+    /**
+     * Ask the user if they are sure they want to exit an experience.
+     * @param value A boolean to represent if Additional prompts is active (true) or not (false).
+     */
+    public void setAdditionalExitPrompts(Boolean value) {
+        additionalExitPrompts.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("additional_exit_prompts", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("additional_exit_prompts", value);
+        editor.apply();
+    }
+
+    /**
      * Get the internally saved License key, if none is found this returns null meaning the key has
      * not been entered yet.
-     *
      * @return A String representing the key present on the device.
      */
     public LiveData<String> getLicenseKey() {
@@ -296,7 +298,6 @@ public class SettingsViewModel extends AndroidViewModel {
         updateAvailable.setValue(newValue);
     }
 
-
     /**
      * Check to see if the user has enabled the room lock. This value represents if the user has
      * selected to only control one room from the tablet, ignoring all other information from the
@@ -360,7 +361,7 @@ public class SettingsViewModel extends AndroidViewModel {
     public void setLockedRooms(String value) {
         String entry = value;
 
-        if(value.equals("[]")) {
+        if(value.equals("")) {
             entry = "None";
             lockedRooms.setValue(new HashSet<>());
         } else {
@@ -384,5 +385,49 @@ public class SettingsViewModel extends AndroidViewModel {
                 .replace("]", "")
                 .replace(", ", ",")
                 .split(",")));
+    }
+
+    /**
+     * Check if the user tablet is Lumination internal traffic. Used for analytics
+     */
+    public LiveData<Boolean> getInternalTrafficValue() {
+        if (internalTraffic == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("internal_traffic", Context.MODE_PRIVATE);
+            internalTraffic = new MutableLiveData<>(sharedPreferences.getBoolean("internal_traffic", false));
+        }
+        return internalTraffic;
+    }
+
+    /**
+     * Set if the user tablet is Lumination internal traffic. Used for analytics
+     */
+    public void setInternalTrafficValue(Boolean value) {
+        internalTraffic.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("internal_traffic", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("internal_traffic", value);
+        editor.apply();
+    }
+
+    /**
+     * Set if the user tablet is Lumination developer traffic. Used for analytics
+     */
+    public LiveData<Boolean> getDeveloperTrafficValue() {
+        if (developerTraffic == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("developer_traffic", Context.MODE_PRIVATE);
+            developerTraffic = new MutableLiveData<>(sharedPreferences.getBoolean("developer_traffic", false));
+        }
+        return developerTraffic;
+    }
+
+    /**
+     * Check if the user tablet is Lumination developer traffic. Used for analytics
+     */
+    public void setDeveloperTrafficValue(Boolean value) {
+        developerTraffic.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("developer_traffic", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("developer_traffic", value);
+        editor.apply();
     }
 }

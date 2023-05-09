@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
@@ -61,7 +62,7 @@ public class StationSelectionPageFragment extends Fragment {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             stations = (ArrayList<Station>) stations.clone();
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasSteamApplicationInstalled(mViewModel.getSelectedSteamApplicationId())) {
+                if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
@@ -70,16 +71,16 @@ public class StationSelectionPageFragment extends Fragment {
 
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
-            mViewModel.selectSelectedSteamApplication(0);
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
+            mViewModel.selectSelectedApplication("");
+            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
         playButton.setOnClickListener(v -> {
-            int steamGameId = mViewModel.getSelectedSteamApplicationId();
+            String selectedGameId = mViewModel.getSelectedApplicationId();
             int[] selectedIds = mViewModel.getSelectedStationIds();
             if (selectedIds.length > 0) {
-                confirmLaunchGame(selectedIds, steamGameId);
+                confirmLaunchGame(selectedIds, selectedGameId);
             }
         });
 
@@ -92,16 +93,16 @@ public class StationSelectionPageFragment extends Fragment {
         instance = this;
     }
 
-    public void confirmLaunchGame(int[] selectedIds, int steamGameId) {
+    public void confirmLaunchGame(int[] selectedIds, String selectedGameId) {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-        NetworkService.sendMessage("Station," + stationIds, "Steam", "Launch:" + steamGameId);
+        NetworkService.sendMessage("Station," + stationIds, "Experience", "Launch:" + selectedGameId);
         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-        DialogManager.awaitStationGameLaunch(selectedIds, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId), false);
+        DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedGameId), false);
     }
 
-    public void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {
+    public void confirmLaunchGame(int[] selectedIds, String selectedGameId, AlertDialog dialog) {
         dialog.dismiss();
-        confirmLaunchGame(selectedIds, steamGameId);
+        confirmLaunchGame(selectedIds, selectedGameId);
     }
 
     @Override

@@ -7,11 +7,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import org.json.JSONArray;
@@ -351,6 +349,7 @@ public class ApplianceViewModel extends ViewModel {
         NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
     }
 
+    //TODO this is called here and when the NUC address is set in main activity
     public void loadAppliances() {
         NetworkService.sendMessage("NUC", "Appliances", "List");
     }
