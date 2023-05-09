@@ -3,8 +3,11 @@ package com.lumination.leadmelabs.managers;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -12,21 +15,30 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
+import com.alimuzaffar.lib.pin.PinEntryEditText;
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
+import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.SteamApplication;
+import com.lumination.leadmelabs.models.applications.details.Actions;
+import com.lumination.leadmelabs.models.applications.details.Details;
+import com.lumination.leadmelabs.models.applications.details.Levels;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.Adapters.GlobalAdapter;
+import com.lumination.leadmelabs.ui.application.Adapters.LevelAdapter;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.RoomAdapter;
@@ -35,7 +47,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.ui.stations.SteamApplicationAdapter;
+import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
@@ -53,6 +65,7 @@ import java.util.regex.Pattern;
 public class DialogManager {
     private static final HashMap<String, AlertDialog> openDialogs = new HashMap<>();
 
+    public static AlertDialog steamGuardEntryDialog;
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
@@ -167,20 +180,18 @@ public class DialogManager {
      * Create a dialog box associated with a tablet update with a custom title and content based on
      * the strings that are passed in.
      */
-    public static void createUpdateDialog() {
+    public static void createUpdateDialog(String titleText, String contentText) {
         View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_update_vern, null);
         AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
 
         TextView title = basicDialogView.findViewById(R.id.title);
-        title.setText(R.string.update_available);
+        title.setText(titleText);
 
         TextView contentView = basicDialogView.findViewById(R.id.content_text);
-        contentView.setText(R.string.update_message);
+        contentView.setText(contentText);
 
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
-        cancelButton.setOnClickListener(w -> {
-            basicDialog.dismiss();
-        });
+        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
         basicDialog.getWindow().setLayout(680, 680);
@@ -363,7 +374,7 @@ public class DialogManager {
 
                 renameStationDialog.dismiss();
             } else {
-                errorText.setText("Station name can only contains letters, numbers and spaces");
+                errorText.setText(R.string.station_name_warning);
                 errorText.setVisibility(View.VISIBLE);
             }
         });
@@ -459,9 +470,7 @@ public class DialogManager {
 
         EditText newMacAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_mac_button);
-        setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString());
-        });
+        setAddress.setOnClickListener(v -> SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString()));
 
         Button wakeNuc = view.findViewById(R.id.wake_nuc_button);
         wakeNuc.setOnClickListener(v -> {
@@ -652,7 +661,10 @@ public class DialogManager {
 
         //Get the currently selected value for the locked room or 'None' if nothing has been selected
         TextView preview = view.findViewById(R.id.locked_room_preview);
-        preview.setText(SettingsFragment.mViewModel.getLockedRooms().getValue().toString());
+        preview.setText(
+                SettingsFragment.mViewModel.getLockedRooms().getValue().size() == 0 ?
+                        "None" :
+                        String.join(", ", SettingsFragment.mViewModel.getLockedRooms().getValue()));
 
         HashSet<String> rooms = RoomFragment.mViewModel.getAllRooms().getValue();
 
@@ -661,12 +673,12 @@ public class DialogManager {
 
         //Show the empty room list prompt or set the rooms the recycler view
         if((rooms != null ? rooms.size() : 0) == 0) {
-            roomStatus.setText("There are currently no rooms. Please check that the NUC is connected.");
+            roomStatus.setText(R.string.no_rooms);
             roomStatus.setVisibility(View.VISIBLE);
             roomRecyclerView.setVisibility(View.GONE);
         }
         else if (rooms.size() == 1) {
-            roomStatus.setText("There is only one room available. Lock will not affect anything.");
+            roomStatus.setText(R.string.one_room);
             roomStatus.setVisibility(View.VISIBLE);
             roomRecyclerView.setVisibility(View.GONE);
         } else {
@@ -739,9 +751,7 @@ public class DialogManager {
         ignoreReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-            new Handler().postDelayed(() -> {
-                reconnectDialog.dismiss();
-            }, 200);
+            new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.reconnectionIgnored = true;
         });
 
@@ -749,14 +759,11 @@ public class DialogManager {
         closeReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
-
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
         });
 
-        reconnectDialog.setOnDismissListener(v -> {
-            MainActivity.startNucPingMonitor();
-        });
+        reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());
 
         reconnectDialog.show();
         reconnectDialog.getWindow().setLayout(680, 720);
@@ -765,7 +772,7 @@ public class DialogManager {
     /**
      * Build the launch confirmation dialog when launching a new steam experience.
      */
-    public static void buildLaunchExperienceDialog(Context context, SteamApplication steamApplication, Station station) {
+    public static void buildLaunchExperienceDialog(Context context, Application currentApplication, Station station) {
         View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
         AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
 
@@ -777,10 +784,10 @@ public class DialogManager {
 
         Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
+            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
             SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
             confirmDialog.dismiss();
-            awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
+            awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
         });
 
         Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
@@ -923,5 +930,137 @@ public class DialogManager {
                 }
             }
         }
+    }
+
+    /**
+     * A popup that allows the entry of a steam guard key.
+     * @param stationId An integer of the ID of a station which is to be configured.
+     */
+    public static void steamGuardKeyEntry(int stationId) {
+        View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_steam_guard_input, null);
+        steamGuardEntryDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(view).create();
+
+        //Reset in case of pre-emptive closure
+        FlexboxLayout entry = view.findViewById(R.id.steam_guard_entry);
+        entry.setVisibility(View.VISIBLE);
+        ProgressBar waiting = view.findViewById(R.id.waiting_for_result);
+        waiting.setVisibility(View.GONE);
+
+        final String[] steamGuard = {""};
+
+        Button confirmButton = view.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> {
+            NetworkService.sendMessage("Station," + stationId, "Station", "SetValue:steamCMD:" + steamGuard[0]);
+
+            //Present a loading bar until the output comes back
+            entry.setVisibility(View.GONE);
+            waiting.setVisibility(View.VISIBLE);
+        });
+
+        //Track as the code is input into the pin entry area
+        PinEntryEditText text = view.findViewById(R.id.steam_guard_key);
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                steamGuard[0] = s.toString();
+
+                if(steamGuard[0].length() == 5) {
+                    confirmButton.setEnabled(true);
+                    confirmButton.setBackgroundTintList(ColorStateList.valueOf(MainActivity.getInstance().getColor(R.color.blue)));
+                } else {
+                    confirmButton.setEnabled(false);
+                    confirmButton.setBackgroundTintList(ColorStateList.valueOf(MainActivity.getInstance().getColor(R.color.grey)));
+                }
+            }
+        });
+
+        Button cancelButton = view.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> steamGuardEntryDialog.dismiss());
+
+        steamGuardEntryDialog.setCancelable(false);
+        steamGuardEntryDialog.show();
+        steamGuardEntryDialog.getWindow().setLayout(680, 680);
+    }
+
+    /**
+     * Display a list of buttons that represent the different options for the currently loaded
+     * experience.
+     */
+    public static void showExperienceOptions(String gameName, Details details) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_experience_options, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.ExperienceDetailsDialogTheme).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(gameName);
+
+        //Set the global actions
+        RecyclerView globalRecyclerView = basicDialogView.findViewById(R.id.global_action_list);
+        globalRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.getInstance().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        GlobalAdapter globalAdapter = new GlobalAdapter(details.getGlobalActions());
+        globalRecyclerView.setAdapter(globalAdapter);
+
+        int numberOfColumns = 1;
+
+        //Set the levels and their actions
+        RecyclerView levelRecyclerView = basicDialogView.findViewById(R.id.level_list);
+        levelRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.getInstance().getApplicationContext(), numberOfColumns));
+        LevelAdapter levelAdapter = new LevelAdapter(details.getLevels());
+        levelRecyclerView.setAdapter(levelAdapter);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
+
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(1100, 1000);
+    }
+
+    /**
+     * Create a basic test Details class for experimenting on the tablet.
+     * @return An instantiated Details class.
+     */
+    private static Details createTest() {
+        //Create some test options
+        Details details = new Details("Testing");
+
+        //Global actions
+        Actions actionResume = new Actions("Resume", "resume");
+        Actions actionPause = new Actions("Pause", "pause");
+        Actions actionShutdown = new Actions("Shutdown", "shutdown");
+        Actions actionOther = new Actions("Other", "huh");
+
+        ArrayList<Actions> ga = new ArrayList<>();
+        ga.add(actionResume);
+        ga.add(actionPause);
+        ga.add(actionShutdown);
+        ga.add(actionOther);
+
+        details.setGlobalActions(ga);
+
+
+        //Levels
+        Actions actionColorRed = new Actions("Color Red", "Color,#0000FF");
+        Actions actionColorBlue = new Actions("Color Blue", "Color,#FF0000");
+
+        Levels level1 = new Levels("Cube Scene", "Scene,CubeScene");
+        level1.addAction(actionColorRed);
+        level1.addAction(actionColorBlue);
+
+        Levels level2 = new Levels("Sphere Scene", "Scene,SphereScene");
+        level2.addAction(actionColorRed);
+        level2.addAction(actionColorBlue);
+
+        ArrayList<Levels> ls = new ArrayList<>();
+        ls.add(level1);
+        ls.add(level2);
+
+        details.setLevels(ls);
+
+        return details;
     }
 }

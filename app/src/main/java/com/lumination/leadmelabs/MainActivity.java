@@ -43,7 +43,7 @@ import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 import java.util.concurrent.Executors;
@@ -62,10 +62,9 @@ public class MainActivity extends AppCompatActivity {
     public static int hasNotReceivedPing = 0;
     public static boolean reconnectionIgnored = false;
 
-    private static ScheduledExecutorService scheduler;
+    static ScheduledExecutorService scheduler;
 
     public static Handler handler;
-
     static { UIHandler = new Handler(Looper.getMainLooper()); }
 
     public static AppUpdateManager appUpdateManager;
@@ -103,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         startNucPingMonitor();
         startLockTask();
+
+        FirebaseManager.reportTrafficFlags();
     }
 
     /**
@@ -133,7 +134,12 @@ public class MainActivity extends AppCompatActivity {
                 hasNotReceivedPing += 1;
                 if (hasNotReceivedPing > 3) {
                     Log.e("MainActivity", "NUC Lost");
-                    DialogManager.buildReconnectDialog();
+                    if(DialogManager.reconnectDialog == null) {
+                        DialogManager.buildReconnectDialog();
+                    }
+                    else if(!DialogManager.reconnectDialog.isShowing()) {
+                        DialogManager.buildReconnectDialog();
+                    }
 
                     //Wait 10 minutes and then try to reconnect every 10 minutes - this will stop
                     //the popup occurring over night when the NUC restarts. The scheduler will be
@@ -209,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-        SteamSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        ApplicationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);
         ApplianceFragment.mViewModel = ViewModelProviders.of(this).get(ApplianceViewModel.class);
@@ -238,12 +244,12 @@ public class MainActivity extends AppCompatActivity {
      */
     private void hideStatusBar() {
         getWindow().getDecorView().setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
     }
 

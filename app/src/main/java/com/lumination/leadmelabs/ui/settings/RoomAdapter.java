@@ -47,10 +47,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
         String hashSetString = mPreview.getText().toString();
 
         HashSet<String> entries = new HashSet<>(Arrays.asList(hashSetString
-                    .replace("[", "")
-                    .replace("]", "")
-                    .replace(", ", ",")
-                    .split(",")));
+                .replace("[", "")
+                .replace("]", "")
+                .replace(", ", ",")
+                .split(",")));
 
         if(entries.contains(mData.get(position))) {
             mSelectedRooms.add(mData.get(position));
@@ -72,10 +72,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> {
                 //Show the animation of the button before changing
                 new Handler().postDelayed(this::notifyDataSetChanged, 200); // Delay of 200 milliseconds
 
-                mPreview.setText(mSelectedRooms.toString());
+                mPreview.setText(String.join(", ", mSelectedRooms));
             } else {
                 mSelectedRooms.add(mData.get(position));
-                mPreview.setText(mSelectedRooms.toString());
+                mPreview.setText(String.join(", ", mSelectedRooms));
             }
         });
     }

@@ -22,7 +22,6 @@ import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 

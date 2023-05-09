@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.sentry.Sentry;
@@ -23,6 +24,18 @@ public class FirebaseManager {
      */
     public static void setupFirebaseManager(FirebaseAnalytics instance) {
         mFirebaseAnalytics = instance;
+    }
+
+    /**
+     * Determine the type of traffic being sent.
+     */
+    public static void reportTrafficFlags() {
+        if (Boolean.TRUE.equals(SettingsFragment.mViewModel.getInternalTrafficValue().getValue())) {
+            logAnalyticEvent("internal_traffic", new HashMap<String, String>() {});
+        }
+        if (Boolean.TRUE.equals(SettingsFragment.mViewModel.getDeveloperTrafficValue().getValue())) {
+            logAnalyticEvent("developer_traffic", new HashMap<String, String>() {});
+        }
     }
 
     /**

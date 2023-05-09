@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -17,6 +18,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.view.View;
 
@@ -52,11 +54,13 @@ public class UIUpdateManager {
             if(actionNamespace.equals("Ping")) {
                 MainActivity.hasNotReceivedPing = 0;
                 if (DialogManager.reconnectDialog != null) {
-                    FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
-                    if (reconnect != null) {
-                        reconnect.setVisibility(View.GONE);
+                    if(DialogManager.reconnectDialog.isShowing()) {
+                        FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
+                        if (reconnect != null) {
+                            reconnect.setVisibility(View.GONE);
+                        }
+                        DialogManager.reconnectDialog.dismiss();
                     }
-                    DialogManager.reconnectDialog.dismiss();
                 }
                 return;
             }
@@ -65,6 +69,7 @@ public class UIUpdateManager {
             if(additionalData == null) {
                 return;
             }
+
 
             switch (actionNamespace) {
                 case "Stations":
@@ -102,6 +107,8 @@ public class UIUpdateManager {
                     break;
                 case "Station":
                     if (additionalData.startsWith("SetValue")) {
+                        Log.e("Apps", additionalData);
+
                         String[] keyValue = additionalData.split(":", 3);
                         String key = keyValue[1];
                         String value = keyValue[2];
@@ -128,10 +135,10 @@ public class UIUpdateManager {
                         DialogManager.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "Experience launch failed",
-                                    "Launch of " + data[1] + " failed on " + station.name
-                            )
+                                DialogManager.createBasicDialog(
+                                        "Experience launch failed",
+                                        "Launch of " + data[1] + " failed on " + station.name
+                                )
                         );
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("station_id", String.valueOf(station.id));
@@ -140,27 +147,27 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("PopupDetected")) {
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "Cannot launch experience",
-                                    "The experience launching on " + station.name + " requires additional input from the keyboard."
-                            )
+                                DialogManager.createBasicDialog(
+                                        "Cannot launch experience",
+                                        "The experience launching on " + station.name + " requires additional input from the keyboard."
+                                )
                         );
                     }
                     if (additionalData.startsWith("AlreadyLaunchingGame")) {
                         DialogManager.gameLaunchedOnStation(station.id);
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "Cannot launch experience",
-                                    "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
-                            )
+                                DialogManager.createBasicDialog(
+                                        "Cannot launch experience",
+                                        "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
+                                )
                         );
                     }
                     if (additionalData.startsWith("SteamError")) {
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "Steam error",
-                                    "A Steam error occurred on " + station.name + ". Check the station for more details."
-                            )
+                                DialogManager.createBasicDialog(
+                                        "Steam error",
+                                        "A Steam error occurred on " + station.name + ". Check the station for more details."
+                                )
                         );
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
@@ -168,26 +175,13 @@ public class UIUpdateManager {
                         }};
                         FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
                     }
-                    if (additionalData.startsWith("HighTemperature")) {
-                        MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "High Temperature",
-                                    station.name + " is running at a high temperature. It might need more ventilation."
-                            )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("high_temperature", analyticsAttributes);
-                    }
                     if (additionalData.startsWith("LostHeadset")) {
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                    station.name + "'s headset has disconnected. Please check the battery is charged.",
-                                    station.name
-                            )
+                                DialogManager.createBasicDialog(
+                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                                        station.name + "'s headset has disconnected. Please check the battery is charged.",
+                                        station.name
+                                )
                         );
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
@@ -208,18 +202,18 @@ public class UIUpdateManager {
                     }
                     if (additionalData.startsWith("HeadsetTimeout")) {
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                    station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
-                            )
+                                DialogManager.createBasicDialog(
+                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                                        station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
+                                )
                         );
                     }
                     if (additionalData.startsWith("FailedRestart")) {
                         MainActivity.runOnUI(() ->
-                            DialogManager.createBasicDialog(
-                                    "Failed to restart station",
-                                    station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
-                            )
+                                DialogManager.createBasicDialog(
+                                        "Failed to restart station",
+                                        station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
+                                )
                         );
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
@@ -234,7 +228,20 @@ public class UIUpdateManager {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {};
                         FirebaseManager.logAnalyticEvent("appliances_updated", analyticsAttributes);
                     }
-
+                    break;
+                case "Analytics":
+                    if (additionalData.startsWith("ExperienceTime")) {
+                        String[] parts = additionalData.split(",", 7);
+                        if (parts.length < 7) {
+                            break;
+                        }
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("experience_time", parts[2]);
+                            put("station_id", parts[4]);
+                            put("experience_name", parts[6]);
+                        }};
+                        FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
+                    }
                     break;
             }
         } catch(JSONException e) {
@@ -242,6 +249,7 @@ public class UIUpdateManager {
             e.printStackTrace();
         }
     }
+
 
     //Simplify the functions below to a generic one
     private static void updateStations(String jsonString) throws JSONException {
@@ -262,7 +270,6 @@ public class UIUpdateManager {
             if (station == null) {
                 return;
             }
-
             switch (attribute) {
                 case "session":
                     //Do no notify if the station is in another room
@@ -285,14 +292,8 @@ public class UIUpdateManager {
                     }
                     break;
                 case "status":
-                    if(value.equals("Turning On") && station.status.equals("On")) {
-                        return;
-                    }
-
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
-                    if(value.equals("Turning On")) { station.powerStatusCheck(); }
-                    if(value.equals("Off")) { station.cancelStatusCheck(); }
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);
@@ -307,6 +308,9 @@ public class UIUpdateManager {
                     break;
                 case "gameId":
                     station.gameId = value;
+                    break;
+                case "gameType":
+                    station.gameType = value;
                     break;
                 case "name":
                     station.setName(value);
@@ -323,8 +327,53 @@ public class UIUpdateManager {
                         DialogManager.gameLaunchedOnStation(station.id);
                     }
                     break;
-                case "steamApplications":
-                    station.setSteamApplicationsFromJsonString(value);
+                case "installedApplications":
+                    station.setApplicationsFromJsonString(value);
+                    break;
+                case "details":
+                    if(station.gameName == null) {
+                        return;
+                    }
+                    MainActivity.runOnUI(() -> {
+                        try {
+                            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(new JSONObject(value));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    break;
+                case "steamCMD":
+                    if(value.equals("required")) { station.requiresSteamGuard = true; }
+                    if(value.equals("configured") && station.requiresSteamGuard) {
+                        if(DialogManager.steamGuardEntryDialog == null) return;
+
+                        if(DialogManager.steamGuardEntryDialog.isShowing()) {
+                            DialogManager.steamGuardEntryDialog.dismiss();
+                        }
+                        DialogManager.createUpdateDialog("Steam configuration", "SteamCMD has been successfully configured on station " + stationId);
+                        station.requiresSteamGuard = false;
+                    }
+                    if(value.equals("failure")) {
+                        if(DialogManager.steamGuardEntryDialog == null) return;
+
+                        if(DialogManager.steamGuardEntryDialog.isShowing()) {
+                            DialogManager.steamGuardEntryDialog.dismiss();
+                        }
+
+                        BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
+                            if (confirmationResult) {
+                                DialogManager.steamGuardKeyEntry(Integer.parseInt(stationId));
+                            }
+                        };
+
+                        DialogManager.createConfirmationDialog(
+                                "Configuration Failure",
+                                "An incorrect key has been provided, please try again or cancel",
+                                confirmConfigCallback,
+                                "Cancel",
+                                "Try again");
+                    }
+                    break;
             }
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -53,7 +54,7 @@
                     app:alignItems="center">
                     <TextView
                         style="@style/SettingsText"
-                        android:text="@string/set_nuc_mac"
+                        android:text="@string/set_nuc_mac_address"
                         app:drawableRightCompat="@drawable/icon_menu_right" />
                 </com.google.android.flexbox.FlexboxLayout>
 
@@ -168,6 +169,33 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/enable_analytical_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/allow_analytics"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/enable_analytical_collection_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.analyticsEnabled}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/exit_prompt_controls"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
@@ -194,7 +222,8 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/enable_analytical_collection"
+                    android:id="@+id/internal_traffic"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -211,13 +240,41 @@
                         android:textColor="@color/black"
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
-                        android:text="@string/allow_analytics"/>
+                        android:text="@string/internal_traffic"/>
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/enable_analytical_collection_toggle"
+                        android:id="@+id/internal_traffic_toggle"
                         app:thumbTint="@color/blue"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:checked="@{settings.analyticsEnabled}"/>
+                        android:checked="@{settings.internalTrafficValue}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/developer_traffic"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/developer_traffic"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/developer_traffic_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.developerTrafficValue}"/>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -255,12 +312,10 @@
                     app:alignItems="center">
                     <TextView
                         style="@style/SettingsText"
-                        android:text="@{`Locked rooms: ` + settings.lockedRooms.toString()}"
+                        android:text="@{`Locked rooms: ` + (settings.lockedRooms.size() == 0 ? `None` : String.join(`, `, settings.lockedRooms))}"
                         app:drawableRightCompat="@drawable/icon_menu_right" />
                 </com.google.android.flexbox.FlexboxLayout>
-
             </com.google.android.flexbox.FlexboxLayout>
-
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

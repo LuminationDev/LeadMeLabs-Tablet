@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.view.View;
+
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.appliance.ExtendedApplianceCard;

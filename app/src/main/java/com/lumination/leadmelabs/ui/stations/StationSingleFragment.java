@@ -2,8 +2,6 @@ package com.lumination.leadmelabs.ui.stations;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,16 +18,21 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.SteamApplication;
+import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.CustomApplication;
+import com.lumination.leadmelabs.models.applications.SteamApplication;
+import com.lumination.leadmelabs.models.applications.ViveApplication;
+import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -40,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class StationSingleFragment extends Fragment {
 
@@ -92,13 +96,11 @@ public class StationSingleFragment extends Fragment {
         menuButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(getActivity(), menuButton);
             PopupMenu.OnMenuItemClickListener onMenuItemClickListener = menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.rename:
-                        DialogManager.buildRenameStationDialog(getContext(), binding);
-                        return true;
-                    default:
-                        return false;
+                if (menuItem.getItemId() == R.id.rename) {
+                    DialogManager.buildRenameStationDialog(getContext(), binding);
+                    return true;
                 }
+                return false;
             };
             popupMenu.setOnMenuItemClickListener(onMenuItemClickListener);
             popupMenu.inflate(R.menu.station_single_menu_actions);
@@ -113,21 +115,22 @@ public class StationSingleFragment extends Fragment {
 
         Button newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
-            SteamSelectionFragment.setStationId(binding.getSelectedStation().id);
+            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
+            ApplicationSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
-            if (binding.getSelectedStation().gameId != null && binding.getSelectedStation().gameId.length() > 0) {
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Steam", "Launch:" + binding.getSelectedStation().gameId);
-                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, SteamSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
-                HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                    put("station_id", String.valueOf(binding.getSelectedStation().id));
-                }};
-                FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
-            }
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+
+
+            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+            DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(binding.getSelectedStation().id));
+            }};
+            FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
@@ -224,14 +227,71 @@ public class StationSingleFragment extends Fragment {
             }
         });
 
+        MaterialButton configureSteamCMDButton = view.findViewById(R.id.configure_steamcmd);
+        configureSteamCMDButton.setOnClickListener(v -> {
+            BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    int id = binding.getSelectedStation().id;
+                    DialogManager.steamGuardKeyEntry(id);
+                }
+            };
+
+            DialogManager.createConfirmationDialog(
+                    "Confirm configuration",
+                    "A Steam guard key is required to be entered to configure the selected station, " +
+                            "the station will not show experiences until this is complete. You must have access " +
+                            "to the Steam's email account address to proceed.",
+                    confirmConfigCallback,
+                    "Cancel",
+                    "Proceed");
+        });
+
         ImageView gameControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
             if (station.gameId != null && station.gameId.length() > 0) {
-                Glide.with(view).load(SteamApplication.getImageUrl(station.gameId)).into(gameControlImage);
+
+                String filePath;
+                switch(station.gameType) {
+                    case "Custom":
+                        filePath = CustomApplication.getImageUrl(station.gameName);
+                        break;
+                    case "Steam":
+                        filePath = SteamApplication.getImageUrl(station.gameId);
+                        break;
+                    case "Vive":
+                        filePath = ViveApplication.getImageUrl(station.gameId);
+                        break;
+                    default:
+                        filePath = "";
+                }
+
+                //Load the image url or a default image if nothing is available
+                if(Objects.equals(filePath, "")) {
+                    Glide.with(view).load(R.drawable.default_header).into(gameControlImage);
+                } else {
+                    Glide.with(view).load(filePath).into(gameControlImage);
+                }
             } else {
                 gameControlImage.setImageDrawable(null);
             }
+        });
+
+        //Open up the experience options modal
+        gameControlImage.setOnClickListener(v -> {
+            String gameName = mViewModel.getSelectedStation().getValue().gameName;
+
+            Details details = null;
+
+            for (Application application: mViewModel.getSelectedStation().getValue().applications) {
+                if (Objects.equals(application.name, gameName)) {
+                    details = application.details;
+                }
+            }
+
+            if(details == null) return;
+
+            DialogManager.showExperienceOptions(gameName, details);
         });
     }
 
@@ -244,7 +304,7 @@ public class StationSingleFragment extends Fragment {
     private void shutdownStation(MaterialButton shutdownButton, int id) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
-                shutdownButton.setText("Shut Down Station");
+                shutdownButton.setText(R.string.shut_down_station);
             } else {
                 if (!cancelledShutdown) {
                     shutdownButton.setText("Cancel (" + seconds + ")");
@@ -261,7 +321,7 @@ public class StationSingleFragment extends Fragment {
             if (DialogManager.shutdownTimer != null) {
                 DialogManager.shutdownTimer.cancel();
             }
-            shutdownButton.setText("Shut Down Station");
+            shutdownButton.setText(R.string.shut_down_station);
         }
     }
 }
