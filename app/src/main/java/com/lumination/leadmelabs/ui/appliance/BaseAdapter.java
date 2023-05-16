@@ -1,19 +1,13 @@
 package com.lumination.leadmelabs.ui.appliance;
 
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 

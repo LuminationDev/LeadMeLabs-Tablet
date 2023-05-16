@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.application;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,65 +14,91 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.databinding.SteamTileBinding;
+import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.ApplicationTileBinding;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.SteamApplication;
-
-import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.CustomApplication;
+import com.lumination.leadmelabs.models.applications.SteamApplication;
+import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class SteamApplicationAdapter extends BaseAdapter {
+public class ApplicationAdapter extends BaseAdapter {
+    private final String TAG = "ApplicationAdapter";
 
-    private final String TAG = "SteamApplicationAdapter";
-
-    public ArrayList<SteamApplication> steamApplicationList = new ArrayList<>();
+    public ArrayList<Application> applicationList = new ArrayList<>();
     public static int stationId = 0;
     private final LayoutInflater mInflater;
     public static StationsViewModel mViewModel;
 
-    SteamApplicationAdapter(Context context) {
+    ApplicationAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
 
     @Override
     public int getCount() {
-        return steamApplicationList != null ? steamApplicationList.size() : 0;
+        return applicationList != null ? applicationList.size() : 0;
     }
 
     @Override
-    public SteamApplication getItem(int position) {
-        return steamApplicationList.get(position);
+    public Application getItem(int position) {
+        return applicationList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return steamApplicationList.get(position).id;
+        return 0;
     }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        SteamTileBinding binding;
+        ApplicationTileBinding binding;
         if (view == null) {
-            view = mInflater.inflate(R.layout.steam_tile, null);
-            binding = SteamTileBinding.inflate(mInflater, parent, false);
+            mInflater.inflate(R.layout.application_tile, null);
+            binding = ApplicationTileBinding.inflate(mInflater, parent, false);
             view = binding.getRoot();
             view.setTag(binding);
         } else {
-            binding = (SteamTileBinding) view.getTag();
+            binding = (ApplicationTileBinding) view.getTag();
         }
 
-        SteamApplication steamApplication = getItem(position);
-        Glide.with(view).load(SteamApplication.getImageUrl(steamApplication.id)).into((ImageView) view.findViewById(R.id.steam_image));
+        Application currentApplication = getItem(position);
 
-        binding.setSteamApplication(steamApplication);
+        String filePath;
+        switch(currentApplication.type) {
+            case "Custom":
+                filePath = CustomApplication.getImageUrl(currentApplication.name);
+                break;
+            case "Steam":
+                filePath = SteamApplication.getImageUrl(currentApplication.id);
+                break;
+            case "Vive":
+                filePath = ViveApplication.getImageUrl(currentApplication.id);
+                break;
+            default:
+                filePath = "";
+        }
+
+        //Load the image url or a default image if nothing is available
+        if(Objects.equals(filePath, "")) {
+            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
+        } else {
+            Glide.with(view).load(filePath).into((ImageView) view.findViewById(R.id.experience_image));
+        }
+
+        binding.setApplication(currentApplication);
 
         View finalView = view;
         View.OnClickListener selectGame = view1 -> {
@@ -85,13 +111,10 @@ public class SteamApplicationAdapter extends BaseAdapter {
             gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
             gamesWithAdditionalStepsRequired.add(1053760); // Arkio
 
-            if (gamesWithAdditionalStepsRequired.contains(steamApplication.id)) {
-                BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
-                    @Override
-                    public void callback(boolean result) {
-                        if (result) {
-                            completeSelectApplicationAction(steamApplication);
-                        }
+            if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
+                BooleanCallbackInterface booleanCallbackInterface = result -> {
+                    if (result) {
+                        completeSelectApplicationAction(currentApplication);
                     }
                 };
                 DialogManager.createConfirmationDialog(
@@ -101,11 +124,12 @@ public class SteamApplicationAdapter extends BaseAdapter {
                         "Go Back",
                         "Continue");
             } else {
-                completeSelectApplicationAction(steamApplication);
+                completeSelectApplicationAction(currentApplication);
             }
         };
+
         view.setOnClickListener(selectGame);
-        Button playButton = view.findViewById(R.id.steam_play_button);
+        Button playButton = view.findViewById(R.id.experience_play_button);
         playButton.setOnClickListener(selectGame);
 
 //        Button infoButton = view.findViewById(R.id.steam_info_button);
@@ -116,16 +140,16 @@ public class SteamApplicationAdapter extends BaseAdapter {
         return view;
     }
 
-    private void completeSelectApplicationAction(SteamApplication steamApplication) {
+    private void completeSelectApplicationAction(Application currentApplication) {
         if (stationId > 0) {
-            Station station = SteamApplicationAdapter.mViewModel.getStationById(SteamApplicationAdapter.stationId);
+            Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
             if (station != null) {
-                NetworkService.sendMessage("Station," + SteamApplicationAdapter.stationId, "Steam", "Launch:" + steamApplication.id);
+                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                DialogManager.awaitStationGameLaunch(new int[] { station.id }, steamApplication.name, false);
+                DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
             }
         } else {
-            mViewModel.selectSelectedSteamApplication(steamApplication.id);
+            mViewModel.selectSelectedApplication(currentApplication.id);
             SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu");
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
@@ -134,7 +158,7 @@ public class SteamApplicationAdapter extends BaseAdapter {
             StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
             View newView = fragment.getView();
             TextView textView = newView.findViewById(R.id.station_selection_game_name);
-            textView.setText(steamApplication.name);
+            textView.setText(currentApplication.name);
         }
     }
 }

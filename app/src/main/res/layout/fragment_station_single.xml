@@ -204,6 +204,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginEnd="15dp"
                                 android:text="@string/station_status_title"
                                 android:textColor="@color/black"
                                 android:textFontWeight="600" />
@@ -269,6 +270,16 @@
                             android:text="@{selectedStation.status.equals(`Off`) ? `Power On Station` : (selectedStation.status.equals(`On`) ? `Shut Down Station` : `Turning On`)}"
                             android:visibility="visible"
                             app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/configure_steamcmd"
+                            style="@style/StationSingleButton"
+                            android:visibility="@{selectedStation.requiresSteamGuard ? View.VISIBLE : View.GONE}"
+                            android:drawableTop="@drawable/ic_restart_session"
+                            android:backgroundTint="@color/red"
+                            android:text="Configure SteamCMD"
+                            app:rippleColor="@color/grey_card" />
+
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>

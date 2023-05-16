@@ -83,14 +83,14 @@ public class SubMenuFragment extends Fragment {
             //Loop through the stored appliances and check if there is any pages without a linked
             //appliance. This would occur when there are locked rooms set.
             HashSet<String> lockedRooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
-            if(lockedRooms == null) { //need to perform a null check first
+            if (lockedRooms == null) { //need to perform a null check first
                 checkedApplianceTypes = applianceTypes;
-            } else if(lockedRooms.size() == 0) {
+            } else if (lockedRooms.size() == 0) {
                 checkedApplianceTypes = applianceTypes;
             } else {
                 List<Appliance> appliances = ApplianceFragment.mViewModel.getAppliances().getValue();
 
-                if(appliances != null) {
+                if (appliances != null) {
                     for (Appliance appliance : appliances) {
                         if (SettingsFragment.mViewModel.getLockedIfEnabled().getValue().contains(appliance.room)) {
                             if (appliance.displayType != null) {
@@ -103,7 +103,7 @@ public class SubMenuFragment extends Fragment {
                 }
             }
 
-            for(String type: checkedApplianceTypes) {
+            for (String type : checkedApplianceTypes) {
                 options.put(type, createObject(type));
             }
 
@@ -151,7 +151,6 @@ public class SubMenuFragment extends Fragment {
         tv.setOnClickListener(v -> {
             loadFragment(getTitle(type), type);
             changeHighlight(type);
-
         });
         feedback(tv);
 
@@ -250,11 +249,11 @@ public class SubMenuFragment extends Fragment {
         args.putString("type", type);
 
         ControlPageFragment.childManager.beginTransaction()
-            .setCustomAnimations(R.anim.fade_in,
-                    R.anim.fade_out)
-            .replace(R.id.subpage, AppliancePageFragment.class, args)
-            .addToBackStack("submenu:" + type)
-            .commit();
+                .setCustomAnimations(R.anim.fade_in,
+                        R.anim.fade_out)
+                .replace(R.id.subpage, AppliancePageFragment.class, args)
+                .addToBackStack("submenu:" + type)
+                .commit();
 
         ControlPageFragment.childManager.executePendingTransactions();
         changeIcon(type);

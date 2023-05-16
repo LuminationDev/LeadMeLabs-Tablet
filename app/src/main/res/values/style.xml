@@ -266,6 +266,13 @@
         <item name="android:letterSpacing">.02</item>
     </style>
 
+    <style name="ExperienceDetailsDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_details_curved</item>
+    </style>
+
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>

@@ -11,8 +11,9 @@ import android.util.Log;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
-import com.google.firebase.appcheck.interop.BuildConfig;
+import com.lumination.leadmelabs.BuildConfig;
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -117,6 +118,9 @@ public class UpdateJobService extends JobService {
      * Create a basic dialog to alert the user that there is an update available.
      */
     public static void showUpdateMessage() {
-        DialogManager.createUpdateDialog();
+        DialogManager.createUpdateDialog(
+                MainActivity.getInstance().getString(R.string.update_available),
+                MainActivity.getInstance().getString(R.string.update_message)
+        );
     }
 }

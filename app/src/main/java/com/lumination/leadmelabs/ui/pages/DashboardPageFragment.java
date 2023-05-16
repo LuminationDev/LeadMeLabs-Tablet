@@ -2,7 +2,6 @@ package com.lumination.leadmelabs.ui.pages;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.SteamSelectionFragment;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
@@ -87,8 +86,8 @@ public class DashboardPageFragment extends Fragment {
         //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(SteamSelectionFragment.class, "session");
-            SteamSelectionFragment.setStationId(0);
+            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
+            ApplicationSelectionFragment.setStationId(0);
         });
 
         //End session on all/selected stations

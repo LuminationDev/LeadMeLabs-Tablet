@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.room;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -50,7 +52,6 @@ public class RoomViewModel extends ViewModel {
         if (rooms == null || rooms.getValue().size() == 0) {
             lateLoadScenes();
         }
-
         rooms.setValue(values);
 
         //Manually trigger the rooms

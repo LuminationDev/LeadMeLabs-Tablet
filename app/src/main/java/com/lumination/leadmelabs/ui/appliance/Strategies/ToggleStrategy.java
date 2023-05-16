@@ -51,9 +51,9 @@ public class ToggleStrategy extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                         //[0] Action
-                        + appliance.id + ":"        //[1] CBUS unit number
-                        + value + ":"                  //[7] CBUS object id/doubles as card id
-                        + NetworkService.getIPAddress());       //[8] The IP address of the tablet
+                        + appliance.id + ":"                    //[1] CBUS unit number
+                        + value + ":"                           //[2] CBUS object id/doubles as card id
+                        + NetworkService.getIPAddress());       //[3] The IP address of the tablet
 
         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
             put("appliance_type", appliance.type);
