@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class Station implements Cloneable {

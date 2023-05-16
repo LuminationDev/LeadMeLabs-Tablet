@@ -32,6 +32,7 @@ public class SettingsFragment extends Fragment {
 
     private static int ipAddressPresses = 0;
     public static SettingsFragment instance;
+    private static int ipAddressPresses = 0;
     public static SettingsFragment getInstance() { return instance; }
 
     @Nullable
@@ -46,6 +47,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ipAddressPresses = 0;
 
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setSettings(mViewModel);

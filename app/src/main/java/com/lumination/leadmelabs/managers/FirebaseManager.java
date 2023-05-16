@@ -26,6 +26,15 @@ public class FirebaseManager {
         mFirebaseAnalytics = instance;
     }
 
+    public static void reportTrafficFlags() {
+        if (Boolean.TRUE.equals(SettingsFragment.mViewModel.getInternalTrafficValue().getValue())) {
+            logAnalyticEvent("internal_traffic", new HashMap<String, String>() {});
+        }
+        if (Boolean.TRUE.equals(SettingsFragment.mViewModel.getDeveloperTrafficValue().getValue())) {
+            logAnalyticEvent("developer_traffic", new HashMap<String, String>() {});
+        }
+    }
+
     /**
      * Determine the type of traffic being sent.
      */
