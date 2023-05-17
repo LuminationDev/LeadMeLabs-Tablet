@@ -127,7 +127,7 @@ public class UIUpdateManager {
                     }
 
                     //Early return statement
-                    if(station == null || Boolean.FALSE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+                    if(station == null || Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                         return;
                     }
 
