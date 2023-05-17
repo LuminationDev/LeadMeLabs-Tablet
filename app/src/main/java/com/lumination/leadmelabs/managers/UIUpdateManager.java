@@ -241,20 +241,6 @@ public class UIUpdateManager {
                         FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
                     }
                     break;
-                case "Analytics":
-                    if (additionalData.startsWith("ExperienceTime")) {
-                        String[] parts = additionalData.split(",", 7);
-                        if (parts.length < 7) {
-                            break;
-                        }
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("experience_time", parts[2]);
-                            put("station_id", parts[4]);
-                            put("experience_name", parts[6]);
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
-                    }
-                    break;
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");

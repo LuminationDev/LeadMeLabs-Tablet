@@ -32,7 +32,6 @@ public class SettingsFragment extends Fragment {
 
     private static int ipAddressPresses = 0;
     public static SettingsFragment instance;
-    private static int ipAddressPresses = 0;
     public static SettingsFragment getInstance() { return instance; }
 
     @Nullable
