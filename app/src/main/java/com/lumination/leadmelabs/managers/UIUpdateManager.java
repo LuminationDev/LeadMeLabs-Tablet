@@ -278,7 +278,7 @@ public class UIUpdateManager {
                     if (value.equals("Ended")) {
                         DialogManager.sessionEndedOnStation(station.id);
 
-                        if (Boolean.FALSE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+                        if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                                 put("station_id", String.valueOf(station.id));
                             }};
@@ -296,7 +296,7 @@ public class UIUpdateManager {
                 case "volume":
                     station.volume = Integer.parseInt(value);
 
-                    if (Boolean.FALSE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+                    if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("station_id", String.valueOf(station.id));
                             put("volume_level", value);
