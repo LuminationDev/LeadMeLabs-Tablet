@@ -1,7 +1,5 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,11 +21,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
-    private MutableLiveData<Station> selectedStation;
+    private MutableLiveData<Station> selectedStation = new MutableLiveData<>();
+    private MutableLiveData<Application> selectedApplication = new MutableLiveData<>();
     private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
 
     public LiveData<List<Station>> getStations() {
@@ -125,6 +125,13 @@ public class StationsViewModel extends ViewModel {
             for (Application application: station.applications) {
                 if (Objects.equals(application.name, details.name)) {
                     application.details = details;
+
+                    if(station.gameName != null) {
+                        // Set as the selected application if this Station currently has it launched
+                        if (station.gameName.equals(application.name)) {
+                            this.setSelectedApplication(application);
+                        }
+                    }
                 }
             }
         }
@@ -151,7 +158,9 @@ public class StationsViewModel extends ViewModel {
             Levels level = new Levels(temp.getString("name"), temp.getString("trigger"));
 
             //Add the level trigger as it's first action
-            level.addAction(new Actions("Set", level.trigger));
+            if(!level.trigger.equals("")) {
+                level.addAction(new Actions("Set", level.trigger));
+            }
 
             //Add the rest of the actions
             JSONArray actions = temp.getJSONArray("actions");
@@ -259,10 +268,57 @@ public class StationsViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Station> selectStation(int id) {
-        this.getSelectedStation();
-        this.setSelectedStation(this.stations.getValue().stream().filter(station -> station.id == id).findFirst().get());
-        return this.getSelectedStation();
+    /**
+     * Run through the Station list finding the one that matches the supplied ID. This is now set as
+     * the selected station. If this station is running an experience it checks whether there are
+     * details associated with that experience.
+     * @param id An int representing the Station number.
+     */
+    public void selectStation(int id) {
+        selectStationById(id);
+        if (getSelectedStation().getValue() != null) {
+            selectApplicationByGameName(getSelectedStation().getValue().gameName);
+        }
+        getSelectedStation();
+    }
+
+    private void selectStationById(int id) {
+        List<Station> filteredStations = stations.getValue().stream()
+                .filter(station -> station.id == id)
+                .collect(Collectors.toList());
+        if (!filteredStations.isEmpty()) {
+            setSelectedStation(filteredStations.get(0));
+        }
+    }
+
+    private void selectApplicationByGameName(String gameName) {
+        Station selectedStation = getSelectedStation().getValue();
+        if(selectedStation == null) return;
+
+        if (selectedStation.applications != null) {
+            Optional<Application> selectedApplication = selectedStation.applications.stream()
+                    .filter(application -> Objects.equals(application.name, gameName))
+                    .findFirst();
+
+            selectedApplication.ifPresent(this::setSelectedApplication);
+            selectedApplication.orElseGet(() -> {
+                this.setSelectedApplication(null);
+                return null;
+            });
+        } else {
+            this.setSelectedApplication(null);
+        }
+    }
+
+    public void setSelectedApplication(Application application) {
+        this.selectedApplication.setValue(application);
+    }
+
+    public LiveData<Application> getSelectedApplication() {
+        if (selectedApplication == null) {
+            selectedApplication = new MutableLiveData<>();
+        }
+        return selectedApplication;
     }
 
     public void setSelectedStation(Station station) {

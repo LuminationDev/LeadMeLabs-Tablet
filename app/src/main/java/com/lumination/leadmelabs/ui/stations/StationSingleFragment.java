@@ -82,6 +82,8 @@ public class StationSingleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setStations(mViewModel);
 
         if (savedInstanceState == null) {
             childManager.beginTransaction()
@@ -113,7 +115,7 @@ public class StationSingleFragment extends Fragment {
             Identifier.identifyStations(stations);
         });
 
-        Button newSession = view.findViewById(R.id.new_session_button);
+        MaterialButton newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
             ApplicationSelectionFragment.setStationId(binding.getSelectedStation().id);
@@ -121,8 +123,12 @@ public class StationSingleFragment extends Fragment {
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+            Station selectedStation = binding.getSelectedStation();
+            if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
+                return;
+            }
 
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
 
             SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
             DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
@@ -227,6 +233,26 @@ public class StationSingleFragment extends Fragment {
             }
         });
 
+        MaterialButton experienceDetailsButton = view.findViewById(R.id.control_experience);
+        experienceDetailsButton.setOnClickListener(v -> {
+            String gameName = mViewModel.getSelectedStation().getValue().gameName;
+
+            Details details = null;
+
+            for (Application application: mViewModel.getSelectedStation().getValue().applications) {
+                if (Objects.equals(application.name, gameName)) {
+                    details = application.details;
+                }
+            }
+
+            if(details == null) {
+                Toast.makeText(getContext(), "No details exist for this experience.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            DialogManager.showExperienceOptions(gameName, details);
+        });
+
         MaterialButton configureSteamCMDButton = view.findViewById(R.id.configure_steamcmd);
         configureSteamCMDButton.setOnClickListener(v -> {
             BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
@@ -275,23 +301,6 @@ public class StationSingleFragment extends Fragment {
             } else {
                 gameControlImage.setImageDrawable(null);
             }
-        });
-
-        //Open up the experience options modal
-        gameControlImage.setOnClickListener(v -> {
-            String gameName = mViewModel.getSelectedStation().getValue().gameName;
-
-            Details details = null;
-
-            for (Application application: mViewModel.getSelectedStation().getValue().applications) {
-                if (Objects.equals(application.name, gameName)) {
-                    details = application.details;
-                }
-            }
-
-            if(details == null) return;
-
-            DialogManager.showExperienceOptions(gameName, details);
         });
     }
 

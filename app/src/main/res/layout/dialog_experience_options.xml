@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     android:orientation="vertical">
 
     <com.google.android.flexbox.FlexboxLayout
@@ -13,87 +12,53 @@
         app:alignItems="center"
         app:flexDirection="column">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="@string/title_placeholder"
-            android:textColor="@color/black"
-            android:textFontWeight="600"
-            android:textSize="25sp" />
-
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:alignItems="center"
-            app:flexDirection="column">
+            android:paddingHorizontal="20dp"
+            app:alignItems="baseline"
+            app:justifyContent="space_between">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_placeholder"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:textSize="25sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_marginStart="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="3dp"
-                        android:text="Global Actions"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:id="@+id/global_action_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:horizontalSpacing="2dp"
-                    android:scrollbars="vertical"
-                    android:scrollbarThumbVertical="@color/blue"
-                    android:fadeScrollbars="false"
-                    android:layout_marginBottom="5dp"/>
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/close_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:layout_marginTop="10dp"
+                app:icon="@drawable/icon_close"
+                app:iconTint="@color/grey_card"
+                app:iconPadding="0dp"
+                app:iconGravity="textTop"
+                app:iconSize="30dp"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/white"/>
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="20dp"
             app:alignItems="center"
             app:flexDirection="column">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:text="Levels"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                app:alignItems="center"
+                app:flexDirection="column">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,41 +68,51 @@
                     <androidx.recyclerview.widget.RecyclerView
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:id="@+id/level_list"
+                        android:id="@+id/global_action_list"
                         android:layout_width="match_parent"
-                        android:layout_height="320dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="5dp"
                         android:horizontalSpacing="2dp"
-                        android:verticalSpacing="10dp"
                         android:scrollbars="vertical"
                         android:scrollbarThumbVertical="@color/blue"
-                        android:fadeScrollbars="false"/>
+                        android:fadeScrollbars="false"
+                        android:layout_marginBottom="25dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            app:justifyContent="flex_end">
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignItems="center"
+                app:flexDirection="column">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/close_dialog"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="228dp"
-                android:layout_height="60dp"
-                android:elevation="0dp"
-                android:letterSpacing="0"
-                android:paddingVertical="10dp"
-                android:stateListAnimator="@null"
-                android:text="@string/close"
-                android:textAllCaps="false"
-                android:textColor="@color/blue"
-                app:cornerRadius="10dp"
-                app:layout_flexShrink="0"
-                app:rippleColor="@color/grey"
-                app:strokeColor="@color/blue"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:id="@+id/level_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="320dp"
+                            android:layout_marginStart="10dp"
+                            android:horizontalSpacing="2dp"
+                            android:verticalSpacing="10dp"
+                            android:scrollbars="vertical"
+                            android:scrollbarThumbVertical="@color/blue"
+                            android:fadeScrollbars="false"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
 </com.google.android.flexbox.FlexboxLayout>

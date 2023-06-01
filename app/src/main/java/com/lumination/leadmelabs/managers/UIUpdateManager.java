@@ -70,7 +70,6 @@ public class UIUpdateManager {
                 return;
             }
 
-
             switch (actionNamespace) {
                 case "Stations":
                     if (additionalData.startsWith("List")) {
@@ -316,12 +315,17 @@ public class UIUpdateManager {
                 case "gameName":
                     station.gameName = value;
 
+                    //Reset the selected application
+                    if  ((value != null ? value.length() : 0) == 0) {
+                        ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setSelectedApplication(null);
+                    }
+
                     //Do no notify if the station is in another room
                     if(!SettingsFragment.checkLockedRooms(station.room)) {
                         return;
                     }
 
-                    if (value.length() > 0 && !value.equals("No session running")) {
+                    if ((value != null ? value.length() : 0) > 0 && !value.equals("No session running")) {
                         DialogManager.gameLaunchedOnStation(station.id);
                     }
                     break;
@@ -329,9 +333,6 @@ public class UIUpdateManager {
                     station.setApplicationsFromJsonString(value);
                     break;
                 case "details":
-                    if(station.gameName == null) {
-                        return;
-                    }
                     MainActivity.runOnUI(() -> {
                         try {
                             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(new JSONObject(value));
