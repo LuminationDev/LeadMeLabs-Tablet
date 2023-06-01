@@ -181,6 +181,11 @@ public class ApplianceViewModel extends ViewModel {
                 updateIfVisible(cards);
             }
         }
+
+        //Update the UI if the fragment exists
+        if(ApplianceFragment.getInstance() != null) {
+            ApplianceFragment.getInstance().notifyDataChange();
+        }
     }
 
     /**
