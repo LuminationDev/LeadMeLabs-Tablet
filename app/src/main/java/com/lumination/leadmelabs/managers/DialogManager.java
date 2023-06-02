@@ -1017,50 +1017,6 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1100, 1000);
-    }
-
-    /**
-     * Create a basic test Details class for experimenting on the tablet.
-     * @return An instantiated Details class.
-     */
-    private static Details createTest() {
-        //Create some test options
-        Details details = new Details("Testing");
-
-        //Global actions
-        Actions actionResume = new Actions("Resume", "resume");
-        Actions actionPause = new Actions("Pause", "pause");
-        Actions actionShutdown = new Actions("Shutdown", "shutdown");
-        Actions actionOther = new Actions("Other", "huh");
-
-        ArrayList<Actions> ga = new ArrayList<>();
-        ga.add(actionResume);
-        ga.add(actionPause);
-        ga.add(actionShutdown);
-        ga.add(actionOther);
-
-        details.setGlobalActions(ga);
-
-
-        //Levels
-        Actions actionColorRed = new Actions("Color Red", "Color,#0000FF");
-        Actions actionColorBlue = new Actions("Color Blue", "Color,#FF0000");
-
-        Levels level1 = new Levels("Cube Scene", "Scene,CubeScene");
-        level1.addAction(actionColorRed);
-        level1.addAction(actionColorBlue);
-
-        Levels level2 = new Levels("Sphere Scene", "Scene,SphereScene");
-        level2.addAction(actionColorRed);
-        level2.addAction(actionColorBlue);
-
-        ArrayList<Levels> ls = new ArrayList<>();
-        ls.add(level1);
-        ls.add(level2);
-
-        details.setLevels(ls);
-
-        return details;
+        basicDialog.getWindow().setLayout(1100, 875);
     }
 }

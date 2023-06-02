@@ -8,6 +8,11 @@
         <variable
             name="selectedStation"
             type="com.lumination.leadmelabs.models.Station" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
     </data>
 
     <RelativeLayout
@@ -135,14 +140,16 @@
                                 app:flexDirection="row"
                                 app:justifyContent="space_between">
 
-                                <Button
-                                    android:id="@+id/new_session_button"
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/control_experience"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:backgroundTint="@color/blue"
                                     android:letterSpacing="0.02"
-                                    android:text="@string/choose_new"
-                                    android:textAllCaps="false"/>
+                                    android:visibility="@{stations.selectedApplication.details == null ? View.INVISIBLE : View.VISIBLE}"
+                                    android:text="@string/control_experience"
+                                    app:icon="@drawable/ic_control_experience"
+                                    app:iconSize="20dp"/>
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
 
@@ -227,6 +234,12 @@
                         app:flexWrap="wrap">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/new_session_button"
+                            style="@style/StationSingleButton"
+                            android:drawableTop="@drawable/ic_new_session"
+                            android:text="@string/new_session_lower" />
+
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/station_end_session"
                             style="@style/StationSingleButton"
                             android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) || selectedStation.gameName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
@@ -243,6 +256,7 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/enter_url"
                             style="@style/StationSingleButton"
+                            android:visibility="gone"
                             android:drawableTop="@drawable/ic_launch_website"
                             android:text="@string/launch_website_lower" />
 

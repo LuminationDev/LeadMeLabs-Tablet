@@ -109,4 +109,6 @@
     <string name="confirm">Confirm</string>
     <string name="no_rooms">There are currently no rooms. Please check that the NUC is connected.</string>
     <string name="one_room">There is only one room available. Lock will not affect anything.</string>
+    <string name="control_experience">Control Experience</string>
+    <string name="new_session_lower">New Session</string>
 </resources>
