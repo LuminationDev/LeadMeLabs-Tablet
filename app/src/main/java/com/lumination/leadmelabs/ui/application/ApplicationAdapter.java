@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.application;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.ApplicationTileBinding;
@@ -82,7 +87,7 @@ public class ApplicationAdapter extends BaseAdapter {
                 filePath = CustomApplication.getImageUrl(currentApplication.name);
                 break;
             case "Steam":
-                filePath = SteamApplication.getImageUrl(currentApplication.id);
+                filePath = SteamApplication.getImageUrl(currentApplication.name, currentApplication.id);
                 break;
             case "Vive":
                 filePath = ViveApplication.getImageUrl(currentApplication.id);
@@ -91,11 +96,29 @@ public class ApplicationAdapter extends BaseAdapter {
                 filePath = "";
         }
 
-        //Load the image url or a default image if nothing is available
+        //Attempt to load the image url or a default image if nothing is available
         if(Objects.equals(filePath, "")) {
             Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
         } else {
-            Glide.with(view).load(filePath).into((ImageView) view.findViewById(R.id.experience_image));
+            View finalView1 = view;
+            Glide.with(view).load(filePath)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        // Error occurred while loading the image, change the imageUrl to the fallback image
+                        Glide.with(finalView1)
+                                .load(R.drawable.default_header)
+                                .into((ImageView) finalView1.findViewById(R.id.experience_image));
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        // Image loaded successfully
+                        return false;
+                    }
+                })
+                .into((ImageView) view.findViewById(R.id.experience_image));
         }
 
         binding.setApplication(currentApplication);
@@ -105,11 +128,11 @@ public class ApplicationAdapter extends BaseAdapter {
             InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 //                confirm if it is one of the dodgy apps
-            ArrayList<Integer> gamesWithAdditionalStepsRequired = new ArrayList<>();
+            ArrayList<String> gamesWithAdditionalStepsRequired = new ArrayList<>();
 
-            gamesWithAdditionalStepsRequired.add(513490); // 1943 Berlin Blitz
-            gamesWithAdditionalStepsRequired.add(408340); // Gravity Lab
-            gamesWithAdditionalStepsRequired.add(1053760); // Arkio
+            gamesWithAdditionalStepsRequired.add("513490"); // 1943 Berlin Blitz
+            gamesWithAdditionalStepsRequired.add("408340"); // Gravity Lab
+            gamesWithAdditionalStepsRequired.add("1053760"); // Arkio
 
             if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
                 BooleanCallbackInterface booleanCallbackInterface = result -> {
@@ -131,11 +154,6 @@ public class ApplicationAdapter extends BaseAdapter {
         view.setOnClickListener(selectGame);
         Button playButton = view.findViewById(R.id.experience_play_button);
         playButton.setOnClickListener(selectGame);
-
-//        Button infoButton = view.findViewById(R.id.steam_info_button);
-//        infoButton.setOnClickListener(v -> {
-//            DialogManager.buildWebViewDialog(MainActivity.getInstance(), "https://store.steampowered.com/app/" + binding.getSteamApplication().id);
-//        });
 
         return view;
     }
