@@ -13,7 +13,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.models.Scene;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.SteamApplication;
+import com.lumination.leadmelabs.models.applications.SteamApplication;
 
 /**
  * Testing the creation and execution of model classes.
@@ -24,7 +24,7 @@ public class ModelUnitTest {
 
     @Test
     public void scene_creation() throws InterruptedException {
-        Scene scene = new Scene("Home", 0, "1", new int[0]);
+        Scene scene = new Scene("Home", 0, "1");
 
         assertEquals("Home", scene.name);
         assertEquals(0, scene.number);
@@ -39,19 +39,19 @@ public class ModelUnitTest {
     public void station_creation() {
         String apps = "212680|FTL/231324|Test";
 
-        Station station = new Station("One", apps, 0, "Online", 0, 0, "");
+        Station station = new Station("One", apps, 0, "Online", 0, "", "0", "");
 
         assertEquals(station.name, "One");
         assertEquals(station.id, 0);
         assertEquals(station.status, "Online");
 
         //Test added steam applications
-        assertEquals(station.steamApplications.size(), 2);
-        assertEquals(station.steamApplications.get(0).name, "FTL");
-        assertEquals(station.steamApplications.get(0).id, 212680);
-        assertEquals(SteamApplication.getImageUrl(station.steamApplications.get(0).id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+        assertEquals(station.applications.size(), 2);
+        assertEquals(station.applications.get(0).name, "FTL");
+        assertEquals(station.applications.get(0).id, "212680");
+        assertEquals(SteamApplication.getImageUrl("FTL", station.applications.get(0).id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
 
-        String url = SteamApplication.getImageUrl(station.steamApplications.get(0).id);
+        String url = SteamApplication.getImageUrl("FTL", station.applications.get(0).id);
         assertEquals(TestUtils.MimicHttpRequest(url), 200);
 
         String invalid = "xyz";
@@ -60,11 +60,11 @@ public class ModelUnitTest {
 
     @Test
     public void steam_application_creation() {
-        SteamApplication steamApp = new SteamApplication("FTL", 212680);
+        SteamApplication steamApp = new SteamApplication("Steam", "FTL", "212680");
 
         assertEquals(steamApp.name, "FTL");
-        assertEquals(steamApp.id, 212680);
-        assertEquals(steamApp.getImageUrl(steamApp.id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
-        assertEquals(TestUtils.MimicHttpRequest(steamApp.getImageUrl(steamApp.id)), 200);
+        assertEquals(steamApp.id, "212680");
+        assertEquals(steamApp.getImageUrl("FTL", steamApp.id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+        assertEquals(TestUtils.MimicHttpRequest(steamApp.getImageUrl("FTL", steamApp.id)), 200);
     }
 }

@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
@@ -283,7 +288,7 @@ public class StationSingleFragment extends Fragment {
                         filePath = CustomApplication.getImageUrl(station.gameName);
                         break;
                     case "Steam":
-                        filePath = SteamApplication.getImageUrl(station.gameId);
+                        filePath = SteamApplication.getImageUrl(station.gameName, station.gameId);
                         break;
                     case "Vive":
                         filePath = ViveApplication.getImageUrl(station.gameId);
@@ -296,7 +301,24 @@ public class StationSingleFragment extends Fragment {
                 if(Objects.equals(filePath, "")) {
                     Glide.with(view).load(R.drawable.default_header).into(gameControlImage);
                 } else {
-                    Glide.with(view).load(filePath).into(gameControlImage);
+                    Glide.with(view).load(filePath)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    // Error occurred while loading the image, change the imageUrl to the fallback image
+                                    Glide.with(view)
+                                            .load(R.drawable.default_header)
+                                            .into((ImageView) view.findViewById(R.id.experience_image));
+                                    return true;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    // Image loaded successfully
+                                    return false;
+                                }
+                            })
+                            .into(gameControlImage);
                 }
             } else {
                 gameControlImage.setImageDrawable(null);
