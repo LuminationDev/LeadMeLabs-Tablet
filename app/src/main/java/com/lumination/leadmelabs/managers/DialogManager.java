@@ -33,9 +33,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.Station;
-import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
-import com.lumination.leadmelabs.models.applications.details.Levels;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.Adapters.GlobalAdapter;
 import com.lumination.leadmelabs.ui.application.Adapters.LevelAdapter;
@@ -458,7 +456,7 @@ public class DialogManager {
         View view = View.inflate(context, R.layout.dialog_nuc_details, null);
         AlertDialog nucDetailsDialog = new AlertDialog.Builder(context).setView(view).create();
 
-        SettingsFragment.mViewModel.getNuc().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
+        SettingsFragment.mViewModel.getNucAddress().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
             TextView textView = view.findViewById(R.id.nuc_ip_address);
             textView.setText(nucAddress);
         });
@@ -491,7 +489,7 @@ public class DialogManager {
         View view = View.inflate(context, R.layout.dialog_set_nuc, null);
         AlertDialog nucDialog = new AlertDialog.Builder(context).setView(view).create();
 
-        SettingsFragment.mViewModel.getNuc().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
+        SettingsFragment.mViewModel.getNucAddress().observe(SettingsFragment.getInstance().getViewLifecycleOwner(), nucAddress -> {
             TextView textView = view.findViewById(R.id.nuc_address);
             textView.setText(nucAddress);
         });
