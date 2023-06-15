@@ -3,13 +3,13 @@ package com.lumination.leadmelabs.ui.settings;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
 
@@ -21,6 +21,7 @@ import java.util.HashSet;
  * preferences afterwards which can be loaded at the application start.
  */
 public class SettingsViewModel extends AndroidViewModel {
+    private MutableLiveData<String> softwareVersion;
     private MutableLiveData<String> nucAddress;
     private MutableLiveData<String> nucMacAddress;
     private MutableLiveData<String> pinCode;
@@ -41,13 +42,21 @@ public class SettingsViewModel extends AndroidViewModel {
         super(application);
     }
 
+    public LiveData<String> getSoftwareVersion() {
+        if (softwareVersion == null) {
+            softwareVersion = new MutableLiveData<>(MainActivity.getInstance().getSoftwareVersion());
+        }
+
+        return softwareVersion;
+    }
+
     /**
      * Get the IP Address that is saved for the NUC.
      */
-    public LiveData<String> getNuc() {
+    public LiveData<String> getNucAddress() {
         if (NetworkService.getNUCAddress() == null || NetworkService.getNUCAddress().equals("")) {
             nucAddress = new MutableLiveData<>();
-        } else {
+        } else if (nucAddress == null) {
             nucAddress = new MutableLiveData<>(NetworkService.getNUCAddress());
         }
 

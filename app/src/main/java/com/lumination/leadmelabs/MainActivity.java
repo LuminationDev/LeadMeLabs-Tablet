@@ -9,6 +9,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
      * Preload the data necessary for the ViewModel operations.
      */
     private void preloadData() {
-        SettingsFragment.mViewModel.getNuc();
+        SettingsFragment.mViewModel.getNucAddress();
         SettingsFragment.mViewModel.getLabLocation();
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
@@ -308,6 +310,20 @@ public class MainActivity extends AppCompatActivity {
         if(!address.equals("")) {
             NetworkService.setNUCAddress(address);
         }
+    }
+
+    /**
+     * Collect the current version number of the project.
+     * @return A string of the version number in the format X.XX.
+     */
+    public String getSoftwareVersion() {
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
