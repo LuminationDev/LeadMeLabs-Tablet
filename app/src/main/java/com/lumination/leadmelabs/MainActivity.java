@@ -101,10 +101,7 @@ public class MainActivity extends AppCompatActivity {
         scheduleJobs();
 
         if (savedInstanceState == null) {
-            Log.e("MAIN ACTIVITY", "NO savedInstanceState");
             setupFragmentManager();
-        } else {
-            Log.e("MAIN ACTIVITY", "FOUND savedInstanceState");
         }
 
         startNucPingMonitor();
