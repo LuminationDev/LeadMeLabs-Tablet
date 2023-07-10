@@ -54,9 +54,9 @@ public class SystemStatusFragment extends Fragment {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        ((MainActivity) getActivity()).restartNetworkService();
+                if (MainActivity.getInstance() != null) {
+                    MainActivity.runOnUI(() -> {
+                        MainActivity.getInstance().restartNetworkService();
                         ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_network_connected, 0, 0);
                     });
                 }
@@ -65,8 +65,8 @@ public class SystemStatusFragment extends Fragment {
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
+                if (MainActivity.getInstance() != null) {
+                    MainActivity.runOnUI(() -> {
                         ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_network_not_connected, 0, 0);
                     });
                 }
@@ -78,8 +78,8 @@ public class SystemStatusFragment extends Fragment {
         connectivityManager.requestNetwork(networkRequest, networkCallback);
         NetworkInfo nInfo = connectivityManager.getActiveNetworkInfo();
         boolean connected = nInfo != null && nInfo.isConnected();
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
+        if (MainActivity.getInstance() != null) {
+            MainActivity.runOnUI(() -> {
                 ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, connected ? R.drawable.ic_network_connected : R.drawable.ic_network_not_connected, 0, 0);
             });
         }

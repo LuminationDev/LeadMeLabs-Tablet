@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance;
 
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,8 +23,10 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
@@ -225,10 +229,16 @@ public class ApplianceFragment extends Fragment {
         args.putString("title", title);
         args.putString("type", type.getValue());
 
-        ControlPageFragment.childManager.beginTransaction()
+        if (!this.isAdded()) {
+            Log.e("ApplianceFragment", "Not added to the main activity");
+            return;
+        }
+
+        FragmentTransaction transactionAttempt = ControlPageFragment.childManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
-                .replace(R.id.subpage, ApplianceFragment.class, args)
-                .commitNow();
+                .replace(R.id.subpage, ApplianceFragment.class, args);
+
+        transactionAttempt.commitNowAllowingStateLoss();
     }
 
     private void reloadData(List<Appliance> appliances, View view) {

@@ -9,8 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
 import com.lumination.leadmelabs.models.Station;
@@ -59,10 +61,11 @@ public class StationsFragment extends Fragment {
      * Reload the current appliance list when a room is changed.
      */
     public void notifyDataChange() {
-        DashboardPageFragment.childManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
-                .replace(R.id.stations, StationsFragment.class, null)
-                .commitNow();
+        FragmentTransaction transactionAttempt = DashboardPageFragment.childManager.beginTransaction()
+                                        .setCustomAnimations(android.R.anim.fade_in, R.anim.fade_out)
+                                        .replace(R.id.stations, StationsFragment.class, null);
+
+        transactionAttempt.commitNowAllowingStateLoss();
     }
 
     private void reloadData(List<Station> stations) {

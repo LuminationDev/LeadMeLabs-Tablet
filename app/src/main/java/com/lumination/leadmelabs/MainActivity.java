@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public static MutableLiveData<Integer> fragmentCount;
     public static int hasNotReceivedPing = 0;
     public static boolean reconnectionIgnored = false;
+    public static boolean isAppInForeground = false;
 
     static ScheduledExecutorService scheduler;
 
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        isAppInForeground = true;
         instance = this;
         appUpdateManager = AppUpdateManagerFactory.create(MainActivity.getInstance().getApplicationContext());
 
@@ -99,7 +101,10 @@ public class MainActivity extends AppCompatActivity {
         scheduleJobs();
 
         if (savedInstanceState == null) {
+            Log.e("MAIN ACTIVITY", "NO savedInstanceState");
             setupFragmentManager();
+        } else {
+            Log.e("MAIN ACTIVITY", "FOUND savedInstanceState");
         }
 
         startNucPingMonitor();
@@ -279,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
      * Start the network service.
      */
     public void restartNetworkService() {
-        if (!isServiceRunning(NetworkService.class)) {
+        if (!isServiceRunning(NetworkService.class) || !isAppInForeground) {
             return;
         }
         Log.d(TAG, "restartNetworkService: ");
@@ -332,6 +337,12 @@ public class MainActivity extends AppCompatActivity {
         stopNetworkService();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isAppInForeground = false;
+    }
+
     /**
      * On awake check the Cbus to see if any values are not the correct ones and if a download has
      * been initiated.
@@ -339,6 +350,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isAppInForeground = true;
         ApplianceFragment.mViewModel.getActiveAppliances();
 
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
