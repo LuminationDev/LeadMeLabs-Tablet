@@ -106,9 +106,11 @@ public class ApplicationAdapter extends BaseAdapter {
                     @Override
                     public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         // Error occurred while loading the image, change the imageUrl to the fallback image
-                        Glide.with(finalView1)
-                                .load(R.drawable.default_header)
-                                .into((ImageView) finalView1.findViewById(R.id.experience_image));
+                        MainActivity.runOnUI(() -> {
+                            Glide.with(finalView1)
+                                    .load(R.drawable.default_header)
+                                    .into((ImageView) finalView1.findViewById(R.id.experience_image));
+                        });
                         return true;
                     }
 
