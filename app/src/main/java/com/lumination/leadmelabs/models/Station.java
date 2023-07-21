@@ -10,6 +10,7 @@ import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
+import com.lumination.leadmelabs.models.applications.SynthesisApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -77,6 +78,9 @@ public class Station implements Cloneable {
                         break;
                     case "Steam":
                         newApplications.add(new SteamApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
+                        break;
+                    case "Synthesis":
+                        newApplications.add(new SynthesisApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
                         break;
                     case "Vive":
                         newApplications.add(new ViveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
