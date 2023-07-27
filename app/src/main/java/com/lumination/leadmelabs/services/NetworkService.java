@@ -139,7 +139,7 @@ public class NetworkService extends Service {
 
                 // Construct the header
                 String headerMessageType = "text";
-                byte[] headerMessageTypeBytes = headerMessageType.getBytes();
+                byte[] headerMessageTypeBytes = headerMessageType.getBytes(StandardCharsets.UTF_16LE);
                 byte[] headerMessageTypeLengthBytes = ByteBuffer.allocate(4).putInt(headerMessageTypeBytes.length).array();
 
                 // Transform the message to a byte array.
@@ -244,9 +244,7 @@ public class NetworkService extends Service {
             // Read the header
             byte[] headerBuffer = new byte[headerLength];
             inputStream.readFully(headerBuffer);
-            String headerMessageType = new String(headerBuffer, StandardCharsets.UTF_8);
-
-            Log.d(TAG, "Incoming connection attempt: " + headerMessageType);
+            String headerMessageType = new String(headerBuffer, StandardCharsets.UTF_16LE);
 
             if(headerMessageType.equals("text")) {
                 receiveMessage(clientSocket, inputStream);
