@@ -114,6 +114,17 @@ public class UIUpdateManager {
                         updateStation(source.split(",")[1], key, value);
                     }
 
+                    if (additionalData.startsWith("DeviceStatus")) {
+                        Log.e("DEVICE STATUS", additionalData);
+                        //[0] - 'DeviceStatus'
+                        //[1] - DeviceType
+                        //[2] - Values
+                        String[] keyValue = additionalData.split(":", 3); //Only split the key off
+                        String key = keyValue[1];
+                        String value = keyValue[2];
+                        updateStationDevices(source.split(",")[1], key, value);
+                    }
+
                     //Everything below should only trigger if within the locked room
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                     HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
@@ -374,6 +385,61 @@ public class UIUpdateManager {
                     }
                     break;
             }
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
+        });
+    }
+
+    /**
+     * Specifically update a Station's VR devices. This includes:
+     *      - Headset:              Tracking
+     *      - Left Controller:      Tracking & Battery
+     *      - Right Controller:     Tracking & Battery
+     *      - Base Stations:        Active & Total
+     * @param stationId A string of an ID associated to a Station.
+     * @param attribute A string of the device type to update.
+     * @param value A string of values separated by ':'.
+     */
+    private static void updateStationDevices(String stationId, String attribute, String value) throws JSONException {
+        MainActivity.runOnUI(() -> {
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+            if (station == null) {
+                return;
+            }
+
+            //[0] - Property Type (or Controller role)
+            //[1] - Value
+            String[] values = value.split(":", 3);
+            switch (attribute) {
+                case "Headset":
+                    if(values[0].equals("tracking")) {
+                        station.headsetTracking = values[1];
+                    }
+                    break;
+
+                case "Controller":
+                    if (values[1].equals("tracking")) {
+                        if (values[0].equals("Left")) {
+                            station.leftControllerTracking = values[2];
+                        } else if (values[0].equals("Right")) {
+                            station.rightControllerTracking = values[2];
+                        }
+                    }
+
+                    if (values[1].equals("battery")) {
+                        if (values[0].equals("Left")) {
+                            station.leftControllerBattery = Integer.parseInt(values[2]);
+                        } else if (values[0].equals("Right")) {
+                            station.rightControllerBattery = Integer.parseInt(values[2]);
+                        }
+                    }
+                    break;
+
+                case "BaseStation":
+                    station.baseStationsActive = Integer.parseInt(values[0]);
+                    station.baseStationsTotal = Integer.parseInt(values[1]);
+                    break;
+            }
+
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });
     }

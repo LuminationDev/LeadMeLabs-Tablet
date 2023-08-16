@@ -58,7 +58,7 @@
 
                 <ImageView
                     style="@style/SideMenuImage"
-                    android:src="@drawable/icon_vr_white"
+                    android:src="@drawable/vr_headset_white"
                     android:contentDescription="@string/session_button" />
 
                 <TextView
