@@ -42,7 +42,7 @@ public class FirebaseManager {
         String key = SettingsFragment.mViewModel.getLicenseKey().getValue();
 
         //No key present
-        if(key == null) {
+        if(key == null || key.isEmpty()) {
             Log.e(TAG, "No key present");
             return;
         }
