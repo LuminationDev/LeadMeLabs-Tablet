@@ -344,7 +344,7 @@ public class StationSingleFragment extends Fragment {
         };
         if (shutdownButton.getText().toString().startsWith("Shut Down")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownDialog(getContext(), new int[]{id}, shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", new int[]{id}, shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));

@@ -142,6 +142,22 @@ public class UIUpdateManager {
                         return;
                     }
 
+                    if (additionalData.startsWith("SteamVRError")) {
+                        MainActivity.runOnUI(() -> {
+                            BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
+                                if (confirmationResult) {
+                                    DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{102}, null);
+                                }
+                            };
+
+                            DialogManager.createConfirmationDialog(
+                                    "SteamVR Error",
+                                    "SteamVR has encountered an error and cannot recover automatically. Please restart the Station 102",
+                                    confirmAppRestartCallback,
+                                    "Cancel",
+                                    "Restart");
+                        });
+                    }
                     if (additionalData.startsWith("GameLaunchFailed")) {
                         DialogManager.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
