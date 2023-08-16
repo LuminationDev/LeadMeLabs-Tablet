@@ -111,4 +111,6 @@
     <string name="one_room">There is only one room available. Lock will not affect anything.</string>
     <string name="control_experience">Control Experience</string>
     <string name="new_session_lower">New Session</string>
+    <string name="vr_left_controller">vr left controller</string>
+    <string name="vr_right_controller">vr right controller</string>
 </resources>

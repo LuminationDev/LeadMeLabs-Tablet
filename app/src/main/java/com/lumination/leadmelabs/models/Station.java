@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 public class Station implements Cloneable {
@@ -33,6 +32,15 @@ public class Station implements Cloneable {
     public String macAddress;
     public String ledRingId;
     public Boolean requiresSteamGuard = false;
+
+    //VR Devices
+    public String headsetTracking;
+    public String leftControllerTracking;
+    public int leftControllerBattery;
+    public String rightControllerTracking;
+    public int rightControllerBattery;
+    public int baseStationsActive;
+    public int baseStationsTotal;
 
     @Override
     public Station clone() {
@@ -57,6 +65,18 @@ public class Station implements Cloneable {
         this.room = room;
         this.macAddress = macAddress;
         this.ledRingId = ledRingId;
+
+        initiateVRDevices();
+    }
+
+    private void initiateVRDevices() {
+        this.headsetTracking = "Lost";
+        this.leftControllerTracking = "Lost";
+        this.leftControllerBattery = 0;
+        this.rightControllerTracking = "Lost";
+        this.rightControllerBattery = 0;
+        this.baseStationsActive = 0;
+        this.baseStationsTotal = 0;
     }
 
     public void setName(String newName)
@@ -64,8 +84,7 @@ public class Station implements Cloneable {
         name = newName;
     }
 
-    public void setApplicationsFromJsonString(String applicationsJson)
-    {
+    public void setApplicationsFromJsonString(String applicationsJson) {
         ArrayList<Application> newApplications = new ArrayList<>();
         String[] apps = applicationsJson.split("/");
         for (String app: apps) {
@@ -98,8 +117,7 @@ public class Station implements Cloneable {
      * @param applicationId A long that represents the ID of an experience.
      * @return A boolean if the application is installed.
      */
-    public boolean hasApplicationInstalled(String applicationId)
-    {
+    public boolean hasApplicationInstalled(String applicationId) {
         for (Application application:this.applications) {
             if (Objects.equals(application.id, applicationId)) {
                 return true;
