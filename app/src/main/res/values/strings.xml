@@ -113,4 +113,6 @@
     <string name="new_session_lower">New Session</string>
     <string name="vr_left_controller">vr left controller</string>
     <string name="vr_right_controller">vr right controller</string>
+    <string name="restarting">Restarting</string>
+    <string name="cancel_restart">Cancel restart?</string>
 </resources>

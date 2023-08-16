@@ -389,28 +389,31 @@ public class DialogManager {
      */
     public static void buildShutdownDialog(Context context, int[] stationIds) {
         CountdownCallbackInterface countdownCallbackInterface = result -> { };
-        buildShutdownDialog(context, stationIds, countdownCallbackInterface);
+        buildShutdownOrRestartDialog(context, "Shutdown", stationIds, countdownCallbackInterface);
     }
 
     /**
      * Build and launch the shutdown dialog box for stations. Each time this is build a timer is
      * started to allow the users to cancel the shutdown operation.
      */
-    public static void buildShutdownDialog(Context context, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
+    public static void buildShutdownOrRestartDialog(Context context, String type, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
         View view = View.inflate(context, R.layout.dialog_template, null);
         AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.AlertDialogTheme).setView(view).create();
         confirmDialog.setCancelable(false);
         confirmDialog.setCanceledOnTouchOutside(false);
-        //confirmDialog.getWindow().setBackgroundDrawable(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.bg_white_alertdialog_curved, null));
 
         TextView title = view.findViewById(R.id.title);
         TextView contentText = view.findViewById(R.id.content_text);
-        title.setText(R.string.shutting_down);
-        contentText.setText(R.string.cancel_shutdown);
+
+        int titleText = type.equals("Shutdown") ? R.string.shutting_down : R.string.restarting;
+        title.setText(titleText);
+
+        int contextText = type.equals("Shutdown") ? R.string.cancel_shutdown : R.string.cancel_restart;
+        contentText.setText(contextText);
 
         String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "Shutdown");
+        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", type);
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
@@ -426,19 +429,25 @@ public class DialogManager {
             @Override
             public void onTick(long l) {
                 cancelButton.setText(MessageFormat.format("Cancel ({0})", (l + 1000) / 1000));
-                countdownCallbackInterface.callback((int) (l + 1000) / 1000);
+                if(countdownCallbackInterface != null) {
+                    countdownCallbackInterface.callback((int) (l + 1000) / 1000);
+                }
             }
 
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
-                countdownCallbackInterface.callback(0);
+                if(countdownCallbackInterface != null) {
+                    countdownCallbackInterface.callback(0);
+                }
             }
         }.start();
 
         cancelButton.setOnClickListener(x -> {
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-            countdownCallbackInterface.callback(0);
+            if(countdownCallbackInterface != null) {
+                countdownCallbackInterface.callback(0);
+            }
             shutdownTimer.cancel();
             confirmDialog.dismiss();
 
