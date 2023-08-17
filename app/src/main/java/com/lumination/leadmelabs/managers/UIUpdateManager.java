@@ -146,7 +146,7 @@ public class UIUpdateManager {
                         MainActivity.runOnUI(() -> {
                             BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
                                 if (confirmationResult) {
-                                    DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{102}, null);
+                                    DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{station.id}, null);
                                 }
                             };
 
@@ -319,6 +319,7 @@ public class UIUpdateManager {
                 case "status":
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
+                    if(value.equals("Off")) { station.initiateVRDevices(); }
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);
@@ -444,7 +445,7 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateController(station, values[0], values[1], values[3]);
+                    updateController(station, values[0], values[1], values[2]);
                     break;
 
                 case "BaseStation":
