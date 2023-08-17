@@ -69,7 +69,10 @@ public class Station implements Cloneable {
         initiateVRDevices();
     }
 
-    private void initiateVRDevices() {
+    /**
+     * Initiate or reset the VR device statuses associated with the Stations
+     */
+    public void initiateVRDevices() {
         this.headsetTracking = "Lost";
         this.leftControllerTracking = "Lost";
         this.leftControllerBattery = 0;

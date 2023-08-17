@@ -357,6 +357,11 @@ public class StationsViewModel extends ViewModel {
             st.add(station);
         }
         this.setStations(st);
+
+        //Ask for the device statuses
+        for (Station station: Objects.requireNonNull(this.stations.getValue())) {
+            NetworkService.sendMessage("Station," + station.id, "Station", "GetValue:devices");
+        }
     }
 
     public void setStations(List<Station> stations) {
