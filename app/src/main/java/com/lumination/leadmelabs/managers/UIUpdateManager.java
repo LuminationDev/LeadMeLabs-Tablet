@@ -427,14 +427,14 @@ public class UIUpdateManager {
             String[] values = value.split(":", 3);
             switch (attribute) {
                 case "Headset":
-                    if(validateLength(values.length, 2)) {
+                    if(validateLength(values.length, 3)) {
                         Sentry.captureMessage(
                                 ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
                                 + ": Update Headset, not a valid argument - " + value);
                         return;
                     }
 
-                    updateHeadset(station, values[0], values[1]);
+                    updateHeadset(station, values[0], values[1], values[2]);
                     break;
 
                 case "Controller":
@@ -464,9 +464,13 @@ public class UIUpdateManager {
         });
     }
 
-    private static void updateHeadset(Station station, String propertyType, String value) {
+    private static void updateHeadset(Station station, String trackingType, String propertyType, String value) {
         if (propertyType.equals("tracking")) {
-            station.headsetTracking = value;
+            if(trackingType.equals("OpenVR")) {
+                station.openVRHeadsetTracking = value;
+            } else {
+                station.thirdPartyHeadsetTracking = value;
+            }
         }
     }
 

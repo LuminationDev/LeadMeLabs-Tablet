@@ -51,7 +51,7 @@
                     android:contentDescription="@string/vr_status_icon"
                     android:minWidth="52dp"
                     android:minHeight="28dp"
-                    android:src="@{station.status.equals(`Off`) ? @drawable/vr_headset_gray : (station.headsetTracking.equals(`Connected`) ? @drawable/vr_headset : @drawable/vr_headset_lost), default=@drawable/bg_station_card_grey}" />
+                    app:headset="@{station}"/>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
@@ -63,15 +63,16 @@
                         android:layout_height="28dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/vr_left_controller"
-                        android:src="@{station.status.equals(`Off`) ? @drawable/vr_controller_gray : (station.leftControllerTracking.equals(`Connected`) ? @drawable/vr_controller : @drawable/vr_controller_lost), default=@drawable/bg_station_card_grey}"/>
+                        app:station="@{station}"
+                        app:controllerType="@{`Left`}"/>
 
                     <TextView
                         android:layout_width="28dp"
                         android:layout_height="wrap_content"
                         android:textAlignment="textEnd"
                         android:textSize="10sp"
-                        android:visibility="@{(station.status.equals(`Off`) || !station.leftControllerTracking.equals(`Connected`)) ? View.INVISIBLE : View.VISIBLE}"
-                        android:text="@{(station.leftControllerTracking.equals(`Connected`) ? station.leftControllerBattery : 0) + `%`}"/>
+                        app:station="@{station}"
+                        app:controllerType="@{`Left`}"/>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -84,15 +85,16 @@
                         android:layout_height="28dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/vr_right_controller"
-                        android:src="@{station.status.equals(`Off`) ? @drawable/vr_controller_gray : (station.rightControllerTracking.equals(`Connected`) ? @drawable/vr_controller : @drawable/vr_controller_lost), default=@drawable/bg_station_card_grey}"/>
+                        app:station="@{station}"
+                        app:controllerType="@{`Right`}"/>
 
                     <TextView
                         android:layout_width="28dp"
                         android:layout_height="wrap_content"
                         android:textAlignment="textEnd"
                         android:textSize="10sp"
-                        android:visibility="@{(station.status.equals(`Off`) || !station.rightControllerTracking.equals(`Connected`)) ? View.INVISIBLE : View.VISIBLE}"
-                        android:text="@{(station.rightControllerTracking.equals(`Connected`) ? station.rightControllerBattery : 0) + `%`}"/>
+                        app:station="@{station}"
+                        app:controllerType="@{`Right`}"/>
                 </com.google.android.flexbox.FlexboxLayout>
 
             </com.google.android.flexbox.FlexboxLayout>
