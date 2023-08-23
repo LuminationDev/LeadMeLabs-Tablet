@@ -37,6 +37,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
                 app:flexDirection="column"
                 app:layout_flexShrink="0">
 
@@ -51,7 +52,9 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="30dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingVertical="30dp"
                         app:flexDirection="column"
                         app:layout_flexShrink="0">
 
@@ -92,7 +95,7 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginEnd="45dp"
                         app:flexDirection="column"
                         app:layout_flexShrink="0">
 
@@ -236,7 +239,7 @@
                             android:layout_height="140dp"
                             android:paddingStart="20dp"
                             android:paddingEnd="20dp"
-                            android:layout_marginBottom="20dp"
+                            android:layout_marginBottom="30dp"
                             android:background="@drawable/bg_white_curved"
                             android:padding="20dp"
                             app:alignItems="center"
@@ -258,13 +261,11 @@
                                     app:headset="@{selectedStation}"
                                     app:layout_flexShrink="0"/>
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAlignment="center"
-                                    android:textSize="18sp"
-                                    android:textFontWeight="600"
-                                    app:headsetText="@{selectedStation}"/>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="25dp"
+                                    android:contentDescription="@string/openvr_icon"
+                                    app:headsetStatus="@{selectedStation}"/>
                             </com.google.android.flexbox.FlexboxLayout>
 
                             <!--LEFT CONTROLLER-->
@@ -392,25 +393,30 @@
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
 
-                        <com.google.android.flexbox.FlexboxLayout
+                        <GridLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:flexDirection="row"
-                            app:flexWrap="wrap">
+                            android:columnCount="3"
+                            android:rowCount="3">
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/new_session_button"
                                 style="@style/StationSingleButton"
+                                android:layout_marginEnd="30dp"
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/blue_darkest}"
                                 android:drawableTop="@drawable/session_new"
-                                android:text="@string/new_session_lower" />
+                                android:text="@string/new_session_lower"
+                                android:enabled="@{selectedStation.status.equals(`On`)}"/>
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_session"
                                 style="@style/StationSingleButton"
+                                android:layout_marginEnd="30dp"
                                 android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
                                 android:drawableTop="@drawable/session_restart"
                                 android:text="@string/restart_session_lower"
-                                app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
+                                android:enabled="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0)}"
+                                app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_end_session"
@@ -418,28 +424,25 @@
                                 android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) || selectedStation.gameName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
                                 android:drawableTop="@drawable/session_end"
                                 android:text="@string/end_session_lower"
-                                app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
+                                android:enabled="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0)}"
+                                app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/ping_station"
                                 style="@style/StationSingleButton"
-                                android:drawableTop="@drawable/session_identify"
-                                android:text="@string/identify_station_lower" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/enter_url"
-                                style="@style/StationSingleButton"
-                                android:visibility="gone"
-                                android:drawableTop="@drawable/ic_launch_website"
-                                android:text="@string/launch_website_lower" />
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/blue_darkest}"
+                                android:drawableTop="@{selectedStation.status.equals(`Off`) ? @drawable/session_identify_off : @drawable/session_identify}"
+                                android:text="@string/identify_station_lower"
+                                android:enabled="@{selectedStation.status.equals(`On`)}"/>
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 style="@style/StationSingleButton"
-                                android:backgroundTint="@color/orange"
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/orange}"
                                 android:drawableTop="@drawable/session_vr_restart"
                                 android:text="@string/restart_vr_system"
-                                app:rippleColor="@color/orange_light" />
+                                android:enabled="@{selectedStation.status.equals(`On`)}"
+                                app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/orange_light}" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/shutdown_station"
@@ -451,6 +454,13 @@
                                 app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
 
                             <com.google.android.material.button.MaterialButton
+                                android:id="@+id/enter_url"
+                                style="@style/StationSingleButton"
+                                android:visibility="gone"
+                                android:drawableTop="@drawable/ic_launch_website"
+                                android:text="@string/launch_website_lower" />
+
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/configure_steamcmd"
                                 style="@style/StationSingleButton"
                                 android:visibility="@{selectedStation.requiresSteamGuard ? View.VISIBLE : View.GONE}"
@@ -458,7 +468,7 @@
                                 android:backgroundTint="@color/red"
                                 android:text="Configure SteamCMD"
                                 app:rippleColor="@color/grey_card" />
-                        </com.google.android.flexbox.FlexboxLayout>
+                        </GridLayout>
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>

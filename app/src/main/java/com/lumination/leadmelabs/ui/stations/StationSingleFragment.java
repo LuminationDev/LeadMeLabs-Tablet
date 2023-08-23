@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -146,8 +147,10 @@ public class StationSingleFragment extends Fragment {
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
         restartVr.setOnClickListener(v -> {
+            //Start flashing the VR icons
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(binding.getSelectedStation().id, true);
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
-            DialogManager.awaitStationRestartSession(new int[] { binding.getSelectedStation().id });
+            DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
             }};
