@@ -43,7 +43,7 @@
                 <ImageView
                     style="@style/SideMenuImage"
                     android:contentDescription="@string/dashboard_button"
-                    android:src="@drawable/icon_home" />
+                    android:src="@{sideMenu.selectedIcon.equals(`dashboard`) ? @drawable/menu_selected_dashboard : @drawable/menu_dashboard}"/>
 
                 <TextView
                     style="@style/SideMenuLabel"
@@ -58,7 +58,7 @@
 
                 <ImageView
                     style="@style/SideMenuImage"
-                    android:src="@drawable/vr_station_card_headset_white"
+                    android:src="@{sideMenu.selectedIcon.equals(`session`) ? @drawable/menu_selected_vr_library : @drawable/menu_vr_library}"
                     android:contentDescription="@string/session_button" />
 
                 <TextView
@@ -74,7 +74,7 @@
 
                 <ImageView
                     style="@style/SideMenuImage"
-                    android:src="@{sideMenu.selectedIcon.equals(`controls`) ? @drawable/icon_controls_light_blue : @drawable/icon_controls}"
+                    android:src="@{sideMenu.selectedIcon.equals(`controls`) ? @drawable/menu_selected_room_controls : @drawable/menu_room_controls}"
                     android:contentDescription="@string/controls_button" />
 
                 <TextView
@@ -91,7 +91,7 @@
 
                 <ImageView
                     style="@style/SideMenuImage"
-                    android:src="@drawable/icon_settings"
+                    android:src="@{sideMenu.selectedIcon.equals(`settings`) ? @drawable/menu_selected_settings : @drawable/menu_settings}"
                     android:layout_marginTop="-10dp"
                     android:contentDescription="@string/navigation_button_settings" />
 
@@ -116,7 +116,7 @@
                 android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/dashboard_button"
-                android:src="@drawable/icon_back"
+                android:src="@drawable/menu_back_button"
                 android:visibility="@{main.fragmentCount > 1 ? View.VISIBLE : View.INVISIBLE}"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>

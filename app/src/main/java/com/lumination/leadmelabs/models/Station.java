@@ -205,12 +205,13 @@ public class Station implements Cloneable {
 
     /**
      * Determine if the supplied Icon is required to start flashing, stop, or do nothing.
+     * @param flash A boolean signifying if the icon should start flashing
      * @param imageView The associated Icon.
      * @param selectedStation The station the icon is linked to.
      * @param iconName A string of to use as the key in the icon manager.
      */
-    public void handleIconAnimation(ImageView imageView, Station selectedStation, String iconName) {
-        if(selectedStation.animationFlag) {
+    public void handleIconAnimation(Boolean flash, ImageView imageView, Station selectedStation, String iconName) {
+        if(flash) {
             //Check if the image view is already saved before re-writing.
             ImageView temp = selectedStation.iconManager.getIconAnimator(iconName);
             if(temp != imageView) {
@@ -302,7 +303,7 @@ public class Station implements Cloneable {
             imageView.setImageResource(R.drawable.vr_headset_off);
         }
 
-        selectedStation.handleIconAnimation(imageView, selectedStation, "Headset");
+        selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, "Headset");
     }
 
     /**
@@ -347,6 +348,48 @@ public class Station implements Cloneable {
     }
 
     /**
+     * Data binding to update the Controller's battery status visibility and value on the Station
+     * cards.
+     */
+    @BindingAdapter({"battery", "controllerType"})
+    public static void setBatteryVisibilityAndImage(ImageView imageView, Station selectedStation, String controllerType) {
+        if (selectedStation == null) return;
+
+        String connectedController = selectedStation.getControllerTracking(controllerType);
+        String headsetTracking = selectedStation.openVRHeadsetTracking;
+
+        //Station is off
+        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        //Headset is not tracking or has not been initiated
+        boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off")) || (headsetTracking.equals("Connected") && connectedController.equals("Lost"));
+        //Controller is connected
+        boolean isControllerConnected = connectedController != null && !connectedController.equals("Connected");
+        int batteryValue = selectedStation.getControllerBattery(controllerType);
+
+        if(isStatusOff || isControllerConnected || batteryValue == 0 || tracking) {
+            imageView.setImageResource(R.drawable.battery_unknown);
+            return;
+        }
+
+        if (connectedController == null) return;
+
+        //Reset the flashing before setting a new image view
+        selectedStation.handleIconAnimation(false, imageView, selectedStation, controllerType + "Battery");
+
+        //Set the battery status image colour (relates to battery value, below 15 is getting low)
+        if(batteryValue > 75) {
+            imageView.setImageResource(R.drawable.battery_full);
+        } else if (batteryValue > 25)  {
+            imageView.setImageResource(R.drawable.battery_two_bar);
+        } else if (batteryValue > 5)  {
+            imageView.setImageResource(R.drawable.battery_one_bar);
+        } else if (batteryValue > 0)  {
+            imageView.setImageResource(R.drawable.battery_empty);
+            selectedStation.handleIconAnimation(true, imageView, selectedStation, controllerType + "Battery");
+        }
+    }
+
+    /**
      * Data binding to update a Controller's image view source.
      */
     @BindingAdapter(value = {"station", "controllerType"})
@@ -384,7 +427,7 @@ public class Station implements Cloneable {
             imageView.setImageResource(R.drawable.vr_controller_on);
         }
 
-        selectedStation.handleIconAnimation(imageView, selectedStation, controllerType + "Controller");
+        selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, controllerType + "Controller");
     }
 
     /**
@@ -406,7 +449,7 @@ public class Station implements Cloneable {
         String active = String.valueOf(selectedStation.baseStationsActive);
 
         // Set the text colour on the active status
-        int color = ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_card);
+        int color;
         if (selectedStation.baseStationsActive == 0) {
             //Station is on - no active base stations found
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.red);
@@ -451,7 +494,7 @@ public class Station implements Cloneable {
             imageView.setImageResource(R.drawable.vr_base_station_on);
         }
 
-        selectedStation.handleIconAnimation(imageView, selectedStation, "BaseStation");
+        selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, "BaseStation");
     }
 
     /**
@@ -482,7 +525,7 @@ public class Station implements Cloneable {
                 break;
         }
 
-        selectedStation.handleIconAnimation(imageView, selectedStation, headsetManagerType);
+        selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, headsetManagerType);
     }
 
     /**
