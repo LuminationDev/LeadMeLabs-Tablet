@@ -371,4 +371,17 @@ public class StationsViewModel extends ViewModel {
     public void loadStations() {
         NetworkService.sendMessage("NUC", "Stations", "List");
     }
+
+    /**
+     * Start of Stop the VR icons flashing on an associated station.
+     * @param flashing A boolean representing if the icon should start (true) or stop (false)
+     *                 flashing.
+     */
+    public void setStationFlashing(int stationId, boolean flashing) {
+        Station station = getStationById(stationId);
+        if(station == null) return;
+        station.animationFlag = flashing;
+        station.handleAnimationTimer();
+        updateStationById(stationId, station);
+    }
 }

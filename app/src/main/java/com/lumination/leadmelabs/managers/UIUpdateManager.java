@@ -313,7 +313,9 @@ public class UIUpdateManager {
                         }
                     }
                     if (value.equals("Restarted")) {
-                        DialogManager.sessionRestartedOnStation(station.id);
+                        //Stop flashing the VR icons
+                        ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(station.id, false);
+                        DialogManager.vrSystemRestartedOnStation(station.id);
                     }
                     break;
                 case "status":

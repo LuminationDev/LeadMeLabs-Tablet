@@ -19,6 +19,8 @@ import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.IconAnimator;
+import com.lumination.leadmelabs.utilities.IconManager;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -34,12 +36,14 @@ public class Station implements Cloneable {
     public int volume;
     public ArrayList<Application> applications = new ArrayList<>();
     public boolean selected = false;
-    private CountDownTimer timer;
+    private CountDownTimer shutdownTimer;
     public String macAddress;
     public String ledRingId;
     public Boolean requiresSteamGuard = false;
 
     //VR Devices
+    public CountDownTimer flashTimer;
+    public Boolean animationFlag = false; //Determines if the VR UI is flashing
     public String thirdPartyHeadsetTracking; //Currently on Vive but may change in the future
     public String openVRHeadsetTracking;
     public String leftControllerTracking;
@@ -48,6 +52,10 @@ public class Station implements Cloneable {
     public int rightControllerBattery;
     public int baseStationsActive;
     public int baseStationsTotal;
+
+
+    //Track animation of icons
+    IconManager iconManager = new IconManager();
 
     @Override
     public Station clone() {
@@ -145,7 +153,7 @@ public class Station implements Cloneable {
         //Cancel any previous power checks before starting a new one
         cancelStatusCheck();
 
-        timer = new CountDownTimer(3 * 1000 * 60, 1000) {
+        shutdownTimer = new CountDownTimer(3 * 1000 * 60, 1000) {
             @Override
             public void onTick(long l) {
             }
@@ -170,8 +178,8 @@ public class Station implements Cloneable {
      * The station has turned on so cancel the automatic station check.
      */
     public void cancelStatusCheck() {
-        if(timer != null) {
-            timer.cancel();
+        if(shutdownTimer != null) {
+            shutdownTimer.cancel();
         }
     }
 
@@ -195,46 +203,80 @@ public class Station implements Cloneable {
         }
     }
 
+    /**
+     * Determine if the supplied Icon is required to start flashing, stop, or do nothing.
+     * @param imageView The associated Icon.
+     * @param selectedStation The station the icon is linked to.
+     * @param iconName A string of to use as the key in the icon manager.
+     */
+    public void handleIconAnimation(ImageView imageView, Station selectedStation, String iconName) {
+        if(selectedStation.animationFlag) {
+            //Check if the image view is already saved before re-writing.
+            ImageView temp = selectedStation.iconManager.getIconAnimator(iconName);
+            if(temp != imageView) {
+                selectedStation.iconManager.addIconAnimator(iconName, new IconAnimator(imageView));
+                selectedStation.iconManager.startFlashing(iconName);
+            }
+        } else {
+            selectedStation.iconManager.stopFlashing(iconName);
+        }
+    }
+
+    /**
+     * As a backup, when the VR icons start flashing, begin a countdown timer. At the end of the
+     * timer, if the animation is still flashing (animationFlag), alert the user that the restart
+     * was unsuccessful.
+     */
+    public void handleAnimationTimer() {
+        if(flashTimer != null) {
+            flashTimer.cancel();
+            flashTimer = null;
+        }
+
+        flashTimer = new CountDownTimer(2 * 1000 * 60, 1000) {
+            @Override
+            public void onTick(long l) {}
+
+            @Override
+            public void onFinish() {
+                if(!animationFlag) {
+                    return;
+                }
+
+                //Close the restart system
+                DialogManager.vrSystemRestartedOnStation(id);
+                DialogManager.createBasicDialog("Station error", name + " has not restarted the VR system. Try restarting again, and if this does not work please restart the Station.");
+                MainActivity.runOnUI(() -> {
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    station.animationFlag = false;
+                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
+                });
+            }
+        }.start();
+    }
+
     // DATA BINDING FUNCTIONS BELOW
 
     /**
-     * Data binding to update the Base Station's active total text visibility and value.
+     * Data binding to update the Vive status image view source.
      */
-    @BindingAdapter("headsetText")
-    public static void setHeadsetVisibilityAndText(TextView textView, Station selectedStation) {
+    @BindingAdapter("headsetStatus")
+    public static void setHeadsetStatusImage(ImageView imageView, Station selectedStation) {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
         boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
-        int visibility = isStatusOff || headsetTracking.equals("Off") ? View.INVISIBLE : View.VISIBLE;
-        textView.setVisibility(visibility);
-
-        // Set the actual text based on the active status
-        String text;
-        int color;
+        boolean trackingOff = selectedStation.openVRHeadsetTracking.equals("Off") && selectedStation.thirdPartyHeadsetTracking.equals("Off");
+        int visibility = isStatusOff || trackingOff ? View.INVISIBLE : View.VISIBLE;
+        imageView.setVisibility(visibility);
 
         if (headsetTracking.equals("Connected") && selectedStation.thirdPartyHeadsetTracking.equals("Connected")) {
             //Station is on - OpenVR & the Third party headset software is connected
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
-            text = "On";
-        }
-        else if (headsetTracking.equals("Connected")){
-            //Station is on - OpenVR & the Third party headset software is connected
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
-            text = "Ready";
-        }
-        else if (headsetTracking.equals("Lost") || selectedStation.thirdPartyHeadsetTracking.equals("Lost")) {
-            //Station is on - OpenVR or the Third party headset software is lost
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
-            text = "Lost";
+            imageView.setImageResource(R.drawable.vr_status_tick);
         } else {
-            //Station is on - openVR is off
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.red);
-            text = "Off";
+            //Station is on - openVR or vive is lost/off
+            imageView.setImageResource(R.drawable.vr_status_issue);
         }
-
-        textView.setTextColor(color);
-        textView.setText(text);
     }
 
     /**
@@ -255,13 +297,12 @@ public class Station implements Cloneable {
                 (selectedStation.openVRHeadsetTracking.equals("Connected") && selectedStation.thirdPartyHeadsetTracking.equals("Off"))) {
             //Station is on - OpenVR & the Third party headset software is connected
             imageView.setImageResource(R.drawable.vr_headset_on);
-        } else if (selectedStation.openVRHeadsetTracking.equals("Lost") || selectedStation.thirdPartyHeadsetTracking.equals("Lost")) {
-            //Station is on - OpenVR or the Third party headset software is lost
-            imageView.setImageResource(R.drawable.vr_headset_lost);
         } else {
             //Station is on - openVR is off
             imageView.setImageResource(R.drawable.vr_headset_off);
         }
+
+        selectedStation.handleIconAnimation(imageView, selectedStation, "Headset");
     }
 
     /**
@@ -295,10 +336,10 @@ public class Station implements Cloneable {
 
         //Set the battery text colour (relates to battery value, below 15 is getting low)
         int color = ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_card);
-        if(batteryValue > 15) {
+        if(batteryValue > 25) {
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
         } else if (batteryValue > 0)  {
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.red);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
         }
 
         textView.setTextColor(color);
@@ -330,18 +371,20 @@ public class Station implements Cloneable {
             // Headset is tracking, controller is not - Controller is Off
             imageView.setImageResource(R.drawable.vr_controller_off);
 
-        } else if (tracking.equals("Connected") && batteryValue <= 15) {
-            // Headset is tracking, controller is tracking - Controller has low battery
-            imageView.setImageResource(R.drawable.vr_controller_off);
-
         } else if (headsetTracking.equals("Connected") && tracking.equals("Lost")) {
             //Station is on - headset connected and the controller has connected
+            imageView.setImageResource(R.drawable.vr_controller_off);
+
+        } else if (tracking.equals("Connected") && batteryValue <= 25) {
+            // Headset is tracking, controller is tracking - Controller has low battery
             imageView.setImageResource(R.drawable.vr_controller_lost);
 
         } else if (selectedStation.getControllerTracking(controllerType).equals("Connected")) {
             //Station is on - active base stations equals total.
             imageView.setImageResource(R.drawable.vr_controller_on);
         }
+
+        selectedStation.handleIconAnimation(imageView, selectedStation, controllerType + "Controller");
     }
 
     /**
@@ -367,11 +410,11 @@ public class Station implements Cloneable {
         if (selectedStation.baseStationsActive == 0) {
             //Station is on - no active base stations found
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.red);
-        } else if (selectedStation.baseStationsActive < selectedStation.baseStationsTotal) {
-            //Station is on - active base stations less than expected
+        } else if (selectedStation.baseStationsActive < 2) {
+            //Station is on - active base stations less than 2
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
-        } else if (selectedStation.baseStationsActive == selectedStation.baseStationsTotal) {
-            //Station is on - correct number of active base stations
+        } else {
+            //Station is on - active base stations greater than 2
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
         }
 
@@ -400,13 +443,15 @@ public class Station implements Cloneable {
                 selectedStation.openVRHeadsetTracking.equals("Off")) {
             //Station is on - no active base stations found
             imageView.setImageResource(R.drawable.vr_base_station_off);
-        } else if (selectedStation.baseStationsActive < selectedStation.baseStationsTotal) {
-            //Station is on - active base stations less than expected
+        } else if (selectedStation.baseStationsActive < 2) {
+            //Station is on - active base stations less than 2
             imageView.setImageResource(R.drawable.vr_base_station_lost);
         } else {
-            //Station is on - active base stations equals total.
+            //Station is on - active base stations greater than 2.
             imageView.setImageResource(R.drawable.vr_base_station_on);
         }
+
+        selectedStation.handleIconAnimation(imageView, selectedStation, "BaseStation");
     }
 
     /**
@@ -427,18 +472,17 @@ public class Station implements Cloneable {
         // Set the actual image based on the active status
         switch (trackingType) {
             case "Connected":
-                //Station is on - vive is connected
+                //Station is on - vive and/or openVR is connected
                 imageView.setImageResource(headsetManagerType.equals("OpenVR") ? R.drawable.vr_steam_connection_on :R.drawable.vr_vive_connection_on);
                 break;
             case "Lost":
-                //Station is on - vive is scanning for headset
-                imageView.setImageResource(headsetManagerType.equals("OpenVR") ? R.drawable.vr_steam_connection_lost :R.drawable.vr_vive_connection_lost);
-                break;
             case "Off":
-                //Station is on - vive is off
+                //Station is on - vive and/or openVR is off
                 imageView.setImageResource(headsetManagerType.equals("OpenVR") ? R.drawable.vr_steam_connection_off :R.drawable.vr_vive_connection_off);
                 break;
         }
+
+        selectedStation.handleIconAnimation(imageView, selectedStation, headsetManagerType);
     }
 
     /**
