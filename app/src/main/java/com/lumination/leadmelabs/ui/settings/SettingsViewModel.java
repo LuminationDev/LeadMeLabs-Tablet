@@ -22,7 +22,7 @@ import java.util.HashSet;
  */
 public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> softwareVersion;
-    private MutableLiveData<String> nucAddress;
+    private MutableLiveData<String> nucAddress = new MutableLiveData<>();
     private MutableLiveData<String> nucMacAddress;
     private MutableLiveData<String> pinCode;
     private MutableLiveData<String> encryptionKey;
@@ -54,9 +54,7 @@ public class SettingsViewModel extends AndroidViewModel {
      * Get the IP Address that is saved for the NUC.
      */
     public LiveData<String> getNucAddress() {
-        if (NetworkService.getNUCAddress() == null || NetworkService.getNUCAddress().equals("")) {
-            nucAddress = new MutableLiveData<>();
-        } else if (nucAddress == null) {
+        if (nucAddress == null && NetworkService.getNUCAddress() != null && NetworkService.getNUCAddress().isEmpty()) {
             nucAddress = new MutableLiveData<>(NetworkService.getNUCAddress());
         }
 
