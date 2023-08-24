@@ -11,8 +11,8 @@
     </data>
 
     <RelativeLayout
-        android:layout_width="243dp"
-        android:layout_height="178dp">
+        android:layout_width="221dp"
+        android:layout_height="158dp">
 
         <RelativeLayout
             android:visibility="@{station.requiresSteamGuard ? View.VISIBLE : View.GONE}"
@@ -80,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:paddingHorizontal="4dp"
+                        android:paddingHorizontal="8dp"
                         android:textSize="12sp"
                         android:textColor="@color/black"
                         app:stationState="@{station}"/>

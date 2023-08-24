@@ -70,7 +70,8 @@
         <item name="flexDirection">column</item>
         <item name="android:elevation">3dp</item>
         <item name="android:padding">12dp</item>
-        <item name="android:layout_margin">20dp</item>
+        <item name="android:layout_marginHorizontal">9dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
     </style>
 
     <style name="StationsContainer">
