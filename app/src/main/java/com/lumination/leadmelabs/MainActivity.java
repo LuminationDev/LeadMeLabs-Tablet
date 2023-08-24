@@ -108,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         startLockTask();
 
         FirebaseManager.reportTrafficFlags();
+
+        handler.postDelayed(() -> {
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(102);
+            station.gameName = "Blocks";
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(102, station);
+        }, 5000);
     }
 
     /**

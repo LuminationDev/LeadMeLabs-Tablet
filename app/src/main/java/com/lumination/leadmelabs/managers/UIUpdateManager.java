@@ -323,6 +323,9 @@ public class UIUpdateManager {
                     if(value.equals("On")) { station.cancelStatusCheck(); }
                     if(value.equals("Off")) { station.initiateVRDevices(); }
                     break;
+                case "state":
+                    station.state = value;
+                    break;
                 case "volume":
                     station.volume = Integer.parseInt(value);
 

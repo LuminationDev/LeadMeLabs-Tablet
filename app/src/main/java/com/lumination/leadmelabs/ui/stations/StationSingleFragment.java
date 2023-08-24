@@ -204,7 +204,7 @@ public class StationSingleFragment extends Fragment {
                                 + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
-                    station.status = "Turning on";
+                    station.status = "Turning On";
                     mViewModel.updateStationById(id, station);
                 });
 
