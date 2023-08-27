@@ -341,6 +341,7 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("installedApplications"),
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
+                    stationJson.getString("state"),
                     stationJson.getInt("volume"),
                     stationJson.getString("room"),
                     stationJson.getString("ledRingId"),

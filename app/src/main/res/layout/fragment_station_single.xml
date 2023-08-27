@@ -167,10 +167,10 @@
                             app:flexDirection="row">
 
                             <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 android:contentDescription="@string/icon_volume"
-                                android:src="@drawable/ic_volume"
+                                android:src="@drawable/station_volume"
                                 android:textColor="@color/black"
                                 app:layout_flexShrink="0" />
 
@@ -336,7 +336,7 @@
                                     app:layout_flexShrink="0" />
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textAlignment="center"
                                     android:textSize="18sp"

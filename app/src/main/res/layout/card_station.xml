@@ -11,8 +11,8 @@
     </data>
 
     <RelativeLayout
-        android:layout_width="243dp"
-        android:layout_height="178dp">
+        android:layout_width="221dp"
+        android:layout_height="158dp">
 
         <RelativeLayout
             android:visibility="@{station.requiresSteamGuard ? View.VISIBLE : View.GONE}"
@@ -50,7 +50,7 @@
                     android:text="@{station.name, default=Name}"
                     android:textColor="@color/black"
                     android:textFontWeight="600"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                     android:text="@{station.status, default=`Off`}"
                     android:textColor="@{station.status.equals(`Off`) ? @color/text : @color/blue, default=`@color/text`}"
                     android:textAllCaps="true"
-                    android:textSize="16sp"/>
+                    android:textSize="14sp"/>
             </com.google.android.flexbox.FlexboxLayout>
 
             <!--STATION CONTENT-->
@@ -71,7 +71,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="178dp"
                     android:layout_height="40dp"
-                    android:background="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) &amp;&amp; !station.gameName.equals(`null`) ? @drawable/card_station_ripple_white : @drawable/card_station_ripple_empty}"
+                    app:stationState="@{station}"
                     app:alignItems="center"
                     app:justifyContent="center"
                     app:flexDirection="row">
@@ -80,11 +80,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:paddingHorizontal="4dp"
-                        android:text="@{station.gameName}"
+                        android:paddingHorizontal="8dp"
                         android:textSize="12sp"
                         android:textColor="@color/black"
-                        android:visibility="@{station.gameName != null &amp;&amp; !station.gameName.equals(``) &amp;&amp; !station.gameName.equals(`null`) ? View.VISIBLE : View.GONE}" />
+                        app:stationState="@{station}"/>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
 

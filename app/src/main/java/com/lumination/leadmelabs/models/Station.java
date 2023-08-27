@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -28,7 +29,8 @@ import java.util.Objects;
 public class Station implements Cloneable {
     public String name;
     public int id;
-    public String status;
+    public String status; //Describes the computer status (Off, On, Turning On)
+    public String state; //Describes the state of the LeadMe software
     public String room;
     public String gameName = null;
     public String gameId;
@@ -69,13 +71,14 @@ public class Station implements Cloneable {
         return clonedStation;
     }
 
-    public Station(String name, String applications, int id, String status, int volume, String room, String ledRingId, String macAddress) {
+    public Station(String name, String applications, int id, String status, String state, int volume, String room, String ledRingId, String macAddress) {
         this.name = name;
         if (applications != null && applications.length() > 0 && !applications.equals("Off")) {
             this.setApplicationsFromJsonString(applications);
         }
         this.id = id;
         this.status = status;
+        this.state = state;
         this.volume = volume;
         this.room = room;
         this.macAddress = macAddress;
@@ -257,7 +260,7 @@ public class Station implements Cloneable {
     }
 
     // DATA BINDING FUNCTIONS BELOW
-
+    //region VR Device Binding
     /**
      * Data binding to update the Vive status image view source.
      */
@@ -266,7 +269,7 @@ public class Station implements Cloneable {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         boolean trackingOff = selectedStation.openVRHeadsetTracking.equals("Off") && selectedStation.thirdPartyHeadsetTracking.equals("Off");
         int visibility = isStatusOff || trackingOff ? View.INVISIBLE : View.VISIBLE;
         imageView.setVisibility(visibility);
@@ -286,7 +289,7 @@ public class Station implements Cloneable {
     @BindingAdapter("headset")
     public static void setHeadsetImage(ImageView imageView, Station selectedStation) {
         if (selectedStation == null) return;
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
 
         if (isStatusOff) {
             //Station is off - no headset expected
@@ -317,7 +320,7 @@ public class Station implements Cloneable {
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
         //Station is off
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off")) || (headsetTracking.equals("Connected") && connectedController.equals("Lost"));
         //Controller is connected
@@ -359,7 +362,7 @@ public class Station implements Cloneable {
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
         //Station is off
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off")) || (headsetTracking.equals("Connected") && connectedController.equals("Lost"));
         //Controller is connected
@@ -396,7 +399,7 @@ public class Station implements Cloneable {
     public static void setControllerImage(ImageView imageView, Station selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
 
         if (isStatusOff) {
             //Station is off - no controller set to default
@@ -439,7 +442,7 @@ public class Station implements Cloneable {
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         boolean lessThanOne = selectedStation.baseStationsActive == 0;
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off"));
@@ -473,7 +476,7 @@ public class Station implements Cloneable {
     public static void setBaseStationImage(ImageView imageView, Station selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
 
         if (isStatusOff) {
             //Station is off - no base stations expected
@@ -504,7 +507,7 @@ public class Station implements Cloneable {
     public static void setSoftwareImage(ImageView imageView, Station selectedStation, String headsetManagerType) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         if (isStatusOff) {
             //Station is off - no connection expected
             imageView.setImageResource(headsetManagerType.equals("OpenVR") ? R.drawable.vr_steam_connection_gray : R.drawable.vr_vive_connection_gray);
@@ -535,7 +538,7 @@ public class Station implements Cloneable {
     public static void setSoftwareStatusImage(ImageView imageView, Station selectedStation, String headsetManagerIssue) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.status != null && selectedStation.status.equals("Off");
+        boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On"));
         boolean trackingOff = headsetManagerIssue.equals("OpenVR") ? selectedStation.openVRHeadsetTracking.equals("Off") : selectedStation.thirdPartyHeadsetTracking.equals("Off");
         int visibility = isStatusOff || trackingOff ? View.INVISIBLE : View.VISIBLE;
         imageView.setVisibility(visibility);
@@ -555,4 +558,49 @@ public class Station implements Cloneable {
                 break;
         }
     }
+    //endregion
+
+    //region Station State & GameName Binding
+    /**
+     * Data binding to update the Station content flexbox background.
+     */
+    @BindingAdapter("stationState")
+    public static void setStationStateBackground(FlexboxLayout flexbox, Station selectedStation) {
+        if (selectedStation == null) return;
+
+        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On"));
+        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasGame = selectedStation.gameName != null && selectedStation.gameName.length() != 0 && !selectedStation.gameName.equals("null");
+
+        //Station is On and has either a State or a Game running
+        if(isStatusOn && (hasState || hasGame)) {
+            flexbox.setBackgroundResource(R.drawable.card_station_ripple_white);
+        } else {
+            flexbox.setBackgroundResource(R.drawable.card_station_ripple_empty);
+        }
+    }
+
+    /**
+     * Data binding to update the Station content text (Status or Game name)
+     */
+    @BindingAdapter("stationState")
+    public static void setStationStateTextAndVisibility(TextView textView, Station selectedStation) {
+        if (selectedStation == null) return;
+
+        //Set the visibility value
+        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On"));
+        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasGame = selectedStation.gameName != null && selectedStation.gameName.length() != 0 && !selectedStation.gameName.equals("null");
+        int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
+        textView.setVisibility(visibility);
+
+        //Set the text value
+        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame)) {
+            //Show the state if the state is anything but Ready to go
+            textView.setText(selectedStation.state);
+        } else {
+            textView.setText(selectedStation.gameName);
+        }
+    }
+    //endregion
 }
