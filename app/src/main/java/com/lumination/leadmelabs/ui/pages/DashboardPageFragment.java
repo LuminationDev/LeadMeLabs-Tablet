@@ -212,7 +212,7 @@ public class DashboardPageFragment extends Fragment {
         int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
         if (shutdownHeading.getText().toString().startsWith("Shut Down")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownDialog(getContext(), stationIds, shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", stationIds, shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));

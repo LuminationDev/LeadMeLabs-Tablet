@@ -41,11 +41,6 @@
             android:stopWithTask="true"/>
 
         <service
-            android:name=".services.jobServices.RefreshJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:stopWithTask="true"/>
-
-        <service
             android:name=".services.jobServices.UpdateJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:stopWithTask="true"/>

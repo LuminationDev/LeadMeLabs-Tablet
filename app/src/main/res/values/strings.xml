@@ -113,4 +113,12 @@
     <string name="control_experience">Control Experience</string>
     <string name="new_session_lower">New Session</string>
     <string name="submit_a_support_ticket">submit a support ticket.</string>
+    <string name="vr_left_controller">vr left controller</string>
+    <string name="vr_right_controller">vr right controller</string>
+    <string name="restarting">Restarting</string>
+    <string name="cancel_restart">Cancel restart?</string>
+    <string name="base_station">Base Station</string>
+    <string name="vr_controller">VR Controller</string>
+    <string name="vive_icon">Vive Icon</string>
+    <string name="openvr_icon">OpenVR icon</string>
 </resources>

@@ -216,7 +216,7 @@
             android:letterSpacing="0.01"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
-            android:src="@drawable/ic_identify_station"
+            android:src="@drawable/session_identify"
             android:textAllCaps="false" />
     </RelativeLayout>
 

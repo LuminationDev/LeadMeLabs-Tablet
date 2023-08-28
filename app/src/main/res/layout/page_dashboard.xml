@@ -94,7 +94,7 @@
                         android:layout_width="66dp"
                         android:layout_height="66dp"
                         android:contentDescription="start_icon"
-                        android:src="@drawable/new_session_icon" />
+                        android:src="@drawable/dashboard_new_session" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -129,7 +129,7 @@
                         android:layout_width="66dp"
                         android:layout_height="66dp"
                         android:contentDescription="stop_icon"
-                        android:src="@drawable/end_session_icon" />
+                        android:src="@drawable/dashboard_end_session" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -164,7 +164,7 @@
                         android:layout_width="66dp"
                         android:layout_height="66dp"
                         android:contentDescription="identify_icon"
-                        android:src="@drawable/icon_identify" />
+                        android:src="@drawable/dashboard_identify" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -200,7 +200,7 @@
                         android:layout_width="66dp"
                         android:layout_height="66dp"
                         android:contentDescription="startup_icon"
-                        android:src="@drawable/icon_startup" />
+                        android:src="@drawable/dashboard_startup" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -239,7 +239,7 @@
                         android:layout_width="66dp"
                         android:layout_height="66dp"
                         android:contentDescription="shutdown_icon"
-                        android:src="@drawable/icon_shutdown" />
+                        android:src="@drawable/dashboard_shutdown" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"

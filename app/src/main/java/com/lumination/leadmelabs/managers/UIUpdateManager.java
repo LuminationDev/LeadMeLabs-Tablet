@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import io.sentry.Sentry;
+
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
@@ -114,6 +116,16 @@ public class UIUpdateManager {
                         updateStation(source.split(",")[1], key, value);
                     }
 
+                    if (additionalData.startsWith("DeviceStatus")) {
+                        //[0] - 'DeviceStatus'
+                        //[1] - DeviceType
+                        //[2] - Values
+                        String[] keyValue = additionalData.split(":", 3); //Only split the key off
+                        String key = keyValue[1];
+                        String value = keyValue[2];
+                        updateStationDevices(source.split(",")[1], key, value);
+                    }
+
                     //Everything below should only trigger if within the locked room
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                     HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
@@ -130,6 +142,22 @@ public class UIUpdateManager {
                         return;
                     }
 
+                    if (additionalData.startsWith("SteamVRError")) {
+                        MainActivity.runOnUI(() -> {
+                            BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
+                                if (confirmationResult) {
+                                    DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{station.id}, null);
+                                }
+                            };
+
+                            DialogManager.createConfirmationDialog(
+                                    "SteamVR Error",
+                                    "SteamVR has encountered an error and cannot recover automatically. Please restart the Station 102",
+                                    confirmAppRestartCallback,
+                                    "Cancel",
+                                    "Restart");
+                        });
+                    }
                     if (additionalData.startsWith("GameLaunchFailed")) {
                         DialogManager.gameLaunchedOnStation(station.id);
                         String[] data = additionalData.split(":", 2);
@@ -285,12 +313,21 @@ public class UIUpdateManager {
                         }
                     }
                     if (value.equals("Restarted")) {
-                        DialogManager.sessionRestartedOnStation(station.id);
+                        //Stop flashing the VR icons
+                        ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(station.id, false);
+                        DialogManager.vrSystemRestartedOnStation(station.id);
                     }
                     break;
                 case "status":
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
+                    if(value.equals("Off")) {
+                        station.initiateVRDevices();
+                        station.state = "";
+                    }
+                    break;
+                case "state":
+                    station.state = value;
                     break;
                 case "volume":
                     station.volume = Integer.parseInt(value);
@@ -376,6 +413,100 @@ public class UIUpdateManager {
             }
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });
+    }
+
+    /**
+     * Specifically update a Station's VR devices. This includes:
+     *      - Headset:              Tracking
+     *      - Left Controller:      Tracking & Battery
+     *      - Right Controller:     Tracking & Battery
+     *      - Base Stations:        Active & Total
+     * @param stationId A string of an ID associated to a Station.
+     * @param attribute A string of the device type to update.
+     * @param value A string of values separated by ':'.
+     */
+    private static void updateStationDevices(String stationId, String attribute, String value) throws JSONException {
+        MainActivity.runOnUI(() -> {
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+            if (station == null) {
+                return;
+            }
+
+            String[] values = value.split(":", 3);
+            switch (attribute) {
+                case "Headset":
+                    if(validateLength(values.length, 3)) {
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                + ": Update Headset, not a valid argument - " + value);
+                        return;
+                    }
+
+                    updateHeadset(station, values[0], values[1], values[2]);
+                    break;
+
+                case "Controller":
+                    if(validateLength(values.length, 3)) {
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                + ": Update Controller, not a valid argument - " + value);
+                        return;
+                    }
+
+                    updateController(station, values[0], values[1], values[2]);
+                    break;
+
+                case "BaseStation":
+                    if(validateLength(values.length, 2)) {
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                + ": Update BaseStation, not a valid argument - " + value);
+                        return;
+                    }
+
+                    updateBaseStations(station, values[0], values[1]);
+                    break;
+            }
+
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
+        });
+    }
+
+    private static void updateHeadset(Station station, String trackingType, String propertyType, String value) {
+        if (propertyType.equals("tracking")) {
+            if(trackingType.equals("OpenVR")) {
+                station.openVRHeadsetTracking = value;
+            } else {
+                station.thirdPartyHeadsetTracking = value;
+            }
+        }
+    }
+
+    private static void updateController(Station station, String controllerType, String propertyType, String value) {
+        if (propertyType.equals("tracking")) {
+            if (controllerType.equals("Left")) {
+                station.leftControllerTracking = value;
+            } else if (controllerType.equals("Right")) {
+                station.rightControllerTracking = value;
+            }
+        }
+        else if (propertyType.equals("battery")) {
+            int batteryLevel = Integer.parseInt(value);
+            if (controllerType.equals("Left")) {
+                station.leftControllerBattery = batteryLevel;
+            } else if (controllerType.equals("Right")) {
+                station.rightControllerBattery = batteryLevel;
+            }
+        }
+    }
+
+    private static void updateBaseStations(Station station, String active, String total) {
+        station.baseStationsActive = Integer.parseInt(active);
+        station.baseStationsTotal = Integer.parseInt(total);
+    }
+
+    private static Boolean validateLength(int length, int limit) {
+        return length < limit;
     }
 
     private static void updateAppliances(String jsonString) throws JSONException {

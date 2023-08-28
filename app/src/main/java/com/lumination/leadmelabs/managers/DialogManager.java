@@ -72,8 +72,8 @@ public class DialogManager {
     public static AlertDialog reconnectDialog;
     public static List<Integer> endSessionStationIds;
     public static AlertDialog endSessionDialog;
-    public static List<Integer> restartSessionStationIds;
-    public static AlertDialog restartSessionDialog;
+    public static List<Integer> restartVRSystemStationIds;
+    public static AlertDialog restartVRSystemDialog;
 
     public static CountDownTimer shutdownTimer;
 
@@ -471,28 +471,31 @@ public class DialogManager {
      */
     public static void buildShutdownDialog(Context context, int[] stationIds) {
         CountdownCallbackInterface countdownCallbackInterface = result -> { };
-        buildShutdownDialog(context, stationIds, countdownCallbackInterface);
+        buildShutdownOrRestartDialog(context, "Shutdown", stationIds, countdownCallbackInterface);
     }
 
     /**
      * Build and launch the shutdown dialog box for stations. Each time this is build a timer is
      * started to allow the users to cancel the shutdown operation.
      */
-    public static void buildShutdownDialog(Context context, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
+    public static void buildShutdownOrRestartDialog(Context context, String type, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
         View view = View.inflate(context, R.layout.dialog_template, null);
         AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.AlertDialogTheme).setView(view).create();
         confirmDialog.setCancelable(false);
         confirmDialog.setCanceledOnTouchOutside(false);
-        //confirmDialog.getWindow().setBackgroundDrawable(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.bg_white_alertdialog_curved, null));
 
         TextView title = view.findViewById(R.id.title);
         TextView contentText = view.findViewById(R.id.content_text);
-        title.setText(R.string.shutting_down);
-        contentText.setText(R.string.cancel_shutdown);
+
+        int titleText = type.equals("Shutdown") ? R.string.shutting_down : R.string.restarting;
+        title.setText(titleText);
+
+        int contextText = type.equals("Shutdown") ? R.string.cancel_shutdown : R.string.cancel_restart;
+        contentText.setText(contextText);
 
         String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "Shutdown");
+        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", type);
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
@@ -508,19 +511,25 @@ public class DialogManager {
             @Override
             public void onTick(long l) {
                 cancelButton.setText(MessageFormat.format("Cancel ({0})", (l + 1000) / 1000));
-                countdownCallbackInterface.callback((int) (l + 1000) / 1000);
+                if(countdownCallbackInterface != null) {
+                    countdownCallbackInterface.callback((int) (l + 1000) / 1000);
+                }
             }
 
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
-                countdownCallbackInterface.callback(0);
+                if(countdownCallbackInterface != null) {
+                    countdownCallbackInterface.callback(0);
+                }
             }
         }.start();
 
         cancelButton.setOnClickListener(x -> {
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-            countdownCallbackInterface.callback(0);
+            if(countdownCallbackInterface != null) {
+                countdownCallbackInterface.callback(0);
+            }
             shutdownTimer.cancel();
             confirmDialog.dismiss();
 
@@ -968,10 +977,10 @@ public class DialogManager {
         }
     }
 
-    public static void awaitStationRestartSession(int[] stationIds)
+    public static void awaitStationRestartVRSystem(int[] stationIds)
     {
         View restartSessionDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        restartSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(restartSessionDialogView).create();
+        restartVRSystemDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(restartSessionDialogView).create();
 
         TextView title = restartSessionDialogView.findViewById(R.id.title);
         title.setText(R.string.restarting_system);
@@ -979,34 +988,34 @@ public class DialogManager {
         TextView contentText = restartSessionDialogView.findViewById(R.id.content_text);
         contentText.setText(MessageFormat.format("Restarting system on {0}", String.join(", ", StationsFragment.mViewModel.getStationNames(stationIds))));
 
-        restartSessionStationIds =  new ArrayList<>(stationIds.length);
+        restartVRSystemStationIds =  new ArrayList<>(stationIds.length);
         for (int i : stationIds)
         {
-            restartSessionStationIds.add(i);
+            restartVRSystemStationIds.add(i);
         }
 
         Button confirmButton = restartSessionDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> restartSessionDialog.dismiss());
+        confirmButton.setOnClickListener(w -> restartVRSystemDialog.dismiss());
         confirmButton.setText(R.string.dismiss);
 
         Button cancelButton = restartSessionDialogView.findViewById(R.id.cancel_button);
         cancelButton.setVisibility(View.GONE);
 
-        restartSessionDialog.show();
-        restartSessionDialog.getWindow().setLayout(1200, 380);
+        restartVRSystemDialog.show();
+        restartVRSystemDialog.getWindow().setLayout(1200, 380);
     }
 
     /**
-     * Dismiss the restart session loading screen as it has successfully restarted the applications
+     * Dismiss the restart vr system loading screen as it has successfully restarted the applications
      * or an error has occurred and another popup is about to be shown.
      * @param stationId An integer of the ID of a station which has relaunched/encountered an error.
      */
-    public static void sessionRestartedOnStation(int stationId) {
-        if (restartSessionStationIds != null) {
-            restartSessionStationIds.removeIf(id -> id == stationId);
-            if (restartSessionStationIds.size() == 0) {
-                if (restartSessionDialog != null) {
-                    restartSessionDialog.dismiss();
+    public static void vrSystemRestartedOnStation(int stationId) {
+        if (restartVRSystemStationIds != null) {
+            restartVRSystemStationIds.removeIf(id -> id == stationId);
+            if (restartVRSystemStationIds.size() == 0) {
+                if (restartVRSystemDialog != null) {
+                    restartVRSystemDialog.dismiss();
                 }
             }
         }
