@@ -13,28 +13,58 @@
         android:orientation="vertical">
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            app:flexDirection="column">
-
-            <TextView
-                style="@style/HeadingTitle"
-                android:id="@+id/welcome_message"
-                android:text="Welcome!"
-                android:textSize="45sp" />
-
-            <TextView
-                android:id="@+id/date_message"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            app:flexDirection="row">
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
-                android:text="Tuesday 26th April 2022"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                app:flexDirection="column">
+
+                <TextView
+                    style="@style/HeadingTitle"
+                    android:id="@+id/welcome_message"
+                    android:text="Welcome!"
+                    android:textSize="45sp" />
+
+                <TextView
+                    android:id="@+id/date_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday 26th April 2022"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/help_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/light_gray_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                app:alignItems="center">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="help_icon"
+                    android:src="@drawable/icon_help"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Help"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="13sp" />
+            </com.google.android.flexbox.FlexboxLayout>
 
         </com.google.android.flexbox.FlexboxLayout>
-
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/station_controls"
             android:layout_width="match_parent"

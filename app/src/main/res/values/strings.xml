@@ -39,6 +39,7 @@
     <string name="ending_session">Ending session</string>
     <string name="room_controls_title">ROOM CONTROLS</string>
     <string name="vr_library_title">VR LIBRARY</string>
+    <string name="help_title">HELP CENTRE</string>
     <string name="settings_title">SETTINGS</string>
     <string name="select_stations_title">SELECT STATIONS</string>
     <string name="manage_station_title">MANAGE STATION</string>
@@ -111,4 +112,5 @@
     <string name="one_room">There is only one room available. Lock will not affect anything.</string>
     <string name="control_experience">Control Experience</string>
     <string name="new_session_lower">New Session</string>
+    <string name="submit_a_support_ticket">submit a support ticket.</string>
 </resources>

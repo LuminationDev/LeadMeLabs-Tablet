@@ -10,10 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 
 import java.util.HashSet;
@@ -34,6 +37,11 @@ public class ControlPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
+        });
 
         if (savedInstanceState == null) {
             loadScenes();

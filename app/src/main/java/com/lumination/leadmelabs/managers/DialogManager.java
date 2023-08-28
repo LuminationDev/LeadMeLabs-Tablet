@@ -7,7 +7,9 @@ import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -130,6 +133,85 @@ public class DialogManager {
         missingEncryptionAlerted = true;
         basicDialog.show();
         basicDialog.getWindow().setLayout(680, 680);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createSubmitTicketDialog() {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_submit_ticket, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
+        submitButton.setOnClickListener(w -> {
+            // todo - submit the ticket with hubspot api
+            NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
+            dialog.dismiss();
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(1000, 850);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createUpdateDetailsDialog() {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_update_details, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        dialog.show();
+        dialog.getWindow().setLayout(1000, 850);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createTroubleshootingTextDialog(String titleText, String bodyText) {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_troubleshooting_text_only, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView body = dialogView.findViewById(R.id.body_text);
+        body.setText(bodyText);
+
+        TextView submitText = dialogView.findViewById(R.id.submit_text);
+        SpannableString content = new SpannableString("submit a support ticket.");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        submitText.setText(content);
+        submitText.setOnClickListener(w -> {
+            dialog.dismiss();
+            createSubmitTicketDialog();
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(800, 600);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createTextDialog(String titleText, String bodyText) {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_troubleshooting_text_only, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView body = dialogView.findViewById(R.id.body_text);
+        body.setText(bodyText);
+
+        FlexboxLayout submitText = dialogView.findViewById(R.id.support_text);
+        submitText.setVisibility(View.GONE);
+
+        dialog.show();
+        dialog.getWindow().setLayout(800, 600);
     }
 
     /**
