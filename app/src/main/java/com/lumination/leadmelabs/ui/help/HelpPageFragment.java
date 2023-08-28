@@ -64,7 +64,7 @@ public class HelpPageFragment extends Fragment {
 
         FlexboxLayout quickstartGuide = view.findViewById(R.id.quickstart_guide);
         quickstartGuide.setOnClickListener(v -> {
-            DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/1OSnrUnQwggod2IwialnfbJ32nT-1q9mQ/view?usp=sharing");
+            DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/14h2zlMhjIK_cZnGobyfysYmOPzjnmkjK/view?usp=drive_link");
         });
 
         FlexboxLayout lessonPlans = view.findViewById(R.id.lesson_plans);
