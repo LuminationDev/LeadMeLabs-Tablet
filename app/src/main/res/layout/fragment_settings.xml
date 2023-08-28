@@ -368,7 +368,7 @@
                         style="@style/SettingsText"
                         android:textAlignment="textEnd"
                         android:layout_height="25dp"
-                        android:text="@{settings.nucAddress == null ? `Not set` : settings.nucAddress}"/>
+                        android:text="@{settings.nucAddress.length == 0 ? `Not set` : settings.nucAddress}"/>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>

@@ -22,8 +22,8 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.services.jobServices.RefreshJobService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void scheduleJobs() {
 //        LicenseJobService.schedule(this);
-        RefreshJobService.schedule(this);
         UpdateJobService.schedule(this);
     }
 

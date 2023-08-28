@@ -341,6 +341,7 @@ public class StationsViewModel extends ViewModel {
                     stationJson.getString("installedApplications"),
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
+                    stationJson.getString("state"),
                     stationJson.getInt("volume"),
                     stationJson.getString("room"),
                     stationJson.getString("ledRingId"),
@@ -357,6 +358,11 @@ public class StationsViewModel extends ViewModel {
             st.add(station);
         }
         this.setStations(st);
+
+        //Ask for the device statuses
+        for (Station station: Objects.requireNonNull(this.stations.getValue())) {
+            NetworkService.sendMessage("Station," + station.id, "Station", "GetValue:devices");
+        }
     }
 
     public void setStations(List<Station> stations) {
@@ -365,5 +371,18 @@ public class StationsViewModel extends ViewModel {
 
     public void loadStations() {
         NetworkService.sendMessage("NUC", "Stations", "List");
+    }
+
+    /**
+     * Start of Stop the VR icons flashing on an associated station.
+     * @param flashing A boolean representing if the icon should start (true) or stop (false)
+     *                 flashing.
+     */
+    public void setStationFlashing(int stationId, boolean flashing) {
+        Station station = getStationById(stationId);
+        if(station == null) return;
+        station.animationFlag = flashing;
+        station.handleAnimationTimer();
+        updateStationById(stationId, station);
     }
 }

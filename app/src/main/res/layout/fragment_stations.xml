@@ -15,7 +15,8 @@
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/stations_fragment"
         style="@style/StationsContainer"
-        android:paddingVertical="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="20dp"
         tools:context=".ui.stations.StationsFragment"
         app:flexDirection="column">
 
@@ -49,6 +50,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:paddingHorizontal="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginStart="10dp"
             tools:listitem="@layout/card_station" />
 
     </com.google.android.flexbox.FlexboxLayout>
