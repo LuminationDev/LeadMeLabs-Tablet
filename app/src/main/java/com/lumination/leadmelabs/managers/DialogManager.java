@@ -148,6 +148,11 @@ public class DialogManager {
             // todo - submit the ticket with hubspot api
             NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
             dialog.dismiss();
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "submit");
+                put("content_id", "submit_ticket");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         dialog.show();
@@ -376,6 +381,11 @@ public class DialogManager {
             }
 
             endSessionDialog.dismiss();
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "session_management");
+                put("content_id", "end_session_dialog_submit");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button cancelButton = view.findViewById(R.id.cancel_button);
@@ -834,6 +844,11 @@ public class DialogManager {
                     },
                     10000
             );
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "reconnect_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
@@ -842,6 +857,11 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.reconnectionIgnored = true;
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "ignore_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
@@ -850,6 +870,11 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "close_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());
@@ -877,6 +902,11 @@ public class DialogManager {
             SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
             confirmDialog.dismiss();
             awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "session_management");
+                put("content_id", "launch_experience");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
