@@ -336,12 +336,21 @@ public class StationsViewModel extends ViewModel {
         List<Station> st = new ArrayList<>();
         for (int i = 0; i < stations.length(); i++) {
             JSONObject stationJson = stations.getJSONObject(i);
+
+            //Backwards compatibility - if no status is sent set as Ready to go.
+            String state;
+            try {
+                state = stationJson.getString("state");
+            } catch (Exception e) {
+                state = "Not set";
+            }
+
             Station station = new Station(
                     stationJson.getString("name"),
                     stationJson.getString("installedApplications"),
                     stationJson.getInt("id"),
                     stationJson.getString("status"),
-                    stationJson.getString("state"),
+                    state,
                     stationJson.getInt("volume"),
                     stationJson.getString("room"),
                     stationJson.getString("ledRingId"),

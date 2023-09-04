@@ -620,8 +620,8 @@ public class Station implements Cloneable {
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
-        //Set the text value
-        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame)) {
+        //Set the text value ('Not set' - backwards compatibility, default state when it is not sent across)
+        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame) && !selectedStation.state.equals("Not set")) {
             //Show the state if the state is anything but Ready to go
             textView.setText(selectedStation.state);
         } else {
