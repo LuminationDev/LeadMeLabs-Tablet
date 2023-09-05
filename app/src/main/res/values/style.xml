@@ -57,7 +57,7 @@
         <item name="android:focusable">true</item>
         <item name="android:elevation">4dp</item>
         <item name="android:background">@drawable/card_ripple_gray</item>
-        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingHorizontal">8dp</item>
         <item name="android:paddingVertical">10dp</item>
         <item name="android:layout_marginVertical">10dp</item>
     </style>

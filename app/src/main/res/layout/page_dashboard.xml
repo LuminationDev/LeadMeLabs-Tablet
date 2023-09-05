@@ -69,14 +69,14 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         app:flexDirection="column"
                         app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="New VR Session"
+                            android:text="New Session"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
@@ -84,7 +84,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Choose experience"
+                            android:text="Open experience"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
@@ -104,14 +104,14 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         app:flexDirection="column"
                         app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="End VR Session"
+                            android:text="End Session"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
@@ -119,7 +119,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="End experience"
+                            android:text="Close experience"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
@@ -139,14 +139,14 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         app:flexDirection="column"
                         app:justifyContent="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Identify Stations"
+                            android:text="Identify"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
@@ -175,7 +175,7 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         app:flexDirection="column"
                         app:justifyContent="center">
 
@@ -192,7 +192,7 @@
                             android:id="@+id/startup_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Turn on stations"
+                            android:text="Launch stations"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
@@ -214,7 +214,7 @@
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         app:flexDirection="column"
                         app:justifyContent="center">
 
@@ -231,7 +231,7 @@
                             android:id="@+id/shutdown_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Shut down stations"
+                            android:text="Turn off stations"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
