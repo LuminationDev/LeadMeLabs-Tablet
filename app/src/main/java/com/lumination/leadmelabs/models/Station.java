@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.models;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +25,8 @@ import com.lumination.leadmelabs.utilities.IconManager;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Station implements Cloneable {
     public String name;
@@ -59,6 +60,10 @@ public class Station implements Cloneable {
 
     //Track animation of icons
     IconManager iconManager = new IconManager();
+
+    //Track the animation of the dots for Awaiting headset connection
+    private Timer timer;
+    int dotsCount = 0;
 
     @Override
     public Station clone() {
@@ -620,12 +625,57 @@ public class Station implements Cloneable {
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
+        //Stop the dot animation if it is anything besides Awaiting headset connection
+        if(selectedStation.state == null || !selectedStation.state.equals("Awaiting headset connection...")) {
+            selectedStation.stopAnimateDots();
+        }
+
         //Set the text value ('Not set' - backwards compatibility, default state when it is not sent across)
         if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame) && !selectedStation.state.equals("Not set")) {
             //Show the state if the state is anything but Ready to go
             textView.setText(selectedStation.state);
+
+            //Start the dot animation if awaiting connection and animator is not already running
+            if(selectedStation.state.equals("Awaiting headset connection...")) {
+                selectedStation.startAnimateDots(textView);
+            }
         } else {
+            selectedStation.stopAnimateDots();
             textView.setText(selectedStation.gameName);
+        }
+    }
+
+    /// <summary>
+    /// Starts an animation that updates a TextView with a sequence of dots, creating a loading effect.
+    /// The animation displays the text "Awaiting headset connection" followed by 1, 2, 3 dots in a loop,
+    /// with each dot appearing at one-second intervals. The sequence restarts after reaching three dots.
+    /// </summary>
+    /// <param name="textView">The TextView to animate.</param>
+    private void startAnimateDots(final TextView textView) {
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                textView.post(() -> {
+                    StringBuilder animatedText = new StringBuilder("Awaiting headset connection");
+                    for (int i = 0; i < dotsCount; i++) {
+                        animatedText.append('.');
+                    }
+                    textView.setText(animatedText.toString());
+
+                    dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
+                });
+            }
+        }, 0, 1000);
+    }
+
+    private void stopAnimateDots() {
+        if (timer != null) {
+            timer.cancel();
         }
     }
     //endregion
