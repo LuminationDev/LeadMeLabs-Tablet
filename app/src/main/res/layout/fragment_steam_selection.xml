@@ -49,10 +49,21 @@
                     android:layout_height="wrap_content"
                     app:flexDirection="column">
 
-                    <TextView
-                        style="@style/HeadingTitle"
-                        android:text="@string/vr_library"
-                        android:textSize="32sp" />
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row">
+
+                        <TextView
+                            style="@style/HeadingTitle"
+                            android:text="@string/vr_library"
+                            android:textSize="32sp" />
+
+                        <TextView
+                            android:id="@+id/selectedStation"
+                            style="@style/HeadingTitle"
+                            android:textSize="32sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
 
                     <TextView
                         android:layout_width="wrap_content"

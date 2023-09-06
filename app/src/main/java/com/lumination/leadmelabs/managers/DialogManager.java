@@ -792,7 +792,7 @@ public class DialogManager {
         Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
             NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
             confirmDialog.dismiss();
             awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
         });
