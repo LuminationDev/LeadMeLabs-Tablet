@@ -665,9 +665,12 @@ public class Station implements Cloneable {
                     for (int i = 0; i < dotsCount; i++) {
                         animatedText.append('.');
                     }
-                    textView.setText(animatedText.toString());
 
-                    dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
+                    //Make sure the state is the same before updating the dots
+                    if(state.equals("Awaiting headset connection...")) {
+                        textView.setText(animatedText.toString());
+                        dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
+                    }
                 });
             }
         }, 0, 1000);

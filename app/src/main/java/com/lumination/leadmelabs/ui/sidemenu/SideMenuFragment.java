@@ -92,14 +92,14 @@ public class SideMenuFragment extends Fragment {
         buttonFeedback(dashBtn, "dashboard");
         dashBtn.setOnClickListener(v -> {
             removeSubMenu();
-            loadFragment(DashboardPageFragment.class, "dashboard");
+            loadFragment(DashboardPageFragment.class, "dashboard", null);
         });
 
         View sessionBtn = view.findViewById(R.id.session_button);
         buttonFeedback(sessionBtn, "session");
         sessionBtn.setOnClickListener(v -> {
             removeSubMenu();
-            loadFragment(ApplicationSelectionFragment.class, "session");
+            loadFragment(ApplicationSelectionFragment.class, "session", null);
             ApplicationSelectionFragment.setStationId(0);
         });
 
@@ -107,7 +107,7 @@ public class SideMenuFragment extends Fragment {
         buttonFeedback(controlsBtn, "controls");
         controlsBtn.setOnClickListener(v -> {
             if(!currentType.equals("controls")) { addSubMenu(); }
-            loadFragment(ControlPageFragment.class, "controls");
+            loadFragment(ControlPageFragment.class, "controls", null);
         });
 
         View settingsBtn = view.findViewById(R.id.settings_button);
@@ -152,7 +152,7 @@ public class SideMenuFragment extends Fragment {
      * @param fragmentClass A Fragment to be loaded in.
      * @param type A string representing the type of fragment being loaded in, i.e. dashboard.
      */
-    public static void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type) {
+    public static void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type, Bundle args) {
         if(currentType.equals(type)) {
             return;
         }
@@ -167,7 +167,7 @@ public class SideMenuFragment extends Fragment {
                         android.R.anim.fade_out,
                         android.R.anim.fade_in,
                         android.R.anim.fade_out)
-                .replace(R.id.main, fragmentClass, null)
+                .replace(R.id.main, fragmentClass, args)
                 .addToBackStack("menu:" + type)
                 .commit();
 
@@ -305,7 +305,7 @@ public class SideMenuFragment extends Fragment {
                 MainActivity.fragmentManager.popBackStackImmediate();
                 break;
             case "replace":
-                loadFragment(SettingsPageFragment.class, "settings");
+                loadFragment(SettingsPageFragment.class, "settings", null);
                 break;
         }
 

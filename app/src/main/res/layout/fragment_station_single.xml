@@ -198,24 +198,26 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:background="@drawable/bg_white_curved"
-                            android:padding="20dp"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="10dp"
+                            android:paddingVertical="20dp"
                             app:alignItems="center"
                             app:flexDirection="row">
 
                             <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:layout_marginEnd="20dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginEnd="10dp"
                                 android:contentDescription="@string/alert_area"
                                 android:src="@drawable/icon_alert"
                                 android:textColor="@color/black"
-                                android:visibility="@{selectedStation.status.equals(`Not Responding`) ? View.VISIBLE : View.GONE}"
+                                android:visibility="@{selectedStation.state.equals(`Not Responding`) ? View.VISIBLE : View.GONE}"
                                 app:layout_flexShrink="0" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="15dp"
+                                android:layout_marginEnd="5dp"
                                 android:text="@string/station_status_title"
                                 android:textColor="@color/black"
                                 android:textFontWeight="600" />
@@ -223,7 +225,15 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:visibility="@{selectedStation.state == null || selectedStation.state.length == 0 ? View.VISIBLE : View.GONE}"
                                 android:text="@{selectedStation.status}"
+                                android:textFontWeight="600" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="@{selectedStation.state != null &amp;&amp; selectedStation.state.length > 0 ? View.GONE : View.VISIBLE}"
+                                app:stationState="@{selectedStation}"
                                 android:textFontWeight="600" />
                         </com.google.android.flexbox.FlexboxLayout>
 
@@ -403,7 +413,7 @@
                                 android:id="@+id/new_session_button"
                                 style="@style/StationSingleButton"
                                 android:layout_marginEnd="30dp"
-                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/blue_darkest}"
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
                                 android:drawableTop="@drawable/session_new"
                                 android:text="@string/new_session_lower"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"/>
@@ -430,19 +440,19 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/ping_station"
                                 style="@style/StationSingleButton"
-                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/blue_darkest}"
-                                android:drawableTop="@{selectedStation.status.equals(`Off`) ? @drawable/session_identify_off : @drawable/session_identify}"
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
+                                android:drawableTop="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @drawable/session_identify_off : @drawable/session_identify}"
                                 android:text="@string/identify_station_lower"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"/>
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 style="@style/StationSingleButton"
-                                android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/orange}"
+                                android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
                                 android:drawableTop="@drawable/session_vr_restart"
                                 android:text="@string/restart_vr_system"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"
-                                app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/grey_card : @color/orange_light}" />
+                                app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/shutdown_station"

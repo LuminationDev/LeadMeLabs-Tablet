@@ -165,12 +165,12 @@ public class ApplicationAdapter extends BaseAdapter {
             Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
             if (station != null) {
                 NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
                 DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
             }
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
-            SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu");
+            SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", null);
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
