@@ -27,6 +27,8 @@
             android:textSize="16sp" />
 
         <EditText
+            android:id="@+id/submit_ticket_subject"
+            android:nextFocusDown="@id/submit_ticket_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -37,6 +39,9 @@
             android:background="@drawable/bg_grey_rounded"/>
 
         <EditText
+            android:id="@+id/submit_ticket_content"
+            android:nextFocusUp="@id/submit_ticket_subject"
+            android:nextFocusDown="@id/submit_ticket_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="8"
@@ -48,14 +53,34 @@
             android:background="@drawable/bg_grey_rounded"/>
 
         <EditText
+            android:id="@+id/submit_ticket_email"
+            android:nextFocusUp="@id/submit_ticket_content"
+            android:nextFocusDown="@id/submit_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
+            android:maxLines="1"
             android:layout_marginVertical="5dp"
             android:hint="Email address"
             android:paddingHorizontal="15dp"
+            android:inputType="textEmailAddress"
             android:paddingVertical="10dp"
             android:background="@drawable/bg_grey_rounded"/>
+
+        <TextView
+            android:id="@+id/error_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:text="Something went wrong"/>
+        <TextView
+            android:id="@+id/success_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_green_dark"
+            android:text="Ticket successfully submitted. This dialog will close in two seconds."/>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"

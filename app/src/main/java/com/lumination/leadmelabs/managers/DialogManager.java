@@ -52,6 +52,7 @@ import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +60,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import io.sentry.Sentry;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Responsible for handling alert dialogs.
@@ -143,16 +151,86 @@ public class DialogManager {
         View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_submit_ticket, null);
         AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
 
+        TextView errorText = dialogView.findViewById(R.id.error_text);
+        TextView successText = dialogView.findViewById(R.id.success_text);
+
         MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
         submitButton.setOnClickListener(w -> {
-            // todo - submit the ticket with hubspot api
-            NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
-            dialog.dismiss();
-            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                put("content_type", "submit");
-                put("content_id", "submit_ticket");
-            }};
-            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+
+            errorText.setVisibility(View.GONE);
+
+            String subject = ((EditText) dialogView.findViewById(R.id.submit_ticket_subject)).getText().toString();
+            String email = ((EditText) dialogView.findViewById(R.id.submit_ticket_email)).getText().toString();
+            String content = ((EditText) dialogView.findViewById(R.id.submit_ticket_content)).getText().toString().replace("\n", "\\n");
+
+            if (subject.isEmpty() || email.isEmpty() || content.isEmpty()) {
+                errorText.setText("All fields must be filled out to submit a ticket");
+                errorText.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                errorText.setText("Email address is not a valid email address. Please check that you have entered it correctly and try again.");
+                errorText.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient client = new OkHttpClient();
+            String bodyText = "{\n" +
+                    "    \"subject\": \"" + subject + "\",\n" +
+                    "    \"email\": \"" + email + "\",\n" +
+                    "    \"content\": \"" + content + "\"\n" +
+                    "}";
+            Thread thread = new Thread(() -> {
+                RequestBody body = RequestBody.create(bodyText, JSON);
+                Request request = new Request.Builder()
+                        .url("https://us-central1-leadme-labs.cloudfunctions.net/submitTicket")
+                        .post(body)
+                        .build();
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        MainActivity.runOnUI(() -> {
+                            successText.setVisibility(View.VISIBLE);
+                        });
+                        NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
+
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("content_type", "submit");
+                            put("content_id", "submit_ticket");
+                        }};
+                        FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+                        Thread.sleep(2000);
+                        MainActivity.runOnUI(() -> {
+                            dialog.dismiss();
+                        });
+                    } else {
+                        MainActivity.runOnUI(() -> {
+                            errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                            errorText.setVisibility(View.VISIBLE);
+                        });
+                    }
+
+                } catch (IOException e) {
+                    Sentry.captureException(e);
+                    e.printStackTrace();
+                    MainActivity.runOnUI(() -> {
+                        errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                        errorText.setVisibility(View.VISIBLE);
+                    });
+                    return;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Sentry.captureException(e);
+                    MainActivity.runOnUI(() -> {
+                        errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                        errorText.setVisibility(View.VISIBLE);
+                    });
+                    return;
+                }
+            });
+            thread.start();
         });
 
         dialog.show();
