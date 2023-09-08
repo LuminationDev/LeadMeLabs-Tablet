@@ -37,7 +37,7 @@ public class ImageManager {
      * @param experienceName A string of the experience whose image is missing.
      */
     public static void requestImage(String experienceName) {
-        requestedImages.add(experienceName);
+        requestedImages.add(experienceName.replace(":", ""));
         NetworkService.sendMessage("NUC", "ThumbnailRequest", experienceName);
     }
 
@@ -48,13 +48,13 @@ public class ImageManager {
      * @return A string representing the absolute path of the image.
      */
     public static String loadLocalImage(String experienceName) {
-        String filePath = MainActivity.getInstance().getApplicationContext().getFilesDir()+ "/" + experienceName + "_header.jpg";
+        String filePath = MainActivity.getInstance().getApplicationContext().getFilesDir()+ "/" + experienceName.replace(":", "") + "_header.jpg";
         File image = new File(filePath);
 
         if(image.exists()) {
             return image.getPath();
         } else {
-            if(!requestedImages.contains(experienceName)) {
+            if(!requestedImages.contains(experienceName.replace(":", ""))) {
                 requestImage(experienceName);
             }
 
