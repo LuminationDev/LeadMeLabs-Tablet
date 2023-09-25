@@ -152,7 +152,7 @@ public class SideMenuFragment extends Fragment {
      * @param fragmentClass A Fragment to be loaded in.
      * @param type A string representing the type of fragment being loaded in, i.e. dashboard.
      */
-    public static void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type, Bundle args) {
+    public void loadFragment(Class<? extends androidx.fragment.app.Fragment> fragmentClass, String type, Bundle args) {
         if(currentType.equals(type)) {
             return;
         }
@@ -162,7 +162,7 @@ public class SideMenuFragment extends Fragment {
             clearBackStack();
         }
 
-        MainActivity.fragmentManager.beginTransaction()
+        requireActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out,
                         android.R.anim.fade_in,
@@ -171,7 +171,7 @@ public class SideMenuFragment extends Fragment {
                 .addToBackStack("menu:" + type)
                 .commit();
 
-        MainActivity.fragmentManager.executePendingTransactions();
+        requireActivity().getSupportFragmentManager().executePendingTransactions();
 
         //Only change the active icon if the type supplied is a menu icon.
         if(!type.equals("notMenu")) {
@@ -184,12 +184,13 @@ public class SideMenuFragment extends Fragment {
      * the user is within a sub menu.
      */
     private void handleBackState() {
-        if (MainActivity.fragmentManager.getBackStackEntryCount() > 1) {
-            FragmentManager.BackStackEntry backStackEntry = MainActivity.fragmentManager.getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 2);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 2);
             if (Objects.equals(backStackEntry.getName(), "menu:settings")) {
                 DialogManager.confirmPinCode(this, "back");
             } else {
-                MainActivity.fragmentManager.popBackStackImmediate();
+                fragmentManager.popBackStackImmediate();
             }
         }
 
@@ -198,8 +199,9 @@ public class SideMenuFragment extends Fragment {
     }
 
     private String getMenuName() {
-        String name = MainActivity.fragmentManager
-                .getBackStackEntryAt(MainActivity.fragmentManager.getBackStackEntryCount() - 1)
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        String name = fragmentManager
+                .getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1)
                 .getName();
 
         if (name == null) {
@@ -248,7 +250,7 @@ public class SideMenuFragment extends Fragment {
      */
     private void addSubMenu() {
         changeViewParams(150, 22);
-        MainActivity.fragmentManager.beginTransaction()
+        requireActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.anim.slide_in_left,
                         android.R.anim.slide_out_right,
                         android.R.anim.slide_in_left,
@@ -261,10 +263,11 @@ public class SideMenuFragment extends Fragment {
      * Remove the sub menu from the view.
      */
     private void removeSubMenu() {
-        Fragment fragment = MainActivity.fragmentManager.findFragmentByTag("sub");
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("sub");
 
         if(fragment != null) {
-            MainActivity.fragmentManager.beginTransaction()
+            fragmentManager.beginTransaction()
                     .remove(fragment)
                     .commitNow();
 
@@ -295,14 +298,14 @@ public class SideMenuFragment extends Fragment {
     /**
      * Clear the fragment managers back stack on moving to a new menu section.
      */
-    private static void clearBackStack() {
-        MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    private void clearBackStack() {
+        requireActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void navigateToSettingsPage(String navigationType) {
         switch (navigationType) {
             case "back":
-                MainActivity.fragmentManager.popBackStackImmediate();
+                requireActivity().getSupportFragmentManager().popBackStackImmediate();
                 break;
             case "replace":
                 loadFragment(SettingsPageFragment.class, "settings", null);

@@ -777,33 +777,6 @@ public class DialogManager {
     }
 
     /**
-     * Build the launch confirmation dialog when launching a new steam experience.
-     */
-    public static void buildLaunchExperienceDialog(Context context, Application currentApplication, Station station) {
-        View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
-        AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
-
-        TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-        headingText.setText(R.string.exit_theatre);
-
-        TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-        contentText.setText(MessageFormat.format("{0}{1}", station.name, R.string.exit_current_theatre_mode));
-
-        Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> {
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-            confirmDialog.dismiss();
-            awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
-        });
-
-        Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-
-        confirmDialog.show();
-    }
-
-    /**
      * Displays a dialog to inform users that a game is currently launching on a number of stations.
      * This is dismisses manually by the user or automatically when the NUC sends back confirmation
      * from the stations.

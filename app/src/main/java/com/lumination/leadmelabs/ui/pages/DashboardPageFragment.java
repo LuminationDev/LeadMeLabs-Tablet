@@ -86,7 +86,7 @@ public class DashboardPageFragment extends Fragment {
         //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session", null);
+            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", null);
             ApplicationSelectionFragment.setStationId(0);
         });
 

@@ -49,7 +49,7 @@ public class StationsFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.stations_list);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 5));
 
-        stationAdapter = new StationAdapter(mViewModel, true);
+        stationAdapter = new StationAdapter(mViewModel, true, requireActivity().getSupportFragmentManager());
         stationAdapter.stationList = new ArrayList<>();
         binding.setStationsLoaded(false);
         binding.setStationList(stationAdapter.stationList);

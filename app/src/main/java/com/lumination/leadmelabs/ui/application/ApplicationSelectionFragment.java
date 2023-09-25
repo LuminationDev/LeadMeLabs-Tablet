@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.text.MessageFormat;
@@ -101,7 +102,7 @@ public class ApplicationSelectionFragment extends Fragment {
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
 
         GridView steamGridView = (GridView) view.findViewById(R.id.experience_list);
-        installedApplicationAdapter = new ApplicationAdapter(getContext());
+        installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateSteamApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (stationId > 0) {

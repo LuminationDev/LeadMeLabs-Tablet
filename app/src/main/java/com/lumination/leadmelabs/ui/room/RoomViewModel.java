@@ -49,7 +49,10 @@ public class RoomViewModel extends ViewModel {
     }
 
     public void setRooms(HashSet<String> values) {
-        if (rooms == null || rooms.getValue().size() == 0) {
+        if (rooms == null) {
+            rooms = new MutableLiveData<>(new HashSet<>());
+        }
+        if (rooms.getValue().size() == 0) {
             lateLoadScenes();
         }
         rooms.setValue(values);

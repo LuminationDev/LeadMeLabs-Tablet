@@ -98,13 +98,14 @@ public class SettingsFragment extends Fragment {
             mViewModel.setHideStationControls(isChecked);
 
             if(isChecked) {
-                MainActivity.fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                MainActivity.fragmentManager.beginTransaction()
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                fragmentManager.beginTransaction()
                         .replace(R.id.main, SettingsPageFragment.class, null)
                         .addToBackStack("menu:settings")
                         .commit();
 
-                MainActivity.fragmentManager.executePendingTransactions();
+                fragmentManager.executePendingTransactions();
             }
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);

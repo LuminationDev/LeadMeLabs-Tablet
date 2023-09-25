@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
@@ -24,10 +25,12 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     public ArrayList<Station> stationList = new ArrayList<>();
     private boolean launchSingleOnTouch = false;
     private final StationsViewModel viewModel;
+    private FragmentManager fragmentManager;
 
-    public StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch) {
+    public StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch, FragmentManager fragmentManager) {
         this.launchSingleOnTouch = launchSingleOnTouch;
         this.viewModel = viewModel;
+        this.fragmentManager = fragmentManager;
     }
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +47,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
                     viewModel.selectStation(station.id);
-                    MainActivity.fragmentManager.beginTransaction()
+                    fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
                             .setCustomAnimations(android.R.anim.fade_in,
                                     android.R.anim.fade_out,
@@ -64,7 +67,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
                     if (!station.status.equals("Off")) {
-                        StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+                        StationSelectionPageFragment fragment = (StationSelectionPageFragment) fragmentManager.findFragmentById(R.id.main);
                         View notInstalledAlert = fragment.getView().findViewById(R.id.not_installed_alert);
                         notInstalledAlert.setVisibility(View.VISIBLE);
                         finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.card_disabled_red_border));
