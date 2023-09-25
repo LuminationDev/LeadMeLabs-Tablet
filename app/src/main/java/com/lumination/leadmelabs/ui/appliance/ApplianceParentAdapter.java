@@ -16,6 +16,8 @@ import com.lumination.leadmelabs.utilities.Constants;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
+import io.sentry.Sentry;
+
 /**
  * Holds multiple ApplianceAdapters - creating a nested adapter allowing for rows of recycler views
  * that can be navigated horizontally to see all appliance cards and vertically for all the different
@@ -61,18 +63,23 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
 
     @Override
     public void onBindViewHolder(ParentViewHolder holder, int position) {
+        if (parentModelArrayList.size() <= position) {
+            holder.warningMessage.setText(MessageFormat.format("There are no {0} in this room.", ApplianceFragment.type.getValue()));
+            holder.warningMessage.setVisibility(View.VISIBLE);
+            return;
+        }
         String currentItem = parentModelArrayList.keyAt(position);
         holder.category.setText(currentItem);
+        if(parentModelArrayList.valueAt(position).size() == 0) {
+            holder.warningMessage.setText(MessageFormat.format("There are no {0} in {1}.", ApplianceFragment.type.getValue(), currentItem));
+            holder.warningMessage.setVisibility(View.VISIBLE);
+            return;
+        }
         String type = parentModelArrayList.valueAt(position).get(0).type;
 
         BaseAdapter applianceAdapter = type.equals(Constants.LED_WALLS) ? new RadioAdapter() : new ApplianceAdapter();
         applianceAdapter.setApplianceList(parentModelArrayList.valueAt(position));
         holder.childRecyclerView.setAdapter(applianceAdapter);
-
-        if(parentModelArrayList.valueAt(position).size() == 0) {
-            holder.warningMessage.setText(MessageFormat.format("There are no {0} in {1}.", ApplianceFragment.type.getValue(), currentItem));
-            holder.warningMessage.setVisibility(View.VISIBLE);
-        }
 
         adapters.add(applianceAdapter);
     }
