@@ -5,16 +5,19 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.gson.Gson;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.lumination.leadmelabs.utilities.QaChecks;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -267,6 +270,21 @@ public class UIUpdateManager {
                         }};
                         FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
                     }
+                    break;
+                case "QA":
+                    if (additionalData.startsWith("Connect")) {
+                        NetworkService.sendMessage("NUC", "QA", "tablet_connected:" + NetworkService.getIPAddress());
+                        break;
+                    }
+
+                    QaChecks qaChecks = new QaChecks();
+                    if (additionalData.startsWith("RunAuto")) {
+                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+                        NetworkService.sendMessage("NUC", "QA", "tablet_checks:" + NetworkService.getIPAddress() + ":" + (new Gson().toJson(qaCheckList)));
+                    }
+
+
+                    // handle checks
                     break;
             }
         } catch(JSONException e) {
