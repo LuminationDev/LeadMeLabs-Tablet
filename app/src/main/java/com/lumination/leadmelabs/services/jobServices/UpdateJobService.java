@@ -114,6 +114,28 @@ public class UpdateJobService extends JobService {
         });
     }
 
+    public static boolean checkForUpdateSync() {
+        Log.i("Update", "Checking for update");
+        if (BuildConfig.VERSION_CODE <= 14) {
+            Log.i("Update", "Not updating as version is older than initial play store release.");
+            return false;
+        }
+
+        if(MainActivity.appUpdateManager == null) {
+            return false;
+        }
+
+        // Returns an intent object that you use to check for an update.
+        Task<AppUpdateInfo> appUpdateInfoTask = MainActivity.appUpdateManager.getAppUpdateInfo();
+        while (!appUpdateInfoTask.isComplete()) {
+
+        }
+        if (!appUpdateInfoTask.isSuccessful()) {
+            return true;
+        }
+        return appUpdateInfoTask.getResult().updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE;
+    }
+
     /**
      * Create a basic dialog to alert the user that there is an update available.
      */
