@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.managers;
 
+import android.os.Build;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -272,15 +273,26 @@ public class UIUpdateManager {
                     }
                     break;
                 case "QA":
-                    if (additionalData.startsWith("Connect")) {
-                        NetworkService.sendMessage("NUC", "QA", "tablet_connected:" + NetworkService.getIPAddress());
+                    JSONObject request = new JSONObject(additionalData);
+                    if (request.getString("action").equals("Connect")) {
+                        JSONObject response = new JSONObject();
+                        response.put("response", "tabletConnected");
+                        response.put("responseData", new JSONObject());
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
                         break;
                     }
 
                     QaChecks qaChecks = new QaChecks();
-                    if (additionalData.startsWith("RunAuto")) {
+
+                    if (request.getString("action").equals("RunAuto")) {
                         List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
-                        NetworkService.sendMessage("NUC", "QA", "tablet_checks:" + NetworkService.getIPAddress() + ":" + (new Gson().toJson(qaCheckList)));
+
+                        JSONObject response = new JSONObject();
+                        response.put("response", "tabletChecks");
+                        response.put("responseData", (new Gson().toJson(qaCheckList)));
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
                     }
 
 
