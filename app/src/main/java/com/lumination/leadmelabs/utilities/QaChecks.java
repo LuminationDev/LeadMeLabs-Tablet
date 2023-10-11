@@ -159,6 +159,22 @@ public class QaChecks {
         return qaChecks;
     }
 
+    public ArrayList<QaCheck> runNetworkChecks() {
+        ArrayList<QaCheck> qaChecks = new ArrayList<QaCheck>();
+        qaChecks.add(canReachPlayStore());
+        qaChecks.add(canReachAnalytics());
+        qaChecks.add(canReachSentry());
+        qaChecks.add(canReachSteamStatic());
+        return qaChecks;
+    }
+
+    public ArrayList<QaCheck> runSecurityChecks() {
+        ArrayList<QaCheck> qaChecks = new ArrayList<QaCheck>();
+        qaChecks.add(isAppUpToDate());
+        qaChecks.add(pinIsNotDefault());
+        return qaChecks;
+    }
+
     private boolean isAvailable(String url){
         try {
             URL urlObject = new URL(url);
