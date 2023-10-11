@@ -276,7 +276,7 @@ public class UIUpdateManager {
                     JSONObject request = new JSONObject(additionalData);
                     if (request.getString("action").equals("Connect")) {
                         JSONObject response = new JSONObject();
-                        response.put("response", "tabletConnected");
+                        response.put("response", "TabletConnected");
                         response.put("responseData", new JSONObject());
                         response.put("ipAddress", NetworkService.getIPAddress());
                         NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
@@ -289,7 +289,41 @@ public class UIUpdateManager {
                         List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
 
                         JSONObject response = new JSONObject();
-                        response.put("response", "tabletChecks");
+                        response.put("response", "TabletChecks");
+                        response.put("responseData", (new Gson().toJson(qaCheckList)));
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                    }
+
+                    if (request.getString("action").equals("RunGroup")) {
+                        String group = request.getJSONObject("actionData").getString("group");
+                        JSONObject response = new JSONObject();
+                        response.put("response", "RunTabletGroup");
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        JSONObject responseData = new JSONObject();
+                        responseData.put("group", group);
+                        switch (group) {
+                            case "network_checks": {
+                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runNetworkChecks();
+                                responseData.put("data", (new Gson().toJson(qaCheckList)));
+                                break;
+                            }
+                            case "security_checks": {
+                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runSecurityChecks();
+                                responseData.put("data", (new Gson().toJson(qaCheckList)));
+                                break;
+                            }
+                        }
+                        response.put("responseData", responseData);
+
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                    }
+
+                    if (request.getString("action").equals("RunAuto")) {
+                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+
+                        JSONObject response = new JSONObject();
+                        response.put("response", "RunTabletGroup");
                         response.put("responseData", (new Gson().toJson(qaCheckList)));
                         response.put("ipAddress", NetworkService.getIPAddress());
                         NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
