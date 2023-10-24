@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.managers;
 
-import android.os.Build;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -28,6 +27,7 @@ import android.view.View;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +36,6 @@ import io.sentry.Sentry;
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
- *
  * Responsible for updating the UI related to fragments.
  */
 public class UIUpdateManager {
@@ -58,7 +57,12 @@ public class UIUpdateManager {
 
         try {
             if(actionNamespace.equals("Ping")) {
+                if(additionalData != null && additionalData.length() > 0) {
+                    updateStationsFromJson(additionalData);
+                }
+
                 MainActivity.hasNotReceivedPing = 0;
+                MainActivity.reconnectionIgnored = false;
                 if (DialogManager.reconnectDialog != null) {
                     if(DialogManager.reconnectDialog.isShowing()) {
                         FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
@@ -335,6 +339,94 @@ public class UIUpdateManager {
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates the Station objects with data parsed from JSON entries.
+     *
+     * @param additionalData The data sent from the NUC.
+     */
+    private static void updateStationsFromJson(String additionalData) {
+        try {
+            JSONObject data = new JSONObject(additionalData);
+            JSONObject responseObject = data.getJSONObject("responseData");
+
+            Iterator<String> keys = responseObject.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                JSONObject entry = responseObject.getJSONObject(key);
+
+                Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
+                if (station == null) {
+                    return;
+                }
+
+                //General Station statuses
+                String[] stringFields = {"state", "status", "gameName", "gameId", "gameType"};
+                for (String field : stringFields) {
+                    if (entry.has(field)) {
+                        String value = entry.optString(field, "NA");
+                        if (!value.equals("NA")) {
+                            switch (field) {
+                                case "state":
+                                    station.state = value;
+                                    break;
+                                case "status":
+                                    station.status = value;
+                                    break;
+                                case "gameName":
+                                    station.gameName = value;
+                                    break;
+                                case "gameId":
+                                    station.gameId = value;
+                                    break;
+                                case "gameType":
+                                    station.gameType = value;
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                //VR device statuses
+                JSONObject devices = entry.optJSONObject("devices");
+                if (devices != null) {
+                    String[] deviceFields = {"thirdPartyHeadsetTracking", "openVRHeadsetTracking", "leftControllerTracking", "rightControllerTracking"};
+                    for (String field : deviceFields) {
+                        if (devices.has(field)) {
+                            String value = devices.optString(field, "NA");
+                            if (!value.equals("NA")) {
+                                switch (field) {
+                                    case "thirdPartyHeadsetTracking":
+                                        station.thirdPartyHeadsetTracking = value;
+                                        break;
+                                    case "openVRHeadsetTracking":
+                                        station.openVRHeadsetTracking = value;
+                                        break;
+                                    case "leftControllerTracking":
+                                        station.leftControllerTracking = value;
+                                        break;
+                                    case "rightControllerTracking":
+                                        station.rightControllerTracking = value;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle integer fields separately
+                    station.leftControllerBattery = devices.optInt("leftControllerBattery", station.leftControllerBattery);
+                    station.rightControllerBattery = devices.optInt("rightControllerBattery", station.rightControllerBattery);
+                    station.baseStationsActive = devices.optInt("baseStationsActive", station.baseStationsActive);
+                    station.baseStationsTotal = devices.optInt("baseStationsTotal", station.baseStationsTotal);
+                }
+
+                MainActivity.runOnUI(() -> ViewModelProviders.of(MainActivity.getInstance())
+                        .get(StationsViewModel.class).updateStationById(Integer.parseInt(key), station));
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
