@@ -363,22 +363,65 @@ public class UIUpdateManager {
                     return;
                 }
 
-                //Update all values for a station at once instead of one at time
-                station.state = entry.getString("state");
-                station.status = entry.getString("status");
-                station.gameName = entry.getString("gameName");
-                station.gameId = entry.getString("gameId");
-                station.gameType = entry.getString("gameType");
+                //General Station statuses
+                String[] stringFields = {"state", "status", "gameName", "gameId", "gameType"};
+                for (String field : stringFields) {
+                    if (entry.has(field)) {
+                        String value = entry.optString(field, "NA");
+                        if (!value.equals("NA")) {
+                            switch (field) {
+                                case "state":
+                                    station.state = value;
+                                    break;
+                                case "status":
+                                    station.status = value;
+                                    break;
+                                case "gameName":
+                                    station.gameName = value;
+                                    break;
+                                case "gameId":
+                                    station.gameId = value;
+                                    break;
+                                case "gameType":
+                                    station.gameType = value;
+                                    break;
+                            }
+                        }
+                    }
+                }
 
-                JSONObject devices = entry.getJSONObject("devices");
-                station.thirdPartyHeadsetTracking = devices.getString("thirdPartyHeadsetTracking");
-                station.openVRHeadsetTracking = devices.getString("openVRHeadsetTracking");
-                station.leftControllerTracking = devices.getString("leftControllerTracking");
-                station.leftControllerBattery = devices.getInt("leftControllerBattery");
-                station.rightControllerTracking = devices.getString("rightControllerTracking");
-                station.rightControllerBattery = devices.getInt("rightControllerBattery");
-                station.baseStationsActive = devices.getInt("baseStationsActive");
-                station.baseStationsTotal = devices.getInt("baseStationsTotal");
+                //VR device statuses
+                JSONObject devices = entry.optJSONObject("devices");
+                if (devices != null) {
+                    String[] deviceFields = {"thirdPartyHeadsetTracking", "openVRHeadsetTracking", "leftControllerTracking", "rightControllerTracking"};
+                    for (String field : deviceFields) {
+                        if (devices.has(field)) {
+                            String value = devices.optString(field, "NA");
+                            if (!value.equals("NA")) {
+                                switch (field) {
+                                    case "thirdPartyHeadsetTracking":
+                                        station.thirdPartyHeadsetTracking = value;
+                                        break;
+                                    case "openVRHeadsetTracking":
+                                        station.openVRHeadsetTracking = value;
+                                        break;
+                                    case "leftControllerTracking":
+                                        station.leftControllerTracking = value;
+                                        break;
+                                    case "rightControllerTracking":
+                                        station.rightControllerTracking = value;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle integer fields separately
+                    station.leftControllerBattery = devices.optInt("leftControllerBattery", station.leftControllerBattery);
+                    station.rightControllerBattery = devices.optInt("rightControllerBattery", station.rightControllerBattery);
+                    station.baseStationsActive = devices.optInt("baseStationsActive", station.baseStationsActive);
+                    station.baseStationsTotal = devices.optInt("baseStationsTotal", station.baseStationsTotal);
+                }
 
                 MainActivity.runOnUI(() -> ViewModelProviders.of(MainActivity.getInstance())
                         .get(StationsViewModel.class).updateStationById(Integer.parseInt(key), station));
