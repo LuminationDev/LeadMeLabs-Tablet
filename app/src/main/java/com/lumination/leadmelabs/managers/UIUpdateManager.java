@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.managers;
 
-import android.os.Build;
 import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -28,6 +27,7 @@ import android.view.View;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +36,6 @@ import io.sentry.Sentry;
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
- *
  * Responsible for updating the UI related to fragments.
  */
 public class UIUpdateManager {
@@ -58,7 +57,12 @@ public class UIUpdateManager {
 
         try {
             if(actionNamespace.equals("Ping")) {
+                if(additionalData != null && additionalData.length() > 0) {
+                    updateStationsFromJson(additionalData);
+                }
+
                 MainActivity.hasNotReceivedPing = 0;
+                MainActivity.reconnectionIgnored = false;
                 if (DialogManager.reconnectDialog != null) {
                     if(DialogManager.reconnectDialog.isShowing()) {
                         FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
@@ -335,6 +339,51 @@ public class UIUpdateManager {
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates the Station objects with data parsed from JSON entries.
+     *
+     * @param additionalData The data sent from the NUC.
+     */
+    private static void updateStationsFromJson(String additionalData) {
+        try {
+            JSONObject data = new JSONObject(additionalData);
+            JSONObject responseObject = data.getJSONObject("responseData");
+
+            Iterator<String> keys = responseObject.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                JSONObject entry = responseObject.getJSONObject(key);
+
+                Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
+                if (station == null) {
+                    return;
+                }
+
+                //Update all values for a station at once instead of one at time
+                station.state = entry.getString("state");
+                station.status = entry.getString("status");
+                station.gameName = entry.getString("gameName");
+                station.gameId = entry.getString("gameId");
+                station.gameType = entry.getString("gameType");
+
+                JSONObject devices = entry.getJSONObject("devices");
+                station.thirdPartyHeadsetTracking = devices.getString("thirdPartyHeadsetTracking");
+                station.openVRHeadsetTracking = devices.getString("openVRHeadsetTracking");
+                station.leftControllerTracking = devices.getString("leftControllerTracking");
+                station.leftControllerBattery = devices.getInt("leftControllerBattery");
+                station.rightControllerTracking = devices.getString("rightControllerTracking");
+                station.rightControllerBattery = devices.getInt("rightControllerBattery");
+                station.baseStationsActive = devices.getInt("baseStationsActive");
+                station.baseStationsTotal = devices.getInt("baseStationsTotal");
+
+                MainActivity.runOnUI(() -> ViewModelProviders.of(MainActivity.getInstance())
+                        .get(StationsViewModel.class).updateStationById(Integer.parseInt(key), station));
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
