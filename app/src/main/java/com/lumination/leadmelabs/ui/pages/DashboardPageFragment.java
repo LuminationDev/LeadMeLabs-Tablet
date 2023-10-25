@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,10 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -28,14 +31,18 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
-import com.lumination.leadmelabs.utilities.WakeOnLan;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class DashboardPageFragment extends Fragment {
     public static FragmentManager childManager;
@@ -60,11 +67,11 @@ public class DashboardPageFragment extends Fragment {
 
         int currentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         String message = "Welcome!";
-        if (currentDate >= 0 && currentDate < 12) {
+        if (currentDate < 12) {
             message = "Good Morning!";
-        } else if (currentDate >= 12 && currentDate < 17) {
+        } else if (currentDate < 17) {
             message = "Good Afternoon!";
-        } else if (currentDate >= 17 && currentDate <= 23) {
+        } else {
             message = "Good Evening!";
         }
         TextView welcomeMessage = view.findViewById(R.id.welcome_message);
@@ -82,6 +89,10 @@ public class DashboardPageFragment extends Fragment {
         dateMessage += (now.getYear() + " ");
         TextView dateMessageView = view.findViewById(R.id.date_message);
         dateMessageView.setText(dateMessage);
+
+        //Switch to VR mode
+        FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
+        vrMode.setOnClickListener(v -> searchForSceneTrigger("vr"));
 
         //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
@@ -104,18 +115,11 @@ public class DashboardPageFragment extends Fragment {
             DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences", selectStationsCallback, "End on select", "End on all");
         });
 
-        //Run the identify flow
-        FlexboxLayout identify = view.findViewById(R.id.identify_button);
-        identify.setOnClickListener(v -> {
-            List<Station> stations = StationsFragment.getInstance().getRoomStations();
-            Identifier.identifyStations(stations);
-        });
-
-        //Shut down all stations
-        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
-        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
-        TextView shutdownContent = view.findViewById(R.id.shutdown_content);
-        shutdown.setOnClickListener(v -> {
+        //Restart all stations
+        FlexboxLayout restart = view.findViewById(R.id.restart_button);
+        TextView restartHeading = view.findViewById(R.id.restart_heading);
+        TextView restartContent = view.findViewById(R.id.restart_content);
+        restart.setOnClickListener(v -> {
             ArrayList<Integer> active = new ArrayList<>();
 
             //Check what stations are still running an experience
@@ -133,24 +137,31 @@ public class DashboardPageFragment extends Fragment {
             if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
-                        shutdownAllStations(shutdownHeading, shutdownContent);
+                        restartAllStations(restartHeading, restartContent);
                     }
                 };
 
                 DialogManager.createConfirmationDialog(
                         "Confirm shutdown",
-                        "Are you sure you want to shutdown? Experiences are still running on " + (active.size() > 1 ? "stations " : "station ") + TextUtils.join(", ", active) + ". Please confirm this action.",
+                        "Are you sure you want to restart? Experiences are still running on " + (active.size() > 1 ? "stations " : "station ") + TextUtils.join(", ", active) + ". Please confirm this action.",
                         confirmAppExitCallback,
                         "Cancel",
                         "Confirm");
             } else {
-                shutdownAllStations(shutdownHeading, shutdownContent);
+                restartAllStations(restartHeading, restartContent);
             }
         });
 
-        //Turn on all stations
-        FlexboxLayout startup = view.findViewById(R.id.startup_button);
-        startup.setOnClickListener(v -> WakeOnLan.WakeAll());
+        //Switch to classroom mode
+        FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
+        classroomMode.setOnClickListener(v -> searchForSceneTrigger("classroom"));
+
+        //Run the identify flow
+        FlexboxLayout identify = view.findViewById(R.id.identify_button);
+        identify.setOnClickListener(v -> {
+            List<Station> stations = StationsFragment.getInstance().getRoomStations();
+            Identifier.identifyStations(stations);
+        });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
@@ -159,6 +170,78 @@ public class DashboardPageFragment extends Fragment {
             View stations = view.findViewById(R.id.stations);
             stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
         });
+    }
+
+    /**
+     * Search the appliances list looking for a scene whose name contains the supplied sceneName. Only
+     * appliances with type 'scenes' will be looked at. If found send a message to the NUC to trigger
+     * the scene. Prompt the user for any Stations that will be turned off in the process.
+     * @param sceneName A lowercase string that the scene name will contain.
+     */
+    private void searchForSceneTrigger(String sceneName) {
+        ApplianceViewModel applianceViewModel = ViewModelProviders.of(requireActivity()).get(ApplianceViewModel.class);
+        List<Appliance> appliances = applianceViewModel.getAppliances().getValue();
+
+        if (appliances == null) {
+            return;
+        }
+
+        //Collect scene(s) matching the name. NOTE: There may be multiple rooms containing the same scene
+        // - The name contains the supplied name
+        // - Is of 'type' scenes
+        // - Is in one of the currently focused rooms
+        List<Appliance> matchingAppliances = appliances.stream()
+                .filter(appliance -> appliance.name.toLowerCase().contains(sceneName)
+                        && "scenes".equals(appliance.type)
+                        && SettingsFragment.checkLockedRooms(appliance.room))
+                .collect(Collectors.toList());
+
+        if (matchingAppliances.isEmpty()) return;
+
+        ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
+        for (Appliance sceneAppliance: matchingAppliances) {
+            if (sceneAppliance.stations == null || sceneAppliance.stations.length() == 0) {
+                continue;
+            }
+
+            for (int i = 0; i < sceneAppliance.stations.length(); i++) {
+                try {
+                    JSONObject station = sceneAppliance.stations.getJSONObject(i);
+                    if (!station.has("action")) {
+                        continue;
+                    }
+                    if (station.getString("action").equals("Off")) {
+                        stationsToTurnOff.add(station);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (stationsToTurnOff.isEmpty()) {
+            for (Appliance sceneAppliance: matchingAppliances) {
+                String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
+                String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                NetworkService.sendMessage("NUC", "Automation", message);
+            }
+            return;
+        }
+
+        BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+            if (confirmationResult) {
+                for (Appliance sceneAppliance: matchingAppliances) {
+                    String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
+                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                    NetworkService.sendMessage("NUC", "Automation", message);
+                }
+            }
+
+        };
+
+        DialogManager.createConfirmationDialog("Confirm station shutdown",
+                "All Station(s) will shutdown. Please confirm this scene.",
+                confirmShutdownCallback, "Cancel", "Confirm");
     }
 
     /**
@@ -190,29 +273,29 @@ public class DashboardPageFragment extends Fragment {
         }
     }
 
-    private void shutdownAllStations(TextView shutdownHeading, TextView shutdownContent) {
+    private void restartAllStations(TextView restartHeading, TextView restartContent) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
-                shutdownHeading.setText(R.string.shut_down_space);
-                shutdownContent.setText(R.string.shut_down_stations);
+                restartHeading.setText(R.string.restart_space);
+                restartContent.setText(R.string.restart_stations);
             } else {
                 if (!cancelledShutdown) {
-                    shutdownHeading.setText("Cancel (" + seconds + ")");
-                    shutdownContent.setText(R.string.cancel_shut_down);
+                    restartHeading.setText(MessageFormat.format("Cancel ({0})", seconds));
+                    restartContent.setText(R.string.cancel_reboot);
                 }
             }
         };
 
         int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-        if (shutdownHeading.getText().toString().startsWith("Shut Down")) {
+        if (restartHeading.getText().toString().startsWith("Restart")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", stationIds, shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), "Restart", stationIds, shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-            shutdownHeading.setText(R.string.shut_down_space);
-            shutdownContent.setText(R.string.shut_down_stations);
+            restartHeading.setText(R.string.restart_space);
+            restartContent.setText(R.string.restart_stations);
         }
     }
 

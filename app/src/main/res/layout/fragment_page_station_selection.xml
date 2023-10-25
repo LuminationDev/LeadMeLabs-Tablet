@@ -169,23 +169,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentEnd="true">
 
-        <ImageView
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/identify_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="60dp"
-            android:layout_marginBottom="45dp"
-            android:background="@drawable/bg_blue_dark_circle"
+            android:layout_marginBottom="50dp"
+            android:focusable="true"
             android:clickable="true"
-            android:letterSpacing="0.01"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp"
-            android:src="@drawable/session_identify"
-            android:textAllCaps="false" />
+            android:background="@drawable/identify_ripple_blue"
+            app:flexDirection="row"
+            app:justifyContent="center"
+            app:alignItems="center"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="true"
+                android:src="@drawable/session_identify_small"
+                android:textAllCaps="false"
+                android:contentDescription="identify_icon" />
+        </com.google.android.flexbox.FlexboxLayout>
     </RelativeLayout>
 
     <RelativeLayout
