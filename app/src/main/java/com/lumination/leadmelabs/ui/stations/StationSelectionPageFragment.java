@@ -79,7 +79,7 @@ public class StationSelectionPageFragment extends Fragment {
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
             mViewModel.selectSelectedApplication("");
-            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
+            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", null);
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
@@ -103,7 +103,7 @@ public class StationSelectionPageFragment extends Fragment {
     public void confirmLaunchGame(int[] selectedIds, String selectedGameId) {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         NetworkService.sendMessage("Station," + stationIds, "Experience", "Launch:" + selectedGameId);
-        SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+        ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
         DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedGameId), false);
     }
 

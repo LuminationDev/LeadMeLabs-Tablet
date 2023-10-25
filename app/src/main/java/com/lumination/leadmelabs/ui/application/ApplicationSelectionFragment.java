@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -93,8 +95,15 @@ public class ApplicationSelectionFragment extends Fragment {
                     .commitNow();
         }
 
+        Bundle bundle = getArguments();
+        String stationName = bundle != null ? bundle.getString("station") : null;
+
+        TextView stationTitle = view.findViewById(R.id.selectedStation);
+        stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
+        stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
+
         GridView steamGridView = (GridView) view.findViewById(R.id.experience_list);
-        installedApplicationAdapter = new ApplicationAdapter(getContext());
+        installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateSteamApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (stationId > 0) {

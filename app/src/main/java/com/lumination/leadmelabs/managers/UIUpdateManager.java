@@ -5,16 +5,19 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.gson.Gson;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.lumination.leadmelabs.utilities.QaChecks;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +27,7 @@ import android.view.View;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +36,6 @@ import io.sentry.Sentry;
 /**
  * Expand this/change this in the future to individual namespace handlers, just here to stop
  * code creep within the main activity and network service.
- *
  * Responsible for updating the UI related to fragments.
  */
 public class UIUpdateManager {
@@ -54,7 +57,12 @@ public class UIUpdateManager {
 
         try {
             if(actionNamespace.equals("Ping")) {
+                if(additionalData != null && additionalData.length() > 0) {
+                    updateStationsFromJson(additionalData);
+                }
+
                 MainActivity.hasNotReceivedPing = 0;
+                MainActivity.reconnectionIgnored = false;
                 if (DialogManager.reconnectDialog != null) {
                     if(DialogManager.reconnectDialog.isShowing()) {
                         FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
@@ -268,9 +276,157 @@ public class UIUpdateManager {
                         FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
                     }
                     break;
+                case "QA":
+                    JSONObject request = new JSONObject(additionalData);
+                    if (request.getString("action").equals("Connect")) {
+                        JSONObject response = new JSONObject();
+                        response.put("response", "TabletConnected");
+                        response.put("responseData", new JSONObject());
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                        break;
+                    }
+
+                    QaChecks qaChecks = new QaChecks();
+
+                    if (request.getString("action").equals("RunAuto")) {
+                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+
+                        JSONObject response = new JSONObject();
+                        response.put("response", "TabletChecks");
+                        response.put("responseData", (new Gson().toJson(qaCheckList)));
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                    }
+
+                    if (request.getString("action").equals("RunGroup")) {
+                        String group = request.getJSONObject("actionData").getString("group");
+                        JSONObject response = new JSONObject();
+                        response.put("response", "RunTabletGroup");
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        JSONObject responseData = new JSONObject();
+                        responseData.put("group", group);
+                        switch (group) {
+                            case "network_checks": {
+                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runNetworkChecks();
+                                responseData.put("data", (new Gson().toJson(qaCheckList)));
+                                break;
+                            }
+                            case "security_checks": {
+                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runSecurityChecks();
+                                responseData.put("data", (new Gson().toJson(qaCheckList)));
+                                break;
+                            }
+                        }
+                        response.put("responseData", responseData);
+
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                    }
+
+                    if (request.getString("action").equals("RunAuto")) {
+                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+
+                        JSONObject response = new JSONObject();
+                        response.put("response", "RunTabletGroup");
+                        response.put("responseData", (new Gson().toJson(qaCheckList)));
+                        response.put("ipAddress", NetworkService.getIPAddress());
+                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                    }
+
+
+                    // handle checks
+                    break;
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates the Station objects with data parsed from JSON entries.
+     *
+     * @param additionalData The data sent from the NUC.
+     */
+    private static void updateStationsFromJson(String additionalData) {
+        try {
+            JSONObject data = new JSONObject(additionalData);
+            JSONObject responseObject = data.getJSONObject("responseData");
+
+            Iterator<String> keys = responseObject.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                JSONObject entry = responseObject.getJSONObject(key);
+
+                Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
+                if (station == null) {
+                    return;
+                }
+
+                //General Station statuses
+                String[] stringFields = {"state", "status", "gameName", "gameId", "gameType"};
+                for (String field : stringFields) {
+                    if (entry.has(field)) {
+                        String value = entry.optString(field, "NA");
+                        if (!value.equals("NA")) {
+                            switch (field) {
+                                case "state":
+                                    station.state = value;
+                                    break;
+                                case "status":
+                                    station.status = value;
+                                    break;
+                                case "gameName":
+                                    station.gameName = value;
+                                    break;
+                                case "gameId":
+                                    station.gameId = value;
+                                    break;
+                                case "gameType":
+                                    station.gameType = value;
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                //VR device statuses
+                JSONObject devices = entry.optJSONObject("devices");
+                if (devices != null) {
+                    String[] deviceFields = {"thirdPartyHeadsetTracking", "openVRHeadsetTracking", "leftControllerTracking", "rightControllerTracking"};
+                    for (String field : deviceFields) {
+                        if (devices.has(field)) {
+                            String value = devices.optString(field, "NA");
+                            if (!value.equals("NA")) {
+                                switch (field) {
+                                    case "thirdPartyHeadsetTracking":
+                                        station.thirdPartyHeadsetTracking = value;
+                                        break;
+                                    case "openVRHeadsetTracking":
+                                        station.openVRHeadsetTracking = value;
+                                        break;
+                                    case "leftControllerTracking":
+                                        station.leftControllerTracking = value;
+                                        break;
+                                    case "rightControllerTracking":
+                                        station.rightControllerTracking = value;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Handle integer fields separately
+                    station.leftControllerBattery = devices.optInt("leftControllerBattery", station.leftControllerBattery);
+                    station.rightControllerBattery = devices.optInt("rightControllerBattery", station.rightControllerBattery);
+                    station.baseStationsActive = devices.optInt("baseStationsActive", station.baseStationsActive);
+                    station.baseStationsTotal = devices.optInt("baseStationsTotal", station.baseStationsTotal);
+                }
+
+                MainActivity.runOnUI(() -> ViewModelProviders.of(MainActivity.getInstance())
+                        .get(StationsViewModel.class).updateStationById(Integer.parseInt(key), station));
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

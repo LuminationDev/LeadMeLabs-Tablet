@@ -763,7 +763,7 @@ public class DialogManager {
 
         Button encryptionKeyConfirmButton = view.findViewById(R.id.encryption_key_confirm);
         encryptionKeyConfirmButton.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString());
+            SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
             encryptionDialog.dismiss();
         });
 

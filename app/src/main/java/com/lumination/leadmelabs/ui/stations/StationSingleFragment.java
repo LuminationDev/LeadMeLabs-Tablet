@@ -123,7 +123,9 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
+            Bundle bundle = new Bundle();
+            bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
+            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", bundle);
             ApplicationSelectionFragment.setStationId(binding.getSelectedStation().id);
         });
 
@@ -136,7 +138,7 @@ public class StationSingleFragment extends Fragment {
 
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
 
-            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{

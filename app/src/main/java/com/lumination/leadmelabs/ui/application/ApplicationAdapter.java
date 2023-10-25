@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -46,9 +47,13 @@ public class ApplicationAdapter extends BaseAdapter {
     public static int stationId = 0;
     private final LayoutInflater mInflater;
     public static StationsViewModel mViewModel;
+    private FragmentManager fragmentManager;
+    private SideMenuFragment sideMenuFragment;
 
-    ApplicationAdapter(Context context) {
+    ApplicationAdapter(Context context, FragmentManager fragmentManager, SideMenuFragment fragment) {
         this.mInflater = LayoutInflater.from(context);
+        this.fragmentManager = fragmentManager;
+        this.sideMenuFragment = fragment;
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
 
@@ -165,13 +170,13 @@ public class ApplicationAdapter extends BaseAdapter {
             Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
             if (station != null) {
                 NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+                sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
                 DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
             }
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
-            SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu");
-            MainActivity.fragmentManager.beginTransaction()
+            sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", null);
+            fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
 

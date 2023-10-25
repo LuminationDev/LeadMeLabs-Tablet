@@ -45,7 +45,7 @@ public class StationSelectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView recyclerView = view.findViewById(R.id.stations_list);
-        stationAdapter = new StationAdapter(mViewModel, false);
+        stationAdapter = new StationAdapter(mViewModel, false, requireActivity().getSupportFragmentManager());
         stationAdapter.stationList = new ArrayList<>();
         recyclerView.setAdapter(stationAdapter);
 
@@ -96,7 +96,7 @@ public class StationSelectionFragment extends Fragment {
      *                      selected room.
      */
     private void changeWarningLabel(int numOfStations) {
-        StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+        StationSelectionPageFragment fragment = (StationSelectionPageFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.main);
         Button playBtn = fragment.getView().findViewById(R.id.select_stations);
         TextView top = fragment.getView().findViewById(R.id.not_installed_alert_top_line);
 

@@ -11,7 +11,7 @@
     </data>
 
     <RelativeLayout
-        android:layout_width="221dp"
+        android:layout_width="211dp"
         android:layout_height="158dp">
 
         <RelativeLayout
@@ -19,8 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:translationZ="5dp"
-            android:layout_marginStart="210dp"
-            android:layout_marginTop="6dp">
+            android:layout_marginStart="200dp">
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -55,10 +54,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:layout_alignSelf="center"
                     android:text="@{station.status, default=`Off`}"
                     android:textColor="@{station.status.equals(`Off`) ? @color/text : @color/blue, default=`@color/text`}"
                     android:textAllCaps="true"
-                    android:textSize="14sp"/>
+                    android:textSize="12sp"/>
             </com.google.android.flexbox.FlexboxLayout>
 
             <!--STATION CONTENT-->
@@ -69,7 +69,7 @@
                 app:flexDirection="column">
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:layout_width="178dp"
+                    android:layout_width="168dp"
                     android:layout_height="40dp"
                     app:stationState="@{station}"
                     app:alignItems="center"
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
                         android:paddingHorizontal="8dp"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textColor="@color/black"
                         app:stationState="@{station}"/>
                 </com.google.android.flexbox.FlexboxLayout>
@@ -89,7 +89,7 @@
 
             <!--VR DEVICES-->
             <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="178dp"
+                android:layout_width="168dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:justifyContent="center"
@@ -97,8 +97,8 @@
 
                 <ImageView
                     android:id="@+id/station_vr_icon"
-                    android:layout_width="52dp"
-                    android:layout_height="28dp"
+                    android:layout_width="49dp"
+                    android:layout_height="25dp"
                     android:contentDescription="@string/vr_status_icon"
                     android:minWidth="52dp"
                     android:minHeight="28dp"
@@ -113,8 +113,8 @@
                     app:flexDirection="row">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:contentDescription="@string/vr_left_controller"
                         app:controllerType="@{`Left`}"
                         app:station="@{station}" />
@@ -137,8 +137,8 @@
                     app:flexDirection="row">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:contentDescription="@string/vr_right_controller"
                         app:controllerType="@{`Right`}"
                         app:station="@{station}" />
@@ -153,8 +153,9 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="5dp"
                     android:contentDescription="@string/base_station"
                     app:baseStation="@{station}"
                     app:layout_flexShrink="0" />
