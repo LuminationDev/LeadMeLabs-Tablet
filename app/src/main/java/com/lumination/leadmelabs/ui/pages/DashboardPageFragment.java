@@ -23,6 +23,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -161,6 +162,12 @@ public class DashboardPageFragment extends Fragment {
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
+        });
+      
+        //Open the help page
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);

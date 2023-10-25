@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/troubleshooting_text_only"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_rounded">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="40dp"
+        app:flexDirection="column"
+        app:justifyContent="flex_start"
+        app:alignItems="flex_start">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginBottom="3dp"
+                android:text="LeadMe Labs Update 1.13"
+                android:textAlignment="center"
+                android:textFontWeight="600"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/body_text"
+                android:text="This includes several stability related features, including:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/update_details"
+                android:text="\u2022 Integration with OpenVR for launching experiences
+                \n\u2022 Improved headset detection of headset connection status
+                \n\u2022 Help and troubleshooting guides
+                \n\u2022 Detection of experiences launched outside of LeadMe
+                \n\u2022 Detection of controller and base station connection status
+                \n\u2022 Updated SteamVR config to prevent in-headset dashboard and improve stability"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:text="More details of this update are available at https://lumination.com.au/product-updates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"/>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

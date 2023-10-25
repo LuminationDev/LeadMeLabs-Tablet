@@ -208,11 +208,10 @@ public class NetworkService extends Service {
      * Collect the local IP address, regardless if it is IPv4 or IPv6.
      */
     public static String collectIpAddress() {
-        WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
-
         String ipAddress = null;
 
         try {
+            WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
             ipAddress = InetAddress.getByAddress(
                     ByteBuffer
                             .allocate(Integer.BYTES)
@@ -221,6 +220,7 @@ public class NetworkService extends Service {
                             .array()
             ).getHostAddress();
         } catch (UnknownHostException e) {
+            Sentry.captureException(e);
             e.printStackTrace();
         }
 
