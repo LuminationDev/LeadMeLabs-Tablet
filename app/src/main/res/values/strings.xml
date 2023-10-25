@@ -93,6 +93,9 @@
     <string name="oh_no">Oh no!</string>
     <string name="shut_down_space">Shut Down</string>
     <string name="shut_down_stations">Shut down stations</string>
+    <string name="restart_space">Restart Lab</string>
+    <string name="restart_stations">Reboot stations</string>
+    <string name="cancel_reboot">Cancel reboot</string>
     <string name="shut_down_station">Shut Down Station</string>
     <string name="vern_warning">vern warning</string>
     <string name="vern_happy">vern happy</string>
