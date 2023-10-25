@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/submit_ticket_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_rounded">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="40dp"
+        app:flexDirection="column"
+        app:justifyContent="flex_start"
+        app:alignItems="flex_start">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginBottom="3dp"
+            android:text="Submit a ticket"
+            android:textAlignment="center"
+            android:textFontWeight="600"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/submit_ticket_subject"
+            android:nextFocusDown="@id/submit_ticket_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:layout_marginVertical="5dp"
+            android:hint="Subject"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="10dp"
+            android:background="@drawable/bg_grey_rounded"/>
+
+        <EditText
+            android:id="@+id/submit_ticket_content"
+            android:nextFocusUp="@id/submit_ticket_subject"
+            android:nextFocusDown="@id/submit_ticket_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="8"
+            android:layout_marginVertical="5dp"
+            android:hint="Message"
+            android:gravity="top"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="10dp"
+            android:background="@drawable/bg_grey_rounded"/>
+
+        <EditText
+            android:id="@+id/submit_ticket_email"
+            android:nextFocusUp="@id/submit_ticket_content"
+            android:nextFocusDown="@id/submit_ticket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:maxLines="1"
+            android:layout_marginVertical="5dp"
+            android:hint="Email address"
+            android:paddingHorizontal="15dp"
+            android:inputType="textEmailAddress"
+            android:paddingVertical="10dp"
+            android:background="@drawable/bg_grey_rounded"/>
+
+        <TextView
+            android:id="@+id/error_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:text="Something went wrong"/>
+        <TextView
+            android:id="@+id/success_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_green_dark"
+            android:text="Ticket successfully submitted. This dialog will close in two seconds."/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            app:alignItems="flex_end"
+            app:flexDirection="column">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/submit_ticket"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/blue_darkest" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

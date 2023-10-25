@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -82,6 +83,11 @@ public class DashboardPageFragment extends Fragment {
         dateMessage += (now.getYear() + " ");
         TextView dateMessageView = view.findViewById(R.id.date_message);
         dateMessageView.setText(dateMessage);
+
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
+        });
 
         //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);

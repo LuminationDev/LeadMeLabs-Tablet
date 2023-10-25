@@ -10,9 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 public class SettingsPageFragment extends Fragment {
     private FragmentManager childManager;
@@ -29,6 +32,11 @@ public class SettingsPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
+        });
 
         if (savedInstanceState == null) {
             loadFragments();
