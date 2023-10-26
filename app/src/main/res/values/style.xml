@@ -288,7 +288,7 @@
         <item name="android:background">@drawable/bg_alertdialog_vern</item>
     </style>
 
-    <style name="HelpCard">
+    <style name="HelpCardGuides">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:clickable">true</item>
@@ -297,12 +297,30 @@
         <item name="android:background">@drawable/ripple_help</item>
         <item name="alignItems">center</item>
         <item name="android:padding">15dp</item>
+        <item name="android:layout_marginVertical">15dp</item>
+    </style>
+
+    <style name="HelpCardQuestions">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="flexDirection">row</item>
+        <item name="android:background">@drawable/ripple_help</item>
+        <item name="alignItems">center</item>
+        <item name="android:paddingHorizontal">15dp</item>
         <item name="android:layout_marginVertical">10dp</item>
+    </style>
+    <style name="HelpCardIconQuestions">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="layout_flexShrink">0</item>
     </style>
     <style name="HelpCardIcon">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
         <item name="layout_flexShrink">0</item>
     </style>
     <style name="HelpCardBody">

@@ -17,14 +17,11 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentHelpBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.ui.logo.LogoFragment;
-import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.HashMap;
 
 public class HelpPageFragment extends Fragment {
 
-    private static FragmentHelpBinding binding;
     public static FragmentManager childManager;
 
     @Nullable
@@ -33,7 +30,7 @@ public class HelpPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_help, container, false);
         childManager = getChildFragmentManager();
-        binding = DataBindingUtil.bind(view);
+        FragmentHelpBinding binding = DataBindingUtil.bind(view);
 
         FlexboxLayout roomAutomations = view.findViewById(R.id.room_automations);
         roomAutomations.setOnClickListener(v -> {
@@ -95,6 +92,17 @@ public class HelpPageFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
+        //TODO add the correct content
+        FlexboxLayout startingTheSystem = view.findViewById(R.id.starting_the_system);
+        startingTheSystem.setOnClickListener(v -> {
+            DialogManager.createTroubleshootingTextDialog("Starting the system", "This needs content added.");
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "troubleshooting");
+                put("content_id", "starting_the_system");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+        });
+
         FlexboxLayout quickstartGuide = view.findViewById(R.id.quickstart_guide);
         quickstartGuide.setOnClickListener(v -> {
             DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/14h2zlMhjIK_cZnGobyfysYmOPzjnmkjK/view?usp=drive_link");
@@ -115,16 +123,6 @@ public class HelpPageFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
-        FlexboxLayout submitTicketButton = view.findViewById(R.id.submit_ticket_button);
-        submitTicketButton.setOnClickListener(v -> {
-            DialogManager.createSubmitTicketDialog();
-            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                put("content_type", "troubleshooting");
-                put("content_id", "submit_ticket_button");
-            }};
-            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
-        });
-
         FlexboxLayout updateDetails = view.findViewById(R.id.update_details);
         updateDetails.setOnClickListener(v -> {
             DialogManager.createUpdateDetailsDialog();
@@ -135,12 +133,22 @@ public class HelpPageFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
-        FlexboxLayout contactSupportButton = view.findViewById(R.id.contact_support);
+        FlexboxLayout contactSupportButton = view.findViewById(R.id.knowledge_bank);
         contactSupportButton.setOnClickListener(v -> {
+            DialogManager.createTextDialog("Knowledge Bank", "Visit https://help.lumination.com.au/knowledge/lumination-learning-labs in a web browser to access Lumination's Knowledge Bank.");
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "troubleshooting");
+                put("content_id", "knowledge_bank");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+        });
+
+        FlexboxLayout submitTicketButton = view.findViewById(R.id.submit_ticket_button);
+        submitTicketButton.setOnClickListener(v -> {
             DialogManager.createSubmitTicketDialog();
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
-                put("content_id", "contact_support");
+                put("content_id", "submit_ticket_button");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
@@ -151,11 +159,5 @@ public class HelpPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (savedInstanceState == null) {
-            childManager.beginTransaction()
-                    .replace(R.id.logo, LogoFragment.class, null)
-                    .commitNow();
-        }
     }
 }

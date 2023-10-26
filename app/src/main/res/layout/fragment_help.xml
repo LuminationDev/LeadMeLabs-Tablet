@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="75dp"
             app:flexDirection="column"
-            android:paddingVertical="30dp"
+            android:paddingVertical="20dp"
             android:paddingStart="30dp"
             android:paddingEnd="40dp"
             tools:context=".ui.help.HelpPageFragment">
@@ -35,7 +35,8 @@
                 <TextView
                     style="@style/HeadingTitle"
                     android:text="Help"
-                    android:textSize="32sp" />
+                    android:textSize="32sp"
+                    android:layout_marginBottom="8dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -59,35 +60,37 @@
                     app:layout_flexGrow="1"
                     app:layout_flexShrink="0"
                     android:paddingEnd="10dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
                         android:text="Key Questions"
                         android:textSize="16sp" />
 
-<!--                    <com.google.android.flexbox.FlexboxLayout-->
-<!--                        android:id="@+id/starting_the_system"-->
-<!--                        style="@style/HelpCard">-->
-<!--                        <ImageView-->
-<!--                            style="@style/HelpCardIcon"-->
-<!--                            android:src="@drawable/help_power">-->
-<!--                        </ImageView>-->
-<!--                        <com.google.android.flexbox.FlexboxLayout-->
-<!--                            style="@style/HelpCardBody">-->
-<!--                            <TextView-->
-<!--                                style="@style/HelpCardBodyTitle"-->
-<!--                                android:text="Starting the System"/>-->
-<!--                            <TextView-->
-<!--                                style="@style/HelpCardBodyText"-->
-<!--                                android:text="How do I launch the Lumination Learning Lab?" />-->
-<!--                        </com.google.android.flexbox.FlexboxLayout>-->
-<!--                    </com.google.android.flexbox.FlexboxLayout>-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/starting_the_system"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_power">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Starting the System"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="How do I launch the Lumination Learning Lab?" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/launching_an_experience"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_play">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -103,9 +106,9 @@
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/steam_vr_errors"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_steam">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -121,9 +124,9 @@
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/headset_connection"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_no_internet">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -139,9 +142,9 @@
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/vr_library"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_vr_headset">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -157,9 +160,9 @@
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/server_connection"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_server_connection">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -175,9 +178,9 @@
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/room_automations"
-                        style="@style/HelpCard">
+                        style="@style/HelpCardQuestions">
                         <ImageView
-                            style="@style/HelpCardIcon"
+                            style="@style/HelpCardIconQuestions"
                             android:src="@drawable/help_remote">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
@@ -201,12 +204,90 @@
                     android:paddingStart="10dp"
                     app:layout_flexShrink="0">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Helpful Guides"
+                        android:textSize="16sp" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/quickstart_guide"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/labs_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Quickstart Guide"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="How do I set up the Learning Lab?" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/lesson_plans"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/labs_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Lesson Plans"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Access to courses, teaching resources and guides." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/update_details"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/leadme_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="LeadMe Labs 1.13 Update"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Details of the latest LeadMe Labs update." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/knowledge_bank"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/lumination_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Knowledge Bank"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Visit Lumination's online Knowledge Bank for further help." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/card_ripple_white"
                         app:flexDirection="row"
+                        android:layout_marginTop="10dp"
                         android:padding="20dp">
                         <ImageView
                             app:layout_flexShrink="0"
@@ -215,18 +296,22 @@
                             android:layout_marginEnd="10dp"
                             android:src="@drawable/vern_out_of_charge">
                         </ImageView>
+
                         <com.google.android.flexbox.FlexboxLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             app:flexDirection="column"
                             app:justifyContent="center"
                             app:alignItems="center">
+
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
-                                android:textSize="16dp"
+                                android:textSize="16sp"
+                                android:textFontWeight="600"
                                 android:text="Still having trouble with your issue?"/>
+
                             <com.google.android.flexbox.FlexboxLayout
                                 android:id="@+id/submit_ticket_button"
                                 android:layout_width="match_parent"
@@ -250,85 +335,6 @@
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
 
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Helpful Guides"
-                        android:layout_marginTop="20dp"
-                        android:textSize="16sp" />
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/quickstart_guide"
-                        style="@style/HelpCard">
-                        <ImageView
-                            style="@style/HelpCardIcon"
-                            android:src="@drawable/labs_logo">
-                        </ImageView>
-                        <com.google.android.flexbox.FlexboxLayout
-                            style="@style/HelpCardBody">
-                            <TextView
-                                style="@style/HelpCardBodyTitle"
-                                android:text="Quickstart Guide"/>
-                            <TextView
-                                style="@style/HelpCardBodyText"
-                                android:text="How do I set up the Learning Lab?" />
-                        </com.google.android.flexbox.FlexboxLayout>
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/lesson_plans"
-                        style="@style/HelpCard">
-                        <ImageView
-                            style="@style/HelpCardIcon"
-                            android:src="@drawable/labs_logo">
-                        </ImageView>
-                        <com.google.android.flexbox.FlexboxLayout
-                            style="@style/HelpCardBody">
-                            <TextView
-                                style="@style/HelpCardBodyTitle"
-                                android:text="Lesson Plans"/>
-                            <TextView
-                                style="@style/HelpCardBodyText"
-                                android:text="Access to courses, teaching resources and guides." />
-                        </com.google.android.flexbox.FlexboxLayout>
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/update_details"
-                        style="@style/HelpCard">
-                        <ImageView
-                            style="@style/HelpCardIcon"
-                            android:src="@drawable/leadme_logo">
-                        </ImageView>
-                        <com.google.android.flexbox.FlexboxLayout
-                            style="@style/HelpCardBody">
-                            <TextView
-                                style="@style/HelpCardBodyTitle"
-                                android:text="LeadMe Labs 1.13 Update"/>
-                            <TextView
-                                style="@style/HelpCardBodyText"
-                                android:text="Details of the latest LeadMe Labs update." />
-                        </com.google.android.flexbox.FlexboxLayout>
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/contact_support"
-                        style="@style/HelpCard">
-                        <ImageView
-                            style="@style/HelpCardIcon"
-                            android:src="@drawable/lumination_logo">
-                        </ImageView>
-                        <com.google.android.flexbox.FlexboxLayout
-                            style="@style/HelpCardBody">
-                            <TextView
-                                style="@style/HelpCardBodyTitle"
-                                android:text="Contact Support"/>
-                            <TextView
-                                style="@style/HelpCardBodyText"
-                                android:text="Get in touch with Lumination's IT support team." />
-                        </com.google.android.flexbox.FlexboxLayout>
-                    </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
 

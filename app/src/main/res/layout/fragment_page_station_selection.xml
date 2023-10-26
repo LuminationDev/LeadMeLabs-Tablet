@@ -213,7 +213,7 @@
             android:layout_marginBottom="50dp"
             android:focusable="true"
             android:clickable="true"
-            android:background="@drawable/identify_ripple_blue"
+            android:background="@drawable/identify_ripple_grey"
             app:flexDirection="row"
             app:justifyContent="center"
             app:alignItems="center"

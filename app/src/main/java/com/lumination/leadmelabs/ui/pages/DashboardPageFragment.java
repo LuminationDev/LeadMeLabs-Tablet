@@ -167,7 +167,7 @@ public class DashboardPageFragment extends Fragment {
         //Open the help page
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
+            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
