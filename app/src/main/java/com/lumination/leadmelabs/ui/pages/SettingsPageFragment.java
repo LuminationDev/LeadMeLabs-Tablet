@@ -35,7 +35,7 @@ public class SettingsPageFragment extends Fragment {
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            SideMenuFragment.loadFragment(HelpPageFragment.class, "help");
+            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
         });
 
         if (savedInstanceState == null) {

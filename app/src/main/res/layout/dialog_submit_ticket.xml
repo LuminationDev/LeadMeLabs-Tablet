@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="40dp"
+        android:paddingVertical="20dp"
         app:flexDirection="column"
         app:justifyContent="flex_start"
         app:alignItems="flex_start">
@@ -19,12 +19,12 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="30dp"
             android:layout_marginBottom="3dp"
             android:text="Submit a ticket"
             android:textAlignment="center"
             android:textFontWeight="600"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/submit_ticket_subject"
@@ -34,6 +34,7 @@
             android:lines="1"
             android:layout_marginVertical="5dp"
             android:hint="Subject"
+            android:textColorHint="@color/grey_hint"
             android:paddingHorizontal="15dp"
             android:paddingVertical="10dp"
             android:background="@drawable/bg_grey_rounded"/>
@@ -47,6 +48,7 @@
             android:lines="8"
             android:layout_marginVertical="5dp"
             android:hint="Message"
+            android:textColorHint="@color/grey_hint"
             android:gravity="top"
             android:paddingHorizontal="15dp"
             android:paddingVertical="10dp"
@@ -62,6 +64,7 @@
             android:maxLines="1"
             android:layout_marginVertical="5dp"
             android:hint="Email address"
+            android:textColorHint="@color/grey_hint"
             android:paddingHorizontal="15dp"
             android:inputType="textEmailAddress"
             android:paddingVertical="10dp"
@@ -85,7 +88,6 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
             app:alignItems="flex_end"
             app:flexDirection="column">
 

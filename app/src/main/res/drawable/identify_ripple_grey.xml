@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An white rectangle ripple. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/grey">
+    <item android:id="@android:id/background">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/grey" /> <!-- Set the background color to gray -->
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="oval">
+                    <stroke android:width="4dp" android:color="@android:color/black" /> <!-- Add a black border -->
+                </shape>
+            </item>
+            <item android:gravity="center">
+                <vector
+                    android:width="16dp"
+                    android:height="32dp"
+                    android:viewportWidth="16"
+                    android:viewportHeight="32">
+                    <path
+                        android:pathData="M8,0C3.582,0 0,3.582 0,8s8,24 8,24 8,-19.582 8,-24 -3.582,-8 -8,-8zM8,12a4,4 0,1 1,0 -8,4 4,0 0,1 0,8z"
+                        android:fillColor="@color/black"/>
+                </vector>
+            </item>
+        </layer-list>
+    </item>
+</ripple>

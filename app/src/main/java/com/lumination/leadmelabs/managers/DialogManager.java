@@ -234,7 +234,7 @@ public class DialogManager {
         });
 
         dialog.show();
-        dialog.getWindow().setLayout(1000, 850);
+        dialog.getWindow().setLayout(1000, 760);
     }
 
     /**
@@ -676,8 +676,12 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
-            nucDialog.dismiss();
+            if (newAddress.getText().toString().trim().length() > 0) {
+                SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
+                nucDialog.dismiss();
+            } else {
+                Toast.makeText(context, "NUC address cannot be empty.", Toast.LENGTH_LONG).show();
+            }
         });
 
         Button refreshAddress = view.findViewById(R.id.refresh_nuc_button);
@@ -959,38 +963,6 @@ public class DialogManager {
 
         reconnectDialog.show();
         reconnectDialog.getWindow().setLayout(680, 720);
-    }
-
-    /**
-     * Build the launch confirmation dialog when launching a new steam experience.
-     */
-    public static void buildLaunchExperienceDialog(Context context, Application currentApplication, Station station) {
-        View confirmDialogView = View.inflate(context, R.layout.dialog_confirm, null);
-        AlertDialog confirmDialog = new AlertDialog.Builder(context).setView(confirmDialogView).create();
-
-        TextView headingText = confirmDialogView.findViewById(R.id.heading_text);
-        headingText.setText(R.string.exit_theatre);
-
-        TextView contentText = confirmDialogView.findViewById(R.id.content_text);
-        contentText.setText(MessageFormat.format("{0}{1}", station.name, R.string.exit_current_theatre_mode));
-
-        Button confirmButton = confirmDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> {
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-            confirmDialog.dismiss();
-            awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
-            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                put("content_type", "session_management");
-                put("content_id", "launch_experience");
-            }};
-            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
-        });
-
-        Button cancelButton = confirmDialogView.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(x -> confirmDialog.dismiss());
-
-        confirmDialog.show();
     }
 
     /**

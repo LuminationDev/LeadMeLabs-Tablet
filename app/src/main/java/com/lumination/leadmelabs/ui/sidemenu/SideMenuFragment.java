@@ -32,7 +32,6 @@ import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import java.util.Objects;
 
 public class SideMenuFragment extends Fragment {
-
     public static SideMenuViewModel mViewModel;
     private View view;
     private FragmentMenuSideBinding binding;
