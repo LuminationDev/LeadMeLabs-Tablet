@@ -27,6 +27,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -157,6 +158,11 @@ public class ApplicationSelectionFragment extends Fragment {
 
         Button refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
         refresh_btn.setOnClickListener(v -> refreshSteamGamesList());
+
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+        });
     }
 
     private void performSearch(String searchTerm) {

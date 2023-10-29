@@ -83,7 +83,7 @@ public class SettingsFragment extends Fragment {
 
         FlexboxLayout howToButton = view.findViewById(R.id.how_to_button);
         howToButton.setOnClickListener(v ->
-                DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/1OSnrUnQwggod2IwialnfbJ32nT-1q9mQ/view?usp=sharing")
+                DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/14h2zlMhjIK_cZnGobyfysYmOPzjnmkjK/view?usp=drive_link")
         );
 
         //The toggle for turning wall mode on and off

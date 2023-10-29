@@ -7,7 +7,9 @@ import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -49,6 +52,7 @@ import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +60,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import io.sentry.Sentry;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Responsible for handling alert dialogs.
@@ -130,6 +141,160 @@ public class DialogManager {
         missingEncryptionAlerted = true;
         basicDialog.show();
         basicDialog.getWindow().setLayout(680, 680);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createSubmitTicketDialog() {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_submit_ticket, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        TextView errorText = dialogView.findViewById(R.id.error_text);
+        TextView successText = dialogView.findViewById(R.id.success_text);
+
+        MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
+        submitButton.setOnClickListener(w -> {
+
+            errorText.setVisibility(View.GONE);
+
+            String subject = ((EditText) dialogView.findViewById(R.id.submit_ticket_subject)).getText().toString();
+            String email = ((EditText) dialogView.findViewById(R.id.submit_ticket_email)).getText().toString();
+            String content = ((EditText) dialogView.findViewById(R.id.submit_ticket_content)).getText().toString().replace("\n", "\\n");
+
+            if (subject.isEmpty() || email.isEmpty() || content.isEmpty()) {
+                errorText.setText("All fields must be filled out to submit a ticket");
+                errorText.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                errorText.setText("Email address is not a valid email address. Please check that you have entered it correctly and try again.");
+                errorText.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient client = new OkHttpClient();
+            String bodyText = "{\n" +
+                    "    \"subject\": \"" + subject + "\",\n" +
+                    "    \"email\": \"" + email + "\",\n" +
+                    "    \"content\": \"" + content + "\"\n" +
+                    "}";
+            Thread thread = new Thread(() -> {
+                RequestBody body = RequestBody.create(bodyText, JSON);
+                Request request = new Request.Builder()
+                        .url("https://us-central1-leadme-labs.cloudfunctions.net/submitTicket")
+                        .post(body)
+                        .build();
+                Response response = null;
+                try {
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        MainActivity.runOnUI(() -> {
+                            successText.setVisibility(View.VISIBLE);
+                        });
+                        NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
+
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("content_type", "submit");
+                            put("content_id", "submit_ticket");
+                        }};
+                        FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+                        Thread.sleep(2000);
+                        MainActivity.runOnUI(() -> {
+                            dialog.dismiss();
+                        });
+                    } else {
+                        MainActivity.runOnUI(() -> {
+                            errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                            errorText.setVisibility(View.VISIBLE);
+                        });
+                    }
+
+                } catch (IOException e) {
+                    Sentry.captureException(e);
+                    e.printStackTrace();
+                    MainActivity.runOnUI(() -> {
+                        errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                        errorText.setVisibility(View.VISIBLE);
+                    });
+                    return;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Sentry.captureException(e);
+                    MainActivity.runOnUI(() -> {
+                        errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
+                        errorText.setVisibility(View.VISIBLE);
+                    });
+                    return;
+                }
+            });
+            thread.start();
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(1000, 760);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createUpdateDetailsDialog() {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_update_details, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        dialog.show();
+        dialog.getWindow().setLayout(1000, 850);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createTroubleshootingTextDialog(String titleText, String bodyText) {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_troubleshooting_text_only, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView body = dialogView.findViewById(R.id.body_text);
+        body.setText(bodyText);
+
+        TextView submitText = dialogView.findViewById(R.id.submit_text);
+        SpannableString content = new SpannableString("submit a support ticket.");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        submitText.setText(content);
+        submitText.setOnClickListener(w -> {
+            dialog.dismiss();
+            createSubmitTicketDialog();
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(800, 600);
+    }
+
+    /**
+     * Create a basic dialog box that displays the lack of encryption key. This is a separate function
+     * so that we can stop it from stacking up by monitoring if it is open.
+     */
+    public static void createTextDialog(String titleText, String bodyText) {
+        View dialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_troubleshooting_text_only, null);
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
+
+        TextView title = dialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView body = dialogView.findViewById(R.id.body_text);
+        body.setText(bodyText);
+
+        FlexboxLayout submitText = dialogView.findViewById(R.id.support_text);
+        submitText.setVisibility(View.GONE);
+
+        dialog.show();
+        dialog.getWindow().setLayout(800, 600);
     }
 
     /**
@@ -294,6 +459,11 @@ public class DialogManager {
             }
 
             endSessionDialog.dismiss();
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "session_management");
+                put("content_id", "end_session_dialog_submit");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button cancelButton = view.findViewById(R.id.cancel_button);
@@ -506,8 +676,12 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
-            nucDialog.dismiss();
+            if (newAddress.getText().toString().trim().length() > 0) {
+                SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
+                nucDialog.dismiss();
+            } else {
+                Toast.makeText(context, "NUC address cannot be empty.", Toast.LENGTH_LONG).show();
+            }
         });
 
         Button refreshAddress = view.findViewById(R.id.refresh_nuc_button);
@@ -752,6 +926,11 @@ public class DialogManager {
                     },
                     10000
             );
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "reconnect_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
@@ -760,6 +939,11 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.reconnectionIgnored = true;
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "ignore_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
@@ -768,6 +952,11 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "reconnect_dialog");
+                put("content_id", "close_button");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
         reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());

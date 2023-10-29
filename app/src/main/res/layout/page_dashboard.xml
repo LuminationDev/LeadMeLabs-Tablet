@@ -13,28 +13,59 @@
         android:orientation="vertical">
 
         <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            app:flexDirection="column">
-
-            <TextView
-                style="@style/HeadingTitle"
-                android:id="@+id/welcome_message"
-                android:text="Welcome!"
-                android:textSize="45sp" />
-
-            <TextView
-                android:id="@+id/date_message"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            app:flexDirection="row">
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
-                android:text="Tuesday 26th April 2022"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                app:flexDirection="column">
 
+                <TextView
+                    style="@style/HeadingTitle"
+                    android:id="@+id/welcome_message"
+                    android:text="Welcome!"
+                    android:textSize="45sp" />
+
+                <TextView
+                    android:id="@+id/date_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday 26th April 2022"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/identify_button"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="30dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:background="@drawable/identify_ripple_grey"
+                    app:flexDirection="row"
+                    app:justifyContent="center"
+                    app:alignItems="center"
+                    android:visibility="visible"/>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/help_button"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:background="@drawable/help_ripple_grey"/>
+            </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
-
         <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/station_controls"
             android:layout_width="match_parent"
@@ -47,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:textColor="@color/grey_titles"
-                android:text="Controls" />
+                android:text="Quick Actions" />
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
@@ -55,9 +86,44 @@
                 app:flexDirection="row">
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/new_session_button"
+                    android:id="@+id/vr_mode_button"
                     style="@style/ActionCard"
                     android:layout_marginStart="30dp"
+                    app:flexDirection="row">
+
+                    <ImageView
+                        android:layout_width="66dp"
+                        android:layout_height="66dp"
+                        android:contentDescription="vr_mode_icon"
+                        android:src="@drawable/dashboard_vr_mode" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VR Mode"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Launch stations"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/new_session_button"
+                    style="@style/ActionCard"
+                    android:layout_marginStart="10dp"
                     app:flexDirection="row">
 
                     <ImageView
@@ -125,42 +191,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/identify_button"
-                    style="@style/ActionCard"
-                    android:layout_marginStart="10dp"
-                    app:flexDirection="row">
-
-                    <ImageView
-                        android:layout_width="66dp"
-                        android:layout_height="66dp"
-                        android:contentDescription="identify_icon"
-                        android:src="@drawable/dashboard_identify" />
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        app:flexDirection="column"
-                        app:justifyContent="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Identify"
-                            android:textColor="@color/black"
-                            android:textFontWeight="600"
-                            android:textSize="13sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Locate stations"
-                            android:textSize="11sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
-                </com.google.android.flexbox.FlexboxLayout>
-
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/startup_button"
+                    android:id="@+id/restart_button"
                     style="@style/ActionCard"
                     android:layout_marginStart="10dp"
                     app:flexDirection="row"
@@ -169,8 +200,8 @@
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:contentDescription="startup_icon"
-                        android:src="@drawable/dashboard_startup" />
+                        android:contentDescription="restart_icon"
+                        android:src="@drawable/dashboard_restart" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -180,25 +211,25 @@
                         app:justifyContent="center">
 
                         <TextView
-                            android:id="@+id/startup_heading"
+                            android:id="@+id/restart_heading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Turn On"
+                            android:text="Restart Lab"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
 
                         <TextView
-                            android:id="@+id/startup_content"
+                            android:id="@+id/restart_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Launch stations"
+                            android:text="Reboot stations"
                             android:textSize="11sp" />
                     </com.google.android.flexbox.FlexboxLayout>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/shutdown_button"
+                    android:id="@+id/classroom_mode_button"
                     style="@style/ActionCard"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
@@ -208,8 +239,8 @@
                     <ImageView
                         android:layout_width="66dp"
                         android:layout_height="66dp"
-                        android:contentDescription="shutdown_icon"
-                        android:src="@drawable/dashboard_shutdown" />
+                        android:contentDescription="classroom_icon"
+                        android:src="@drawable/dashboard_class_mode" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"
@@ -219,16 +250,14 @@
                         app:justifyContent="center">
 
                         <TextView
-                            android:id="@+id/shutdown_heading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Shut Down"
+                            android:text="Class Mode"
                             android:textColor="@color/black"
                             android:textFontWeight="600"
                             android:textSize="13sp" />
 
                         <TextView
-                            android:id="@+id/shutdown_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Turn off stations"
@@ -262,5 +291,4 @@
         android:id="@+id/rooms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
 </RelativeLayout>
