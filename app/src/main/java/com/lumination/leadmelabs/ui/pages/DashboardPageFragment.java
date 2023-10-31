@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -203,9 +202,81 @@ public class DashboardPageFragment extends Fragment {
                         && SettingsFragment.checkLockedRooms(appliance.room))
                 .collect(Collectors.toList());
 
+        if (matchingAppliances.isEmpty()) {
+            matchingAppliances = searchForBackupSceneTrigger(appliances, sceneName);
+        }
+
+        //There really is nothing
         if (matchingAppliances.isEmpty()) return;
 
-        ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
+        ArrayList<JSONObject> stationsToTurnOff = collectStationsWithActions(matchingAppliances, "Off");
+        if (stationsToTurnOff.isEmpty()) {
+            for (Appliance sceneAppliance: matchingAppliances) {
+                String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
+                String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                NetworkService.sendMessage("NUC", "Automation", message);
+            }
+            return;
+        }
+
+        List<Appliance> finalMatchingAppliances = matchingAppliances;
+        BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+            if (confirmationResult) {
+                for (Appliance sceneAppliance: finalMatchingAppliances) {
+                    String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
+                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                    NetworkService.sendMessage("NUC", "Automation", message);
+                }
+            }
+        };
+
+        DialogManager.createConfirmationDialog("Confirm station shutdown",
+                "All Station(s) will shutdown. Please confirm this scene.",
+                confirmShutdownCallback, "Cancel", "Confirm");
+    }
+
+    /**
+     * If there are no scenes that contain the original sceneName ('classroom' or 'vr') search for a
+     * scene that would trigger connected stations in the same way.
+     * @param appliances A list of all the appliances in the ApplianceViewModel.
+     * @param originalSceneName A string of the original scene that was searched for.
+     * @return A list of appliances that act the same as the initial search scene, this may be empty.
+     */
+    private List<Appliance> searchForBackupSceneTrigger(List<Appliance> appliances, String originalSceneName) {
+        List<Appliance> matchingAppliances = new ArrayList<>();
+
+        List<Appliance> sceneAppliances = appliances.stream()
+                .filter(appliance -> !appliance.name.toLowerCase().contains("all off")
+                        &&"scenes".equals(appliance.type)
+                        && SettingsFragment.checkLockedRooms(appliance.room))
+                .collect(Collectors.toList());
+
+        //Sort through each scene to see if there are computer actions assigned to it.
+        for (Appliance sceneAppliance : sceneAppliances) {
+            List<Appliance> singleApplianceList = new ArrayList<>();
+            singleApplianceList.add(sceneAppliance);
+
+            String desiredAction = originalSceneName.equals("classroom") ? "Off" : "On";
+            ArrayList<JSONObject> stationsWithActions = collectStationsWithActions(singleApplianceList, desiredAction);
+
+            if (!stationsWithActions.isEmpty()) {
+                matchingAppliances.add(sceneAppliance); // Scene appliance matches desired actions
+            }
+        }
+
+        return matchingAppliances;
+    }
+
+    /**
+     * Loop through the supplied list of appliances, check each appliance to see if there are associated
+     * stations. Detect if there are any actions connected to the stations if there are any.
+     * @param matchingAppliances A list of appliances,
+     * @param action A string of the station action to look for.
+     * @return A list of stations that require an action be performed on them.
+     */
+    private ArrayList<JSONObject> collectStationsWithActions(List<Appliance> matchingAppliances, String action) {
+        ArrayList<JSONObject> stationsWithActions = new ArrayList<>();
+
         for (Appliance sceneAppliance: matchingAppliances) {
             if (sceneAppliance.stations == null || sceneAppliance.stations.length() == 0) {
                 continue;
@@ -217,8 +288,8 @@ public class DashboardPageFragment extends Fragment {
                     if (!station.has("action")) {
                         continue;
                     }
-                    if (station.getString("action").equals("Off")) {
-                        stationsToTurnOff.add(station);
+                    if (station.getString("action").equals(action)) {
+                        stationsWithActions.add(station);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -226,29 +297,7 @@ public class DashboardPageFragment extends Fragment {
             }
         }
 
-        if (stationsToTurnOff.isEmpty()) {
-            for (Appliance sceneAppliance: matchingAppliances) {
-                String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
-                String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
-                NetworkService.sendMessage("NUC", "Automation", message);
-            }
-            return;
-        }
-
-        BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
-            if (confirmationResult) {
-                for (Appliance sceneAppliance: matchingAppliances) {
-                    String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
-                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
-                    NetworkService.sendMessage("NUC", "Automation", message);
-                }
-            }
-
-        };
-
-        DialogManager.createConfirmationDialog("Confirm station shutdown",
-                "All Station(s) will shutdown. Please confirm this scene.",
-                confirmShutdownCallback, "Cancel", "Confirm");
+        return stationsWithActions;
     }
 
     /**
