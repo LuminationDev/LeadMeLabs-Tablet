@@ -309,12 +309,9 @@ public class Station implements Cloneable {
 
         if(selectedStation.animationFlag) {
             imageView.setImageResource(R.drawable.vr_headset_outline);
-        } else if(isConnected && selectedStation.gameName != null && !selectedStation.gameName.equals("null") && selectedStation.gameName.length() > 0) {
+        } else if(isConnected) {
             //Station is on - OpenVR & the Third party headset software is connected and an experience is running
             imageView.setImageResource(R.drawable.vr_headset_active);
-        } else if(isConnected) {
-            //Station is on - OpenVR & the Third party headset software is connected
-            imageView.setImageResource(R.drawable.vr_headset_on);
         } else if (isOff) {
             //Station is on - OpenVR or Third party headset software is off.
             imageView.setImageResource(R.drawable.vr_headset_gray);
@@ -358,7 +355,7 @@ public class Station implements Cloneable {
         //Set the battery text colour (relates to battery value, below 15 is getting low)
         int color = ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_card);
         if(batteryValue > 25) {
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.green_dark);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
         } else if (batteryValue > 0)  {
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
         }
@@ -438,17 +435,10 @@ public class Station implements Cloneable {
             //Station is on - headset connected and the controller has connected then disconnected
             imageView.setImageResource(R.drawable.vr_controller_gray);
 
-        } else if (tracking.equals("Connected") && selectedStation.gameName != null && !selectedStation.gameName.equals("null") && selectedStation.gameName.length() > 0) {
+        } else if (tracking.equals("Connected")) {
             // Headset is tracking, controller is tracking and an experience
             imageView.setImageResource(R.drawable.vr_controller_active);
 
-        } else if (tracking.equals("Connected") && batteryValue <= 25) {
-            // Headset is tracking, controller is tracking - Controller has low battery
-            imageView.setImageResource(R.drawable.vr_controller_on);
-
-        } else if (tracking.equals("Connected")) {
-            //Station is on - active base stations equals total.
-            imageView.setImageResource(R.drawable.vr_controller_on);
         } else {
             imageView.setImageResource(R.drawable.vr_controller_gray);
         }
@@ -484,7 +474,7 @@ public class Station implements Cloneable {
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
         } else {
             //Station is on - active base stations greater than 2
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.green_dark);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
         }
 
         //Display the active number of base stations
@@ -517,12 +507,9 @@ public class Station implements Cloneable {
         } else if (selectedStation.baseStationsActive < 2) {
             //Station is on - active base stations less than 2
             imageView.setImageResource(R.drawable.vr_base_station_lost);
-        } else if(selectedStation.gameName != null && !selectedStation.gameName.equals("null") && selectedStation.gameName.length() > 0) {
+        } else {
             //Station is on - active base stations greater than 2 and an experience is running.
             imageView.setImageResource(R.drawable.vr_base_station_active);
-        } else {
-            //Station is on - active base stations greater than 2.
-            imageView.setImageResource(R.drawable.vr_base_station_on);
         }
 
         selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, "BaseStation");
