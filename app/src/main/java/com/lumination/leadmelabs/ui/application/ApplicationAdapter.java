@@ -180,7 +180,7 @@ public class ApplicationAdapter extends BaseAdapter {
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
 
-            StationSelectionPageFragment fragment = (StationSelectionPageFragment) MainActivity.fragmentManager.findFragmentById(R.id.main);
+            StationSelectionPageFragment fragment = (StationSelectionPageFragment) fragmentManager.findFragmentById(R.id.main);
             View newView = fragment.getView();
             TextView textView = newView.findViewById(R.id.station_selection_game_name);
             textView.setText(currentApplication.name);
