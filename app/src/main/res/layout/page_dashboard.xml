@@ -43,27 +43,58 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/identify_button"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="30dp"
-                    android:focusable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
                     android:clickable="true"
-                    android:background="@drawable/identify_ripple_grey"
-                    app:flexDirection="row"
-                    app:justifyContent="center"
-                    app:alignItems="center"
-                    android:visibility="visible"/>
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/identify_ripple_grey_small"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Identify"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/help_button"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:focusable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
                     android:clickable="true"
-                    android:background="@drawable/help_ripple_grey"/>
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="help_icon"
+                        android:src="@drawable/icon_help"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Help"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
         <com.google.android.flexbox.FlexboxLayout

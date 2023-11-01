@@ -84,6 +84,7 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
+        NetworkService.sendMessage("NUC", "CanAcknowledge", "");
     }
 
     /**
@@ -280,12 +281,16 @@ public class NetworkService extends Service {
         }
 
         String message = byteArrayOutputStream.toString();
+        String unencryptedMessage = message;
 
         if (getEncryptionKey().length() == 0) {
             DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
         message = EncryptionHelper.decrypt(message, getEncryptionKey());
+        if (!message.equals("NUC:Android:Ping")) {
+            NetworkService.sendMessage("NUC", "ACK", unencryptedMessage.substring(0, Math.min(30, unencryptedMessage.length())));
+        }
 
         //Get the IP address used to determine who has just connected.
         String ipAddress = clientSocket.getInetAddress().getHostAddress();
