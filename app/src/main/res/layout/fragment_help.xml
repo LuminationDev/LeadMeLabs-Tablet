@@ -69,20 +69,20 @@
                         android:textSize="16sp" />
 
                     <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/starting_the_system"
+                        android:id="@+id/headset_is_blank"
                         style="@style/HelpCardQuestions">
                         <ImageView
                             style="@style/HelpCardIconQuestions"
-                            android:src="@drawable/help_power">
+                            android:src="@drawable/help_vr_headset">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
                             style="@style/HelpCardBody">
                             <TextView
                                 style="@style/HelpCardBodyTitle"
-                                android:text="Starting the System"/>
+                                android:text="Headset is blank"/>
                             <TextView
                                 style="@style/HelpCardBodyText"
-                                android:text="How do I launch the Lumination Learning Lab?" />
+                                android:text="The headset is showing a blank screen" />
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
 
