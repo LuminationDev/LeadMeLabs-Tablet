@@ -92,13 +92,12 @@ public class HelpPageFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
-        //TODO add the correct content
-        FlexboxLayout startingTheSystem = view.findViewById(R.id.starting_the_system);
+        FlexboxLayout startingTheSystem = view.findViewById(R.id.headset_is_blank);
         startingTheSystem.setOnClickListener(v -> {
-            DialogManager.createTroubleshootingTextDialog("Starting the system", "This needs content added.");
+            DialogManager.createTroubleshootingTextDialog("Headset is blank", "Check that the headset battery is charged and try unplugging and plugging it and then waiting 30 seconds. If this does not resolve the issue, try pressing 'restart session'. If this does not resolve the issue, try pressing 'Restart VR system'. If this does not resolve the issue, try restarting the computer.");
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
-                put("content_id", "starting_the_system");
+                put("content_id", "headset_is_blank");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
