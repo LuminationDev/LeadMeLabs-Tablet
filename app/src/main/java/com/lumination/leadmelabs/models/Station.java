@@ -355,7 +355,7 @@ public class Station implements Cloneable {
         //Set the battery text colour (relates to battery value, below 15 is getting low)
         int color = ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_card);
         if(batteryValue > 25) {
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.green);
         } else if (batteryValue > 0)  {
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
         }
@@ -474,7 +474,7 @@ public class Station implements Cloneable {
             color = ContextCompat.getColor(MainActivity.getInstance(), R.color.orange);
         } else {
             //Station is on - active base stations greater than 2
-            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.blue);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.green);
         }
 
         //Display the active number of base stations
