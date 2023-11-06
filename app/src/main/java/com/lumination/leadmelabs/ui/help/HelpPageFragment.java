@@ -17,6 +17,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentHelpBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.HashMap;
 
@@ -151,6 +152,21 @@ public class HelpPageFragment extends Fragment {
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
+
+        FlexboxLayout submitTicketOnlineLayout = view.findViewById(R.id.submit_ticket_online);
+        FlexboxLayout submitTicketOfflineLayout = view.findViewById(R.id.submit_ticket_offline);
+        Thread thread = new Thread(() -> {
+            boolean isOnline = Helpers.urlIsAvailable("https://us-central1-leadme-labs.cloudfunctions.net/status");
+            if (isOnline) {
+                submitTicketOnlineLayout.setVisibility(View.VISIBLE);
+                submitTicketOfflineLayout.setVisibility(View.GONE);
+            } else {
+                submitTicketOnlineLayout.setVisibility(View.GONE);
+                submitTicketOfflineLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        thread.start();
+
         return view;
     }
 

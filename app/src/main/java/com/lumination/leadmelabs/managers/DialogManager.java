@@ -264,13 +264,28 @@ public class DialogManager {
         body.setText(bodyText);
 
         TextView submitText = dialogView.findViewById(R.id.submit_text);
-        SpannableString content = new SpannableString("submit a support ticket.");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        submitText.setText(content);
-        submitText.setOnClickListener(w -> {
-            dialog.dismiss();
-            createSubmitTicketDialog();
+        TextView preSubmitText = dialogView.findViewById(R.id.pre_submit_text);
+
+        Thread thread = new Thread(() -> {
+            boolean isOnline = Helpers.urlIsAvailable("https://us-central1-leadme-labs.cloudfunctions.net/status");
+            MainActivity.runOnUI(() -> {
+                if (isOnline) {
+                    preSubmitText.setText("If the issue persists, please ");
+                    SpannableString content = new SpannableString("submit a support ticket.");
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    submitText.setText(content);
+                    submitText.setOnClickListener(w -> {
+                        dialog.dismiss();
+                        createSubmitTicketDialog();
+                    });
+                    submitText.setVisibility(View.VISIBLE);
+                } else {
+                    preSubmitText.setText("If the issue persists, please submit a support ticket at help.lumination.com.au");
+                    submitText.setVisibility(View.GONE);
+                }
+            });
         });
+        thread.start();
 
         dialog.show();
         dialog.getWindow().setLayout(800, 600);

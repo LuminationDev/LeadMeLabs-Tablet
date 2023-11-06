@@ -49,6 +49,7 @@
             app:flexDirection="row">
 
             <TextView
+                android:id="@+id/pre_submit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="If the issue persists, please "/>
