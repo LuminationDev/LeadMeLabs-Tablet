@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
+import com.lumination.leadmelabs.models.applications.ReviveApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -96,6 +97,9 @@ public class ApplicationAdapter extends BaseAdapter {
                 break;
             case "Vive":
                 filePath = ViveApplication.getImageUrl(currentApplication.id);
+                break;
+            case "Revive":
+                filePath = ReviveApplication.getImageUrl(currentApplication.id);
                 break;
             default:
                 filePath = "";
