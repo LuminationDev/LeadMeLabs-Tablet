@@ -283,8 +283,10 @@
                     </com.google.android.flexbox.FlexboxLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/submit_ticket_online"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="visible"
                         android:background="@drawable/card_ripple_white"
                         app:flexDirection="row"
                         android:layout_marginTop="10dp"
@@ -332,6 +334,48 @@
                                     android:textColor="@color/white"
                                     android:text="Submit an IT support ticket"/>
                             </com.google.android.flexbox.FlexboxLayout>
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/submit_ticket_offline"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_ripple_white"
+                        app:flexDirection="row"
+                        android:layout_marginTop="10dp"
+                        android:padding="20dp">
+                        <ImageView
+                            app:layout_flexShrink="0"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/vern_out_of_charge">
+                        </ImageView>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:flexDirection="column"
+                            app:justifyContent="center"
+                            app:alignItems="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textSize="16sp"
+                                android:textFontWeight="600"
+                                android:text="Still having trouble with your issue?"/>
+
+                            <TextView
+                                android:id="@+id/submit_ticket_offline_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textSize="18dp"
+                                android:text="Visit help.lumination.com.au to submit a support ticket"/>
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
 

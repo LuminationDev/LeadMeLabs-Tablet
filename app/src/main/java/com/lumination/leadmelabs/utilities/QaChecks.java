@@ -105,7 +105,7 @@ public class QaChecks {
 
     public QaCheck canReachPlayStore() {
         QaCheck qaCheck = new QaCheck("can_reach_play_store");
-        boolean result = isAvailable("https://play.google.com/");
+        boolean result = Helpers.urlIsAvailable("https://play.google.com/");
         if (!result) {
             qaCheck.setFailed("Could not reach https://play.google.com/");
         } else {
@@ -116,7 +116,7 @@ public class QaChecks {
 
     public QaCheck canReachAnalytics() {
         QaCheck qaCheck = new QaCheck("can_reach_analytics");
-        boolean result = isAvailable("https://analytics.google.com/");
+        boolean result = Helpers.urlIsAvailable("https://analytics.google.com/");
         if (!result) {
             qaCheck.setFailed("Could not reach https://analytics.google.com/");
         } else {
@@ -127,7 +127,7 @@ public class QaChecks {
 
     public QaCheck canReachSentry() {
         QaCheck qaCheck = new QaCheck("can_reach_sentry");
-        boolean result = isAvailable("https://sentry.io/");
+        boolean result = Helpers.urlIsAvailable("https://sentry.io/");
         if (!result) {
             qaCheck.setFailed("Could not reach https://sentry.io/");
         } else {
@@ -138,7 +138,7 @@ public class QaChecks {
 
     public QaCheck canReachSteamStatic() {
         QaCheck qaCheck = new QaCheck("can_reach_steam_static");
-        boolean result = isAvailable("https://cdn.cloudflare.steamstatic.com/steam/apps/238010/header.jpg");
+        boolean result = Helpers.urlIsAvailable("https://cdn.cloudflare.steamstatic.com/steam/apps/238010/header.jpg");
         if (!result) {
             qaCheck.setFailed("Could not reach cloudflare.steamstatic.com");
         } else {
@@ -173,18 +173,5 @@ public class QaChecks {
         qaChecks.add(isAppUpToDate());
         qaChecks.add(pinIsNotDefault());
         return qaChecks;
-    }
-
-    private boolean isAvailable(String url){
-        try {
-            URL urlObject = new URL(url);
-            HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
-            urlConnection.connect();
-            urlConnection.disconnect();
-            return true;
-        } catch (IOException e) {
-            Log.e("QaChecks", "Exception", e);
-        }
-        return false;
     }
 }
