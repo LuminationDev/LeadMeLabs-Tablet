@@ -34,6 +34,7 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
+import com.lumination.leadmelabs.models.applications.ReviveApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.models.applications.details.Details;
@@ -297,6 +298,9 @@ public class StationSingleFragment extends Fragment {
                         break;
                     case "Vive":
                         filePath = ViveApplication.getImageUrl(station.gameId);
+                        break;
+                    case "Revive":
+                        filePath = ReviveApplication.getImageUrl(station.gameId);
                         break;
                     default:
                         filePath = "";
