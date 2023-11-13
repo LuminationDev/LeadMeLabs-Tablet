@@ -13,6 +13,9 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -73,8 +76,18 @@ public class SettingsViewModel extends AndroidViewModel {
         editor.apply();
         NetworkService.setNUCAddress(newValue);
         nucAddress.setValue(newValue);
-        NetworkService.sendMessage("NUC", "Stations", "List");
-        NetworkService.sendMessage("NUC", "Appliances", "List");
+
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("Stations", "");
+            details.put("Appliances", "");
+            message.put("List", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        NetworkService.sendMessage("NUC", "Storage", message);
     }
 
     /**

@@ -13,6 +13,9 @@ import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class GlobalAdapter extends RecyclerView.Adapter<GlobalAdapter.ViewHolder> {
@@ -33,7 +36,16 @@ public class GlobalAdapter extends RecyclerView.Adapter<GlobalAdapter.ViewHolder
         Actions action = mData.get(position);
         holder.textView.setText(action.name);
         holder.textView.setOnClickListener(v -> {
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "PassToExperience:" + action.trigger);
+            JSONObject message = new JSONObject();
+            try {
+                JSONObject details = new JSONObject();
+                details.put("action", action.trigger);
+                message.put("PassToExperience", details);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message);
         });
     }
 

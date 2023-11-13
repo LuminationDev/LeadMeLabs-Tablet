@@ -90,12 +90,25 @@ public class SceneStrategy extends AbstractApplianceStrategy {
 
         //Action : [cbus unit : group address : id address : scene value] : [type : room : id scene]
         String automationValue = appliance.id.substring(appliance.id.length() -1 , appliance.id.length());
-        NetworkService.sendMessage("NUC",
-                "Automation",
-                "Set" + ":"                             //[0] Action
-                        + appliance.id + ":"            //[1] CBUS unit number
-                        + automationValue + ":"                      //[7] CBUS object id/doubles as card id
-                        + NetworkService.getIPAddress());           //[8] The IP address of the tablet
+
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("id", appliance.id);
+            details.put("value", automationValue);
+            details.put("ipAddress", NetworkService.getIPAddress());
+            message.put("Set", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        NetworkService.sendMessage("NUC", "Automation", message);
+//        NetworkService.sendMessage("NUC",
+//                "Automation",
+//                "Set" + ":"                             //[0] Action
+//                        + appliance.id + ":"            //[1] CBUS unit number
+//                        + automationValue + ":"                      //[7] CBUS object id/doubles as card id
+//                        + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
 

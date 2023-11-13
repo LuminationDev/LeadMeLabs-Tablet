@@ -26,6 +26,9 @@ import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 
 import androidx.core.app.NotificationCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -83,8 +86,14 @@ public class NetworkService extends Service {
      */
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
-        NetworkService.sendMessage("NUC", "Connect", "Connect");
-        NetworkService.sendMessage("NUC", "CanAcknowledge", "");
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Connect", "CanAcknowledge");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        NetworkService.sendMessage("NUC", "Connect", message);
     }
 
     /**
@@ -115,9 +124,9 @@ public class NetworkService extends Service {
     /**
      * Send a message to the NUCs server.
      */
-    public static void sendMessage(String destination, String actionNamespace, String additionalData) {
-
-        String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
+    public static void sendMessage(String destination, String actionNamespace, JSONObject additionalData) {
+        String data = additionalData.toString();
+        String message = "Android:" + destination + ":" + actionNamespace + ":" + data; // add the source and destination at the front
 
         Log.d(TAG, "Going to send: " + message);
         if (getEncryptionKey().length() == 0) {
@@ -288,8 +297,18 @@ public class NetworkService extends Service {
             return;
         }
         message = EncryptionHelper.decrypt(message, getEncryptionKey());
+
+        //Convert to JObject here?
+
         if (!message.equals("NUC:Android:Ping")) {
-            NetworkService.sendMessage("NUC", "ACK", unencryptedMessage.substring(0, Math.min(30, unencryptedMessage.length())));
+            JSONObject ackMessage = new JSONObject();
+            try {
+                ackMessage.put("Substring", unencryptedMessage.substring(0, Math.min(30, unencryptedMessage.length())));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            NetworkService.sendMessage("NUC", "ACK", ackMessage);
         }
 
         //Get the IP address used to determine who has just connected.
@@ -298,10 +317,14 @@ public class NetworkService extends Service {
         //Message has been received close the socket
         clientSocket.close();
 
-        //Pass the message of to the UI updater
-        UIUpdateManager.determineUpdate(message);
-
         Log.d(TAG, "Message: " + message + " IpAddress:" + ipAddress);
+
+        //Pass the message of to the UI updater
+        try {
+            UIUpdateManager.determineUpdate(message);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

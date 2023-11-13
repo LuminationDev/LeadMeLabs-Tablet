@@ -25,6 +25,9 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +105,14 @@ public class StationSelectionPageFragment extends Fragment {
 
     public void confirmLaunchGame(int[] selectedIds, String selectedGameId) {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-        NetworkService.sendMessage("Station," + stationIds, "Experience", "Launch:" + selectedGameId);
+
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Launch", selectedGameId);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("Station," + stationIds, "Experience", message);
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
         DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedGameId), false);
     }

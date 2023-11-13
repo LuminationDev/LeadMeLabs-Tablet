@@ -27,42 +27,6 @@ import java.util.List;
 
 public class WakeOnLan {
     /**
-     * Turn on all computers in the currently selected room with the Wake On Lan function that
-     * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
-     */
-    public static void WakeAll() {
-        String room = ViewModelProviders.of(MainActivity.getInstance()).get(RoomViewModel.class).getSelectedRoom().getValue();
-        List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
-
-        if(stations == null || room == null) {
-            return;
-        }
-
-        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-        String stationIdsString = String.join(",", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
-
-        NetworkService.sendMessage("NUC",
-                "WOL",
-                stationIdsString + ":"
-                        + NetworkService.getIPAddress());
-
-        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-            put("station_ids", stationIdsString);
-        }};
-        FirebaseManager.logAnalyticEvent("stations_turned_on", analyticsAttributes);
-
-
-        if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getHideStationControls().getValue())) {
-            return;
-        }
-
-        //Change all stations to turning on status if not in wall mode
-        for (int stationId : stationIds) {
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
-        }
-    }
-
-    /**
      * Send a Wake On Lan command from the Android Tablet aimed at the NUC so it can be remotely
      * turned on.
      */

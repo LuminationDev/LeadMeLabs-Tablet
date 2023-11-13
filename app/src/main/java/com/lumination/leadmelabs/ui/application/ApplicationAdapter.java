@@ -38,6 +38,9 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -173,7 +176,13 @@ public class ApplicationAdapter extends BaseAdapter {
         if (stationId > 0) {
             Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
             if (station != null) {
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("Launch", currentApplication.id);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message);
                 sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
                 DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
             }

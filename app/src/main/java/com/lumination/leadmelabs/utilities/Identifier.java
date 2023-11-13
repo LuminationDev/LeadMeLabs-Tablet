@@ -8,6 +8,9 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 /**
@@ -37,7 +40,14 @@ public class Identifier {
                     return;
                 }
                 Station station = stations.get((stations.size() - 1) - index[0]);
-                NetworkService.sendMessage("NUC", "IdentifyStation", station.id + "");
+
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("Station", station.id + "");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("NUC", "IdentifyStation", message);
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Successfully located " + station.name, Toast.LENGTH_SHORT).show();
                 index[0]--;
 

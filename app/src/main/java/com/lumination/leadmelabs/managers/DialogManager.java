@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -51,6 +52,9 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -194,7 +198,14 @@ public class DialogManager {
                         MainActivity.runOnUI(() -> {
                             successText.setVisibility(View.VISIBLE);
                         });
-                        NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
+
+                        JSONObject message = new JSONObject();
+                        try {
+                            message.put("UploadLogFile", "");
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                        NetworkService.sendMessage("Station,All", "CommandLine", message);
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("content_type", "submit");
@@ -480,7 +491,13 @@ public class DialogManager {
         int[] selectedIds = Helpers.cloneStationList(stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+        JSONObject message = new JSONObject();
+        try {
+            message.put("StopGame", "");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("Station," + stationIds, "CommandLine", message);
     }
 
     /**
@@ -503,7 +520,14 @@ public class DialogManager {
             if (Patterns.WEB_URL.matcher(input).matches()) {
                 Station selectedStation = binding.getSelectedStation();
                 selectedStation.gameName = input;
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
+
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("URL", input);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", message);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
                 urlDialog.dismiss();
             } else {
@@ -538,7 +562,18 @@ public class DialogManager {
                 Station selectedStation = binding.getSelectedStation();
                 selectedStation.setName(input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
-                NetworkService.sendMessage("NUC", "UpdateStation", selectedStation.id + ":SetValue:name:" + input);
+
+                JSONObject message = new JSONObject();
+                try {
+                    JSONObject details = new JSONObject();
+                    details.put("station", selectedStation.id);
+                    details.put("key", "volume");
+                    details.put("value", selectedStation.volume);
+                    message.put("SetValue", details);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("NUC", "UpdateStation", message);
 
                 renameStationDialog.dismiss();
             } else {
@@ -583,7 +618,13 @@ public class DialogManager {
 
         String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", type);
+        JSONObject message = new JSONObject();
+        try {
+            message.put(type, "");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", message);
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
@@ -614,7 +655,13 @@ public class DialogManager {
         }.start();
 
         cancelButton.setOnClickListener(x -> {
-            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            JSONObject cancelMessage = new JSONObject();
+            try {
+                cancelMessage.put("CancelShutdown", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", cancelMessage);
             if(countdownCallbackInterface != null) {
                 countdownCallbackInterface.callback(0);
             }
@@ -1119,7 +1166,16 @@ public class DialogManager {
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(w -> {
-            NetworkService.sendMessage("Station," + stationId, "Station", "SetValue:steamCMD:" + steamGuard[0]);
+            JSONObject message = new JSONObject();
+            try {
+                JSONObject details = new JSONObject();
+                details.put("key", "steamCMD");
+                details.put("value", steamGuard[0]);
+                message.put("SetValue", details);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationId, "Station", message);
 
             //Present a loading bar until the output comes back
             entry.setVisibility(View.GONE);

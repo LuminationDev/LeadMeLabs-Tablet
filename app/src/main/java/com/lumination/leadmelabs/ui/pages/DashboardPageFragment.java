@@ -213,7 +213,16 @@ public class DashboardPageFragment extends Fragment {
         if (stationsToTurnOff.isEmpty()) {
             for (Appliance sceneAppliance: matchingAppliances) {
                 String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
-                String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                JSONObject message = new JSONObject();
+                try {
+                    JSONObject details = new JSONObject();
+                    details.put("id", sceneAppliance.id);
+                    details.put("value", automationValue);
+                    details.put("ipAddress", NetworkService.getIPAddress());
+                    message.put("Set", details);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 NetworkService.sendMessage("NUC", "Automation", message);
             }
             return;
@@ -224,7 +233,16 @@ public class DashboardPageFragment extends Fragment {
             if (confirmationResult) {
                 for (Appliance sceneAppliance: finalMatchingAppliances) {
                     String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
-                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                    JSONObject message = new JSONObject();
+                    try {
+                        JSONObject details = new JSONObject();
+                        details.put("id", sceneAppliance.id);
+                        details.put("value", automationValue);
+                        details.put("ipAddress", NetworkService.getIPAddress());
+                        message.put("Set", details);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                     NetworkService.sendMessage("NUC", "Automation", message);
                 }
             }
@@ -311,7 +329,13 @@ public class DashboardPageFragment extends Fragment {
                     int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
                     String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-                    NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+                    JSONObject message = new JSONObject();
+                    try {
+                        message.put("StopGame", "");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    NetworkService.sendMessage("Station," + stationIds, "CommandLine", message);
                 }
             };
 
@@ -325,7 +349,13 @@ public class DashboardPageFragment extends Fragment {
             int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
-            NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("StopGame", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationIds, "CommandLine", message);
         }
     }
 
@@ -349,7 +379,13 @@ public class DashboardPageFragment extends Fragment {
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("CancelShutdown", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", message);
             restartHeading.setText(R.string.restart_space);
             restartContent.setText(R.string.restart_stations);
         }

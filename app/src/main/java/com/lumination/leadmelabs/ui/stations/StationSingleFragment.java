@@ -46,6 +46,9 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,7 +84,17 @@ public class StationSingleFragment extends Fragment {
                     Station selectedStation = binding.getSelectedStation();
                     selectedStation.volume = (int) slider.getValue();
                     mViewModel.updateStationById(selectedStation.id, selectedStation);
-                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.volume);
+
+                    JSONObject message = new JSONObject();
+                    try {
+                        JSONObject details = new JSONObject();
+                        details.put("key", "volume");
+                        details.put("value", selectedStation.volume);
+                        message.put("SetValue", details);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", message);
                     System.out.println(slider.getValue());
                 }
             };
@@ -137,7 +150,13 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("Restart", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", message);
 
             ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
@@ -152,7 +171,14 @@ public class StationSingleFragment extends Fragment {
         restartVr.setOnClickListener(v -> {
             //Start flashing the VR icons
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(binding.getSelectedStation().id, true);
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
+
+            JSONObject message = new JSONObject();
+            try {
+                message.put("RestartVR", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", message);
             DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -167,10 +193,17 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
+            JSONObject message = new JSONObject();
+            try {
+                message.put("StopGame", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
             if(SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
-                        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+                        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", message);
                     }
                 };
 
@@ -181,7 +214,7 @@ public class StationSingleFragment extends Fragment {
                         "Cancel",
                         "Confirm");
             } else {
-                NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+                NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", message);
             }
         });
 
@@ -195,16 +228,19 @@ public class StationSingleFragment extends Fragment {
             int id = binding.getSelectedStation().id;
             Station station = mViewModel.getStationById(id);
 
+            JSONObject message = new JSONObject();
+            try {
+                JSONObject details = new JSONObject();
+                details.put("id", station.id);
+                details.put("ipAddress", NetworkService.getIPAddress());
+                message.put("Details", details);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
             if (station.status.equals("Off")) {
                 station.powerStatusCheck();
-
-                //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
-                //additionalData break down
-                //Action : [cbus unit : group address : id address : value] : [type : room : id station]
-                NetworkService.sendMessage("NUC",
-                        "WOL",
-                        station.id + ":"
-                                + NetworkService.getIPAddress());
+                NetworkService.sendMessage("NUC","WOL", message);
 
                 MainActivity.runOnUI(() -> {
                     station.status = "Turning On";
@@ -215,10 +251,7 @@ public class StationSingleFragment extends Fragment {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
                 //Send the WOL command again, in case a user shutdown and started up to quickly
-                NetworkService.sendMessage("NUC",
-                        "WOL",
-                        station.id + ":"
-                                + NetworkService.getIPAddress());
+                NetworkService.sendMessage("NUC","WOL", message);
             } else {
                 if(SettingsFragment.checkAdditionalExitPrompts() && station.gameName != null) {
                     //No game is present, shutdown is okay to continue
@@ -357,7 +390,13 @@ public class StationSingleFragment extends Fragment {
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("CancelShutdown", "");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", message);
             if (DialogManager.shutdownTimer != null) {
                 DialogManager.shutdownTimer.cancel();
             }

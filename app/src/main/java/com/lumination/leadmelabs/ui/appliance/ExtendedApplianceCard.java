@@ -25,6 +25,9 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -299,13 +302,26 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
      * @param value An integer representing whether to open(255), stop(5) or close(0) a blind.
      */
     protected void applianceNetworkCall(Appliance appliance, String value) {
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("id", appliance.id);
+            details.put("value", value);
+            details.put("ipAddress", NetworkService.getIPAddress());
+            message.put("Set", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        NetworkService.sendMessage("NUC", "Automation", message);
+
         //Action : [cbus unit : group address : id address : scene value] : [type : room : id scene]
-        NetworkService.sendMessage("NUC",
-                "Automation",
-                "Set" + ":"                         //[0] Action
-                        + appliance.id + ":"
-                        + value + ":"                           //[4] New value for address
-                        + NetworkService.getIPAddress());       //[8] The IP address of the tablet
+//        NetworkService.sendMessage("NUC",
+//                "Automation",
+//                "Set" + ":"                         //[0] Action
+//                        + appliance.id + ":"
+//                        + value + ":"                           //[4] New value for address
+//                        + NetworkService.getIPAddress());       //[8] The IP address of the tablet
 
         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
             put("appliance_type", appliance.type);

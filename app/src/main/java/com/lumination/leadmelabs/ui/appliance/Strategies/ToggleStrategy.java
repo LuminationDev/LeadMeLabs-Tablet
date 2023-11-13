@@ -14,6 +14,9 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceController;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 /*
@@ -46,14 +49,27 @@ public class ToggleStrategy extends AbstractApplianceStrategy {
             ApplianceViewModel.activeApplianceList.put(appliance.id, value);
         }
 
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("id", appliance.id);
+            details.put("value", value);
+            details.put("ipAddress", NetworkService.getIPAddress());
+            message.put("Set", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        NetworkService.sendMessage("NUC", "Automation", message);
+
         //additionalData break down
-        //Action : [cbus unit : group address : id address : value] : [type : room : id appliance]
-        NetworkService.sendMessage("NUC",
-                "Automation",
-                "Set" + ":"                         //[0] Action
-                        + appliance.id + ":"                    //[1] CBUS unit number
-                        + value + ":"                           //[2] CBUS object id/doubles as card id
-                        + NetworkService.getIPAddress());       //[3] The IP address of the tablet
+//        //Action : [cbus unit : group address : id address : value] : [type : room : id appliance]
+//        NetworkService.sendMessage("NUC",
+//                "Automation",
+//                "Set" + ":"                         //[0] Action
+//                        + appliance.id + ":"                    //[1] CBUS unit number
+//                        + value + ":"                           //[2] CBUS object id/doubles as card id
+//                        + NetworkService.getIPAddress());       //[3] The IP address of the tablet
 
         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
             put("appliance_type", appliance.type);

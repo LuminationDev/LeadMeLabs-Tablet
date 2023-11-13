@@ -32,6 +32,9 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,11 +185,18 @@ public class ApplicationSelectionFragment extends Fragment {
      * Refresh the list of steam applications on a particular computer or on all.
      */
     private void refreshSteamGamesList() {
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Refresh", "");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         if(stationId > 0) {
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Refresh");
+            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message);
         } else {
             String stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
-            NetworkService.sendMessage("Station," + stationIds, "Experience", "Refresh");
+            NetworkService.sendMessage("Station," + stationIds, "Experience", message);
         }
     }
 }

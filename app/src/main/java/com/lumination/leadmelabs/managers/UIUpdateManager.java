@@ -45,12 +45,13 @@ public class UIUpdateManager {
      * Split a message into individual parts to determine what UI elements are in need of updating.
      * @param message A string of values separated by ':'.
      */
-    public static void determineUpdate(String message) {
+    public static void determineUpdate(String message) throws JSONException {
         String[] messageParts = message.split(":", 4);
         String source = messageParts[0];
         String destination = messageParts[1];
         String actionNamespace = messageParts[2];
-        String additionalData = messageParts.length > 3 ? messageParts[3] : null;
+        JSONObject additionalData = messageParts.length > 3 ? new JSONObject(messageParts[3]) : null;
+
         if (!destination.equals("Android")) {
             return;
         }
@@ -81,18 +82,21 @@ public class UIUpdateManager {
             }
 
             switch (actionNamespace) {
-                case "Stations":
-                    if (additionalData.startsWith("List")) {
-                        updateStations(additionalData.split(":", 2)[1]);
+                case "Storage":
+                    JSONObject details = additionalData.getJSONObject("List");
+                    if (details.has("Stations")) {
+                        updateStations(details.getJSONArray("Stations"));
+                    }
+                    if (details.has("Appliances")) {
+                        updateAppliances(details.getJSONArray("Appliances"));
                     }
                     break;
+
                 case "Appliances":
-                    if (additionalData.startsWith("List")) {
-                        updateAppliances(additionalData.split(":", 2)[1]);
-                    }
-                    if (additionalData.startsWith("ProjectorSlowDown")) {
-                        String projectorName = additionalData.split(",")[1];
-                        String projectorId = additionalData.split(",")[2];
+                    if (additionalData.has("ProjectorSlowDown")) {
+                        JSONObject projectorDetails = additionalData.getJSONObject("ProjectorSlowDown");
+                        String projectorName = projectorDetails.getString("name");
+                        String projectorId = projectorDetails.getString("id");
 
                         List<Appliance> applianceList = ApplianceFragment.mViewModel.getAppliances().getValue();
                         if(applianceList == null) {
@@ -106,7 +110,9 @@ public class UIUpdateManager {
                                     MainActivity.runOnUI(() ->
                                             DialogManager.createBasicDialog(
                                                     "Warning",
-                                                    projectorName + " has already been powered on or off in the last 10 seconds. The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off."
+                                                    projectorName + " has already been powered on or off in the last 10 seconds. " +
+                                                            "The automation system performs best when appliances are not repeatedly turned " +
+                                                            "on and off. Projectors need up to 10 seconds between turning on and off."
                                             )
                                     );
                                 }
@@ -115,20 +121,21 @@ public class UIUpdateManager {
                     }
                     break;
                 case "Station":
-                    if (additionalData.startsWith("SetValue")) {
-                        Log.e("Apps", additionalData);
+                    Log.e("Apps", additionalData.toString());
 
-                        String[] keyValue = additionalData.split(":", 3);
-                        String key = keyValue[1];
-                        String value = keyValue[2];
+                    if (additionalData.has("SetValue")) {
+                        JSONObject stationDetails = additionalData.getJSONObject("SetValue");
+                        String key = stationDetails.getString("key");
+                        String value = stationDetails.getString("value");
                         updateStation(source.split(",")[1], key, value);
                     }
 
-                    if (additionalData.startsWith("DeviceStatus")) {
+                    if (additionalData.has("DeviceStatus")) {
                         //[0] - 'DeviceStatus'
                         //[1] - DeviceType
                         //[2] - Values
-                        String[] keyValue = additionalData.split(":", 3); //Only split the key off
+                        String deviceData = additionalData.getString("DeviceStatus");
+                        String[] keyValue = deviceData.split(":", 3); //Only split the key off
                         String key = keyValue[1];
                         String value = keyValue[2];
                         updateStationDevices(source.split(",")[1], key, value);
@@ -150,7 +157,33 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    if (additionalData.startsWith("SteamVRError")) {
+                    if (additionalData.has("DeviceQuery")) {
+                        JSONObject deviceDetails = additionalData.getJSONObject("DeviceQuery");
+
+                        JSONObject headsetDetails = deviceDetails.getJSONObject("Headsets");
+                        updateHeadset(station, "OpenVR", "tracking", headsetDetails.getString("openVrStatus"));
+                        updateHeadset(station, "ThirdParty", "tracking", headsetDetails.getString("headsetStatus"));
+
+                        JSONArray controllerDetails = deviceDetails.getJSONArray("Controllers");
+                        for (int i = 0; i < controllerDetails.length(); i++) {
+                            JSONObject controller = controllerDetails.getJSONObject(i);
+
+                            // Now you can access properties of the 'controller' JSONObject
+                            String role = controller.getString("role");
+                            String tracking = controller.getString("tracking");
+                            int battery = controller.getInt("battery");
+
+                            updateController(station, role, "tracking", tracking);
+                            updateController(station, role, "battery", String.valueOf(battery));
+                        }
+
+                        JSONObject baseStationDetails = deviceDetails.getJSONObject("BaseStations");
+                        updateBaseStations(station, baseStationDetails.getString("connectedBaseStations"), baseStationDetails.getString("totalBaseStations"));
+                        MainActivity.runOnUI(() ->
+                                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(source.split(",")[1]), station)
+                        );
+                    }
+                    if (additionalData.has("SteamVRError")) {
                         MainActivity.runOnUI(() -> {
                             BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
                                 if (confirmationResult) {
@@ -166,21 +199,7 @@ public class UIUpdateManager {
                                     "Restart");
                         });
                     }
-                    if (additionalData.startsWith("GameLaunchFailed")) {
-                        DialogManager.gameLaunchedOnStation(station.id);
-                        String[] data = additionalData.split(":", 2);
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Experience launch failed",
-                                        "Launch of " + data[1] + " failed on " + station.name
-                                )
-                        );
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("PopupDetected")) {
+                    if (additionalData.has("PopupDetected")) {
                         MainActivity.runOnUI(() ->
                                 DialogManager.createBasicDialog(
                                         "Cannot launch experience",
@@ -188,119 +207,53 @@ public class UIUpdateManager {
                                 )
                         );
                     }
-                    if (additionalData.startsWith("AlreadyLaunchingGame")) {
-                        DialogManager.gameLaunchedOnStation(station.id);
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Cannot launch experience",
-                                        "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("SteamError")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Steam error",
-                                        "A Steam error occurred on " + station.name + ". Check the station for more details."
-                                )
-                        );
 
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("LostHeadset")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                        station.name + "'s headset has disconnected. Please check the battery is charged.",
-                                        station.name
-                                )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("headset_disconnected", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("FoundHeadset")) {
-                        //Close the dialog relating to that
-                        DialogManager.closeOpenDialog(
-                                MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                station.name);
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("headset_reconnected", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("HeadsetTimeout")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                        station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("FailedRestart")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Failed to restart station",
-                                        station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
-                                )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
+                    //The tablet has received a message directly from a Station
+                    if (additionalData.has("message")) {
+                        StationMessage(station, additionalData.getString("message"));
                     }
                     break;
                 case "Automation":
-                    if (additionalData.startsWith("Update")) {
+                    if (additionalData.has("Update")) {
                         syncAppliances(additionalData);
                     }
                     break;
                 case "Analytics":
-                    if (additionalData.startsWith("ExperienceTime")) {
-                        String[] parts = additionalData.split(",", 7);
-                        if (parts.length < 7) {
-                            break;
-                        }
+                    if (additionalData.has("ExperienceTime")) {
+                        JSONObject experienceDetails = additionalData.getJSONObject("ExperienceTime");
+
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("experience_time", parts[2]);
-                            put("station_id", parts[4]);
-                            put("experience_name", parts[6]);
+                            put("experience_time", String.valueOf(experienceDetails.getInt("time")));
+                            put("station_id", String.valueOf(experienceDetails.getInt("stationId")));
+                            put("experience_name", experienceDetails.getString("gameName"));
                         }};
                         FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
                     }
                     break;
                 case "QA":
-                    JSONObject request = new JSONObject(additionalData);
-                    if (request.getString("action").equals("Connect")) {
+                    if (additionalData.getString("action").equals("Connect")) {
                         JSONObject response = new JSONObject();
                         response.put("response", "TabletConnected");
                         response.put("responseData", new JSONObject());
                         response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                        NetworkService.sendMessage("NUC", "QA", response);
                         break;
                     }
 
                     QaChecks qaChecks = new QaChecks();
 
-                    if (request.getString("action").equals("RunAuto")) {
+                    if (additionalData.getString("action").equals("RunAuto")) {
                         List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
 
                         JSONObject response = new JSONObject();
                         response.put("response", "TabletChecks");
                         response.put("responseData", (new Gson().toJson(qaCheckList)));
                         response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                        NetworkService.sendMessage("NUC", "QA", response);
                     }
 
-                    if (request.getString("action").equals("RunGroup")) {
-                        String group = request.getJSONObject("actionData").getString("group");
+                    if (additionalData.getString("action").equals("RunGroup")) {
+                        String group = additionalData.getJSONObject("actionData").getString("group");
                         JSONObject response = new JSONObject();
                         response.put("response", "RunTabletGroup");
                         response.put("ipAddress", NetworkService.getIPAddress());
@@ -320,17 +273,17 @@ public class UIUpdateManager {
                         }
                         response.put("responseData", responseData);
 
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                        NetworkService.sendMessage("NUC", "QA", response);
                     }
 
-                    if (request.getString("action").equals("RunAuto")) {
+                    if (additionalData.getString("action").equals("RunAuto")) {
                         List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
 
                         JSONObject response = new JSONObject();
                         response.put("response", "RunTabletGroup");
                         response.put("responseData", (new Gson().toJson(qaCheckList)));
                         response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+                        NetworkService.sendMessage("NUC", "QA", response);
                     }
 
 
@@ -346,11 +299,10 @@ public class UIUpdateManager {
     /**
      * Updates the Station objects with data parsed from JSON entries.
      *
-     * @param additionalData The data sent from the NUC.
+     * @param data The data sent from the NUC.
      */
-    private static void updateStationsFromJson(String additionalData) {
+    private static void updateStationsFromJson(JSONObject data) {
         try {
-            JSONObject data = new JSONObject(additionalData);
             JSONObject responseObject = data.getJSONObject("responseData");
 
             Iterator<String> keys = responseObject.keys();
@@ -433,9 +385,7 @@ public class UIUpdateManager {
 
 
     //Simplify the functions below to a generic one
-    private static void updateStations(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
-
+    private static void updateStations(JSONArray json) {
         MainActivity.runOnUI(() -> {
             try {
                 ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStations(json);
@@ -665,9 +615,77 @@ public class UIUpdateManager {
         return length < limit;
     }
 
-    private static void updateAppliances(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
+    /**
+     * A Station has sent a message directly through the NUC to the tablet. The NUC has not performed
+     * any actions on the data and the full information is still in a string form.
+     * @param station A station object that the message relates to.
+     * @param details A string of details describing what has occurred.
+     */
+    private static void StationMessage(Station station, String details) {
+        if (details.startsWith("GameLaunchFailed")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            String[] data = details.split(":", 2);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Experience launch failed",
+                            "Launch of " + data[1] + " failed on " + station.name
+                    )
+            );
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
+        }
+        if (details.startsWith("AlreadyLaunchingGame")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Cannot launch experience",
+                            "Unable to launch experience on " + station.name + " as it is already " +
+                                    "attempting to launch an experience. You must wait until an experience " +
+                                    "has launched before launching another one. If this issue persists, try " +
+                                    "restarting the VR system."
+                    )
+            );
+        }
+        if (details.startsWith("SteamError")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Steam error",
+                            "A Steam error occurred on " + station.name + ". Check the station for more details."
+                    )
+            );
 
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
+        }
+        if (details.startsWith("HeadsetTimeout")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                            station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
+                    )
+            );
+        }
+        if (details.startsWith("FailedRestart")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Failed to restart station",
+                            station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
+                    )
+            );
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
+        }
+    }
+
+    private static void updateAppliances(JSONArray json) {
         MainActivity.runOnUI(() -> {
             try {
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setAppliances(json);
@@ -688,11 +706,15 @@ public class UIUpdateManager {
      *                      //- [5]ip address of the tablet that the command originated at
      *                      //- [6]msg (contains ID from CBUS in brackets [xxxxxxxx])
      */
-    private static void syncAppliances(String additionalData) {
-        String[] values = additionalData.split(":");
-        String id = values[1];
-        String value = values[2];
-        String ipAddress = values.length > 3 ? values[3] : null;
+    private static void syncAppliances(JSONObject additionalData) throws JSONException {
+        JSONObject details = additionalData.getJSONObject("Update");
+
+        String id = details.getString("id");
+        String value = details.getString("value");
+        String ipAddress = null;
+        if (details.has("ipAddress")) {
+            ipAddress = details.getString("ipAddress");
+        }
         String group = id.split("-")[0];
 
         switch(group) {

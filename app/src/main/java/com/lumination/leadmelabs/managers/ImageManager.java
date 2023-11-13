@@ -3,6 +3,9 @@ package com.lumination.leadmelabs.managers;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -38,7 +41,13 @@ public class ImageManager {
      */
     public static void requestImage(String experienceName) {
         requestedImages.add(experienceName.replace(":", ""));
-        NetworkService.sendMessage("NUC", "ThumbnailRequest", experienceName);
+        JSONObject message = new JSONObject();
+        try {
+            message.put("name", experienceName);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("NUC", "ThumbnailRequest", message);
     }
 
     /**
@@ -48,7 +57,7 @@ public class ImageManager {
      * @return A string representing the absolute path of the image.
      */
     public static String loadLocalImage(String experienceName) {
-        String filePath = MainActivity.getInstance().getApplicationContext().getFilesDir()+ "/" + experienceName.replace(":", "") + "_header.jpg";
+        String filePath = MainActivity.getInstance().getApplicationContext().getFilesDir() + "/" + experienceName.replace(":", "") + "_header.jpg";
         File image = new File(filePath);
 
         if(image.exists()) {

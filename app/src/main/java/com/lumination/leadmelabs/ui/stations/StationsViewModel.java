@@ -370,7 +370,13 @@ public class StationsViewModel extends ViewModel {
 
         //Ask for the device statuses
         for (Station station: Objects.requireNonNull(this.stations.getValue())) {
-            NetworkService.sendMessage("Station," + station.id, "Station", "GetValue:devices");
+            JSONObject message = new JSONObject();
+            try {
+                message.put("GetValue", "devices");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + station.id, "Station", message);
         }
     }
 
@@ -379,7 +385,15 @@ public class StationsViewModel extends ViewModel {
     }
 
     public void loadStations() {
-        NetworkService.sendMessage("NUC", "Stations", "List");
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("Stations", "");
+            message.put("List", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("NUC", "Storage", message);
     }
 
     /**

@@ -351,11 +351,25 @@ public class ApplianceViewModel extends ViewModel {
     }
 
     public static void loadActiveAppliances() {
-        NetworkService.sendMessage("NUC", "Automation", "Get:appliances");
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Get", "appliances");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("NUC", "Automation", message);
     }
 
     //TODO this is called here and when the NUC address is set in main activity
     public void loadAppliances() {
-        NetworkService.sendMessage("NUC", "Appliances", "List");
+        JSONObject message = new JSONObject();
+        try {
+            JSONObject details = new JSONObject();
+            details.put("Appliances", "");
+            message.put("List", details);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("NUC", "Storage", message);
     }
 }
