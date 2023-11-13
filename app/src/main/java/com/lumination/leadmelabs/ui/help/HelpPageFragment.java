@@ -83,12 +83,12 @@ public class HelpPageFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });
 
-        FlexboxLayout launchingExperience = view.findViewById(R.id.launching_an_experience);
+        FlexboxLayout launchingExperience = view.findViewById(R.id.controller_issues);
         launchingExperience.setOnClickListener(v -> {
-            DialogManager.createTroubleshootingTextDialog("Launching an experience", "Ensure that your headsets have batteries plugged in and are positioned in the center of their LED rings. Navigate to the VR library and select an experience. Select which stations you would like to launch the experience on. Press play and wait while the experience is launched.");
+            DialogManager.createTroubleshootingTextDialog("Controller connectivity", "For detailed instructions visit: https://help.lumination.com.au/knowledge/vive-controller-troubleshooting-connectivity-issues\n1. Make sure that your device has enough battery charge.\n2. Ensure the controllers are set to never timeout in SteamVR.\n3. Re-pair the controllers in SteamVR.\n4. Ensure that the base stations have adequate line-of-sight to the controllers.\n5. Enable bluetooth connectivity and update the base station firmware.\n");
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
-                put("content_id", "launching_an_experience");
+                put("content_id", "controller_issues");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
         });

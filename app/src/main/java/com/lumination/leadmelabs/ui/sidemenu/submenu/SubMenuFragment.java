@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.sidemenu.submenu;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,7 +26,6 @@ import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
-import com.lumination.leadmelabs.ui.pages.subpages.AppliancePageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
@@ -167,7 +167,7 @@ public class SubMenuFragment extends Fragment {
         for(int i=0; i<count; i++) {
             tv = (TextView) layout.getChildAt(i);
 
-            if(tv.getText().toString().toLowerCase().equals(type)) {
+            if(tv.getText().toString().equalsIgnoreCase(type)) {
                 tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
             } else {
                 tv.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.black));
@@ -251,7 +251,7 @@ public class SubMenuFragment extends Fragment {
         ControlPageFragment.childManager.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in,
                         R.anim.fade_out)
-                .replace(R.id.subpage, AppliancePageFragment.class, args)
+                .replace(R.id.subpage, ApplianceFragment.class, args)
                 .addToBackStack("submenu:" + type)
                 .commit();
 

@@ -261,7 +261,7 @@ public class SideMenuFragment extends Fragment {
     /**
      * Remove the sub menu from the view.
      */
-    private void removeSubMenu() {
+    public void removeSubMenu() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("sub");
 
