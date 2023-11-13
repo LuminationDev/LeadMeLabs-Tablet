@@ -10,7 +10,7 @@
         style="@style/PageTitle"
         android:text="@string/select_stations_title"/>
 
-    <com.google.android.flexbox.FlexboxLayout
+    `<com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:justifyContent="flex_end"
@@ -40,7 +40,7 @@
                 android:textFontWeight="600"
                 android:textSize="13sp" />
         </com.google.android.flexbox.FlexboxLayout>
-    </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>`
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/station_selection"

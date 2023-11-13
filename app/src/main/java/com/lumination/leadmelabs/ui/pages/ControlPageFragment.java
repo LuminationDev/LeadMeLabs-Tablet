@@ -41,6 +41,7 @@ public class ControlPageFragment extends Fragment {
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).removeSubMenu();
         });
 
         if (savedInstanceState == null) {

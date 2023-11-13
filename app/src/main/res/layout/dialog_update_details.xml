@@ -25,14 +25,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginBottom="3dp"
-                android:text="LeadMe Labs Update 1.13"
+                android:text="LeadMe Labs Update 1.17"
                 android:textAlignment="center"
                 android:textFontWeight="600"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/body_text"
-                android:text="This includes several stability related features, including:"
+                android:text="This includes:"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -40,12 +40,9 @@
 
             <TextView
                 android:id="@+id/update_details"
-                android:text="\u2022 Integration with OpenVR for launching experiences
-                \n\u2022 Improved headset detection of headset connection status
-                \n\u2022 Help and troubleshooting guides
-                \n\u2022 Detection of experiences launched outside of LeadMe
-                \n\u2022 Detection of controller and base station connection status
-                \n\u2022 Updated SteamVR config to prevent in-headset dashboard and improve stability"
+                android:text="\u2022 Troubleshooting page offline
+                \n\u2022 Improved process tracking to reduce load on computer resources
+                \n\u2022 Stability and bug fixes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

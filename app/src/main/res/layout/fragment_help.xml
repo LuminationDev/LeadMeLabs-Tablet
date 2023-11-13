@@ -87,20 +87,20 @@
                     </com.google.android.flexbox.FlexboxLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/launching_an_experience"
+                        android:id="@+id/controller_issues"
                         style="@style/HelpCardQuestions">
                         <ImageView
                             style="@style/HelpCardIconQuestions"
-                            android:src="@drawable/help_play">
+                            android:src="@drawable/vr_controller_black">
                         </ImageView>
                         <com.google.android.flexbox.FlexboxLayout
                             style="@style/HelpCardBody">
                             <TextView
                                 style="@style/HelpCardBodyTitle"
-                                android:text="Launching an experience"/>
+                                android:text="Controller connectivity"/>
                             <TextView
                                 style="@style/HelpCardBodyText"
-                                android:text="How do I start a VR experience on the headsets?" />
+                                android:text="I'm having issues with the controller connection" />
                         </com.google.android.flexbox.FlexboxLayout>
                     </com.google.android.flexbox.FlexboxLayout>
 
@@ -257,7 +257,7 @@
                             style="@style/HelpCardBody">
                             <TextView
                                 style="@style/HelpCardBodyTitle"
-                                android:text="LeadMe Labs 1.13 Update"/>
+                                android:text="LeadMe Labs 1.17 Update"/>
                             <TextView
                                 style="@style/HelpCardBodyText"
                                 android:text="Details of the latest LeadMe Labs update." />
