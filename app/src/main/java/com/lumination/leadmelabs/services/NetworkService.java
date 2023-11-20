@@ -84,7 +84,7 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
-        NetworkService.sendMessage("NUC", "CanAcknowledge", "");
+        NetworkService.sendMessage("NUC", "CanAcknowledge", "Unicode");
     }
 
     /**
@@ -124,7 +124,13 @@ public class NetworkService extends Service {
             DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
-        message = EncryptionHelper.encrypt(message, getEncryptionKey());
+
+        if (MainActivity.isNucUtf8) {
+            message = EncryptionHelper.encrypt(message, getEncryptionKey());
+        } else {
+            message = EncryptionHelper.encryptUnicode(message, getEncryptionKey());
+        }
+
         int port = 55556;
 
         Log.d(TAG, "Attempting to send: " + message);
@@ -140,7 +146,13 @@ public class NetworkService extends Service {
 
                 // Construct the header
                 String headerMessageType = "text";
-                byte[] headerMessageTypeBytes = headerMessageType.getBytes();
+                byte[] headerMessageTypeBytes;
+                if (MainActivity.isNucUtf8) {
+                    headerMessageTypeBytes = headerMessageType.getBytes();
+                } else {
+                    headerMessageTypeBytes = headerMessageType.getBytes(StandardCharsets.UTF_16LE);
+                }
+
                 byte[] headerMessageTypeLengthBytes = ByteBuffer.allocate(4).putInt(headerMessageTypeBytes.length).array();
 
                 // Transform the message to a byte array.
@@ -245,24 +257,46 @@ public class NetworkService extends Service {
             // Read the header
             byte[] headerBuffer = new byte[headerLength];
             inputStream.readFully(headerBuffer);
-            String headerMessageType = new String(headerBuffer, StandardCharsets.UTF_8);
+
+            //TODO This can be removed in subsequent updates
+            MainActivity.isNucUtf8 = DetermineConnectionType(headerBuffer);
+
+            String headerMessageType;
+            if (MainActivity.isNucUtf8) {
+                headerMessageType = new String(headerBuffer, StandardCharsets.UTF_8);
+            } else {
+                headerMessageType = new String(headerBuffer, StandardCharsets.UTF_16LE);
+            }
 
             Log.d(TAG, "Incoming connection attempt: " + headerMessageType);
 
-            if(headerMessageType.equals("text")) {
-                receiveMessage(clientSocket, inputStream);
-            }
-            else if(headerMessageType.equals("image")) {
-                receiveImage(clientSocket, inputStream);
-            }
-            else {
-                Log.e(TAG, "Unknown connection attempt: " + headerMessageType);
+            switch (headerMessageType) {
+                case "text":
+                    receiveMessage(clientSocket, inputStream);
+                    break;
+                case "image":
+                    receiveImage(clientSocket, inputStream);
+                    break;
+                default:
+                    Log.e(TAG, "Unknown connection attempt: " + headerMessageType);
+                    break;
             }
 
         }  catch (IOException e) {
             Log.e(TAG, "Unable to process client request");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Determine the incoming connection type, if the header message can be decoded in Unicode and
+     * is one of the approved headers then the NUC is Unicode enabled.
+     * @param headerBuffer A byte array containing the header message.
+     * @return A boolean of if the header is in UTF-8 or Unicode.
+     */
+    private boolean DetermineConnectionType(byte[] headerBuffer) {
+        String message = new String(headerBuffer, StandardCharsets.UTF_16LE);
+        return !message.equals("text") && !message.equals("image");
     }
 
     /**
@@ -287,7 +321,13 @@ public class NetworkService extends Service {
             DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
-        message = EncryptionHelper.decrypt(message, getEncryptionKey());
+
+        if (MainActivity.isNucUtf8) {
+            message = EncryptionHelper.decrypt(message, getEncryptionKey());
+        } else {
+            message = EncryptionHelper.decryptUnicode(message, getEncryptionKey());
+        }
+
         if (!message.equals("NUC:Android:Ping")) {
             NetworkService.sendMessage("NUC", "ACK", unencryptedMessage.substring(0, Math.min(30, unencryptedMessage.length())));
         }
@@ -317,7 +357,12 @@ public class NetworkService extends Service {
         // Read the file name
         byte[] fileNameBuffer = new byte[headerLength];
         inputStream.readFully(fileNameBuffer);
-        String fileName = new String(fileNameBuffer, StandardCharsets.UTF_8);
+        String fileName;
+        if (MainActivity.isNucUtf8) {
+            fileName = new String(fileNameBuffer, StandardCharsets.UTF_8);
+        } else {
+            fileName = new String(fileNameBuffer, StandardCharsets.UTF_16LE);
+        }
 
         // Read the rest of the payload
         ByteArrayOutputStream payloadStream = new ByteArrayOutputStream();

@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     public static boolean reconnectionIgnored = false;
     public static boolean isAppInForeground = false;
 
+    public static boolean isNucUtf8 = true;
+
     static ScheduledExecutorService scheduler;
 
     public static Handler handler;
