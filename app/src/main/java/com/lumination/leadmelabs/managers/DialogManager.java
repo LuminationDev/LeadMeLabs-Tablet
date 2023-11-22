@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
@@ -88,6 +89,8 @@ public class DialogManager {
     private static int pinCodeAttempts = 0;
     private static boolean missingEncryptionAlerted = false;
 
+    private static long submitModalLastSubmitClick = 0;
+
     /**
      * Dismiss an open dialog that is no longer relevant. Basic dialogs are kept track of within a
      * hashmap with a combination of the dialog title and station name used as a key.
@@ -156,6 +159,11 @@ public class DialogManager {
 
         MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
         submitButton.setOnClickListener(w -> {
+            // mis-clicking prevention, using threshold of 1000 ms
+            if (SystemClock.elapsedRealtime() - DialogManager.submitModalLastSubmitClick < 1000){
+                return;
+            }
+             DialogManager.submitModalLastSubmitClick = SystemClock.elapsedRealtime();
 
             errorText.setVisibility(View.GONE);
 
