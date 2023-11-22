@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentHelpBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -157,13 +158,15 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout submitTicketOfflineLayout = view.findViewById(R.id.submit_ticket_offline);
         Thread thread = new Thread(() -> {
             boolean isOnline = Helpers.urlIsAvailable("https://us-central1-leadme-labs.cloudfunctions.net/status");
-            if (isOnline) {
-                submitTicketOnlineLayout.setVisibility(View.VISIBLE);
-                submitTicketOfflineLayout.setVisibility(View.GONE);
-            } else {
-                submitTicketOnlineLayout.setVisibility(View.GONE);
-                submitTicketOfflineLayout.setVisibility(View.VISIBLE);
-            }
+            MainActivity.runOnUI(() -> {
+                if (isOnline) {
+                    submitTicketOnlineLayout.setVisibility(View.VISIBLE);
+                    submitTicketOfflineLayout.setVisibility(View.GONE);
+                } else {
+                    submitTicketOnlineLayout.setVisibility(View.GONE);
+                    submitTicketOfflineLayout.setVisibility(View.VISIBLE);
+                }
+            });
         });
         thread.start();
 
