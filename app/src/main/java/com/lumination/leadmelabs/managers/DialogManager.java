@@ -909,9 +909,11 @@ public class DialogManager {
      */
     public static void buildReconnectDialog() {
         View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
-        reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
-        reconnectDialog.setCancelable(false);
-        reconnectDialog.setCanceledOnTouchOutside(false);
+        if (reconnectDialog == null) {
+            reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
+            reconnectDialog.setCancelable(false);
+            reconnectDialog.setCanceledOnTouchOutside(false);
+        }
 
         //Configure the text title/content
         TextView title = reconnectDialogView.findViewById(R.id.title);
