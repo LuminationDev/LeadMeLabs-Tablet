@@ -56,21 +56,22 @@ public class UIUpdateManager {
         }
 
         try {
+            // while we send pings to maintain connection info, any message acts as confirmation that connection is working
+            MainActivity.hasNotReceivedPing = 0;
+            MainActivity.reconnectionIgnored = false;
+            if (DialogManager.reconnectDialog != null) {
+                if(DialogManager.reconnectDialog.isShowing()) {
+                    FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
+                    if (reconnect != null) {
+                        reconnect.setVisibility(View.GONE);
+                    }
+                    DialogManager.reconnectDialog.dismiss();
+                }
+            }
+
             if(actionNamespace.equals("Ping")) {
                 if(additionalData != null && additionalData.length() > 0) {
                     updateStationsFromJson(additionalData);
-                }
-
-                MainActivity.hasNotReceivedPing = 0;
-                MainActivity.reconnectionIgnored = false;
-                if (DialogManager.reconnectDialog != null) {
-                    if(DialogManager.reconnectDialog.isShowing()) {
-                        FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
-                        if (reconnect != null) {
-                            reconnect.setVisibility(View.GONE);
-                        }
-                        DialogManager.reconnectDialog.dismiss();
-                    }
                 }
                 return;
             }

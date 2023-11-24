@@ -138,10 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 hasNotReceivedPing += 1;
                 if (hasNotReceivedPing > 3) {
                     Log.e("MainActivity", "NUC Lost");
-                    if(DialogManager.reconnectDialog == null) {
-                        DialogManager.buildReconnectDialog();
-                    }
-                    else if(!DialogManager.reconnectDialog.isShowing()) {
+                    if(DialogManager.reconnectDialog == null || !DialogManager.reconnectDialog.isShowing()) {
                         DialogManager.buildReconnectDialog();
                     }
 
