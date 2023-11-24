@@ -60,6 +60,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import io.sentry.Sentry;
@@ -157,6 +158,11 @@ public class DialogManager {
         TextView errorText = dialogView.findViewById(R.id.error_text);
         TextView successText = dialogView.findViewById(R.id.success_text);
 
+        MainActivity.runOnUI(() -> {
+            successText.setVisibility(View.GONE);
+            errorText.setVisibility(View.GONE);
+        });
+
         MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
         submitButton.setOnClickListener(w -> {
             // mis-clicking prevention, using threshold of 1000 ms
@@ -165,25 +171,39 @@ public class DialogManager {
             }
              DialogManager.submitModalLastSubmitClick = SystemClock.elapsedRealtime();
 
-            errorText.setVisibility(View.GONE);
+            MainActivity.runOnUI(() -> {
+                        successText.setVisibility(View.GONE);
+                    });
 
             String subject = ((EditText) dialogView.findViewById(R.id.submit_ticket_subject)).getText().toString();
             String email = ((EditText) dialogView.findViewById(R.id.submit_ticket_email)).getText().toString();
             String content = ((EditText) dialogView.findViewById(R.id.submit_ticket_content)).getText().toString().replace("\n", "\\n");
 
             if (subject.isEmpty() || email.isEmpty() || content.isEmpty()) {
-                errorText.setText("All fields must be filled out to submit a ticket");
-                errorText.setVisibility(View.VISIBLE);
+                MainActivity.runOnUI(() -> {
+                    errorText.setText("All fields must be filled out to submit a ticket");
+                    errorText.setVisibility(View.VISIBLE);
+                    successText.setVisibility(View.GONE);
+                });
                 return;
             }
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                errorText.setText("Email address is not a valid email address. Please check that you have entered it correctly and try again.");
-                errorText.setVisibility(View.VISIBLE);
+                MainActivity.runOnUI(() -> {
+                    errorText.setText("Email address is not a valid email address. Please check that you have entered it correctly and try again.");
+                    errorText.setVisibility(View.VISIBLE);
+                    successText.setVisibility(View.GONE);
+                });
                 return;
             }
 
+            MainActivity.runOnUI(() -> {
+                successText.setText("Submitting, please wait...");
+                errorText.setVisibility(View.GONE);
+                successText.setVisibility(View.VISIBLE);
+            });
+
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient().newBuilder().callTimeout(20, TimeUnit.SECONDS).build();
             String bodyText = "{\n" +
                     "    \"subject\": \"" + subject + "\",\n" +
                     "    \"email\": \"" + email + "\",\n" +
@@ -200,6 +220,7 @@ public class DialogManager {
                     response = client.newCall(request).execute();
                     if (response.isSuccessful()) {
                         MainActivity.runOnUI(() -> {
+                            successText.setText("Ticket successfully submitted. This dialog will close in two seconds.");
                             successText.setVisibility(View.VISIBLE);
                         });
                         NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
@@ -215,6 +236,7 @@ public class DialogManager {
                         });
                     } else {
                         MainActivity.runOnUI(() -> {
+                            successText.setVisibility(View.GONE);
                             errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                             errorText.setVisibility(View.VISIBLE);
                         });
@@ -224,6 +246,7 @@ public class DialogManager {
                     Sentry.captureException(e);
                     e.printStackTrace();
                     MainActivity.runOnUI(() -> {
+                        successText.setVisibility(View.GONE);
                         errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                         errorText.setVisibility(View.VISIBLE);
                     });
@@ -232,6 +255,7 @@ public class DialogManager {
                     e.printStackTrace();
                     Sentry.captureException(e);
                     MainActivity.runOnUI(() -> {
+                        successText.setVisibility(View.GONE);
                         errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                         errorText.setVisibility(View.VISIBLE);
                     });
