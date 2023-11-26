@@ -1001,6 +1001,7 @@ public class DialogManager {
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
             new Handler().postDelayed(() -> reconnectDialog.dismiss(), 200);
             MainActivity.hasNotReceivedPing = 0;
+            MainActivity.attemptedRefresh = false;
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "reconnect_dialog");
                 put("content_id", "close_button");

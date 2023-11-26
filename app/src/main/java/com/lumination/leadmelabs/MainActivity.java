@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static FragmentManager fragmentManager;
     public static MutableLiveData<Integer> fragmentCount;
     public static int hasNotReceivedPing = 0;
+    public static boolean attemptedRefresh = false;
     public static boolean reconnectionIgnored = false;
     public static boolean isAppInForeground = false;
 
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 hasNotReceivedPing += 1;
-                if (hasNotReceivedPing > 3) {
+                if (hasNotReceivedPing > 3 && attemptedRefresh) {
                     Log.e("MainActivity", "NUC Lost");
                     if(DialogManager.reconnectDialog == null || !DialogManager.reconnectDialog.isShowing()) {
                         DialogManager.buildReconnectDialog();
@@ -157,6 +158,19 @@ public class MainActivity extends AppCompatActivity {
                             NetworkService.refreshNUCAddress();
                         }
                     }, 10, 10, TimeUnit.MINUTES);
+                } else if (hasNotReceivedPing > 3 && !attemptedRefresh) {
+                     /*
+                    see if we can run a refresh before we show the dialog, in case the nuc has
+                    shutdown, means we don't have to show a disruptive dialog
+                     */
+                    if(NetworkService.getNUCAddress() != null) {
+                        NetworkService.refreshNUCAddress();
+                    }
+                    attemptedRefresh = true;
+                    handler.postDelayed(this, 5000);
+                    if(scheduler == null) return;
+                    if(scheduler.isShutdown()) return;
+                    scheduler.shutdownNow();
                 } else {
                     handler.postDelayed(this, 5000);
                     if(scheduler == null) return;
