@@ -268,8 +268,6 @@ public class NetworkService extends Service {
                 headerMessageType = new String(headerBuffer, StandardCharsets.UTF_16LE);
             }
 
-            Log.d(TAG, "Incoming connection attempt: " + headerMessageType);
-
             switch (headerMessageType) {
                 case "text":
                     receiveMessage(clientSocket, inputStream);
