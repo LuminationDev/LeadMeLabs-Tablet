@@ -58,6 +58,7 @@ public class UIUpdateManager {
         try {
             // while we send pings to maintain connection info, any message acts as confirmation that connection is working
             MainActivity.hasNotReceivedPing = 0;
+            MainActivity.attemptedRefresh = false;
             MainActivity.reconnectionIgnored = false;
             if (DialogManager.reconnectDialog != null) {
                 if(DialogManager.reconnectDialog.isShowing()) {
