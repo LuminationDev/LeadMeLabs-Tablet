@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +46,7 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
@@ -205,7 +207,7 @@ public class DialogManager {
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             OkHttpClient client = new OkHttpClient().newBuilder().callTimeout(20, TimeUnit.SECONDS).build();
             String bodyText = "{\n" +
-                    "    \"subject\": \"" + subject + "\",\n" +
+                    "    \"subject\": \"" + subject + " - " + ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue() + "\",\n" +
                     "    \"email\": \"" + email + "\",\n" +
                     "    \"content\": \"" + content + "\"\n" +
                     "}";
