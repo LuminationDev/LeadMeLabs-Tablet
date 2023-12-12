@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.managers;
 
+import static com.lumination.leadmelabs.utilities.WakeOnLan.WakeAll;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +53,7 @@ import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
@@ -654,6 +658,8 @@ public class DialogManager {
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
+                //Start a power check for all stations
+                WakeAll("Restarting"); //Wake any computers that are already off
                 if(countdownCallbackInterface != null) {
                     countdownCallbackInterface.callback(0);
                 }

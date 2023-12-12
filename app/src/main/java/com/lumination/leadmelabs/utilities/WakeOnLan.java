@@ -29,8 +29,9 @@ public class WakeOnLan {
     /**
      * Turn on all computers in the currently selected room with the Wake On Lan function that
      * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
+     * @param status A string of the Station status that will be set upon sending the wake on lan message
      */
-    public static void WakeAll() {
+    public static void WakeAll(String status) {
         String room = ViewModelProviders.of(MainActivity.getInstance()).get(RoomViewModel.class).getSelectedRoom().getValue();
         List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
 
@@ -58,7 +59,7 @@ public class WakeOnLan {
 
         //Change all stations to turning on status if not in wall mode
         for (int stationId : stationIds) {
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), "2", "selfUpdate");
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).syncStationStatus(String.valueOf(stationId), status, "selfUpdate");
         }
     }
 
