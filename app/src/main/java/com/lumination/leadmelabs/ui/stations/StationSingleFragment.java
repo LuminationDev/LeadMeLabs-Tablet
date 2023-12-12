@@ -196,7 +196,7 @@ public class StationSingleFragment extends Fragment {
             Station station = mViewModel.getStationById(id);
 
             if (station.status.equals("Off")) {
-                station.powerStatusCheck();
+                station.powerStatusCheck(3 * 1000 * 60);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down

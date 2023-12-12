@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.pages;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
@@ -30,6 +32,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import org.json.JSONException;
@@ -208,6 +211,25 @@ public class DashboardPageFragment extends Fragment {
 
         //There really is nothing
         if (matchingAppliances.isEmpty()) return;
+
+        // If turning on stations update the Station statuses.
+        ArrayList<JSONObject> stationsToTurnOn = collectStationsWithActions(matchingAppliances, "On");
+        if (!stationsToTurnOn.isEmpty()) {
+            for (JSONObject stationObject: stationsToTurnOn) {
+                try {
+                    int id = Integer.parseInt(stationObject.getString("id"));
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    if (station.status.equals("On")) continue; //Do not do anything if the Station is already on
+
+                    station.status = "Turning On";
+                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Turning On");
+                    station.powerStatusCheck(3 * 60 * 1000);
+                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
+                } catch (JSONException e) {
+                    Log.e("JSON OBJECT", "Cannot extract ID from: " + stationObject);
+                }
+            }
+        }
 
         ArrayList<JSONObject> stationsToTurnOff = collectStationsWithActions(matchingAppliances, "Off");
         if (stationsToTurnOff.isEmpty()) {

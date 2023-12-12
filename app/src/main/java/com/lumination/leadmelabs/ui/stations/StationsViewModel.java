@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -230,7 +232,7 @@ public class StationsViewModel extends ViewModel {
      * The values for the computer will be in CBUS format i.e. numbers. Therefore run a switch case
      * to determine what the status should be.
      */
-    public void syncStationStatus(String id, String value, String ipAddress) {
+    public void syncStationStatus(String id, String status, String ipAddress) {
         Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
         //Exit the function if the tablet is in wall mode.
@@ -243,26 +245,20 @@ public class StationsViewModel extends ViewModel {
             return;
         }
 
-        String status = null;
-        switch (value) {
-            case "0":
-                break;
-            case "1":
-                break;
-            case "2":
-                status = "Turning On";
-                break;
+        //If the station is on and the message is restarting then the status should be restarting
+        //else the station is off and the message is restarting then the status should be turning on
+        if(station.status.equals("Off")) {
+            status = "Turning On";
         }
 
-        //Nothing to update or the station is already on.
-        if(station.status.equals(status) || station.status.equals("On")) {
+        //Nothing to update or the station is already on and is not restarting.
+        if(station.status.equals(status) || (station.status.equals("On") && !Objects.equals(status, "Restarting"))) {
             return;
         }
 
         String finalStatus = status;
         MainActivity.runOnUI(() -> {
-            station.cancelStatusCheck();
-            station.powerStatusCheck();
+            station.powerStatusCheck(3 * 1000 * 60);
             station.status = finalStatus;
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
         });
