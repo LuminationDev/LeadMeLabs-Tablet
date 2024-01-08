@@ -88,8 +88,25 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:alignItems="flex_end"
-            app:flexDirection="column">
+            app:justifyContent="space_between"
+            app:flexDirection="row">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/close_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/dismiss"
+                android:textAllCaps="false"
+                android:textColor="@color/red"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/red" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/submit_ticket"
