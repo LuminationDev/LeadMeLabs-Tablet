@@ -168,6 +168,11 @@ public class DialogManager {
             errorText.setVisibility(View.GONE);
         });
 
+        MaterialButton closeButton = dialogView.findViewById(R.id.close_dialog);
+        closeButton.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
         MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
         submitButton.setOnClickListener(w -> {
             // mis-clicking prevention, using threshold of 1000 ms
@@ -270,6 +275,7 @@ public class DialogManager {
             thread.start();
         });
 
+        dialog.setCancelable(false);
         dialog.show();
         dialog.getWindow().setLayout(1000, 760);
     }
