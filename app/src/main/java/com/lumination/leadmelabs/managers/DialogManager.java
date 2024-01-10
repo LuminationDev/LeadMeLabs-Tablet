@@ -38,7 +38,7 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.Adapters.GlobalAdapter;
@@ -475,7 +475,7 @@ public class DialogManager {
         confirmationDialog.getWindow().setLayout(680, 680);
     }
 
-    public static void createEndSessionDialog(ArrayList<Station> stations) {
+    public static void createEndSessionDialog(ArrayList<VirtualStation> stations) {
         View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_select_stations, null);
         AlertDialog endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
 
@@ -530,7 +530,7 @@ public class DialogManager {
      * End the current session on the stations supplied in the station list.
      * @param stationList An Arraylist of Station objects.
      */
-    private static void endSession(ArrayList<Station> stationList) {
+    private static void endSession(ArrayList<VirtualStation> stationList) {
         int[] selectedIds = Helpers.cloneStationList(stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
@@ -555,7 +555,7 @@ public class DialogManager {
             String input = url.getText().toString();
 
             if (Patterns.WEB_URL.matcher(input).matches()) {
-                Station selectedStation = binding.getSelectedStation();
+                VirtualStation selectedStation = binding.getSelectedStation();
                 selectedStation.gameName = input;
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
@@ -589,7 +589,7 @@ public class DialogManager {
             String input = nameInput.getText().toString();
 
             if (Pattern.matches("([A-Za-z0-9 ])+", input)) {
-                Station selectedStation = binding.getSelectedStation();
+                VirtualStation selectedStation = binding.getSelectedStation();
                 selectedStation.setName(input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
                 NetworkService.sendMessage("NUC", "UpdateStation", selectedStation.id + ":SetValue:name:" + input);

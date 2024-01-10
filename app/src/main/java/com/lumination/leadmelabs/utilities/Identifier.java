@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class Identifier {
      * Cycle through the currently viewable stations, triggering the identify stations overlay and the
      * associated LED rings.
      */
-    public static void identifyStations(List<Station> stations) {
+    public static void identifyStations(List<VirtualStation> stations) {
         final int[] index = {stations.size() - 1};
         if (identifying) {
             return;
@@ -36,7 +36,7 @@ public class Identifier {
                 if (listIndex > stations.size() - 1 || listIndex < 0) {
                     return;
                 }
-                Station station = stations.get((stations.size() - 1) - index[0]);
+                VirtualStation station = stations.get((stations.size() - 1) - index[0]);
                 NetworkService.sendMessage("NUC", "IdentifyStation", station.id + "");
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Successfully located " + station.name, Toast.LENGTH_SHORT).show();
                 index[0]--;

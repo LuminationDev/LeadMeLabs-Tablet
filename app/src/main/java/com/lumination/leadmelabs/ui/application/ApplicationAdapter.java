@@ -25,7 +25,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.ApplicationTileBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -171,7 +171,7 @@ public class ApplicationAdapter extends BaseAdapter {
 
     private void completeSelectApplicationAction(Application currentApplication) {
         if (stationId > 0) {
-            Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
+            VirtualStation station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
             if (station != null) {
                 NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
                 sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);

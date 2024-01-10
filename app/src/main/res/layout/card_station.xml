@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="android.view.View"/>
-        <import type="com.lumination.leadmelabs.models.stations.Station" />
+        <import type="com.lumination.leadmelabs.models.stations.VirtualStation" />
         <variable
             name="station"
-            type="com.lumination.leadmelabs.models.stations.Station" />
+            type="com.lumination.leadmelabs.models.stations.VirtualStation" />
     </data>
 
     <RelativeLayout

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
     private final String TAG = "StationAdapter";
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
-    public ArrayList<Station> stationList = new ArrayList<>();
+    public ArrayList<VirtualStation> stationList = new ArrayList<>();
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
         private final CardStationBinding binding;
@@ -27,7 +27,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
             this.binding = binding;
         }
 
-        public void bind(Station station, BasicStationSelectionAdapter basicStationSelectionAdapter) {
+        public void bind(VirtualStation station, BasicStationSelectionAdapter basicStationSelectionAdapter) {
             binding.setStation(station);
             View finalResult = binding.getRoot().findViewById(R.id.station_card);
             if (station.status.equals("Off")) {
@@ -52,7 +52,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
 
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
-        Station station = getItem(position);
+        VirtualStation station = getItem(position);
         ((StationViewHolder) holder).bind(station, this);
     }
 
@@ -61,7 +61,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
         return stationList != null ? stationList.size() : 0;
     }
 
-    public Station getItem(int position) {
+    public VirtualStation getItem(int position) {
         return stationList.get(position);
     }
 

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
@@ -65,15 +65,15 @@ public class StationSelectionFragment extends Fragment {
         transactionAttempt.commitNowAllowingStateLoss();
     }
 
-    private void reloadData(List<Station> stations) {
-        ArrayList<Station> stationRoom = new ArrayList<>();
+    private void reloadData(List<VirtualStation> stations) {
+        ArrayList<VirtualStation> stationRoom = new ArrayList<>();
 
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
         if(roomType == null) {
             roomType = "All";
         }
 
-        for(Station station : stations) {
+        for(VirtualStation station : stations) {
             if(roomType.equals("All")) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
                     stationRoom.add(station);
@@ -128,7 +128,7 @@ public class StationSelectionFragment extends Fragment {
         playBtn.setEnabled(numOfStations != 0 || stationAdapter.areAllStationsOff());
     }
 
-    public ArrayList<Station> getRoomStations()
+    public ArrayList<VirtualStation> getRoomStations()
     {
         return stationAdapter.stationList;
     }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import androidx.core.content.ContextCompat;
 
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -22,7 +22,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
 
-    public ArrayList<Station> stationList = new ArrayList<>();
+    public ArrayList<VirtualStation> stationList = new ArrayList<>();
     private boolean launchSingleOnTouch = false;
     private final StationsViewModel viewModel;
     private FragmentManager fragmentManager;
@@ -40,7 +40,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             this.binding = binding;
         }
 
-        public void bind(Station station, int position) {
+        public void bind(VirtualStation station, int position) {
             binding.setStation(station);
             View finalResult = binding.getRoot().findViewById(R.id.station_card);
             if (launchSingleOnTouch) {
@@ -88,7 +88,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
 
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
-        Station station = getItem(position);
+        VirtualStation station = getItem(position);
         holder.bind(station, position);
     }
 
@@ -97,7 +97,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         return stationList != null ? stationList.size() : 0;
     }
 
-    public Station getItem(int position) {
+    public VirtualStation getItem(int position) {
         return stationList.get(position);
     }
 
@@ -111,7 +111,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      * @return A boolean representing if the Steam Experience is installed.
      */
     public boolean isApplicationInstalledOnAll() {
-        for (Station station : stationList) {
+        for (VirtualStation station : stationList) {
             if(!station.hasApplicationInstalled(viewModel.getSelectedApplicationId())){
                 return false;
             };
@@ -125,7 +125,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      * @return A boolean representing if all the Stations are turned off.
      */
     public boolean areAllStationsOff() {
-        for (Station station : stationList) {
+        for (VirtualStation station : stationList) {
             if(!station.status.equals("Off")){
                 return false;
             };

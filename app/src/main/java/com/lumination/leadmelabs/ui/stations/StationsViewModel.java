@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.models.applications.details.Levels;
@@ -25,12 +25,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class StationsViewModel extends ViewModel {
-    private MutableLiveData<List<Station>> stations;
-    private MutableLiveData<Station> selectedStation = new MutableLiveData<>();
+    private MutableLiveData<List<VirtualStation>> stations;
+    private MutableLiveData<VirtualStation> selectedStation = new MutableLiveData<>();
     private MutableLiveData<Application> selectedApplication = new MutableLiveData<>();
     private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
 
-    public LiveData<List<Station>> getStations() {
+    public LiveData<List<VirtualStation>> getStations() {
         if (stations == null) {
             stations = new MutableLiveData<>();
             loadStations();
@@ -39,8 +39,8 @@ public class StationsViewModel extends ViewModel {
     }
 
     public List<String> getStationNames(int[] stationIds) {
-        ArrayList<Station> stations = (ArrayList<Station>) this.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
+        ArrayList<VirtualStation> stations = (ArrayList<VirtualStation>) this.getStations().getValue();
+        stations = (ArrayList<VirtualStation>) stations.clone();
         List<Integer> stationIdsList =  new ArrayList<Integer>(stationIds.length);
         for (int i : stationIds)
         {
@@ -66,7 +66,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public int[] getSelectedStationIds() {
-        ArrayList<Station> selectedStations = getSelectedStations();
+        ArrayList<VirtualStation> selectedStations = getSelectedStations();
         int[] selectedIds = new int[selectedStations.size()];
         for (int i = 0; i < selectedStations.size(); i++) {
             selectedIds[i] = selectedStations.get(i).id;
@@ -75,7 +75,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public int[] getAllStationIds() {
-        ArrayList<Station> stations = (ArrayList<Station>) getStations().getValue();
+        ArrayList<VirtualStation> stations = (ArrayList<VirtualStation>) getStations().getValue();
         if (stations == null) {
             return new int[0];
         }
@@ -86,19 +86,19 @@ public class StationsViewModel extends ViewModel {
         return ids;
     }
 
-    public ArrayList<Station> getSelectedStations() {
-        ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
-        selectedStations = (ArrayList<Station>) selectedStations.clone();
+    public ArrayList<VirtualStation> getSelectedStations() {
+        ArrayList<VirtualStation> selectedStations = (ArrayList<VirtualStation>) stations.getValue();
+        selectedStations = (ArrayList<VirtualStation>) selectedStations.clone();
         selectedStations.removeIf(station -> !station.selected);
         return selectedStations;
     }
 
-    public Station getStationById(int id) {
-        ArrayList<Station> stationsData = (ArrayList<Station>) stations.getValue();
+    public VirtualStation getStationById(int id) {
+        ArrayList<VirtualStation> stationsData = (ArrayList<VirtualStation>) stations.getValue();
         if (stationsData == null) {
             return null;
         }
-        for (Station station:stationsData) {
+        for (VirtualStation station:stationsData) {
             if (station.id == id) {
                 return station;
             }
@@ -120,7 +120,7 @@ public class StationsViewModel extends ViewModel {
         //Deconstruct the JSON object into the new details class and associated subclasses.
         Details details = parseDetails(applicationDetails);
 
-        for (Station station: stations.getValue()) {
+        for (VirtualStation station: stations.getValue()) {
             //Check each station for the experience
             for (Application application: station.applications) {
                 if (Objects.equals(application.name, details.name)) {
@@ -196,7 +196,7 @@ public class StationsViewModel extends ViewModel {
         if(stations.getValue() == null) {
             return list;
         }
-        for (Station station: stations.getValue()) {
+        for (VirtualStation station: stations.getValue()) {
             if (station.id == stationId) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
                     list = new ArrayList<>(station.applications);
@@ -207,8 +207,8 @@ public class StationsViewModel extends ViewModel {
         return list;
     }
 
-    public void updateStationById(int id, Station station) {
-        List<Station> stationsData = stations.getValue();
+    public void updateStationById(int id, VirtualStation station) {
+        List<VirtualStation> stationsData = stations.getValue();
         int index = -1;
         for(int i = 0; i < stationsData.size(); i++) {
             if (stationsData.get(i).id == id) {
@@ -231,7 +231,7 @@ public class StationsViewModel extends ViewModel {
      * to determine what the status should be.
      */
     public void syncStationStatus(String id, String status, String ipAddress) {
-        Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
+        VirtualStation station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
         //Exit the function if the tablet is in wall mode.
         if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getHideStationControls().getValue())) {
@@ -277,7 +277,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     private void selectStationById(int id) {
-        List<Station> filteredStations = stations.getValue().stream()
+        List<VirtualStation> filteredStations = stations.getValue().stream()
                 .filter(station -> station.id == id)
                 .collect(Collectors.toList());
         if (!filteredStations.isEmpty()) {
@@ -286,7 +286,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     private void selectApplicationByGameName(String gameName) {
-        Station selectedStation = getSelectedStation().getValue();
+        VirtualStation selectedStation = getSelectedStation().getValue();
         if(selectedStation == null) return;
 
         if (selectedStation.applications != null) {
@@ -315,11 +315,11 @@ public class StationsViewModel extends ViewModel {
         return selectedApplication;
     }
 
-    public void setSelectedStation(Station station) {
+    public void setSelectedStation(VirtualStation station) {
         this.selectedStation.setValue(station);
     }
 
-    public LiveData<Station> getSelectedStation() {
+    public LiveData<VirtualStation> getSelectedStation() {
         if (selectedStation == null) {
             selectedStation = new MutableLiveData<>();
         }
@@ -327,7 +327,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public void setStations(JSONArray stations) throws JSONException {
-        List<Station> st = new ArrayList<>();
+        List<VirtualStation> st = new ArrayList<>();
         for (int i = 0; i < stations.length(); i++) {
             JSONObject stationJson = stations.getJSONObject(i);
 
@@ -339,7 +339,7 @@ public class StationsViewModel extends ViewModel {
                 state = "Not set";
             }
 
-            Station station = new Station(
+            VirtualStation station = new VirtualStation(
                     stationJson.getString("name"),
                     stationJson.getString("installedApplications"),
                     stationJson.getInt("id"),
@@ -363,12 +363,12 @@ public class StationsViewModel extends ViewModel {
         this.setStations(st);
 
         //Ask for the device statuses
-        for (Station station: Objects.requireNonNull(this.stations.getValue())) {
+        for (VirtualStation station: Objects.requireNonNull(this.stations.getValue())) {
             NetworkService.sendMessage("Station," + station.id, "Station", "GetValue:devices");
         }
     }
 
-    public void setStations(List<Station> stations) {
+    public void setStations(List<VirtualStation> stations) {
         this.stations.setValue(stations);
     }
 
@@ -382,7 +382,7 @@ public class StationsViewModel extends ViewModel {
      *                 flashing.
      */
     public void setStationFlashing(int stationId, boolean flashing) {
-        Station station = getStationById(stationId);
+        VirtualStation station = getStationById(stationId);
         if(station == null) return;
         station.animationFlag = flashing;
         station.handleAnimationTimer();

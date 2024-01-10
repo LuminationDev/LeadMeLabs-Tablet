@@ -32,7 +32,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -80,7 +80,7 @@ public class StationSingleFragment extends Fragment {
 
                 @Override
                 public void onStopTrackingTouch(Slider slider) {
-                    Station selectedStation = binding.getSelectedStation();
+                    VirtualStation selectedStation = binding.getSelectedStation();
                     selectedStation.volume = (int) slider.getValue();
                     mViewModel.updateStationById(selectedStation.id, selectedStation);
                     NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.volume);
@@ -125,7 +125,7 @@ public class StationSingleFragment extends Fragment {
 
         Button pingStation = view.findViewById(R.id.ping_station);
         pingStation.setOnClickListener(v -> {
-            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+            List<VirtualStation> stations = Collections.singletonList(binding.getSelectedStation());
             Identifier.identifyStations(stations);
         });
 
@@ -139,7 +139,7 @@ public class StationSingleFragment extends Fragment {
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
+            VirtualStation selectedStation = binding.getSelectedStation();
             if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
                 return;
             }
@@ -169,7 +169,7 @@ public class StationSingleFragment extends Fragment {
 
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
+            VirtualStation selectedStation = binding.getSelectedStation();
             if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
                 return;
             }
@@ -200,7 +200,7 @@ public class StationSingleFragment extends Fragment {
         MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
         shutdownButton.setOnClickListener(v -> {
             int id = binding.getSelectedStation().id;
-            Station station = mViewModel.getStationById(id);
+            VirtualStation station = mViewModel.getStationById(id);
 
             if (station.status.equals("Off")) {
                 station.powerStatusCheck(3 * 1000 * 60);

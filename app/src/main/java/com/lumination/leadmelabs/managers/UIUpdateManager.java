@@ -10,7 +10,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -137,7 +137,7 @@ public class UIUpdateManager {
                     }
 
                     //Everything below should only trigger if within the locked room
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                    VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                     HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
 
                     //Check if the computer is in the locked room
@@ -360,7 +360,7 @@ public class UIUpdateManager {
                 String key = keys.next();
                 JSONObject entry = responseObject.getJSONObject(key);
 
-                Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
+                VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
                 if (station == null) {
                     return;
                 }
@@ -449,7 +449,7 @@ public class UIUpdateManager {
 
     private static void updateStation(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
-            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+            VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
             if (station == null) {
                 return;
             }
@@ -585,7 +585,7 @@ public class UIUpdateManager {
      */
     private static void updateStationDevices(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
-            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+            VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
             if (station == null) {
                 return;
             }
@@ -630,7 +630,7 @@ public class UIUpdateManager {
         });
     }
 
-    private static void updateHeadset(Station station, String trackingType, String propertyType, String value) {
+    private static void updateHeadset(VirtualStation station, String trackingType, String propertyType, String value) {
         if (propertyType.equals("tracking")) {
             if(trackingType.equals("OpenVR")) {
                 station.openVRHeadsetTracking = value;
@@ -640,7 +640,7 @@ public class UIUpdateManager {
         }
     }
 
-    private static void updateController(Station station, String controllerType, String propertyType, String value) {
+    private static void updateController(VirtualStation station, String controllerType, String propertyType, String value) {
         if (propertyType.equals("tracking")) {
             if (controllerType.equals("Left")) {
                 station.leftControllerTracking = value;
@@ -658,7 +658,7 @@ public class UIUpdateManager {
         }
     }
 
-    private static void updateBaseStations(Station station, String active, String total) {
+    private static void updateBaseStations(VirtualStation station, String active, String total) {
         station.baseStationsActive = Integer.parseInt(active);
         station.baseStationsTotal = Integer.parseInt(total);
     }

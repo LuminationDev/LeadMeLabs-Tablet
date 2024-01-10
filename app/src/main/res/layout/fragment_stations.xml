@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.lumination.leadmelabs.models.stations.Station" />
+        <import type="com.lumination.leadmelabs.models.stations.VirtualStation" />
         <import type="android.view.View"/>
         <variable
             name="stationList"
-            type="java.util.ArrayList&lt;Station&gt;" />
+            type="java.util.ArrayList&lt;VirtualStation&gt;" />
         <variable
             name="stationsLoaded"
             type="java.lang.Boolean" />
