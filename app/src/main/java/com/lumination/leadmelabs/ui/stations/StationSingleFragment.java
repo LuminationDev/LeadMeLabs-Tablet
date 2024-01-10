@@ -40,6 +40,7 @@ import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -268,6 +269,7 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
+            ApplicationAdapter.stationId = mViewModel.getSelectedStation().getValue().id;
             DialogManager.showExperienceOptions(gameName, details);
         });
 
