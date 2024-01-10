@@ -1,14 +1,12 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.models.applications.details.Levels;

@@ -5,10 +5,10 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.lumination.leadmelabs.models.Station"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
         <variable
             name="selectedStation"
-            type="com.lumination.leadmelabs.models.Station" />
+            type="com.lumination.leadmelabs.models.stations.Station" />
 
         <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
         <variable

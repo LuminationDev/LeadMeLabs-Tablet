@@ -12,7 +12,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.models.Scene;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 
 /**

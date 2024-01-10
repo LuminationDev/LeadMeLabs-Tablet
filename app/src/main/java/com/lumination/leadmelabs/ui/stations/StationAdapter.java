@@ -9,10 +9,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.models.Station;
-import androidx.core.content.ContextCompat;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
+import com.lumination.leadmelabs.models.stations.Station;
+import androidx.core.content.ContextCompat;
+
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;

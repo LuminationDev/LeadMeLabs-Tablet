@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;

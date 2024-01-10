@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.HashMap;

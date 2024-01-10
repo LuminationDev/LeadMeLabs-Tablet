@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;

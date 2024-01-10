@@ -1,7 +1,6 @@
-package com.lumination.leadmelabs.models;
+package com.lumination.leadmelabs.models.stations;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

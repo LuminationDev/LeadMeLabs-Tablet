@@ -3,7 +3,7 @@ package com.lumination.leadmelabs.utilities;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
