@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.IconAnimator;
-import com.lumination.leadmelabs.utilities.IconManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,10 +34,6 @@ public class VirtualStation extends Station {
     public int rightControllerBattery;
     public int baseStationsActive;
     public int baseStationsTotal;
-
-
-    //Track animation of icons
-    IconManager iconManager = new IconManager();
 
     //Track the animation of the dots for Awaiting headset connection
     private Timer timer;

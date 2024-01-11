@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.IconManager;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -33,6 +34,9 @@ public class Station implements Cloneable {
     public boolean selected = false;
     private CountDownTimer shutdownTimer;
     public String macAddress;
+
+    //Track animation of icons
+    IconManager iconManager = new IconManager();
 
     public Station(String name, String applications, int id, String status, String state, int volume, String room, String macAddress) {
         this.name = name;
