@@ -14,7 +14,7 @@ public class Helpers {
     public static ArrayList<VirtualStation> cloneStationList(List<VirtualStation> stationList) {
         ArrayList<VirtualStation> clone = new ArrayList<VirtualStation>(stationList.size());
         for (VirtualStation station:stationList) {
-            clone.add(station.clone());
+            clone.add((VirtualStation) station.clone());
         }
         return clone;
     }

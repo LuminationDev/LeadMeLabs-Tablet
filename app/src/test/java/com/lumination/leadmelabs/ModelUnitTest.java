@@ -39,7 +39,7 @@ public class ModelUnitTest {
     public void station_creation() {
         String apps = "212680|FTL/231324|Test";
 
-        VirtualStation station = new VirtualStation("One", apps, 0, "Online", "", 0, "", "0", "");
+        VirtualStation station = new VirtualStation("One", apps, 0, "Online", "", 0, "", "", "0");
 
         assertEquals(station.name, "One");
         assertEquals(station.id, 0);

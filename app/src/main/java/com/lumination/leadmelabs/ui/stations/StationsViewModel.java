@@ -347,8 +347,8 @@ public class StationsViewModel extends ViewModel {
                     state,
                     stationJson.getInt("volume"),
                     stationJson.getString("room"),
-                    stationJson.getString("ledRingId"),
-                    stationJson.getString("macAddress"));
+                    stationJson.getString("macAddress"),
+                    stationJson.getString("ledRingId"));
             if (!stationJson.getString("gameName").equals("")) {
                 station.gameName = stationJson.getString("gameName");
             }
