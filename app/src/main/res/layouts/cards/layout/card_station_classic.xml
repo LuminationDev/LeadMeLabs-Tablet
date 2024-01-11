@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.ClassicStation" />
+        <variable
+            name="station"
+            type="com.lumination.leadmelabs.models.stations.ClassicStation" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="211dp"
+        android:layout_height="158dp">
+
+        <RelativeLayout
+            android:visibility="@{station.requiresSteamGuard ? View.VISIBLE : View.GONE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationZ="5dp"
+            android:layout_marginStart="200dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_alert_major"
+                android:contentDescription="@string/alert_icon" />
+        </RelativeLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/station_card"
+            style="@style/StationCard"
+            android:background="@{station.selected ? @drawable/card_ripple_white_blue_border : @drawable/card_ripple_gray}"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            app:justifyContent="space_between">
+
+            <!--STATION NAME and STATUS-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{station.name, default=Name}"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_alignSelf="center"
+                    android:text="@{station.status, default=`Off`}"
+                    android:textColor="@{station.status.equals(`Off`) ? @color/text : @color/blue, default=`@color/text`}"
+                    android:textAllCaps="true"
+                    android:textSize="12sp"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--STATION CONTENT-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="168dp"
+                    android:layout_height="40dp"
+                    app:stationState="@{station}"
+                    app:alignItems="center"
+                    app:justifyContent="center"
+                    app:flexDirection="row">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:paddingHorizontal="8dp"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        app:stationState="@{station}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--STEAM OPEN?-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="168dp"
+                android:layout_height="49dp"
+                android:layout_marginTop="10dp"
+                app:justifyContent="center"
+                app:flexDirection="row">
+
+
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
+</layout>

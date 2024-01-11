@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.CardStationBinding;
+import com.lumination.leadmelabs.databinding.CardStationVirtualBinding;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import androidx.core.content.ContextCompat;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
     private final String TAG = "StationAdapter";
 
-    public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
+    public ArrayList<CardStationVirtualBinding> stationBindings = new ArrayList<>();
 
     public ArrayList<VirtualStation> stationList = new ArrayList<>();
     private boolean launchSingleOnTouch = false;
@@ -34,8 +34,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     }
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
-        private final CardStationBinding binding;
-        public StationViewHolder(@NonNull CardStationBinding binding) {
+        private final CardStationVirtualBinding binding;
+        public StationViewHolder(@NonNull CardStationVirtualBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
@@ -82,7 +82,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @Override
     public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        CardStationBinding binding = CardStationBinding.inflate(layoutInflater, parent, false);
+        CardStationVirtualBinding binding = CardStationVirtualBinding.inflate(layoutInflater, parent, false);
         return new StationAdapter.StationViewHolder(binding);
     }
 
