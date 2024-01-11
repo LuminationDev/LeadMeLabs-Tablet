@@ -21,7 +21,6 @@ import java.util.TimerTask;
 
 public class VirtualStation extends Station {
     public String ledRingId;
-    public Boolean requiresSteamGuard = false;
 
     //VR Devices
     public CountDownTimer flashTimer;

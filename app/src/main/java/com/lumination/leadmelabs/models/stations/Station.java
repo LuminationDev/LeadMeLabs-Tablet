@@ -35,6 +35,8 @@ public class Station implements Cloneable {
     private CountDownTimer shutdownTimer;
     public String macAddress;
 
+    public Boolean requiresSteamGuard = false;
+
     //Track animation of icons
     IconManager iconManager = new IconManager();
 
