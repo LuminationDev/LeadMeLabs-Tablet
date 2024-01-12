@@ -45,12 +45,12 @@
 \n\u2022 Improve Steam auto-minimization
 \n\u2022 Automatically add the lab location when a ticket is submitted
 \n\u2022 Fix issue causing tablet responsiveness to slow down for the first minute after launching
-\n\u2022 Fix issue with backup keys not being used when a message decryption fails
+\n\u2022 Fix issue with keys not being used when a message decryption fails
 \n\u2022 Launcher no longer attempts to update when it is in offline mode
 \n\u2022 Removed a ‘server offline’ message from the launcher that would cause installed applications to be shown as not installed
-\n\u2022 Fix tablet sometimes caching current experience details when a station is restarted, causing the tablet to think that an experience is still running
+\n\u2022 Fix tablet sometimes caching current experience details when a station is restarted
 \n\u2022 Detect and automatically fix the launcher install path if it points to the wrong location
-\n\u2022 Some station statuses would not be triggered when run from a scene, rather than the direct station controls
+\n\u2022 Some station statuses would not be triggered when run from a scene
 \n\u2022 Tablet would sometimes continually show ‘awaiting headset connection’ when that is not the current status
 \n\u2022 Help button was not present on the station page
 "
