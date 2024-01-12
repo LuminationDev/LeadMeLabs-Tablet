@@ -5,7 +5,7 @@
     <data>
         <variable
             name="selectedStation"
-            type="com.lumination.leadmelabs.models.stations.VirtualStation" />
+            type="com.lumination.leadmelabs.models.stations.VrStation" />
     </data>
 
     <!-- VR DEVICES layout content -->

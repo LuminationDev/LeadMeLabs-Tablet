@@ -11,7 +11,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -376,29 +376,29 @@ public class UIUpdateManager {
                 updateStationField(station, entry, "gameType");
 
                 // Stop here if it is a content station
-                if (!(station instanceof VirtualStation)) {
+                if (!(station instanceof VrStation)) {
                     MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), station));
                     continue;
                 }
 
-                VirtualStation virtualStation = (VirtualStation) station;
+                VrStation vrStation = (VrStation) station;
 
                 // VR device statuses
                 JSONObject devices = entry.optJSONObject("devices");
                 if (devices != null) {
-                    updateDeviceField(virtualStation, devices, "thirdPartyHeadsetTracking");
-                    updateDeviceField(virtualStation, devices, "openVRHeadsetTracking");
-                    updateDeviceField(virtualStation, devices, "leftControllerTracking");
-                    updateDeviceField(virtualStation, devices, "rightControllerTracking");
+                    updateDeviceField(vrStation, devices, "thirdPartyHeadsetTracking");
+                    updateDeviceField(vrStation, devices, "openVRHeadsetTracking");
+                    updateDeviceField(vrStation, devices, "leftControllerTracking");
+                    updateDeviceField(vrStation, devices, "rightControllerTracking");
 
                     // Handle integer fields separately
-                    virtualStation.leftControllerBattery = devices.optInt("leftControllerBattery", virtualStation.leftControllerBattery);
-                    virtualStation.rightControllerBattery = devices.optInt("rightControllerBattery", virtualStation.rightControllerBattery);
-                    virtualStation.baseStationsActive = devices.optInt("baseStationsActive", virtualStation.baseStationsActive);
-                    virtualStation.baseStationsTotal = devices.optInt("baseStationsTotal", virtualStation.baseStationsTotal);
+                    vrStation.leftControllerBattery = devices.optInt("leftControllerBattery", vrStation.leftControllerBattery);
+                    vrStation.rightControllerBattery = devices.optInt("rightControllerBattery", vrStation.rightControllerBattery);
+                    vrStation.baseStationsActive = devices.optInt("baseStationsActive", vrStation.baseStationsActive);
+                    vrStation.baseStationsTotal = devices.optInt("baseStationsTotal", vrStation.baseStationsTotal);
                 }
 
-                MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), virtualStation));
+                MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), vrStation));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -438,26 +438,26 @@ public class UIUpdateManager {
 
     /**
      * Updates a specific field in a VirtualStation object based on the provided JSON data.
-     * @param virtualStation The VirtualStation object to update.
+     * @param vrStation The VirtualStation object to update.
      * @param devices JSON object containing data for the specified field.
      * @param field The field to update in the VirtualStation object.
      */
-    private static void updateDeviceField(VirtualStation virtualStation, JSONObject devices, String field) {
+    private static void updateDeviceField(VrStation vrStation, JSONObject devices, String field) {
         if (devices.has(field)) {
             String value = devices.optString(field, "NA");
             if (!value.equals("NA")) {
                 switch (field) {
                     case "thirdPartyHeadsetTracking":
-                        virtualStation.thirdPartyHeadsetTracking = value;
+                        vrStation.thirdPartyHeadsetTracking = value;
                         break;
                     case "openVRHeadsetTracking":
-                        virtualStation.openVRHeadsetTracking = value;
+                        vrStation.openVRHeadsetTracking = value;
                         break;
                     case "leftControllerTracking":
-                        virtualStation.leftControllerTracking = value;
+                        vrStation.leftControllerTracking = value;
                         break;
                     case "rightControllerTracking":
-                        virtualStation.rightControllerTracking = value;
+                        vrStation.rightControllerTracking = value;
                         break;
                 }
             }
@@ -511,9 +511,9 @@ public class UIUpdateManager {
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
                     if(value.equals("Off")) {
-                        if (station instanceof VirtualStation) {
-                            VirtualStation virtualStation = (VirtualStation) station; //safe cast
-                            virtualStation.initiateVRDevices();
+                        if (station instanceof VrStation) {
+                            VrStation vrStation = (VrStation) station; //safe cast
+                            vrStation.initiateVRDevices();
                         }
                         station.state = "";
                     }
@@ -622,11 +622,11 @@ public class UIUpdateManager {
             Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
 
             //Check for safe cast
-            if (!(station instanceof VirtualStation)) {
+            if (!(station instanceof VrStation)) {
                 return;
             }
 
-            VirtualStation virtualStation = (VirtualStation)station;
+            VrStation vrStation = (VrStation)station;
 
             String[] values = value.split(":", 3);
             switch (attribute) {
@@ -638,7 +638,7 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateHeadset(virtualStation, values[0], values[1], values[2]);
+                    updateHeadset(vrStation, values[0], values[1], values[2]);
                     break;
 
                 case "Controller":
@@ -649,7 +649,7 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateController(virtualStation, values[0], values[1], values[2]);
+                    updateController(vrStation, values[0], values[1], values[2]);
                     break;
 
                 case "BaseStation":
@@ -660,15 +660,15 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateBaseStations(virtualStation, values[0], values[1]);
+                    updateBaseStations(vrStation, values[0], values[1]);
                     break;
             }
 
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), virtualStation);
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), vrStation);
         });
     }
 
-    private static void updateHeadset(VirtualStation station, String trackingType, String propertyType, String value) {
+    private static void updateHeadset(VrStation station, String trackingType, String propertyType, String value) {
         if (propertyType.equals("tracking")) {
             if(trackingType.equals("OpenVR")) {
                 station.openVRHeadsetTracking = value;
@@ -678,7 +678,7 @@ public class UIUpdateManager {
         }
     }
 
-    private static void updateController(VirtualStation station, String controllerType, String propertyType, String value) {
+    private static void updateController(VrStation station, String controllerType, String propertyType, String value) {
         if (propertyType.equals("tracking")) {
             if (controllerType.equals("Left")) {
                 station.leftControllerTracking = value;
@@ -696,7 +696,7 @@ public class UIUpdateManager {
         }
     }
 
-    private static void updateBaseStations(VirtualStation station, String active, String total) {
+    private static void updateBaseStations(VrStation station, String active, String total) {
         station.baseStationsActive = Integer.parseInt(active);
         station.baseStationsTotal = Integer.parseInt(total);
     }

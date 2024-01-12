@@ -39,7 +39,6 @@ import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.Adapters.GlobalAdapter;

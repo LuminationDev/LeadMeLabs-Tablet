@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.databinding.CardStationContentBinding;
-import com.lumination.leadmelabs.databinding.CardStationVirtualBinding;
+import com.lumination.leadmelabs.databinding.CardStationVrBinding;
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import androidx.core.content.ContextCompat;
 
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -153,11 +153,11 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      * @return The root view of the card associated with the station type, or null if the station type is unknown.
      */
     public static View determineStationType(CardStationBinding binding, Station station) {
-        if (station instanceof VirtualStation) {
-            CardStationVirtualBinding virtualBinding = binding.cardStationVirtual;
-            virtualBinding.setStation((VirtualStation) station);
-            virtualBinding.getRoot().setVisibility(View.VISIBLE);
-            return binding.cardStationVirtual.getRoot().findViewById(R.id.station_card);
+        if (station instanceof VrStation) {
+            CardStationVrBinding vrBinding = binding.cardStationVr;
+            vrBinding.setStation((VrStation) station);
+            vrBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationVr.getRoot().findViewById(R.id.station_card);
 
         } else if (station instanceof ContentStation) {
             CardStationContentBinding classicBinding = binding.cardStationContent;

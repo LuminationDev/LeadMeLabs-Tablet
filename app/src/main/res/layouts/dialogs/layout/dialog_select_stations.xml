@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:horizontalSpacing="2dp"
             android:paddingVertical="20dp"
-            tools:listitem="@layout/card_station_virtual" />
+            tools:listitem="@layout/card_station_vr" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"

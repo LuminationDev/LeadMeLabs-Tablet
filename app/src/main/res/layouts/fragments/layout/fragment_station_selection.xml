@@ -30,6 +30,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/card_station_virtual" />
+        tools:listitem="@layout/card_station_vr" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,7 @@ package com.lumination.leadmelabs.ui.stations;
 
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import org.json.JSONException;
@@ -40,7 +40,7 @@ public class StationFactory {
             case "content":
                 return createContentStation(stationJson, state);
             case "vr":
-                return createVirtualStation(stationJson, state);
+                return createVrStation(stationJson, state);
             // Add more cases for other modes if needed
             default:
                 String location = SettingsFragment.mViewModel.getLabLocation().getValue();
@@ -79,12 +79,12 @@ public class StationFactory {
     /**
      * Creates a VirtualStation object based on the provided JSON data.
      *
-     * @param stationJson JSON object containing virtual station details.
+     * @param stationJson JSON object containing vr station details.
      * @return A VirtualStation object initialized with the provided data.
      * @throws JSONException If there is an issue parsing the JSON data.
      */
-    private static VirtualStation createVirtualStation(JSONObject stationJson, String state) throws JSONException {
-        VirtualStation station = new VirtualStation(
+    private static VrStation createVrStation(JSONObject stationJson, String state) throws JSONException {
+        VrStation station = new VrStation(
                 stationJson.getString("name"),
                 stationJson.getString("installedApplications"),
                 stationJson.getInt("id"),

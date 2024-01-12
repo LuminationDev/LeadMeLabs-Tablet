@@ -5,7 +5,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.lumination.leadmelabs.models.stations.VirtualStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
         <import type="com.lumination.leadmelabs.models.stations.Station"/>
         <variable
             name="selectedStation"
@@ -284,7 +284,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="30dp"
-                            android:layout="@layout/stub_vr_devices"
+                            android:layout="@layout/vr_devices"
                             android:inflatedId="@+id/inflated_vr_devices"
                             android:visibility="gone"
                             app:selectedStation="@{selectedStation}"/>
@@ -331,13 +331,13 @@
                                 android:drawableTop="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @drawable/session_identify_off : @drawable/session_identify}"
                                 android:text="@string/identify_station_lower"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"/>
-                            
+
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 style="@style/StationSingleButton"
                                 android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
                                 android:drawableTop="@drawable/session_vr_restart"
-                                android:text="@{selectedStation instanceof VirtualStation ? @string/restart_vr_system : `Restart System`}"
+                                android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"
                                 app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
 

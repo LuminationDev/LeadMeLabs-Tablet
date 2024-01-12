@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

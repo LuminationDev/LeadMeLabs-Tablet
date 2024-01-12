@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.models.applications.details.Levels;
@@ -363,14 +363,14 @@ public class StationsViewModel extends ViewModel {
     public void setStationFlashing(int stationId, boolean flashing) {
         Station station = getStationById(stationId);
 
-        if (!(station instanceof VirtualStation)) {
+        if (!(station instanceof VrStation)) {
             return;
         }
 
-        VirtualStation virtualStation = (VirtualStation) getStationById(stationId);
-        if(virtualStation == null) return;
-        virtualStation.animationFlag = flashing;
-        virtualStation.handleAnimationTimer();
-        updateStationById(stationId, virtualStation);
+        VrStation vrStation = (VrStation) getStationById(stationId);
+        if(vrStation == null) return;
+        vrStation.animationFlag = flashing;
+        vrStation.handleAnimationTimer();
+        updateStationById(stationId, vrStation);
     }
 }

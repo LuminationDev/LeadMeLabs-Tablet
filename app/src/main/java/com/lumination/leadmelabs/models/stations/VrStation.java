@@ -19,7 +19,7 @@ import com.lumination.leadmelabs.utilities.IconAnimator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class VirtualStation extends Station {
+public class VrStation extends Station {
     public String ledRingId;
 
     //VR Devices
@@ -38,7 +38,7 @@ public class VirtualStation extends Station {
     private Timer timer;
     int dotsCount = 0;
 
-    public VirtualStation(String name, String applications, int id, String status, String state, int volume, String room, String macAddress, String ledRingId) {
+    public VrStation(String name, String applications, int id, String status, String state, int volume, String room, String macAddress, String ledRingId) {
         super(name, applications, id, status, state, volume, room, macAddress);
 
         this.ledRingId = ledRingId;
@@ -87,7 +87,7 @@ public class VirtualStation extends Station {
      * @param selectedStation The station the icon is linked to.
      * @param iconName A string of to use as the key in the icon manager.
      */
-    public void handleIconAnimation(Boolean flash, ImageView imageView, VirtualStation selectedStation, String iconName) {
+    public void handleIconAnimation(Boolean flash, ImageView imageView, VrStation selectedStation, String iconName) {
         if(flash) {
             //Check if the image view is already saved before re-writing.
             ImageView temp = selectedStation.iconManager.getIconAnimator(iconName);
@@ -125,7 +125,7 @@ public class VirtualStation extends Station {
                 DialogManager.vrSystemRestartedOnStation(id);
                 DialogManager.createBasicDialog("Station error", name + " has not restarted the VR system. Try restarting again, and if this does not work please restart the Station.");
                 MainActivity.runOnUI(() -> {
-                    VirtualStation station = (VirtualStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
                     station.animationFlag = false;
                     ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
                 });
@@ -139,7 +139,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Vive status image view source.
      */
     @BindingAdapter("headsetStatus")
-    public static void setHeadsetStatusImage(ImageView imageView, VirtualStation selectedStation) {
+    public static void setHeadsetStatusImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
@@ -161,7 +161,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Base Station's image view source.
      */
     @BindingAdapter("headset")
-    public static void setHeadsetImage(ImageView imageView, VirtualStation selectedStation) {
+    public static void setHeadsetImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
 
@@ -195,7 +195,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Controller's battery text visibility and value.
      */
     @BindingAdapter({"station", "controllerType"})
-    public static void setBatteryVisibilityAndText(TextView textView, VirtualStation selectedStation, String controllerType) {
+    public static void setBatteryVisibilityAndText(TextView textView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         String connectedController = selectedStation.getControllerTracking(controllerType);
@@ -237,7 +237,7 @@ public class VirtualStation extends Station {
      * cards.
      */
     @BindingAdapter({"battery", "controllerType"})
-    public static void setBatteryVisibilityAndImage(ImageView imageView, VirtualStation selectedStation, String controllerType) {
+    public static void setBatteryVisibilityAndImage(ImageView imageView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         String connectedController = selectedStation.getControllerTracking(controllerType);
@@ -278,7 +278,7 @@ public class VirtualStation extends Station {
      * Data binding to update a Controller's image view source.
      */
     @BindingAdapter(value = {"station", "controllerType"})
-    public static void setControllerImage(ImageView imageView, VirtualStation selectedStation, String controllerType) {
+    public static void setControllerImage(ImageView imageView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -318,7 +318,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Base Station's active total text visibility and value.
      */
     @BindingAdapter("baseStationText")
-    public static void setBaseStationVisibilityAndText(TextView textView, VirtualStation selectedStation) {
+    public static void setBaseStationVisibilityAndText(TextView textView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
@@ -354,7 +354,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Base Station's image view source.
      */
     @BindingAdapter("baseStation")
-    public static void setBaseStationImage(ImageView imageView, VirtualStation selectedStation) {
+    public static void setBaseStationImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -387,7 +387,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Vive connection image view source.
      */
     @BindingAdapter(value = {"station", "headsetManagerType"})
-    public static void setSoftwareImage(ImageView imageView, VirtualStation selectedStation, String headsetManagerType) {
+    public static void setSoftwareImage(ImageView imageView, VrStation selectedStation, String headsetManagerType) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -421,7 +421,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Vive status image view source.
      */
     @BindingAdapter(value = {"station", "headsetManagerIssue"})
-    public static void setSoftwareStatusImage(ImageView imageView, VirtualStation selectedStation, String headsetManagerIssue) {
+    public static void setSoftwareStatusImage(ImageView imageView, VrStation selectedStation, String headsetManagerIssue) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -451,7 +451,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Station content flexbox background.
      */
     @BindingAdapter("stationState")
-    public static void setStationStateBackground(FlexboxLayout flexbox, VirtualStation selectedStation) {
+    public static void setStationStateBackground(FlexboxLayout flexbox, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
@@ -470,7 +470,7 @@ public class VirtualStation extends Station {
      * Data binding to update the Station content text (Status or Game name)
      */
     @BindingAdapter("stationState")
-    public static void setStationStateTextAndVisibility(TextView textView, VirtualStation selectedStation) {
+    public static void setStationStateTextAndVisibility(TextView textView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         //Set the visibility value
@@ -522,7 +522,7 @@ public class VirtualStation extends Station {
                     }
 
                     //Collect the current station state
-                    VirtualStation station = (VirtualStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
                     if(station.state.equals("Awaiting headset connection...")) {

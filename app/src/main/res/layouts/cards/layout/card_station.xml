@@ -5,7 +5,7 @@
         android:layout_height="wrap_content">
 
         <!-- Include the layout for VirtualStation -->
-        <include layout="@layout/card_station_virtual" android:visibility="gone" android:id="@+id/cardStationVirtual" />
+        <include layout="@layout/card_station_vr" android:visibility="gone" android:id="@+id/cardStationVr" />
 
         <!-- Include the layout for ClassicStation -->
         <include layout="@layout/card_station_content" android:visibility="gone" android:id="@+id/cardStationContent" />

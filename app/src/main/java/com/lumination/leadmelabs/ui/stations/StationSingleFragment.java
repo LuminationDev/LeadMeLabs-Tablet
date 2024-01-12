@@ -34,7 +34,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VirtualStation;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -101,7 +101,7 @@ public class StationSingleFragment extends Fragment {
         binding.setSelectedStation(newlySelectedStation);
 
         // Inflate and Bind the VR devices layout if the selected station is a VirtualStation
-        if (newlySelectedStation instanceof VirtualStation) {
+        if (newlySelectedStation instanceof VrStation) {
             inflateVRDevicesLayout();
         }
 
