@@ -71,11 +71,12 @@ public class Appliance {
     }
 
     public String getLabelForIndex(int index) {
-        if (this.options != null) {
+        if (this.options != null && this.options.size() > (index - 1)) {
             return this.options.get(index).name;
-        } else {
+        } else if (this.description.size() > (index - 1)) {
             return this.description.get(index);
         }
+        return "";
     }
 
     /**

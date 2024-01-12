@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginBottom="3dp"
-                android:text="LeadMe Labs Update 1.17"
+                android:text="LeadMe Labs Update 1.19"
                 android:textAlignment="center"
                 android:textFontWeight="600"
                 android:textSize="20sp" />
@@ -40,9 +40,20 @@
 
             <TextView
                 android:id="@+id/update_details"
-                android:text="\u2022 Troubleshooting page offline
-                \n\u2022 Improved process tracking to reduce load on computer resources
-                \n\u2022 Stability and bug fixes"
+                android:text="\u2022 Software update windows will now show download percentage
+\n\u2022 Detect and prompt user to seek support if task scheduler is incorrectly configured
+\n\u2022 Improve Steam auto-minimization
+\n\u2022 Automatically add the lab location when a ticket is submitted
+\n\u2022 Fix issue causing tablet responsiveness to slow down for the first minute after launching
+\n\u2022 Fix issue with backup keys not being used when a message decryption fails
+\n\u2022 Launcher no longer attempts to update when it is in offline mode
+\n\u2022 Removed a ‘server offline’ message from the launcher that would cause installed applications to be shown as not installed
+\n\u2022 Fix tablet sometimes caching current experience details when a station is restarted, causing the tablet to think that an experience is still running
+\n\u2022 Detect and automatically fix the launcher install path if it points to the wrong location
+\n\u2022 Some station statuses would not be triggered when run from a scene, rather than the direct station controls
+\n\u2022 Tablet would sometimes continually show ‘awaiting headset connection’ when that is not the current status
+\n\u2022 Help button was not present on the station page
+"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
