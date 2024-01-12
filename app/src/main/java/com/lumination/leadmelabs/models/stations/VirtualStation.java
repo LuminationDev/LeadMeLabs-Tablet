@@ -125,7 +125,7 @@ public class VirtualStation extends Station {
                 DialogManager.vrSystemRestartedOnStation(id);
                 DialogManager.createBasicDialog("Station error", name + " has not restarted the VR system. Try restarting again, and if this does not work please restart the Station.");
                 MainActivity.runOnUI(() -> {
-                    VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VirtualStation station = (VirtualStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
                     station.animationFlag = false;
                     ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
                 });
@@ -522,7 +522,7 @@ public class VirtualStation extends Station {
                     }
 
                     //Collect the current station state
-                    VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VirtualStation station = (VirtualStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
                     if(station.state.equals("Awaiting headset connection...")) {

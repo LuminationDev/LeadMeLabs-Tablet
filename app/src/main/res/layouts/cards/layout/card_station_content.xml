@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.view.View"/>
-        <import type="com.lumination.leadmelabs.models.stations.ClassicStation" />
+        <import type="com.lumination.leadmelabs.models.stations.ContentStation" />
         <variable
             name="station"
-            type="com.lumination.leadmelabs.models.stations.ClassicStation" />
+            type="com.lumination.leadmelabs.models.stations.ContentStation" />
     </data>
 
     <RelativeLayout
@@ -89,7 +89,7 @@
             <!--STEAM OPEN?-->
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="168dp"
-                android:layout_height="49dp"
+                android:layout_height="25dp"
                 android:layout_marginTop="10dp"
                 app:justifyContent="center"
                 app:flexDirection="row">

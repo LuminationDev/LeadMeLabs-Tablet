@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationsBinding;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
@@ -70,15 +71,15 @@ public class StationsFragment extends Fragment {
         transactionAttempt.commitNowAllowingStateLoss();
     }
 
-    private void reloadData(List<VirtualStation> stations) {
-        ArrayList<VirtualStation> stationRoom = new ArrayList<>();
+    private void reloadData(List<Station> stations) {
+        ArrayList<Station> stationRoom = new ArrayList<>();
 
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
         if(roomType == null) {
             roomType = "All";
         }
 
-        for(VirtualStation station : stations) {
+        for(Station station : stations) {
             if(roomType.equals("All")) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
                     stationRoom.add(station);
@@ -99,12 +100,12 @@ public class StationsFragment extends Fragment {
      * locked rooms in case 'All' is selected.
      * @return An arraylist of station objects.
      */
-    public ArrayList<VirtualStation> getRoomStations()
+    public ArrayList<Station> getRoomStations()
     {
-        ArrayList<VirtualStation> checkList = new ArrayList<>();
+        ArrayList<Station> checkList = new ArrayList<>();
 
         //Limit to the locked rooms
-        for(VirtualStation station: stationAdapter.stationList) {
+        for(Station station: stationAdapter.stationList) {
             if(SettingsFragment.checkLockedRooms(station.room)) {
                 checkList.add(station);
             }

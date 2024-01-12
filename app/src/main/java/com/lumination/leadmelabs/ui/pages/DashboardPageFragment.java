@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -126,8 +127,8 @@ public class DashboardPageFragment extends Fragment {
             ArrayList<Integer> active = new ArrayList<>();
 
             //Check what stations are still running an experience
-            ArrayList<VirtualStation> stations = StationsFragment.getInstance().getRoomStations();
-            for(VirtualStation station: stations) {
+            ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
+            for(Station station: stations) {
                 if(station.gameName == null) {
                     continue;
                 }
@@ -162,7 +163,7 @@ public class DashboardPageFragment extends Fragment {
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
-            List<VirtualStation> stations = StationsFragment.getInstance().getRoomStations();
+            List<Station> stations = StationsFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
         });
       
@@ -218,7 +219,7 @@ public class DashboardPageFragment extends Fragment {
             for (JSONObject stationObject: stationsToTurnOn) {
                 try {
                     int id = Integer.parseInt(stationObject.getString("id"));
-                    VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
                     if (station.status.equals("On")) continue; //Do not do anything if the Station is already on
 
                     station.status = "Turning On";

@@ -8,8 +8,8 @@ import androidx.databinding.BindingAdapter;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 
-public class ClassicStation extends Station {
-    public ClassicStation(String name, String applications, int id, String status, String state, int volume, String room, String macAddress) {
+public class ContentStation extends Station {
+    public ContentStation(String name, String applications, int id, String status, String state, int volume, String room, String macAddress) {
         super(name, applications, id, status, state, volume, room, macAddress);
     }
 
@@ -18,7 +18,7 @@ public class ClassicStation extends Station {
      * Data binding to update the Station content flexbox background.
      */
     @BindingAdapter("stationState")
-    public static void setStationStateBackground(FlexboxLayout flexbox, ClassicStation selectedStation) {
+    public static void setStationStateBackground(FlexboxLayout flexbox, ContentStation selectedStation) {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
@@ -37,7 +37,7 @@ public class ClassicStation extends Station {
      * Data binding to update the Station content text (Status or Game name)
      */
     @BindingAdapter("stationState")
-    public static void setStationStateTextAndVisibility(TextView textView, ClassicStation selectedStation) {
+    public static void setStationStateTextAndVisibility(TextView textView, ContentStation selectedStation) {
         if (selectedStation == null) return;
 
         //Set the visibility value

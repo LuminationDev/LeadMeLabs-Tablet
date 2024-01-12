@@ -38,6 +38,7 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -555,7 +556,7 @@ public class DialogManager {
             String input = url.getText().toString();
 
             if (Patterns.WEB_URL.matcher(input).matches()) {
-                VirtualStation selectedStation = binding.getSelectedStation();
+                Station selectedStation = binding.getSelectedStation();
                 selectedStation.gameName = input;
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
@@ -589,7 +590,7 @@ public class DialogManager {
             String input = nameInput.getText().toString();
 
             if (Pattern.matches("([A-Za-z0-9 ])+", input)) {
-                VirtualStation selectedStation = binding.getSelectedStation();
+                Station selectedStation = binding.getSelectedStation();
                 selectedStation.setName(input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
                 NetworkService.sendMessage("NUC", "UpdateStation", selectedStation.id + ":SetValue:name:" + input);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- Include the layout for VirtualStation -->
+        <include layout="@layout/card_station_virtual" android:visibility="gone" android:id="@+id/cardStationVirtual" />
+
+        <!-- Include the layout for ClassicStation -->
+        <include layout="@layout/card_station_content" android:visibility="gone" android:id="@+id/cardStationContent" />
+    </RelativeLayout>
+</layout>

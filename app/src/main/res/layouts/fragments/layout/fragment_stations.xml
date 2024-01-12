@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.lumination.leadmelabs.models.stations.VirtualStation" />
+        <import type="com.lumination.leadmelabs.models.stations.Station" />
         <import type="android.view.View"/>
         <variable
             name="stationList"
-            type="java.util.ArrayList&lt;VirtualStation&gt;" />
+            type="java.util.ArrayList&lt;Station&gt;" />
         <variable
             name="stationsLoaded"
             type="java.lang.Boolean" />
@@ -40,6 +40,7 @@
                 android:text="@{stationsLoaded ? `No stations in selected room` : `Stations loading...`}"/>
         </com.google.android.flexbox.FlexboxLayout>
 
+        <!--TODO work out how to show card_station_virtual & card_station_classic-->
         <androidx.recyclerview.widget.RecyclerView
             android:visibility="@{stationList.size() > 0 ? View.VISIBLE : View.GONE}"
             android:id="@+id/stations_list"

@@ -10,6 +10,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -137,7 +138,7 @@ public class UIUpdateManager {
                     }
 
                     //Everything below should only trigger if within the locked room
-                    VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
                     HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
 
                     //Check if the computer is in the locked room
@@ -355,81 +356,111 @@ public class UIUpdateManager {
             JSONObject data = new JSONObject(additionalData);
             JSONObject responseObject = data.getJSONObject("responseData");
 
+            StationsViewModel stationsViewModel = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class);
+
             Iterator<String> keys = responseObject.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
                 JSONObject entry = responseObject.getJSONObject(key);
 
-                VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(key));
+                Station station = stationsViewModel.getStationById(Integer.parseInt(key));
                 if (station == null) {
                     return;
                 }
 
-                //General Station statuses
-                String[] stringFields = {"state", "status", "gameName", "gameId", "gameType"};
-                for (String field : stringFields) {
-                    if (entry.has(field)) {
-                        String value = entry.optString(field, "NA");
-                        if (!value.equals("NA")) {
-                            switch (field) {
-                                case "state":
-                                    station.state = value;
-                                    break;
-                                case "status":
-                                    station.status = value;
-                                    break;
-                                case "gameName":
-                                    station.gameName = value;
-                                    break;
-                                case "gameId":
-                                    station.gameId = value;
-                                    break;
-                                case "gameType":
-                                    station.gameType = value;
-                                    break;
-                            }
-                        }
-                    }
+                // General Station statuses
+                updateStationField(station, entry, "state");
+                updateStationField(station, entry, "status");
+                updateStationField(station, entry, "gameName");
+                updateStationField(station, entry, "gameId");
+                updateStationField(station, entry, "gameType");
+
+                // Stop here if it is a classic station
+                if (!(station instanceof VirtualStation)) {
+                    MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), station));
+                    continue;
                 }
 
-                //VR device statuses
+                VirtualStation virtualStation = (VirtualStation) station;
+
+                // VR device statuses
                 JSONObject devices = entry.optJSONObject("devices");
                 if (devices != null) {
-                    String[] deviceFields = {"thirdPartyHeadsetTracking", "openVRHeadsetTracking", "leftControllerTracking", "rightControllerTracking"};
-                    for (String field : deviceFields) {
-                        if (devices.has(field)) {
-                            String value = devices.optString(field, "NA");
-                            if (!value.equals("NA")) {
-                                switch (field) {
-                                    case "thirdPartyHeadsetTracking":
-                                        station.thirdPartyHeadsetTracking = value;
-                                        break;
-                                    case "openVRHeadsetTracking":
-                                        station.openVRHeadsetTracking = value;
-                                        break;
-                                    case "leftControllerTracking":
-                                        station.leftControllerTracking = value;
-                                        break;
-                                    case "rightControllerTracking":
-                                        station.rightControllerTracking = value;
-                                        break;
-                                }
-                            }
-                        }
-                    }
+                    updateDeviceField(virtualStation, devices, "thirdPartyHeadsetTracking");
+                    updateDeviceField(virtualStation, devices, "openVRHeadsetTracking");
+                    updateDeviceField(virtualStation, devices, "leftControllerTracking");
+                    updateDeviceField(virtualStation, devices, "rightControllerTracking");
 
                     // Handle integer fields separately
-                    station.leftControllerBattery = devices.optInt("leftControllerBattery", station.leftControllerBattery);
-                    station.rightControllerBattery = devices.optInt("rightControllerBattery", station.rightControllerBattery);
-                    station.baseStationsActive = devices.optInt("baseStationsActive", station.baseStationsActive);
-                    station.baseStationsTotal = devices.optInt("baseStationsTotal", station.baseStationsTotal);
+                    virtualStation.leftControllerBattery = devices.optInt("leftControllerBattery", virtualStation.leftControllerBattery);
+                    virtualStation.rightControllerBattery = devices.optInt("rightControllerBattery", virtualStation.rightControllerBattery);
+                    virtualStation.baseStationsActive = devices.optInt("baseStationsActive", virtualStation.baseStationsActive);
+                    virtualStation.baseStationsTotal = devices.optInt("baseStationsTotal", virtualStation.baseStationsTotal);
                 }
 
-                MainActivity.runOnUI(() -> ViewModelProviders.of(MainActivity.getInstance())
-                        .get(StationsViewModel.class).updateStationById(Integer.parseInt(key), station));
+                MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), virtualStation));
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates a specific field in a Station object based on the provided JSON data.
+     * @param station The Station object to update.
+     * @param entry JSON object containing data for the specified field.
+     * @param field The field to update in the Station object.
+     */
+    private static void updateStationField(Station station, JSONObject entry, String field) {
+        if (entry.has(field)) {
+            String value = entry.optString(field, "NA");
+            if (!value.equals("NA")) {
+                switch (field) {
+                    case "state":
+                        station.state = value;
+                        break;
+                    case "status":
+                        station.status = value;
+                        break;
+                    case "gameName":
+                        station.gameName = value;
+                        break;
+                    case "gameId":
+                        station.gameId = value;
+                        break;
+                    case "gameType":
+                        station.gameType = value;
+                        break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates a specific field in a VirtualStation object based on the provided JSON data.
+     * @param virtualStation The VirtualStation object to update.
+     * @param devices JSON object containing data for the specified field.
+     * @param field The field to update in the VirtualStation object.
+     */
+    private static void updateDeviceField(VirtualStation virtualStation, JSONObject devices, String field) {
+        if (devices.has(field)) {
+            String value = devices.optString(field, "NA");
+            if (!value.equals("NA")) {
+                switch (field) {
+                    case "thirdPartyHeadsetTracking":
+                        virtualStation.thirdPartyHeadsetTracking = value;
+                        break;
+                    case "openVRHeadsetTracking":
+                        virtualStation.openVRHeadsetTracking = value;
+                        break;
+                    case "leftControllerTracking":
+                        virtualStation.leftControllerTracking = value;
+                        break;
+                    case "rightControllerTracking":
+                        virtualStation.rightControllerTracking = value;
+                        break;
+                }
+            }
         }
     }
 
@@ -449,7 +480,7 @@ public class UIUpdateManager {
 
     private static void updateStation(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
-            VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
             if (station == null) {
                 return;
             }
@@ -480,7 +511,10 @@ public class UIUpdateManager {
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
                     if(value.equals("Off")) {
-                        station.initiateVRDevices();
+                        if (station instanceof VirtualStation) {
+                            VirtualStation virtualStation = (VirtualStation) station; //safe cast
+                            virtualStation.initiateVRDevices();
+                        }
                         station.state = "";
                     }
                     break;
@@ -585,10 +619,14 @@ public class UIUpdateManager {
      */
     private static void updateStationDevices(String stationId, String attribute, String value) throws JSONException {
         MainActivity.runOnUI(() -> {
-            VirtualStation station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
-            if (station == null) {
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
+
+            //Check for safe cast
+            if (!(station instanceof VirtualStation)) {
                 return;
             }
+
+            VirtualStation virtualStation = (VirtualStation)station;
 
             String[] values = value.split(":", 3);
             switch (attribute) {
@@ -600,7 +638,7 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateHeadset(station, values[0], values[1], values[2]);
+                    updateHeadset(virtualStation, values[0], values[1], values[2]);
                     break;
 
                 case "Controller":
@@ -611,7 +649,7 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateController(station, values[0], values[1], values[2]);
+                    updateController(virtualStation, values[0], values[1], values[2]);
                     break;
 
                 case "BaseStation":
@@ -622,11 +660,11 @@ public class UIUpdateManager {
                         return;
                     }
 
-                    updateBaseStations(station, values[0], values[1]);
+                    updateBaseStations(virtualStation, values[0], values[1]);
                     break;
             }
 
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), virtualStation);
         });
     }
 

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
@@ -43,9 +44,9 @@ public class StationSelectionPageFragment extends Fragment {
         childManager = getChildFragmentManager();
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        ArrayList<VirtualStation> stations = (ArrayList<VirtualStation>) mViewModel.getStations().getValue();
-        stations = (ArrayList<VirtualStation>) stations.clone();
-        for (VirtualStation station:stations) {
+        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+        stations = (ArrayList<Station>) stations.clone();
+        for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);
         }
@@ -66,9 +67,9 @@ public class StationSelectionPageFragment extends Fragment {
 
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
-            ArrayList<VirtualStation> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<VirtualStation>) stations.clone();
-            for (VirtualStation station:stations) {
+            ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
+            stations = (ArrayList<Station>) stations.clone();
+            for (Station station:stations) {
                 if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
@@ -93,7 +94,7 @@ public class StationSelectionPageFragment extends Fragment {
 
         View identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
-            List<VirtualStation> stations = StationSelectionFragment.getInstance().getRoomStations();
+            List<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
         });
 
@@ -116,9 +117,9 @@ public class StationSelectionPageFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        ArrayList<VirtualStation> stations = (ArrayList<VirtualStation>) mViewModel.getStations().getValue();
-        stations = (ArrayList<VirtualStation>) stations.clone();
-        for (VirtualStation station:stations) {
+        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+        stations = (ArrayList<Station>) stations.clone();
+        for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);
         }
