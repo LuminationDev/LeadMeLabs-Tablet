@@ -375,7 +375,7 @@ public class UIUpdateManager {
                 updateStationField(station, entry, "gameId");
                 updateStationField(station, entry, "gameType");
 
-                // Stop here if it is a classic station
+                // Stop here if it is a content station
                 if (!(station instanceof VirtualStation)) {
                     MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), station));
                     continue;

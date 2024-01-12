@@ -40,7 +40,6 @@
                 android:text="@{stationsLoaded ? `No stations in selected room` : `Stations loading...`}"/>
         </com.google.android.flexbox.FlexboxLayout>
 
-        <!--TODO work out how to show card_station_virtual & card_station_classic-->
         <androidx.recyclerview.widget.RecyclerView
             android:visibility="@{stationList.size() > 0 ? View.VISIBLE : View.GONE}"
             android:id="@+id/stations_list"

@@ -331,8 +331,7 @@
                                 android:drawableTop="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @drawable/session_identify_off : @drawable/session_identify}"
                                 android:text="@string/identify_station_lower"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"/>
-
-                            <!--TODO check if this works-->
+                            
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 style="@style/StationSingleButton"
