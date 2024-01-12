@@ -257,7 +257,7 @@
                             style="@style/HelpCardBody">
                             <TextView
                                 style="@style/HelpCardBodyTitle"
-                                android:text="LeadMe Labs 1.17 Update"/>
+                                android:text="LeadMe Labs 1.19 Update"/>
                             <TextView
                                 style="@style/HelpCardBodyText"
                                 android:text="Details of the latest LeadMe Labs update." />
