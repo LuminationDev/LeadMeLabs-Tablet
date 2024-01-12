@@ -8,12 +8,14 @@ public class Application {
     public String type;
     public String name;
     public String id;
+    public boolean isVr;
     public Details details;
 
-    public Application(String type, String name, String id) {
+    public Application(String type, String name, String id, boolean isVr) {
         this.type = type;
         this.name = name;
         this.id = id;
+        this.isVr = isVr;
     }
 
     @Override

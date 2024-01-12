@@ -22,8 +22,6 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import java.util.ArrayList;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
-    private final String TAG = "StationAdapter";
-
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
 
     public ArrayList<Station> stationList = new ArrayList<>();

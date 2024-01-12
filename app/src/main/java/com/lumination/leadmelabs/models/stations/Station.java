@@ -81,35 +81,52 @@ public class Station implements Cloneable {
         name = newName;
     }
 
+    /**
+     * Parses a JSON string containing application data and updates the list of applications.
+     *
+     * @param applicationsJson The JSON string containing application data.
+     */
     public void setApplicationsFromJsonString(String applicationsJson) {
         ArrayList<Application> newApplications = new ArrayList<>();
         String[] apps = applicationsJson.split("/");
-        for (String app: apps) {
+
+        for (String app : apps) {
             String[] appData = app.split("\\|");
+
+            // Backwards compatibility
+            boolean isVr = appData.length >= 4 && Boolean.parseBoolean(appData[3]);
+
             if (appData.length > 1) {
-                switch (appData[0]) {
+                String appType = appData[0];
+                String appName = appData[2].replace("\"", "");
+                String appId = appData[1];
+
+                switch (appType) {
                     case "Custom":
-                        newApplications.add(new CustomApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
+                        newApplications.add(new CustomApplication(appType, appName, appId, isVr));
                         break;
                     case "Steam":
-                        newApplications.add(new SteamApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
+                        newApplications.add(new SteamApplication(appType, appName, appId, isVr));
                         break;
                     case "Vive":
-                        newApplications.add(new ViveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
+                        newApplications.add(new ViveApplication(appType, appName, appId, isVr));
                         break;
                     case "Revive":
-                        newApplications.add(new ReviveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
+                        newApplications.add(new ReviveApplication(appType, appName, appId, isVr));
                         break;
                 }
             }
         }
-        if (newApplications.size() > 0) {
-            newApplications.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
-            this.applications = newApplications;
 
-            //Check for missing thumbnails
-            ImageManager.CheckLocalCache(applicationsJson);
+        if (newApplications.isEmpty()) {
+            return;
         }
+
+        newApplications.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
+        this.applications = newApplications;
+
+        //Check for missing thumbnails
+        ImageManager.CheckLocalCache(applicationsJson);
     }
 
     /**
@@ -239,7 +256,7 @@ public class Station implements Cloneable {
                     }
 
                     //Collect the current station state
-                    VirtualStation station = (VirtualStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
                     if(station.state.equals("Awaiting headset connection...")) {
