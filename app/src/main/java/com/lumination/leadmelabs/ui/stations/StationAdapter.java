@@ -46,7 +46,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         public void bind(Station station) {
-            View finalResult = determineStationType(binding, station);
+            View finalResult = StationAdapter.determineStationType(binding, station);
 
             if (finalResult == null) {
                 return;
@@ -84,33 +84,6 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 }
             }
             stationBindings.add(binding);
-        }
-    }
-
-    /**
-     * Determines the type of the given station (VirtualStation or ContentStation) and binds the corresponding
-     * data to the associated layout. It sets the visibility of the relevant layout to VISIBLE and returns
-     * the root view of the card associated with the station type.
-     *
-     * @param binding The data binding object for the card station layout.
-     * @param station The station for which the type needs to be determined and data bound.
-     * @return The root view of the card associated with the station type, or null if the station type is unknown.
-     */
-    private View determineStationType(CardStationBinding binding, Station station) {
-        if (station instanceof VirtualStation) {
-            CardStationVirtualBinding virtualBinding = binding.cardStationVirtual;
-            virtualBinding.setStation((VirtualStation) station);
-            virtualBinding.getRoot().setVisibility(View.VISIBLE);
-            return binding.cardStationVirtual.getRoot().findViewById(R.id.station_card);
-
-        } else if (station instanceof ContentStation) {
-            CardStationContentBinding classicBinding = binding.cardStationContent;
-            classicBinding.setStation((ContentStation) station);
-            classicBinding.getRoot().setVisibility(View.VISIBLE);
-            return binding.cardStationContent.getRoot().findViewById(R.id.station_card);
-
-        } else {
-            return null;
         }
     }
 
@@ -168,5 +141,32 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         return true;
+    }
+
+    /**
+     * Determines the type of the given station (VirtualStation or ContentStation) and binds the corresponding
+     * data to the associated layout. It sets the visibility of the relevant layout to VISIBLE and returns
+     * the root view of the card associated with the station type.
+     *
+     * @param binding The data binding object for the card station layout.
+     * @param station The station for which the type needs to be determined and data bound.
+     * @return The root view of the card associated with the station type, or null if the station type is unknown.
+     */
+    public static View determineStationType(CardStationBinding binding, Station station) {
+        if (station instanceof VirtualStation) {
+            CardStationVirtualBinding virtualBinding = binding.cardStationVirtual;
+            virtualBinding.setStation((VirtualStation) station);
+            virtualBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationVirtual.getRoot().findViewById(R.id.station_card);
+
+        } else if (station instanceof ContentStation) {
+            CardStationContentBinding classicBinding = binding.cardStationContent;
+            classicBinding.setStation((ContentStation) station);
+            classicBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationContent.getRoot().findViewById(R.id.station_card);
+
+        } else {
+            return null;
+        }
     }
 }

@@ -31,18 +31,12 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
         }
 
         public void bind(Station station, BasicStationSelectionAdapter basicStationSelectionAdapter) {
-            if (station instanceof VirtualStation) {
-                CardStationVirtualBinding virtualBinding = binding.cardStationVirtual;
-                virtualBinding.setStation((VirtualStation) station);
-                virtualBinding.getRoot().setVisibility(View.VISIBLE);
+            View finalResult = StationAdapter.determineStationType(binding, station);
 
-            } else if (station instanceof ContentStation) {
-                CardStationContentBinding classicBinding = binding.cardStationContent;
-                classicBinding.setStation((ContentStation) station);
-                classicBinding.getRoot().setVisibility(View.VISIBLE);
+            if (finalResult == null) {
+                return;
             }
 
-            View finalResult = binding.getRoot().findViewById(R.id.station_card);
             if (station.status.equals("Off")) {
                 finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
             } else {
