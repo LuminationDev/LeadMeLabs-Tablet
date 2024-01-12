@@ -476,7 +476,7 @@ public class DialogManager {
         confirmationDialog.getWindow().setLayout(680, 680);
     }
 
-    public static void createEndSessionDialog(ArrayList<VirtualStation> stations) {
+    public static void createEndSessionDialog(ArrayList<Station> stations) {
         View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_select_stations, null);
         AlertDialog endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
 
@@ -531,7 +531,7 @@ public class DialogManager {
      * End the current session on the stations supplied in the station list.
      * @param stationList An Arraylist of Station objects.
      */
-    private static void endSession(ArrayList<VirtualStation> stationList) {
+    private static void endSession(ArrayList<Station> stationList) {
         int[] selectedIds = Helpers.cloneStationList(stationList).stream().filter(station -> station.selected).mapToInt(station -> station.id).toArray();
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 

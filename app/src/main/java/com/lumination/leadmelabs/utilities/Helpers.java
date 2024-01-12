@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.utilities;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VirtualStation;
 
 import java.io.IOException;
@@ -11,10 +12,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 public class Helpers {
-    public static ArrayList<VirtualStation> cloneStationList(List<VirtualStation> stationList) {
-        ArrayList<VirtualStation> clone = new ArrayList<VirtualStation>(stationList.size());
-        for (VirtualStation station:stationList) {
-            clone.add((VirtualStation) station.clone());
+    public static ArrayList<Station> cloneStationList(List<Station> stationList) {
+        ArrayList<Station> clone = new ArrayList<Station>(stationList.size());
+        for (Station station:stationList) {
+            clone.add((Station) station.clone());
         }
         return clone;
     }

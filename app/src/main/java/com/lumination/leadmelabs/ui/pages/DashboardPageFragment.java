@@ -112,7 +112,7 @@ public class DashboardPageFragment extends Fragment {
                 if (confirmationResult) {
                     endAllSessionsConfirmation();
                 } else {
-                    ArrayList<VirtualStation> stationsToSelectFrom = (ArrayList<VirtualStation>) StationsFragment.getInstance().getRoomStations().clone();
+                    ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
                     DialogManager.createEndSessionDialog(stationsToSelectFrom);
                 }
             };

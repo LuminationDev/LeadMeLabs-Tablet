@@ -326,7 +326,6 @@ public class StationSingleFragment extends Fragment {
      */
     private void updateExperienceImage(View view, ImageView experienceControlImage, Station station) {
         if (station.gameId != null && station.gameId.length() > 0) {
-
             String filePath;
             switch(station.gameType) {
                 case "Custom":
