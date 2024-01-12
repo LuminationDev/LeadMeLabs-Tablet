@@ -18,9 +18,7 @@ import com.lumination.leadmelabs.models.stations.VirtualStation;
 
 import java.util.ArrayList;
 
-//TODO update this once the cards are working
 public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStationSelectionAdapter.StationViewHolder> {
-    private final String TAG = "StationAdapter";
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
     public ArrayList<Station> stationList = new ArrayList<>();

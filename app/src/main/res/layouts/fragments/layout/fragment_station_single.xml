@@ -5,6 +5,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VirtualStation"/>
         <import type="com.lumination.leadmelabs.models.stations.Station"/>
         <variable
             name="selectedStation"
@@ -331,12 +332,13 @@
                                 android:text="@string/identify_station_lower"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"/>
 
+                            <!--TODO check if this works-->
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/station_restart_vr"
                                 style="@style/StationSingleButton"
                                 android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
                                 android:drawableTop="@drawable/session_vr_restart"
-                                android:text="@string/restart_vr_system"
+                                android:text="@{selectedStation instanceof VirtualStation ? @string/restart_vr_system : `Restart System`}"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"
                                 app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
 

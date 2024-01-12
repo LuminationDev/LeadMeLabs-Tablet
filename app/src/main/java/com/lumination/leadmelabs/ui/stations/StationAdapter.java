@@ -45,7 +45,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             this.binding = binding;
         }
 
-        public void bind(Station station, int position) {
+        public void bind(Station station) {
             View finalResult = determineStationType(binding, station);
 
             if (finalResult == null) {
@@ -125,7 +125,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         Station station = getItem(position);
-        holder.bind(station, position);
+        holder.bind(station);
     }
 
     @Override

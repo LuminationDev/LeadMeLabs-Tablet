@@ -35,8 +35,7 @@ public class StationFactory {
             state = "Not set";
         }
 
-        String mode = stationJson.optString("mode", "defaultMode");
-
+        String mode = stationJson.optString("mode", "vr").toLowerCase();
         switch (mode) {
             case "content":
                 return createContentStation(stationJson, state);
