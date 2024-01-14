@@ -9,13 +9,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
+import com.lumination.leadmelabs.models.stations.Station;
 
 import java.util.ArrayList;
 
 public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStationSelectionAdapter.StationViewHolder> {
-    private final String TAG = "StationAdapter";
 
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
     public ArrayList<Station> stationList = new ArrayList<>();
@@ -28,8 +27,12 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
         }
 
         public void bind(Station station, BasicStationSelectionAdapter basicStationSelectionAdapter) {
-            binding.setStation(station);
-            View finalResult = binding.getRoot().findViewById(R.id.station_card);
+            View finalResult = StationAdapter.determineStationType(binding, station);
+
+            if (finalResult == null) {
+                return;
+            }
+
             if (station.status.equals("Off")) {
                 finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
             } else {

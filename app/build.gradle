@@ -38,6 +38,22 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res/layouts/alerts',
+                           'src/main/res/layouts/cards',
+                           'src/main/res/layouts/dialogs',
+                           'src/main/res/layouts/fragments',
+                           'src/main/res/layouts/items',
+                           'src/main/res/layouts/pages',
+                           'src/main/res/layouts/stubs',
+                           'src/main/res/layouts/utils',
+                           'src/main/res/layouts',
+                           'src/main/res',
+            ]
+        }
+    }
+
     dataBinding {
         enabled true
     }

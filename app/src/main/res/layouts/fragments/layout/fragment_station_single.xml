@@ -5,10 +5,11 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.lumination.leadmelabs.models.Station"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
         <variable
             name="selectedStation"
-            type="com.lumination.leadmelabs.models.Station" />
+            type="com.lumination.leadmelabs.models.stations.Station" />
 
         <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
         <variable
@@ -51,7 +52,7 @@
                 android:textFontWeight="600"
                 android:textSize="13sp" />
         </com.google.android.flexbox.FlexboxLayout>
-    </com.google.android.flexbox.FlexboxLayout>`
+    </com.google.android.flexbox.FlexboxLayout>
 
         <TextView
             style="@style/PageTitle"
@@ -276,165 +277,19 @@
                         android:layout_height="wrap_content"
                         app:flexDirection="column">
 
-                        <com.google.android.flexbox.FlexboxLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="140dp"
-                            android:paddingStart="20dp"
-                            android:paddingEnd="20dp"
+                        <!-- VR DEVICES (Optionally inflated view) -->
+                        <!-- app:selectedStation="@{selectedStation}" <- Passes the data through to the Stub -->
+                        <ViewStub
+                            android:id="@+id/vr_devices_stub"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="30dp"
-                            android:background="@drawable/bg_white_curved"
-                            android:padding="20dp"
-                            app:alignItems="center"
-                            app:layout_flexGrow="1"
-                            app:flexDirection="row">
+                            android:layout="@layout/vr_devices"
+                            android:inflatedId="@+id/inflated_vr_devices"
+                            android:visibility="gone"
+                            app:selectedStation="@{selectedStation}"/>
 
-                            <!--HEADSET CONNECTION-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/icon_volume"
-                                    app:headset="@{selectedStation}"
-                                    app:layout_flexShrink="0"/>
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="25dp"
-                                    android:contentDescription="@string/openvr_icon"
-                                    app:headsetStatus="@{selectedStation}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-
-                            <!--LEFT CONTROLLER-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/vr_controller"
-                                    app:station="@{selectedStation}"
-                                    app:controllerType="@{`Left`}"
-                                    app:layout_flexShrink="0" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAlignment="textEnd"
-                                    android:textSize="18sp"
-                                    android:textFontWeight="600"
-                                    app:station="@{selectedStation}"
-                                    app:controllerType="@{`Left`}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-
-                            <!--RIGHT CONTROLLER-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/vr_controller"
-                                    app:station="@{selectedStation}"
-                                    app:controllerType="@{`Right`}"
-                                    app:layout_flexShrink="0" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textAlignment="textEnd"
-                                    android:textSize="18sp"
-                                    android:textFontWeight="600"
-                                    app:station="@{selectedStation}"
-                                    app:controllerType="@{`Right`}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-
-                            <!--BASE STATIONS-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/base_station"
-                                    app:baseStation="@{selectedStation}"
-                                    app:layout_flexShrink="0" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAlignment="center"
-                                    android:textSize="18sp"
-                                    android:textFontWeight="600"
-                                    app:baseStationText="@{selectedStation}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-
-                            <!--VIVE CONNECTION-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/icon_volume"
-                                    app:station="@{selectedStation}"
-                                    app:headsetManagerType="@{`Vive`}"
-                                    app:layout_flexShrink="0" />
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="25dp"
-                                    android:contentDescription="@string/vive_icon"
-                                    app:station="@{selectedStation}"
-                                    app:headsetManagerIssue="@{`Vive`}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-
-                            <!--OPENVR CONNECTION-->
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="60dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:contentDescription="@string/icon_volume"
-                                    app:station="@{selectedStation}"
-                                    app:headsetManagerType="@{`OpenVR`}"
-                                    app:layout_flexShrink="0" />
-
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="25dp"
-                                    android:contentDescription="@string/openvr_icon"
-                                    app:station="@{selectedStation}"
-                                    app:headsetManagerIssue="@{`OpenVR`}"/>
-                            </com.google.android.flexbox.FlexboxLayout>
-                        </com.google.android.flexbox.FlexboxLayout>
-
+                        <!--STATION CONTROLS-->
                         <GridLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -482,7 +337,7 @@
                                 style="@style/StationSingleButton"
                                 android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
                                 android:drawableTop="@drawable/session_vr_restart"
-                                android:text="@string/restart_vr_system"
+                                android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
                                 android:enabled="@{selectedStation.status.equals(`On`)}"
                                 app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
 

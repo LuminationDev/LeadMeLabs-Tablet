@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -32,7 +33,8 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -93,6 +95,15 @@ public class StationSingleFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setStations(mViewModel);
+
+        //Specifically set the selected station
+        Station newlySelectedStation = mViewModel.getSelectedStation().getValue();
+        binding.setSelectedStation(newlySelectedStation);
+
+        // Inflate and Bind the VR devices layout if the selected station is a VirtualStation
+        if (newlySelectedStation instanceof VrStation) {
+            inflateVRDevicesLayout();
+        }
 
         if (savedInstanceState == null) {
             childManager.beginTransaction()
@@ -290,56 +301,75 @@ public class StationSingleFragment extends Fragment {
                     "Proceed");
         });
 
-        ImageView gameControlImage = view.findViewById(R.id.game_control_image);
+        ImageView experienceControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
-            if (station.gameId != null && station.gameId.length() > 0) {
-
-                String filePath;
-                switch(station.gameType) {
-                    case "Custom":
-                        filePath = CustomApplication.getImageUrl(station.gameName);
-                        break;
-                    case "Steam":
-                        filePath = SteamApplication.getImageUrl(station.gameName, station.gameId);
-                        break;
-                    case "Vive":
-                        filePath = ViveApplication.getImageUrl(station.gameId);
-                        break;
-                    case "Revive":
-                        filePath = ReviveApplication.getImageUrl(station.gameId);
-                        break;
-                    default:
-                        filePath = "";
-                }
-
-                //Load the image url or a default image if nothing is available
-                if(Objects.equals(filePath, "")) {
-                    Glide.with(view).load(R.drawable.default_header).into(gameControlImage);
-                } else {
-                    Glide.with(view).load(filePath)
-                            .listener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    // Error occurred while loading the image, change the imageUrl to the fallback image
-                                    Glide.with(view)
-                                            .load(R.drawable.default_header)
-                                            .into((ImageView) view.findViewById(R.id.experience_image));
-                                    return true;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    // Image loaded successfully
-                                    return false;
-                                }
-                            })
-                            .into(gameControlImage);
-                }
-            } else {
-                gameControlImage.setImageDrawable(null);
-            }
+            updateExperienceImage(view, experienceControlImage, station);
         });
+    }
+
+    /**
+     * If the selected Station is of type VirtualStation, inflate the Vr devices stub layout. The
+     * main fragment_station_single.xml passes the current selectedStation binding down to the stub
+     * as to pass on the data binding from the VirtualStation class.
+     */
+    private void inflateVRDevicesLayout() {
+        ViewStub vrDevicesStub = binding.getRoot().findViewById(R.id.vr_devices_stub);
+        vrDevicesStub.inflate();
+    }
+
+    /**
+     * Update the experience image to reflect what the selected Station is currently processing.
+     * @param view The current fragment view.
+     * @param experienceControlImage The ImageView to be changed.
+     * @param station The currently selected Station.
+     */
+    private void updateExperienceImage(View view, ImageView experienceControlImage, Station station) {
+        if (station.gameId != null && station.gameId.length() > 0) {
+            String filePath;
+            switch(station.gameType) {
+                case "Custom":
+                    filePath = CustomApplication.getImageUrl(station.gameName);
+                    break;
+                case "Steam":
+                    filePath = SteamApplication.getImageUrl(station.gameName, station.gameId);
+                    break;
+                case "Vive":
+                    filePath = ViveApplication.getImageUrl(station.gameId);
+                    break;
+                case "Revive":
+                    filePath = ReviveApplication.getImageUrl(station.gameId);
+                    break;
+                default:
+                    filePath = "";
+            }
+
+            //Load the image url or a default image if nothing is available
+            if(Objects.equals(filePath, "")) {
+                Glide.with(view).load(R.drawable.default_header).into(experienceControlImage);
+            } else {
+                Glide.with(view).load(filePath)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                // Error occurred while loading the image, change the imageUrl to the fallback image
+                                Glide.with(view)
+                                        .load(R.drawable.default_header)
+                                        .into((ImageView) view.findViewById(R.id.experience_image));
+                                return true;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                // Image loaded successfully
+                                return false;
+                            }
+                        })
+                        .into(experienceControlImage);
+            }
+        } else {
+            experienceControlImage.setImageDrawable(null);
+        }
     }
 
     /**

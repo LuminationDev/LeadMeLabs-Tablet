@@ -3,8 +3,8 @@ package com.lumination.leadmelabs.models.applications;
 import com.lumination.leadmelabs.managers.ImageManager;
 
 public class SteamApplication extends Application {
-    public SteamApplication(String type, String name, String id) {
-        super(type, name, id);
+    public SteamApplication(String type, String name, String id, boolean isVr) {
+        super(type, name, id, isVr);
     }
 
     /**

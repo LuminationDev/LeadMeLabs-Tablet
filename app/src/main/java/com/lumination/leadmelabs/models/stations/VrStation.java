@@ -1,7 +1,6 @@
-package com.lumination.leadmelabs.models;
+package com.lumination.leadmelabs.models.stations;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,39 +13,14 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
-import com.lumination.leadmelabs.managers.ImageManager;
-import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.applications.CustomApplication;
-import com.lumination.leadmelabs.models.applications.ReviveApplication;
-import com.lumination.leadmelabs.models.applications.SteamApplication;
-import com.lumination.leadmelabs.models.applications.ViveApplication;
-import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.IconAnimator;
-import com.lumination.leadmelabs.utilities.IconManager;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Station implements Cloneable {
-    public String name;
-    public int id;
-    public String status; //Describes the computer status (Off, On, Turning On)
-    public String state; //Describes the state of the LeadMe software
-    public String room;
-    public String gameName = null;
-    public String gameId;
-    public String gameType;
-    public int volume;
-    public ArrayList<Application> applications = new ArrayList<>();
-    public boolean selected = false;
-    private CountDownTimer shutdownTimer;
-    public String macAddress;
+public class VrStation extends Station {
     public String ledRingId;
-    public Boolean requiresSteamGuard = false;
 
     //VR Devices
     public CountDownTimer flashTimer;
@@ -60,37 +34,13 @@ public class Station implements Cloneable {
     public int baseStationsActive;
     public int baseStationsTotal;
 
-
-    //Track animation of icons
-    IconManager iconManager = new IconManager();
-
     //Track the animation of the dots for Awaiting headset connection
     private Timer timer;
     int dotsCount = 0;
 
-    @Override
-    public Station clone() {
-        Station clonedStation = null;
-        try {
-            clonedStation = (Station) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+    public VrStation(String name, String applications, int id, String status, String state, int volume, String room, String macAddress, String ledRingId) {
+        super(name, applications, id, status, state, volume, room, macAddress);
 
-        return clonedStation;
-    }
-
-    public Station(String name, String applications, int id, String status, String state, int volume, String room, String ledRingId, String macAddress) {
-        this.name = name;
-        if (applications != null && applications.length() > 0 && !applications.equals("Off")) {
-            this.setApplicationsFromJsonString(applications);
-        }
-        this.id = id;
-        this.status = status;
-        this.state = state;
-        this.volume = volume;
-        this.room = room;
-        this.macAddress = macAddress;
         this.ledRingId = ledRingId;
 
         initiateVRDevices();
@@ -108,94 +58,6 @@ public class Station implements Cloneable {
         this.rightControllerBattery = 0;
         this.baseStationsActive = 0;
         this.baseStationsTotal = 0;
-    }
-
-    public void setName(String newName)
-    {
-        name = newName;
-    }
-
-    public void setApplicationsFromJsonString(String applicationsJson) {
-        ArrayList<Application> newApplications = new ArrayList<>();
-        String[] apps = applicationsJson.split("/");
-        for (String app: apps) {
-            String[] appData = app.split("\\|");
-            if (appData.length > 1) {
-                switch (appData[0]) {
-                    case "Custom":
-                        newApplications.add(new CustomApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
-                        break;
-                    case "Steam":
-                        newApplications.add(new SteamApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
-                        break;
-                    case "Vive":
-                        newApplications.add(new ViveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
-                        break;
-                    case "Revive":
-                        newApplications.add(new ReviveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
-                        break;
-                }
-            }
-        }
-        if (newApplications.size() > 0) {
-            newApplications.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
-            this.applications = newApplications;
-
-            //Check for missing thumbnails
-            ImageManager.CheckLocalCache(applicationsJson);
-        }
-    }
-
-    /**
-     * Detect if a particular station has an application installed on it
-     * @param applicationId A long that represents the ID of an experience.
-     * @return A boolean if the application is installed.
-     */
-    public boolean hasApplicationInstalled(String applicationId) {
-        for (Application application:this.applications) {
-            if (Objects.equals(application.id, applicationId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Start a countdown to check the station status, if the station has not contacted the NUC
-     * within the time limit (3mins) then something has gone wrong and alert the user.
-     */
-    public void powerStatusCheck(long delay) {
-        //Cancel any previous power checks before starting a new one
-        cancelStatusCheck();
-
-        shutdownTimer = new CountDownTimer(delay, 1000) {
-            @Override
-            public void onTick(long l) {
-            }
-
-            @Override
-            public void onFinish() {
-                if(!SettingsFragment.checkLockedRooms(room)) {
-                    return;
-                }
-                DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
-                MainActivity.runOnUI(() -> {
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
-                    station.status = "Off";
-                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Off");
-                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
-                });
-            }
-        }.start();
-    }
-
-    /**
-     * The station has turned on so cancel the automatic station check.
-     */
-    public void cancelStatusCheck() {
-        if(shutdownTimer != null) {
-            shutdownTimer.cancel();
-        }
     }
 
     public String getControllerTracking(String controllerType) {
@@ -225,7 +87,7 @@ public class Station implements Cloneable {
      * @param selectedStation The station the icon is linked to.
      * @param iconName A string of to use as the key in the icon manager.
      */
-    public void handleIconAnimation(Boolean flash, ImageView imageView, Station selectedStation, String iconName) {
+    public void handleIconAnimation(Boolean flash, ImageView imageView, VrStation selectedStation, String iconName) {
         if(flash) {
             //Check if the image view is already saved before re-writing.
             ImageView temp = selectedStation.iconManager.getIconAnimator(iconName);
@@ -263,7 +125,7 @@ public class Station implements Cloneable {
                 DialogManager.vrSystemRestartedOnStation(id);
                 DialogManager.createBasicDialog("Station error", name + " has not restarted the VR system. Try restarting again, and if this does not work please restart the Station.");
                 MainActivity.runOnUI(() -> {
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
                     station.animationFlag = false;
                     ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
                 });
@@ -277,7 +139,7 @@ public class Station implements Cloneable {
      * Data binding to update the Vive status image view source.
      */
     @BindingAdapter("headsetStatus")
-    public static void setHeadsetStatusImage(ImageView imageView, Station selectedStation) {
+    public static void setHeadsetStatusImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
@@ -299,7 +161,7 @@ public class Station implements Cloneable {
      * Data binding to update the Base Station's image view source.
      */
     @BindingAdapter("headset")
-    public static void setHeadsetImage(ImageView imageView, Station selectedStation) {
+    public static void setHeadsetImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
 
@@ -333,7 +195,7 @@ public class Station implements Cloneable {
      * Data binding to update the Controller's battery text visibility and value.
      */
     @BindingAdapter({"station", "controllerType"})
-    public static void setBatteryVisibilityAndText(TextView textView, Station selectedStation, String controllerType) {
+    public static void setBatteryVisibilityAndText(TextView textView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         String connectedController = selectedStation.getControllerTracking(controllerType);
@@ -375,7 +237,7 @@ public class Station implements Cloneable {
      * cards.
      */
     @BindingAdapter({"battery", "controllerType"})
-    public static void setBatteryVisibilityAndImage(ImageView imageView, Station selectedStation, String controllerType) {
+    public static void setBatteryVisibilityAndImage(ImageView imageView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         String connectedController = selectedStation.getControllerTracking(controllerType);
@@ -416,7 +278,7 @@ public class Station implements Cloneable {
      * Data binding to update a Controller's image view source.
      */
     @BindingAdapter(value = {"station", "controllerType"})
-    public static void setControllerImage(ImageView imageView, Station selectedStation, String controllerType) {
+    public static void setControllerImage(ImageView imageView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -456,7 +318,7 @@ public class Station implements Cloneable {
      * Data binding to update the Base Station's active total text visibility and value.
      */
     @BindingAdapter("baseStationText")
-    public static void setBaseStationVisibilityAndText(TextView textView, Station selectedStation) {
+    public static void setBaseStationVisibilityAndText(TextView textView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
@@ -492,7 +354,7 @@ public class Station implements Cloneable {
      * Data binding to update the Base Station's image view source.
      */
     @BindingAdapter("baseStation")
-    public static void setBaseStationImage(ImageView imageView, Station selectedStation) {
+    public static void setBaseStationImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -525,7 +387,7 @@ public class Station implements Cloneable {
      * Data binding to update the Vive connection image view source.
      */
     @BindingAdapter(value = {"station", "headsetManagerType"})
-    public static void setSoftwareImage(ImageView imageView, Station selectedStation, String headsetManagerType) {
+    public static void setSoftwareImage(ImageView imageView, VrStation selectedStation, String headsetManagerType) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -559,7 +421,7 @@ public class Station implements Cloneable {
      * Data binding to update the Vive status image view source.
      */
     @BindingAdapter(value = {"station", "headsetManagerIssue"})
-    public static void setSoftwareStatusImage(ImageView imageView, Station selectedStation, String headsetManagerIssue) {
+    public static void setSoftwareStatusImage(ImageView imageView, VrStation selectedStation, String headsetManagerIssue) {
         if (selectedStation == null) return;
 
         boolean isStatusOff = selectedStation.status != null && (selectedStation.status.equals("Off") || selectedStation.status.equals("Turning On") || selectedStation.status.equals("Restarting"));
@@ -589,7 +451,7 @@ public class Station implements Cloneable {
      * Data binding to update the Station content flexbox background.
      */
     @BindingAdapter("stationState")
-    public static void setStationStateBackground(FlexboxLayout flexbox, Station selectedStation) {
+    public static void setStationStateBackground(FlexboxLayout flexbox, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
@@ -608,7 +470,7 @@ public class Station implements Cloneable {
      * Data binding to update the Station content text (Status or Game name)
      */
     @BindingAdapter("stationState")
-    public static void setStationStateTextAndVisibility(TextView textView, Station selectedStation) {
+    public static void setStationStateTextAndVisibility(TextView textView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
         //Set the visibility value
@@ -660,7 +522,7 @@ public class Station implements Cloneable {
                     }
 
                     //Collect the current station state
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
                     if(station.state.equals("Awaiting headset connection...")) {

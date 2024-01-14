@@ -3,7 +3,7 @@ package com.lumination.leadmelabs.utilities;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,7 +14,7 @@ public class Helpers {
     public static ArrayList<Station> cloneStationList(List<Station> stationList) {
         ArrayList<Station> clone = new ArrayList<Station>(stationList.size());
         for (Station station:stationList) {
-            clone.add(station.clone());
+            clone.add((Station) station.clone());
         }
         return clone;
     }

@@ -2,20 +2,12 @@ package com.lumination.leadmelabs.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 public class QaChecks {
     public class QaCheck {

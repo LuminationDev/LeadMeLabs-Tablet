@@ -1,14 +1,13 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.models.applications.details.Levels;
@@ -268,6 +267,7 @@ public class StationsViewModel extends ViewModel {
      * Run through the Station list finding the one that matches the supplied ID. This is now set as
      * the selected station. If this station is running an experience it checks whether there are
      * details associated with that experience.
+     *
      * @param id An int representing the Station number.
      */
     public void selectStation(int id) {
@@ -333,33 +333,9 @@ public class StationsViewModel extends ViewModel {
         for (int i = 0; i < stations.length(); i++) {
             JSONObject stationJson = stations.getJSONObject(i);
 
-            //Backwards compatibility - if no status is sent set as Ready to go.
-            String state;
-            try {
-                state = stationJson.getString("state");
-            } catch (Exception e) {
-                state = "Not set";
-            }
+            Station station = StationFactory.createStation(stationJson);
+            if (station == null) continue;
 
-            Station station = new Station(
-                    stationJson.getString("name"),
-                    stationJson.getString("installedApplications"),
-                    stationJson.getInt("id"),
-                    stationJson.getString("status"),
-                    state,
-                    stationJson.getInt("volume"),
-                    stationJson.getString("room"),
-                    stationJson.getString("ledRingId"),
-                    stationJson.getString("macAddress"));
-            if (!stationJson.getString("gameName").equals("")) {
-                station.gameName = stationJson.getString("gameName");
-            }
-            if (!stationJson.getString("gameId").equals("null")) {
-                station.gameId = stationJson.getString("gameId");
-            }
-            if (!stationJson.getString("gameType").equals("null")) {
-                station.gameType = stationJson.getString("gameType");
-            }
             st.add(station);
         }
         this.setStations(st);
@@ -380,14 +356,21 @@ public class StationsViewModel extends ViewModel {
 
     /**
      * Start of Stop the VR icons flashing on an associated station.
+     *
      * @param flashing A boolean representing if the icon should start (true) or stop (false)
      *                 flashing.
      */
     public void setStationFlashing(int stationId, boolean flashing) {
         Station station = getStationById(stationId);
-        if(station == null) return;
-        station.animationFlag = flashing;
-        station.handleAnimationTimer();
-        updateStationById(stationId, station);
+
+        if (!(station instanceof VrStation)) {
+            return;
+        }
+
+        VrStation vrStation = (VrStation) getStationById(stationId);
+        if(vrStation == null) return;
+        vrStation.animationFlag = flashing;
+        vrStation.handleAnimationTimer();
+        updateStationById(stationId, vrStation);
     }
 }

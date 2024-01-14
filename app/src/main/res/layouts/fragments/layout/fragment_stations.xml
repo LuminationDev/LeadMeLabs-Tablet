@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <import type="com.lumination.leadmelabs.models.Station" />
+        <import type="com.lumination.leadmelabs.models.stations.Station" />
         <import type="android.view.View"/>
         <variable
             name="stationList"
-            type="java.util.ArrayList&lt;Station>" />
+            type="java.util.ArrayList&lt;Station&gt;" />
         <variable
             name="stationsLoaded"
             type="java.lang.Boolean" />
@@ -52,7 +52,7 @@
             android:paddingHorizontal="10dp"
             android:paddingBottom="10dp"
             android:layout_marginStart="10dp"
-            tools:listitem="@layout/card_station" />
+            tools:listitem="@layout/card_station_vr" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </layout>

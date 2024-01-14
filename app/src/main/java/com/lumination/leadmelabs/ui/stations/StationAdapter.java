@@ -9,17 +9,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.models.Station;
-import androidx.core.content.ContextCompat;
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
+import com.lumination.leadmelabs.databinding.CardStationContentBinding;
+import com.lumination.leadmelabs.databinding.CardStationVrBinding;
+import com.lumination.leadmelabs.models.stations.ContentStation;
+import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.VrStation;
+import androidx.core.content.ContextCompat;
+
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
-    private final String TAG = "StationAdapter";
-
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
 
     public ArrayList<Station> stationList = new ArrayList<>();
@@ -35,14 +37,19 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
         private final CardStationBinding binding;
+
         public StationViewHolder(@NonNull CardStationBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        public void bind(Station station, int position) {
-            binding.setStation(station);
-            View finalResult = binding.getRoot().findViewById(R.id.station_card);
+        public void bind(Station station) {
+            View finalResult = StationAdapter.determineStationType(binding, station);
+
+            if (finalResult == null) {
+                return;
+            }
+
             if (launchSingleOnTouch) {
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
@@ -89,7 +96,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     @Override
     public void onBindViewHolder(@NonNull StationViewHolder holder, int position) {
         Station station = getItem(position);
-        holder.bind(station, position);
+        holder.bind(station);
     }
 
     @Override
@@ -132,5 +139,32 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         return true;
+    }
+
+    /**
+     * Determines the type of the given station (VirtualStation or ContentStation) and binds the corresponding
+     * data to the associated layout. It sets the visibility of the relevant layout to VISIBLE and returns
+     * the root view of the card associated with the station type.
+     *
+     * @param binding The data binding object for the card station layout.
+     * @param station The station for which the type needs to be determined and data bound.
+     * @return The root view of the card associated with the station type, or null if the station type is unknown.
+     */
+    public static View determineStationType(CardStationBinding binding, Station station) {
+        if (station instanceof VrStation) {
+            CardStationVrBinding vrBinding = binding.cardStationVr;
+            vrBinding.setStation((VrStation) station);
+            vrBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationVr.getRoot().findViewById(R.id.station_card);
+
+        } else if (station instanceof ContentStation) {
+            CardStationContentBinding classicBinding = binding.cardStationContent;
+            classicBinding.setStation((ContentStation) station);
+            classicBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationContent.getRoot().findViewById(R.id.station_card);
+
+        } else {
+            return null;
+        }
     }
 }
