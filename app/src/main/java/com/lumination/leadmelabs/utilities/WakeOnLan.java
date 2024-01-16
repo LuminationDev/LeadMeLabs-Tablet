@@ -31,7 +31,7 @@ public class WakeOnLan {
      * extends from the NUC. Needs to be accessible for tablets in Wall Mode as well.
      * @param status A string of the Station status that will be set upon sending the wake on lan message
      */
-    public static void WakeAll(String status) {
+    public static void WakeById(String status, int[] stationIds) {
         String room = ViewModelProviders.of(MainActivity.getInstance()).get(RoomViewModel.class).getSelectedRoom().getValue();
         List<Station> stations = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStations().getValue();
 
@@ -39,7 +39,6 @@ public class WakeOnLan {
             return;
         }
 
-        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
         String stationIdsString = String.join(",", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
 
         NetworkService.sendMessage("NUC",
