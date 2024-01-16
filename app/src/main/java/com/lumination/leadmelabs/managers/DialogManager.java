@@ -1,6 +1,6 @@
 package com.lumination.leadmelabs.managers;
 
-import static com.lumination.leadmelabs.utilities.WakeOnLan.WakeAll;
+import static com.lumination.leadmelabs.utilities.WakeOnLan.WakeById;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -662,7 +662,9 @@ public class DialogManager {
             public void onFinish() {
                 confirmDialog.dismiss();
                 //Start a power check for all stations
-                WakeAll("Restarting"); //Wake any computers that are already off
+                if (type.equals("Restart")) {
+                    WakeById("Restarting", stationIds); //Wake any computers that are already off
+                }
                 if(countdownCallbackInterface != null) {
                     countdownCallbackInterface.callback(0);
                 }
