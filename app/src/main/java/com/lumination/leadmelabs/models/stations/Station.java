@@ -1,17 +1,24 @@
 package com.lumination.leadmelabs.models.stations;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.ImageManager;
+import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -22,10 +29,17 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.IconManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import io.sentry.Sentry;
 
 public class Station implements Cloneable {
     public String name;
@@ -36,7 +50,6 @@ public class Station implements Cloneable {
     public String gameName = null;
     public String gameId;
     public String gameType;
-    public int volume;
     public ArrayList<Application> applications = new ArrayList<>();
     public boolean selected = false;
     private CountDownTimer shutdownTimer;
@@ -51,7 +64,11 @@ public class Station implements Cloneable {
     private Timer timer;
     int dotsCount = 0;
 
-    public Station(String name, String applications, int id, String status, String state, int volume, String room, String macAddress) {
+    //Track the different audio devices and the active device
+    private String activeAudioDevice;
+    public List<LocalAudioDevice> audioDevices = new ArrayList<>();
+
+    public Station(String name, String applications, int id, String status, String state, String room, String macAddress) {
         this.name = name;
         if (applications != null && applications.length() > 0 && !applications.equals("Off")) {
             this.setApplicationsFromJsonString(applications);
@@ -59,7 +76,6 @@ public class Station implements Cloneable {
         this.id = id;
         this.status = status;
         this.state = state;
-        this.volume = volume;
         this.room = room;
         this.macAddress = macAddress;
     }
@@ -75,6 +91,158 @@ public class Station implements Cloneable {
 
         return clonedStation;
     }
+
+    //region Audio Devices
+    /**
+     * Retrieves the active audio device from the list based on a specified name.
+     *
+     * @return The active audio device or null if not found.
+     */
+    public LocalAudioDevice GetActiveAudioDevice() {
+        return audioDevices.stream()
+                .filter(device -> device.getName().equals(activeAudioDevice))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    /**
+     * Sets the active audio device name to the specified value.
+     *
+     * @param name The name to set as the active audio device.
+     */
+    public void SetActiveAudioDevice(String name) {
+        this.activeAudioDevice = name;
+    }
+
+    /**
+     * Retrieves the active audio device and sets its volume if found.
+     *
+     * @param volume The volume value to set.
+     */
+    public void SetVolume(int volume) {
+        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+
+        // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
+        if (foundDevice != null) {
+            foundDevice.SetVolume(volume);
+        }
+    }
+
+    /**
+     * Retrieves the active audio device and sets its muted value.
+     *
+     * @param isMuted A boolean representing the muted value (true = muted).
+     */
+    public void SetMuted(boolean isMuted) {
+        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+
+        // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
+        if (foundDevice != null) {
+            foundDevice.SetMuted(isMuted);
+        }
+    }
+
+    /**
+     * Retrieves the muted value of the active audio device, or false if not found.
+     *
+     * @return The muted value of the active audio device.
+     */
+    public boolean GetMuted() {
+        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+
+        // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
+        if (foundDevice != null) {
+            return foundDevice.GetMuted();
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieves the volume of the active audio device, or 0 if not found.
+     *
+     * @return The volume of the active audio device.
+     */
+    public int GetVolume() {
+        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+
+        // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
+        if (foundDevice != null) {
+            return foundDevice.GetVolume();
+        }
+
+        return 0;
+    }
+
+    /**
+     * Parses JSON data to create a list of LocalAudioDevice objects.
+     * The JSON data should contain an array of objects with "Name" and "Id" properties.
+     *
+     * @param jsonData The JSON data to parse.
+     */
+    public void SetAudioDevices(String jsonData) {
+        List<LocalAudioDevice> audioDevices = new ArrayList<>();
+
+        try {
+            JSONArray devices = new JSONArray(jsonData);
+
+            for (int i = 0; i < devices.length(); i++) {
+                JSONObject audioJson = devices.getJSONObject(i);
+
+                String name = audioJson.optString("Name", "");
+                String id = audioJson.optString("Id", "");
+                String volume = audioJson.optString("Volume", "");
+                String muted = audioJson.optString("Muted", "");
+                if (name.equals("") || id.equals("")) continue;
+
+                LocalAudioDevice temp = new LocalAudioDevice(name, id);
+                //Set volume if it is present or default to 0
+                temp.SetVolume(volume.equals("") ? 0 : Integer.parseInt(volume));
+                temp.SetMuted(muted.equals("") ? false : Boolean.parseBoolean(muted));
+
+                audioDevices.add(temp);
+            }
+
+            this.audioDevices = audioDevices;
+
+        } catch (JSONException e) {
+            Sentry.captureException(e);
+        }
+    }
+
+    @BindingAdapter("stationVolume")
+    public static void setStationVolume(Slider slider, Station selectedStation) {
+        if (selectedStation == null || (long) selectedStation.audioDevices.size() == 0) {
+            slider.setValue(0);
+            return;
+        };
+
+        int value = selectedStation.GetVolume();
+        slider.setValue(value);
+    }
+
+    @BindingAdapter("stationMuted")
+    public static void setStationMuted(MaterialButton materialButton, Station selectedStation) {
+        // Get the context from the MaterialButton's View
+        Context context = materialButton.getContext();
+
+        if (selectedStation == null || (long) selectedStation.audioDevices.size() == 0) {
+            Drawable drawable = ContextCompat.getDrawable(context, R.drawable.station_volume);
+            materialButton.setIcon(drawable);
+            return;
+        };
+
+        Drawable drawable;
+        boolean isMuted = selectedStation.GetMuted();
+        if (isMuted) {
+            drawable = ContextCompat.getDrawable(context, R.drawable.station_mute);
+        } else {
+            drawable = ContextCompat.getDrawable(context, R.drawable.station_volume);
+        }
+        materialButton.setIcon(drawable);
+    }
+    //endregion
 
     public void setName(String newName)
     {

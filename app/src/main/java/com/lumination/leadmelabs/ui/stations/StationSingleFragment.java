@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +35,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -50,6 +53,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +66,8 @@ public class StationSingleFragment extends Fragment {
     private FragmentStationSingleBinding binding;
     private static boolean cancelledShutdown = false;
     public static FragmentManager childManager;
+
+    private LocalAudioDeviceAdapter audioDeviceAdapter;
 
     @Nullable
     @Override
@@ -83,9 +89,9 @@ public class StationSingleFragment extends Fragment {
                 @Override
                 public void onStopTrackingTouch(Slider slider) {
                     Station selectedStation = binding.getSelectedStation();
-                    selectedStation.volume = (int) slider.getValue();
+                    selectedStation.SetVolume((int) slider.getValue());
                     mViewModel.updateStationById(selectedStation.id, selectedStation);
-                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.volume);
+                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.GetVolume());
                     System.out.println(slider.getValue());
                 }
             };
@@ -111,8 +117,15 @@ public class StationSingleFragment extends Fragment {
                     .commitNow();
         }
 
+        //region AudioControl
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
         stationVolumeSlider.addOnSliderTouchListener(touchListener);
+
+        if (newlySelectedStation != null) {
+            setupAudioSpinner(view, newlySelectedStation);
+            setupMuteButton(view);
+        }
+        //endregion
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
@@ -305,7 +318,83 @@ public class StationSingleFragment extends Fragment {
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
             updateExperienceImage(view, experienceControlImage, station);
+            setupAudioSpinner(view, station);
         });
+    }
+
+    private void setupMuteButton(View view) {
+        MaterialButton muteButton = view.findViewById(R.id.station_mute);
+        muteButton.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            boolean currentValue = selectedStation.GetMuted();
+            selectedStation.SetMuted(!currentValue);
+            mViewModel.updateStationById(selectedStation.id, selectedStation);
+            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.GetMuted());
+        });
+    }
+
+    private void setupAudioSpinner(View view, Station station) {
+        // Create/Update the custom adapter if it's different from the existing one based on names
+        if (this.audioDeviceAdapter != null) {
+            List<String> currentNames = getDeviceNames(audioDeviceAdapter.getAudioDevices());
+            List<String> newNames = getDeviceNames(station.audioDevices);
+
+            if (currentNames.equals(newNames)) {
+                return;
+            }
+        }
+
+        // Create a custom adapter
+        audioDeviceAdapter = new LocalAudioDeviceAdapter(getContext(), station.audioDevices);
+
+        // Get the Spinner reference from the layout
+        Spinner spinner = view.findViewById(R.id.audio_spinner);
+
+        // Set the custom adapter to the Spinner
+        spinner.setAdapter(audioDeviceAdapter);
+
+        // Set the selected to the active (if it exists)
+        int position = 0;  // Initialize with a value that indicates item not found
+        if (station.GetActiveAudioDevice() != null) {
+            String activeName = station.GetActiveAudioDevice().getName();
+
+            for (int i = 0; i < audioDeviceAdapter.getCount(); i++) {
+                LocalAudioDevice device = audioDeviceAdapter.getItem(i);
+
+                if (device != null && device.getName().equals(activeName)) {
+                    position = i;
+                    break;
+                }
+            }
+        }
+
+        // Set the selection if the item was found
+        spinner.setSelection(position);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                LocalAudioDevice selectedValue = (LocalAudioDevice) parentView.getItemAtPosition(position);
+
+                NetworkService.sendMessage("Station," + station.id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing here
+            }
+        });
+    }
+
+    // Helper method to extract names from a list of LocalAudioDevice objects
+    private List<String> getDeviceNames(List<LocalAudioDevice> devices) {
+        List<String> names = new ArrayList<>();
+        for (LocalAudioDevice device : devices) {
+            if (device != null) {
+                names.add(device.getName());
+            }
+        }
+        return names;
     }
 
     /**
