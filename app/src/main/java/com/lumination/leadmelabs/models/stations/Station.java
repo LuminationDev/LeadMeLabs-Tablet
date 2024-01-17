@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -65,6 +64,7 @@ public class Station implements Cloneable {
     int dotsCount = 0;
 
     //Track the different audio devices and the active device
+    public int volume; //backwards compat - remove after next update
     private String activeAudioDevice;
     public List<LocalAudioDevice> audioDevices = new ArrayList<>();
 
@@ -213,10 +213,15 @@ public class Station implements Cloneable {
 
     @BindingAdapter("stationVolume")
     public static void setStationVolume(Slider slider, Station selectedStation) {
-        if (selectedStation == null || (long) selectedStation.audioDevices.size() == 0) {
+        if (selectedStation == null) {
             slider.setValue(0);
             return;
         };
+
+        if ((long) selectedStation.audioDevices.size() == 0) {
+            slider.setValue(selectedStation.volume);
+            return;
+        }
 
         int value = selectedStation.GetVolume();
         slider.setValue(value);

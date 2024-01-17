@@ -90,8 +90,12 @@ public class StationSingleFragment extends Fragment {
                 public void onStopTrackingTouch(Slider slider) {
                     Station selectedStation = binding.getSelectedStation();
                     selectedStation.SetVolume((int) slider.getValue());
+                    selectedStation.volume = (int) slider.getValue();
                     mViewModel.updateStationById(selectedStation.id, selectedStation);
-                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + selectedStation.GetVolume());
+
+                    //backwards compat - remove this after next update
+                    int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.GetVolume();
+                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
                     System.out.println(slider.getValue());
                 }
             };
