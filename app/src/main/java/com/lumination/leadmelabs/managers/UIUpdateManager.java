@@ -507,6 +507,7 @@ public class UIUpdateManager {
                         DialogManager.vrSystemRestartedOnStation(station.id);
                     }
                     break;
+
                 case "status":
                     station.status = value;
                     if(value.equals("On")) { station.cancelStatusCheck(); }
@@ -518,29 +519,23 @@ public class UIUpdateManager {
                         station.state = "";
                     }
                     break;
+
                 case "state":
                     station.state = value;
                     break;
-                case "volume":
-                    station.volume = Integer.parseInt(value);
 
-                    if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                            put("volume_level", value);
-                        }};
-                        FirebaseManager.logAnalyticEvent("volume_changed", analyticsAttributes);
-                    }
-                    break;
                 case "gameId":
                     station.gameId = value;
                     break;
+
                 case "gameType":
                     station.gameType = value;
                     break;
+
                 case "name":
                     station.setName(value);
                     break;
+
                 case "gameName":
                     station.gameName = value;
 
@@ -558,9 +553,35 @@ public class UIUpdateManager {
                         DialogManager.gameLaunchedOnStation(station.id);
                     }
                     break;
+
                 case "installedApplications":
                     station.setApplicationsFromJsonString(value);
                     break;
+
+                case "volume":
+                    station.SetVolume(Integer.parseInt(value));
+
+                    if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("station_id", String.valueOf(station.id));
+                            put("volume_level", value);
+                        }};
+                        FirebaseManager.logAnalyticEvent("volume_changed", analyticsAttributes);
+                    }
+                    break;
+
+                case "muted":
+                    station.SetMuted(Boolean.parseBoolean(value));
+                    break;
+
+                case "activeAudioDevice":
+                    station.SetActiveAudioDevice(value);
+                    break;
+
+                case "audioDevices":
+                    station.SetAudioDevices(value);
+                    break;
+
                 case "details":
                     MainActivity.runOnUI(() -> {
                         try {

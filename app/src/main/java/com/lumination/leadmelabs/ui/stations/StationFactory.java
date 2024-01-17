@@ -1,10 +1,13 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
+
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,11 +70,11 @@ public class StationFactory {
                 stationJson.getInt("id"),
                 stationJson.getString("status"),
                 state,
-                stationJson.getInt("volume"),
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"));
 
         setGameDetails(station, stationJson);
+        setAudioDetails(station, stationJson);
 
         return station;
     }
@@ -90,12 +93,12 @@ public class StationFactory {
                 stationJson.getInt("id"),
                 stationJson.getString("status"),
                 state,
-                stationJson.getInt("volume"),
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"),
                 stationJson.getString("ledRingId"));
 
         setGameDetails(station, stationJson);
+        setAudioDetails(station, stationJson);
 
         return station;
     }
@@ -116,6 +119,24 @@ public class StationFactory {
         }
         if (!stationJson.getString("gameType").equals("null")) {
             station.gameType = stationJson.getString("gameType");
+        }
+    }
+
+    /**
+     * Sets the audio related details that have been saved on the NUC for the current session.
+     *
+     * @param station     The BaseStation object to update with game details.
+     * @param stationJson JSON object containing game-related details.
+     */
+    private static void setAudioDetails(Station station, JSONObject stationJson) {
+        String audio = stationJson.optString("audioDevices", "");
+        if (!audio.equals("")) {
+            station.SetAudioDevices(audio);
+        }
+
+        String activeAudio = stationJson.optString("ActiveAudioDevice", "");
+        if (!activeAudio.equals("")) {
+            station.SetActiveAudioDevice(activeAudio);
         }
     }
 }

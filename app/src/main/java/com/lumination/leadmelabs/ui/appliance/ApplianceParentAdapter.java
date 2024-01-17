@@ -16,8 +16,6 @@ import com.lumination.leadmelabs.utilities.Constants;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-import io.sentry.Sentry;
-
 /**
  * Holds multiple ApplianceAdapters - creating a nested adapter allowing for rows of recycler views
  * that can be navigated horizontally to see all appliance cards and vertically for all the different
