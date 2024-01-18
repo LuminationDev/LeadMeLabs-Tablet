@@ -156,7 +156,8 @@ public class ApplicationAdapter extends BaseAdapter {
                         "This game may require additional steps to launch and may not be able to launch automatically.",
                         booleanCallbackInterface,
                         "Go Back",
-                        "Continue");
+                        "Continue",
+                        false);
             } else {
                 completeSelectApplicationAction(currentApplication);
             }

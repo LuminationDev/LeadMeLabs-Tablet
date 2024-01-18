@@ -85,7 +85,7 @@ public class RoomFragment extends Fragment {
      */
     public static void ManualRoomTrigger() {
         HashSet<String> rooms = mViewModel.getRooms().getValue();
-        if(rooms == null) return;
+        if(rooms == null || instance == null) return;
 
         if(rooms.size() > 1) {
             instance.view.get().findViewById(R.id.room_fragment).setVisibility(View.VISIBLE);

@@ -190,7 +190,6 @@
                             </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
 
-                        <!--TODO change the visuals for if the audio devices have not come through yet-->
                         <com.google.android.flexbox.FlexboxLayout
                             android:layout_width="400dp"
                             android:layout_height="wrap_content"

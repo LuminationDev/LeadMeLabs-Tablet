@@ -79,27 +79,6 @@ public class StationSingleFragment extends Fragment {
         return view;
     }
 
-    private final Slider.OnSliderTouchListener touchListener =
-            new Slider.OnSliderTouchListener() {
-                @Override
-                public void onStartTrackingTouch(@NonNull Slider slider) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(Slider slider) {
-                    Station selectedStation = binding.getSelectedStation();
-                    selectedStation.SetVolume((int) slider.getValue());
-                    selectedStation.volume = (int) slider.getValue();
-                    mViewModel.updateStationById(selectedStation.id, selectedStation);
-
-                    //backwards compat - remove this after next update
-                    int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.GetVolume();
-                    NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
-                    System.out.println(slider.getValue());
-                }
-            };
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -214,7 +193,8 @@ public class StationSingleFragment extends Fragment {
                         "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
                         confirmAppExitCallback,
                         "Cancel",
-                        "Confirm");
+                        "Confirm",
+                        false);
             } else {
                 NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
             }
@@ -272,7 +252,8 @@ public class StationSingleFragment extends Fragment {
                             "Are you sure you want to shutdown? An experience is still running. Please confirm this action.",
                             confirmAppExitCallback,
                             "Cancel",
-                            "Confirm");
+                            "Confirm",
+                            false);
                 } else {
                     shutdownStation(shutdownButton, id);
                 }
@@ -315,7 +296,8 @@ public class StationSingleFragment extends Fragment {
                             "to the Steam's email account address to proceed.",
                     confirmConfigCallback,
                     "Cancel",
-                    "Proceed");
+                    "Proceed",
+                    false);
         });
 
         ImageView experienceControlImage = view.findViewById(R.id.game_control_image);
@@ -336,6 +318,27 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.GetMuted());
         });
     }
+
+    private final Slider.OnSliderTouchListener touchListener =
+        new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.SetVolume((int) slider.getValue());
+                selectedStation.volume = (int) slider.getValue();
+                mViewModel.updateStationById(selectedStation.id, selectedStation);
+
+                //backwards compat - remove this after next update
+                int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.GetVolume();
+                NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
+                System.out.println(slider.getValue());
+            }
+        };
 
     private void setupAudioSpinner(View view, Station station) {
         // Create/Update the custom adapter if it's different from the existing one based on names
