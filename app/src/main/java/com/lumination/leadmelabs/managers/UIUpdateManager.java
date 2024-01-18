@@ -166,7 +166,8 @@ public class UIUpdateManager {
                                     "SteamVR has encountered an error and cannot recover automatically. Please restart the Station 102",
                                     confirmAppRestartCallback,
                                     "Cancel",
-                                    "Restart");
+                                    "Restart",
+                                    false);
                         });
                     }
                     if (additionalData.startsWith("GameLaunchFailed")) {
@@ -414,24 +415,26 @@ public class UIUpdateManager {
     private static void updateStationField(Station station, JSONObject entry, String field) {
         if (entry.has(field)) {
             String value = entry.optString(field, "NA");
-            if (!value.equals("NA")) {
-                switch (field) {
-                    case "state":
-                        station.state = value;
-                        break;
-                    case "status":
-                        station.status = value;
-                        break;
-                    case "gameName":
-                        station.gameName = value;
-                        break;
-                    case "gameId":
-                        station.gameId = value;
-                        break;
-                    case "gameType":
-                        station.gameType = value;
-                        break;
-                }
+            if (value.equals("null") || value.equals("NA")) {
+                value = null;
+            }
+
+            switch (field) {
+                case "state":
+                    station.state = value;
+                    break;
+                case "status":
+                    station.status = value;
+                    break;
+                case "gameName":
+                    station.gameName = value;
+                    break;
+                case "gameId":
+                    station.gameId = value;
+                    break;
+                case "gameType":
+                    station.gameType = value;
+                    break;
             }
         }
     }
@@ -620,7 +623,8 @@ public class UIUpdateManager {
                                 "An incorrect key has been provided, please try again or cancel",
                                 confirmConfigCallback,
                                 "Cancel",
-                                "Try again");
+                                "Try again",
+                                false);
                     }
                     break;
             }

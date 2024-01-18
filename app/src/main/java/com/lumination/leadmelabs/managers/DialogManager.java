@@ -145,7 +145,9 @@ public class DialogManager {
 
         missingEncryptionAlerted = true;
         basicDialog.show();
-        basicDialog.getWindow().setLayout(680, 680);
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     /**
@@ -165,9 +167,7 @@ public class DialogManager {
         });
 
         MaterialButton closeButton = dialogView.findViewById(R.id.close_dialog);
-        closeButton.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
+        closeButton.setOnClickListener(v -> dialog.dismiss());
 
         MaterialButton submitButton = dialogView.findViewById(R.id.submit_ticket);
         submitButton.setOnClickListener(w -> {
@@ -177,9 +177,7 @@ public class DialogManager {
             }
              DialogManager.submitModalLastSubmitClick = SystemClock.elapsedRealtime();
 
-            MainActivity.runOnUI(() -> {
-                        successText.setVisibility(View.GONE);
-                    });
+            MainActivity.runOnUI(() -> successText.setVisibility(View.GONE));
 
             String subject = ((EditText) dialogView.findViewById(R.id.submit_ticket_subject)).getText().toString();
             String email = ((EditText) dialogView.findViewById(R.id.submit_ticket_email)).getText().toString();
@@ -221,7 +219,7 @@ public class DialogManager {
                         .url("https://us-central1-leadme-labs.cloudfunctions.net/submitTicket")
                         .post(body)
                         .build();
-                Response response = null;
+                Response response;
                 try {
                     response = client.newCall(request).execute();
                     if (response.isSuccessful()) {
@@ -237,9 +235,7 @@ public class DialogManager {
                         }};
                         FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
                         Thread.sleep(2000);
-                        MainActivity.runOnUI(() -> {
-                            dialog.dismiss();
-                        });
+                        MainActivity.runOnUI(dialog::dismiss);
                     } else {
                         MainActivity.runOnUI(() -> {
                             successText.setVisibility(View.GONE);
@@ -273,7 +269,9 @@ public class DialogManager {
 
         dialog.setCancelable(false);
         dialog.show();
-        dialog.getWindow().setLayout(1000, 760);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(1000, 760);
+        }
     }
 
     /**
@@ -285,7 +283,9 @@ public class DialogManager {
         AlertDialog dialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(dialogView).create();
 
         dialog.show();
-        dialog.getWindow().setLayout(1000, 850);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(1000, 850);
+        }
     }
 
     /**
@@ -327,7 +327,9 @@ public class DialogManager {
         thread.start();
 
         dialog.show();
-        dialog.getWindow().setLayout(800, 600);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(800, 600);
+        }
     }
 
     /**
@@ -348,7 +350,9 @@ public class DialogManager {
         submitText.setVisibility(View.GONE);
 
         dialog.show();
-        dialog.getWindow().setLayout(800, 600);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(800, 600);
+        }
     }
 
     /**
@@ -390,7 +394,9 @@ public class DialogManager {
         });
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(680, 680);
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     /**
@@ -411,7 +417,9 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(680, 680);
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     /**
@@ -422,7 +430,7 @@ public class DialogManager {
      */
     public static void createConfirmationDialog(String titleText, String contentText) {
         BooleanCallbackInterface booleanCallbackInterface = result -> { };
-        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
+        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm", false);
     }
 
     /**
@@ -433,7 +441,7 @@ public class DialogManager {
      * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
     public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface) {
-        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
+        createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm", false);
     }
 
     /**
@@ -443,7 +451,7 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      * @param booleanCallbackInterface A callback to be called on cancel or confirm. Will call the callback with true on confirm and false on cancel
      */
-    public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText) {
+    public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText, boolean cancelable) {
         View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_vern, null);
         AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(confirmationDialogView).create();
 
@@ -470,9 +478,12 @@ public class DialogManager {
         });
         cancelButton.setText(cancelButtonText);
 
-        confirmationDialog.setCancelable(false);
+        confirmationDialog.setCancelable(cancelable);
+        confirmationDialog.setCanceledOnTouchOutside(cancelable);
         confirmationDialog.show();
-        confirmationDialog.getWindow().setLayout(680, 680);
+        if (confirmationDialog.getWindow() != null) {
+            confirmationDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
@@ -507,7 +518,8 @@ public class DialogManager {
                         "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
                         confirmAppExitCallback,
                         "Cancel",
-                        "Confirm");
+                        "Confirm",
+                        false);
             } else {
                 endSession(stationAdapter.stationList);
             }
@@ -647,7 +659,9 @@ public class DialogManager {
         cancelButton.setText(R.string.cancel_10);
 
         confirmDialog.show();
-        confirmDialog.getWindow().setLayout(1200, 380);
+        if (confirmDialog.getWindow() != null) {
+            confirmDialog.getWindow().setLayout(1200, 380);
+        }
 
         shutdownTimer = new CountDownTimer(9000, 1000) {
             @Override
@@ -887,7 +901,9 @@ public class DialogManager {
         webView.getSettings().setJavaScriptEnabled(true);
 
         webViewDialog.show();
-        webViewDialog.getWindow().setLayout(1200, 900);
+        if (webViewDialog.getWindow() != null) {
+            webViewDialog.getWindow().setLayout(1200, 900);
+        }
     }
 
     /**
@@ -943,6 +959,8 @@ public class DialogManager {
      * for active NUCs.
      */
     public static void buildReconnectDialog() {
+        if (!MainActivity.isActivityRunning) return; //The activity has been destroyed
+
         View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
         if (reconnectDialog == null) {
             reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
@@ -1023,7 +1041,9 @@ public class DialogManager {
         reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(680, 720);
+        if (reconnectDialog.getWindow() != null) {
+            reconnectDialog.getWindow().setLayout(680, 720);
+        }
     }
 
     /**
@@ -1062,7 +1082,9 @@ public class DialogManager {
         cancelButton.setVisibility(View.GONE);
 
         gameLaunchDialog.show();
-        gameLaunchDialog.getWindow().setLayout(1200, 380);
+        if (gameLaunchDialog.getWindow() != null) {
+            gameLaunchDialog.getWindow().setLayout(1200, 380);
+        }
     }
 
     /**
@@ -1104,7 +1126,9 @@ public class DialogManager {
         cancelButton.setVisibility(View.GONE);
 
         endSessionDialog.show();
-        endSessionDialog.getWindow().setLayout(1200, 380);
+        if (endSessionDialog.getWindow() != null) {
+            endSessionDialog.getWindow().setLayout(1200, 380);
+        }
     }
 
     public static void sessionEndedOnStation(int stationId) {
@@ -1143,7 +1167,9 @@ public class DialogManager {
         cancelButton.setVisibility(View.GONE);
 
         restartVRSystemDialog.show();
-        restartVRSystemDialog.getWindow().setLayout(1200, 380);
+        if (restartVRSystemDialog.getWindow() != null) {
+            restartVRSystemDialog.getWindow().setLayout(1200, 380);
+        }
     }
 
     /**
@@ -1215,7 +1241,9 @@ public class DialogManager {
 
         steamGuardEntryDialog.setCancelable(false);
         steamGuardEntryDialog.show();
-        steamGuardEntryDialog.getWindow().setLayout(680, 680);
+        if (steamGuardEntryDialog.getWindow() != null) {
+            steamGuardEntryDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     /**
@@ -1247,6 +1275,8 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1100, 875);
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(1100, 875);
+        }
     }
 }

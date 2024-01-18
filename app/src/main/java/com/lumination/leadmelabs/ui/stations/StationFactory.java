@@ -1,13 +1,10 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.util.Log;
-
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

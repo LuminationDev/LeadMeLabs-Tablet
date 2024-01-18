@@ -115,7 +115,11 @@ public class DashboardPageFragment extends Fragment {
                     DialogManager.createEndSessionDialog(stationsToSelectFrom);
                 }
             };
-            DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences", selectStationsCallback, "End on select", "End on all");
+            DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences",
+                    selectStationsCallback,
+                    "End on select",
+                    "End on all",
+                    true);
         });
 
         //Restart all stations
@@ -149,7 +153,8 @@ public class DashboardPageFragment extends Fragment {
                         "Are you sure you want to restart? Experiences are still running on " + (active.size() > 1 ? "stations " : "station ") + TextUtils.join(", ", active) + ". Please confirm this action.",
                         confirmAppExitCallback,
                         "Cancel",
-                        "Confirm");
+                        "Confirm",
+                        false);
             } else {
                 restartAllStations(restartHeading, restartContent);
             }
@@ -254,7 +259,10 @@ public class DashboardPageFragment extends Fragment {
 
         DialogManager.createConfirmationDialog("Confirm station shutdown",
                 "All Station(s) will shutdown. Please confirm this scene.",
-                confirmShutdownCallback, "Cancel", "Confirm");
+                confirmShutdownCallback,
+                "Cancel",
+                "Confirm",
+                false);
     }
 
     /**
@@ -342,7 +350,8 @@ public class DashboardPageFragment extends Fragment {
                     "Are you sure you want to exit? Some users may require saving their progress. Please confirm this action.",
                     confirmAppExitCallback,
                     "Cancel",
-                    "Confirm");
+                    "Confirm",
+                    false);
         } else {
             int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
