@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         ApplicationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-//        StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);
         ApplianceFragment.mViewModel = ViewModelProviders.of(this).get(ApplianceViewModel.class);
         SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
