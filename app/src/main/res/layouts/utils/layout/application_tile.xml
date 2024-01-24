@@ -51,10 +51,12 @@
                 android:textAllCaps="false"
                 android:text="Play"/>
 
+<!--            TODO: Made invisible until icons etc are implemented-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:visibility="invisible"
                 android:text="@{application.isVr ? `VR` : `Non-VR`, default=VR}"
                 app:layout_alignSelf="flex_end"/>
 

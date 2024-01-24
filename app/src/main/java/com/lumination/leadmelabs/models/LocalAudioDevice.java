@@ -38,4 +38,29 @@ public class LocalAudioDevice {
     public String getId() {
         return this.Id;
     }
+
+    public static final String[] headsetAudioDeviceNames = new String[] {
+            "Speakers (VIVE Pro Multimedia Audio)",
+            "Speakers (HTC-VIVE)",
+            "Headphones (Galaxy Buds2 (AE10) Stereo)" // leaving this here for debugging as I doubt someone is going to put their earbuds onto a station
+    };
+    public static final String[] projectorAudioDeviceNames = new String[] {
+            "Laser Proj (HD Audio Driver for Display Audio)",
+            "Laser Proj (AMD High Definition Audio Device)",
+            "Laser Proj",
+            "EPSON PJ (AMD High Definition Audio Device)",
+            "EPSON PJ (HD Audio Driver for Display Audio)",
+            "EPSON PJ",
+            "1 - EPSON PJ (AMD High Definition Audio Device)",
+            "2 - EPSON PJ (AMD High Definition Audio Device)",
+            "3 - EPSON PJ (AMD High Definition Audio Device)",
+            "4 - EPSON PJ (AMD High Definition Audio Device)",
+            "5 - EPSON PJ (AMD High Definition Audio Device)",
+            "6 - EPSON PJ (AMD High Definition Audio Device)",
+            "7 - EPSON PJ (AMD High Definition Audio Device)",
+            "8 - EPSON PJ (AMD High Definition Audio Device)",
+            "9 - EPSON PJ (AMD High Definition Audio Device)",
+            "10 - EPSON PJ (AMD High Definition Audio Device)",
+            "Headset (Galaxy Buds2 (AE10) Hands-Free AG Audio)" // leaving this here for debugging as I doubt someone is going to put their earbuds onto a station
+    };
 }
