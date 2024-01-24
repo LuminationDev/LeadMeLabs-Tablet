@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.models.stations;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -33,10 +34,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Stream;
 
 import io.sentry.Sentry;
 
@@ -105,6 +108,21 @@ public class Station implements Cloneable {
                 .orElse(null);
     }
 
+    /**
+     * Retrieves the active audio device from the list based on a specified name.
+     *
+     * @return The active audio device or null if not found.
+     */
+    public LocalAudioDevice FindAudioDevice(String[] deviceNames) {
+        return audioDevices.stream()
+                .filter(device -> Arrays.asList(deviceNames).contains(device.getName()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Boolean HasAudioDevice(String[] deviceNames) {
+        return audioDevices.stream().anyMatch(device -> Arrays.asList(deviceNames).contains(device.getName()));
+    }
 
     /**
      * Sets the active audio device name to the specified value.
@@ -198,7 +216,7 @@ public class Station implements Cloneable {
 
                 LocalAudioDevice temp = new LocalAudioDevice(name, id);
                 //Set volume if it is present or default to 0
-                temp.SetVolume(volume.equals("") ? 0 : Integer.parseInt(volume));
+                temp.SetVolume(volume.equals("") ? 0 : (int) Double.parseDouble(volume));
                 temp.SetMuted(muted.equals("") ? false : Boolean.parseBoolean(muted));
 
                 audioDevices.add(temp);
@@ -246,6 +264,50 @@ public class Station implements Cloneable {
             drawable = ContextCompat.getDrawable(context, R.drawable.station_volume);
         }
         materialButton.setIcon(drawable);
+    }
+
+    @BindingAdapter("headsetAudioDevice")
+    public static void setHeadsetAudioDevice(MaterialButton materialButton, Station selectedStation) {
+        handleAudioButton(materialButton, selectedStation, LocalAudioDevice.headsetAudioDeviceNames);
+    }
+
+    @BindingAdapter("projectorAudioDevice")
+    public static void setProjectorAudioDevice(MaterialButton materialButton, Station selectedStation) {
+        handleAudioButton(materialButton, selectedStation, LocalAudioDevice.projectorAudioDeviceNames);
+    }
+
+    private static void handleAudioButton(MaterialButton materialButton, Station selectedStation, String[] deviceNames)
+    {
+        // Get the context from the MaterialButton's View
+        Context context = materialButton.getContext();
+
+        if (selectedStation.HasAudioDevice(deviceNames)) {
+            materialButton.setEnabled(true);
+        } else {
+            materialButton.setEnabled(false);
+            materialButton.setStrokeColor(ContextCompat.getColorStateList(context, R.color.grey_card));
+            materialButton.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_card));
+            materialButton.setStrokeWidth(0);
+            materialButton.setIconTint(ContextCompat.getColorStateList(context, R.color.grey_titles));
+        }
+
+        if(selectedStation.GetActiveAudioDevice() != null) {
+            LocalAudioDevice activeDevice = selectedStation.GetActiveAudioDevice();
+
+            if (Arrays.stream(deviceNames).anyMatch(activeDevice.getName()::equals)) {
+                // active
+                materialButton.setStrokeColor(ContextCompat.getColorStateList(context, R.color.blue_darkest));
+                materialButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.blue_even_lighter));
+                materialButton.setStrokeWidth(2);
+                materialButton.setIconTint(ContextCompat.getColorStateList(context, R.color.blue_darkest));
+                return;
+            }
+        }
+        // inactive
+        materialButton.setStrokeColor(ContextCompat.getColorStateList(context, R.color.white));
+        materialButton.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+        materialButton.setStrokeWidth(0);
+        materialButton.setIconTint(ContextCompat.getColorStateList(context, R.color.grey_titles));
     }
     //endregion
 

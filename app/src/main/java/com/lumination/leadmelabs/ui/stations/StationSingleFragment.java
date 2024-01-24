@@ -300,6 +300,64 @@ public class StationSingleFragment extends Fragment {
                     false);
         });
 
+        MaterialButton headsetVolumeSelect = view.findViewById(R.id.headset_volume_select);
+        headsetVolumeSelect.setOnClickListener(v -> {
+            if (!mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
+                return;
+            }
+
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().FindAudioDevice(LocalAudioDevice.headsetAudioDeviceNames);
+
+            Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
+            int position = 0;  // Initialize with a value that indicates item not found
+            String activeName = selectedValue.getName();
+
+            for (int i = 0; i < audioDeviceAdapter.getCount(); i++) {
+                LocalAudioDevice device = audioDeviceAdapter.getItem(i);
+
+                if (device != null && device.getName().equals(activeName)) {
+                    position = i;
+                    break;
+                }
+            }
+
+            // Set the selection if the item was found
+            deviceSelection.setSelection(position);
+
+            mViewModel.getSelectedStation().getValue().SetActiveAudioDevice(selectedValue.getName());
+
+            NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+        });
+
+        MaterialButton projectorVolumeSelect = view.findViewById(R.id.projector_volume_select);
+        projectorVolumeSelect.setOnClickListener(v -> {
+            if (!mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
+                return;
+            }
+
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().FindAudioDevice(LocalAudioDevice.projectorAudioDeviceNames);
+
+            Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
+            int position = 0;  // Initialize with a value that indicates item not found
+            String activeName = selectedValue.getName();
+
+            for (int i = 0; i < audioDeviceAdapter.getCount(); i++) {
+                LocalAudioDevice device = audioDeviceAdapter.getItem(i);
+
+                if (device != null && device.getName().equals(activeName)) {
+                    position = i;
+                    break;
+                }
+            }
+
+            // Set the selection if the item was found
+            deviceSelection.setSelection(position);
+
+            mViewModel.getSelectedStation().getValue().SetActiveAudioDevice(selectedValue.getName());
+
+            NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+        });
+
         ImageView experienceControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
@@ -356,6 +414,10 @@ public class StationSingleFragment extends Fragment {
 
         // Get the Spinner reference from the layout
         Spinner spinner = view.findViewById(R.id.audio_spinner);
+        FlexboxLayout spinnerContainer = view.findViewById(R.id.audio_spinner_container);
+        spinnerContainer.setOnClickListener(v -> {
+            spinner.performClick();
+        });
 
         // Set the custom adapter to the Spinner
         spinner.setAdapter(audioDeviceAdapter);
