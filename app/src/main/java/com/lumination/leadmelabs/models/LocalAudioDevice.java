@@ -40,17 +40,18 @@ public class LocalAudioDevice {
     }
 
     public static final String[] headsetAudioDeviceNames = new String[] {
-            "Speakers (VIVE Pro Multimedia Audio)",
-            "Speakers (HTC-VIVE)",
+            "Speakers (VIVE Pro Multimedia Audio)", // vive pro 2
+            "Speakers (VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (HTC-VIVE)", // vive pro 1
             "Headphones (Galaxy Buds2 (AE10) Stereo)" // leaving this here for debugging as I doubt someone is going to put their earbuds onto a station
     };
     public static final String[] projectorAudioDeviceNames = new String[] {
-            "Laser Proj (HD Audio Driver for Display Audio)",
-            "Laser Proj (AMD High Definition Audio Device)",
-            "Laser Proj",
-            "EPSON PJ (AMD High Definition Audio Device)",
-            "EPSON PJ (HD Audio Driver for Display Audio)",
-            "EPSON PJ",
+            "Laser Proj (HD Audio Driver for Display Audio)", // xiaomi
+            "Laser Proj (AMD High Definition Audio Device)", // xiaomi
+            "Laser Proj", // xiaomi
+            "EPSON PJ (AMD High Definition Audio Device)", // epson
+            "EPSON PJ (HD Audio Driver for Display Audio)", // epson
+            "EPSON PJ", // epson
             "1 - EPSON PJ (AMD High Definition Audio Device)",
             "2 - EPSON PJ (AMD High Definition Audio Device)",
             "3 - EPSON PJ (AMD High Definition Audio Device)",
