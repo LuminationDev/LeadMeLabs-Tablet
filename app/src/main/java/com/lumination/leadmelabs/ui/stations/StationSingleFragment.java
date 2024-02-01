@@ -53,6 +53,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -262,6 +263,10 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton experienceDetailsButton = view.findViewById(R.id.control_experience);
         experienceDetailsButton.setOnClickListener(v -> {
+            if (mViewModel.getSelectedStation().getValue() == null) {
+                return;
+            }
+
             String gameName = mViewModel.getSelectedStation().getValue().gameName;
 
             Details details = null;
@@ -302,7 +307,7 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton headsetVolumeSelect = view.findViewById(R.id.headset_volume_select);
         headsetVolumeSelect.setOnClickListener(v -> {
-            if (!mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
                 return;
             }
 
@@ -331,7 +336,7 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton projectorVolumeSelect = view.findViewById(R.id.projector_volume_select);
         projectorVolumeSelect.setOnClickListener(v -> {
-            if (!mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
                 return;
             }
 
@@ -472,7 +477,7 @@ public class StationSingleFragment extends Fragment {
      * as to pass on the data binding from the VirtualStation class.
      */
     private void inflateVRDevicesLayout() {
-        ViewStub vrDevicesStub = binding.getRoot().findViewById(R.id.vr_devices_stub);
+        ViewStub vrDevicesStub = binding.getRoot().findViewById(R.id.vr_devices_section);
         vrDevicesStub.inflate();
     }
 
@@ -542,7 +547,7 @@ public class StationSingleFragment extends Fragment {
                 shutdownButton.setText(R.string.shut_down_station);
             } else {
                 if (!cancelledShutdown) {
-                    shutdownButton.setText("Cancel (" + seconds + ")");
+                    shutdownButton.setText(MessageFormat.format("Cancel ({0})", seconds));
                 }
             }
         };

@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.models.stations;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Stream;
 
 import io.sentry.Sentry;
 
