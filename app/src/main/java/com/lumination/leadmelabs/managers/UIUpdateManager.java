@@ -557,8 +557,18 @@ public class UIUpdateManager {
                     }
                     break;
 
+                //BACKWARDS COMPATIBILITY
                 case "installedApplications":
                     station.setApplicationsFromJsonString(value);
+                    break;
+
+                case "installedJsonApplications":
+                    try {
+                        JSONArray jsonArray = new JSONArray(value);
+                        station.setApplicationsFromJson(jsonArray);
+                    } catch (JSONException e) {
+                        Sentry.captureException(e);
+                    }
                     break;
 
                 case "volume":
