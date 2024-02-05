@@ -151,7 +151,7 @@
                     android:scrollbarTrackVertical="@color/grey_medium"
                     android:smoothScrollbar="true"
                     android:verticalSpacing="30dp"
-                    tools:listitem="@layout/application_tile" />
+                    tools:listitem="@layout/card_experience" />
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
 

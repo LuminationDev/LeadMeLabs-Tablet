@@ -3,6 +3,10 @@ package com.lumination.leadmelabs.managers;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.services.NetworkService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -13,6 +17,7 @@ public class ImageManager {
      */
     public static ArrayList<String> requestedImages = new ArrayList<>();
 
+    //BACKWARDS COMPATIBILITY
     /**
      * Check the local application directory to see if any experiences require their thumbnails
      * sent over from the NUC.
@@ -27,6 +32,26 @@ public class ImageManager {
             //Currently only tracking the Custom images
             if (appData.length > 1 && appData[0].equals("Custom")) {
                 loadLocalImage(appData[2]);
+            }
+        }
+    }
+
+    /**
+     * Check the local application directory to see if any experiences require their thumbnails
+     * sent over from the NUC.
+     * @param jsonArray A JSON array of experiences that has been received from the NUC.
+     */
+    public static void CheckLocalCache(JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            // Get the JSONObject at the current index
+            JSONObject entry = jsonArray.getJSONObject(i);
+
+            String appType = entry.getString("WrapperType");
+            String appName = entry.getString("Name");
+
+            //Currently only tracking the Custom images
+            if (appType.equals("Custom")) {
+                loadLocalImage(appName);
             }
         }
     }

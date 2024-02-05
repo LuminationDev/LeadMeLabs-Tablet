@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModelProviders;
@@ -69,18 +70,39 @@ public class Station implements Cloneable {
     private String activeAudioDevice;
     public List<LocalAudioDevice> audioDevices = new ArrayList<>();
 
-    public Station(String name, String applications, int id, String status, String state, String room, String macAddress) {
+    public Station(String name, Object applications, int id, String status, String state, String room, String macAddress) {
         this.name = name;
-        if (applications != null && applications.length() > 0 && !applications.equals("Off")) {
-            this.setApplicationsFromJsonString(applications);
-        }
         this.id = id;
         this.status = status;
         this.state = state;
         this.room = room;
         this.macAddress = macAddress;
+
+        this.setApplications(applications);
     }
 
+    /**
+     * Sets the applications for the station.
+     *
+     * @param applications The applications to be set. This can be either a JSON string
+     *                     representing application data or a JSONArray containing application
+     *                     objects.
+     */
+    private void setApplications(Object applications) {
+        if (applications == null) return;
+
+        if (applications instanceof String) {
+            this.setApplicationsFromJsonString((String) applications);
+        } else if (applications instanceof JSONArray) {
+            try {
+                this.setApplicationsFromJson((JSONArray) applications);
+            } catch (JSONException e) {
+                Sentry.captureException(e);
+            }
+        }
+    }
+
+    @NonNull
     @Override
     public Station clone() {
         Station clonedStation = null;
@@ -314,41 +336,68 @@ public class Station implements Cloneable {
         name = newName;
     }
 
+    //BACKWARDS COMPATIBILITY
     /**
      * Parses a JSON string containing application data and updates the list of applications.
      *
-     * @param applicationsJson The JSON string containing application data.
+     * @param applicationsJson The JSON string containing application data (string list).
      */
     public void setApplicationsFromJsonString(String applicationsJson) {
-        ArrayList<Application> newApplications = new ArrayList<>();
-        String[] apps = applicationsJson.split("/");
+        // Wrap with a catch for unforeseen characters - this will method will be removed in the future
+        try {
+            ArrayList<Application> newApplications = new ArrayList<>();
+            String[] apps = applicationsJson.split("/");
 
-        for (String app : apps) {
-            String[] appData = app.split("\\|");
+            for (String app : apps) {
+                String[] appData = app.split("\\|");
+                if (appData.length <= 1) continue;
 
-            // Backwards compatibility
-            boolean isVr = appData.length >= 4 && Boolean.parseBoolean(appData[3]);
-
-            if (appData.length > 1) {
                 String appType = appData[0];
                 String appName = appData[2].replace("\"", "");
                 String appId = appData[1];
+                boolean isVr = appData.length >= 4 && Boolean.parseBoolean(appData[3]); // Backwards compatibility
 
-                switch (appType) {
-                    case "Custom":
-                        newApplications.add(new CustomApplication(appType, appName, appId, isVr));
-                        break;
-                    case "Steam":
-                        newApplications.add(new SteamApplication(appType, appName, appId, isVr));
-                        break;
-                    case "Vive":
-                        newApplications.add(new ViveApplication(appType, appName, appId, isVr));
-                        break;
-                    case "Revive":
-                        newApplications.add(new ReviveApplication(appType, appName, appId, isVr));
-                        break;
-                }
+                Application newApplication = createNewApplication(appType, appName, appId, isVr);
+                if (newApplication == null) continue;
+                newApplications.add(newApplication);
             }
+
+            if (newApplications.isEmpty()) {
+                return;
+            }
+
+            newApplications.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
+            this.applications = newApplications;
+
+            //Check for missing thumbnails
+            ImageManager.CheckLocalCache(applicationsJson);
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
+    }
+
+    /**
+     * Parses a JSON string containing application data and updates the list of applications.
+     *
+     * @param jsonArray The JSON array containing application data (JsonObjects).
+     */
+    public void setApplicationsFromJson(JSONArray jsonArray) throws JSONException {
+        ArrayList<Application> newApplications = new ArrayList<>();
+
+        // Iterate over each entry in the JSONArray using a traditional for loop
+        for (int i = 0; i < jsonArray.length(); i++) {
+            // Get the JSONObject at the current index
+            JSONObject entry = jsonArray.getJSONObject(i);
+
+            // Extract values for WrapperType, Name, Id, and IsVr
+            String appType = entry.getString("WrapperType");
+            String appName = entry.getString("Name");
+            String appId = entry.getString("Id");
+            boolean isVr = entry.getBoolean("IsVr");
+
+            Application newApplication = createNewApplication(appType, appName, appId, isVr);
+            if (newApplication == null) continue;
+            newApplications.add(newApplication);
         }
 
         if (newApplications.isEmpty()) {
@@ -359,7 +408,28 @@ public class Station implements Cloneable {
         this.applications = newApplications;
 
         //Check for missing thumbnails
-        ImageManager.CheckLocalCache(applicationsJson);
+        ImageManager.CheckLocalCache(jsonArray);
+    }
+
+    private Application createNewApplication(String appType, String appName, String appId, boolean isVr) {
+        Application temp = null;
+
+        switch (appType) {
+            case "Custom":
+                temp = new CustomApplication(appType, appName, appId, isVr);
+                break;
+            case "Steam":
+                temp = new SteamApplication(appType, appName, appId, isVr);
+                break;
+            case "Vive":
+                temp = new ViveApplication(appType, appName, appId, isVr);
+                break;
+            case "Revive":
+                temp = new ReviveApplication(appType, appName, appId, isVr);
+                break;
+        }
+
+        return temp;
     }
 
     /**

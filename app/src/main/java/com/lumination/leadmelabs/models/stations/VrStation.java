@@ -38,7 +38,7 @@ public class VrStation extends Station {
     private Timer timer;
     int dotsCount = 0;
 
-    public VrStation(String name, String applications, int id, String status, String state, String room, String macAddress, String ledRingId) {
+    public VrStation(String name, Object applications, int id, String status, String state, String room, String macAddress, String ledRingId) {
         super(name, applications, id, status, state, room, macAddress);
 
         this.ledRingId = ledRingId;

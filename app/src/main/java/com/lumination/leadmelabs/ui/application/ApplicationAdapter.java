@@ -22,7 +22,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.ApplicationTileBinding;
+import com.lumination.leadmelabs.databinding.CardExperienceBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.stations.Station;
@@ -75,14 +75,14 @@ public class ApplicationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        ApplicationTileBinding binding;
+        CardExperienceBinding binding;
         if (view == null) {
-            mInflater.inflate(R.layout.application_tile, null);
-            binding = ApplicationTileBinding.inflate(mInflater, parent, false);
+            mInflater.inflate(R.layout.card_experience, null);
+            binding = CardExperienceBinding.inflate(mInflater, parent, false);
             view = binding.getRoot();
             view.setTag(binding);
         } else {
-            binding = (ApplicationTileBinding) view.getTag();
+            binding = (CardExperienceBinding) view.getTag();
         }
 
         Application currentApplication = getItem(position);

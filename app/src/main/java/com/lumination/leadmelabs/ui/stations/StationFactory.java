@@ -5,6 +5,7 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,12 +36,25 @@ public class StationFactory {
             state = "Not set";
         }
 
+        //BACKWARDS COMPATIBILITY - check for the JsonArray or the back string of applications
+        String installedApplications = stationJson.optString("installedJsonApplications", "");
+        Object applications;
+        try {
+            if (!installedApplications.isEmpty()) {
+                applications = new JSONArray(installedApplications);
+            } else {
+                applications = stationJson.optString("installedApplications", "");
+            }
+        } catch (JSONException e) {
+            applications = stationJson.optString("installedApplications", "");
+        }
+
         String mode = stationJson.optString("mode", "vr").toLowerCase();
         switch (mode) {
             case "content":
-                return createContentStation(stationJson, state);
+                return createContentStation(stationJson, applications, state);
             case "vr":
-                return createVrStation(stationJson, state);
+                return createVrStation(stationJson, applications, state);
             // Add more cases for other modes if needed
             default:
                 String location = SettingsFragment.mViewModel.getLabLocation().getValue();
@@ -57,20 +71,23 @@ public class StationFactory {
      * Creates a ContentStation object based on the provided JSON data.
      *
      * @param stationJson JSON object containing content station details.
+     * @param installedApplications An object, either a JSONArray or a string containing the details
+     *                              of install application details.
+     * @param state A string describing the current state of a station.
      * @return A ContentStation object initialized with the provided data.
      * @throws JSONException If there is an issue parsing the JSON data.
      */
-    private static ContentStation createContentStation(JSONObject stationJson, String state) throws JSONException {
+    private static ContentStation createContentStation(JSONObject stationJson, Object installedApplications, String state) throws JSONException {
         ContentStation station = new ContentStation(
                 stationJson.getString("name"),
-                stationJson.getString("installedApplications"),
+                installedApplications,
                 stationJson.getInt("id"),
                 stationJson.getString("status"),
                 state,
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"));
 
-        setGameDetails(station, stationJson);
+        setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
 
         return station;
@@ -80,13 +97,16 @@ public class StationFactory {
      * Creates a VirtualStation object based on the provided JSON data.
      *
      * @param stationJson JSON object containing vr station details.
+     * @param installedApplications An object, either a JSONArray or a string containing the details
+     *                              of install application details.
+     * @param state A string describing the current state of a station.
      * @return A VirtualStation object initialized with the provided data.
      * @throws JSONException If there is an issue parsing the JSON data.
      */
-    private static VrStation createVrStation(JSONObject stationJson, String state) throws JSONException {
+    private static VrStation createVrStation(JSONObject stationJson, Object installedApplications, String state) throws JSONException {
         VrStation station = new VrStation(
                 stationJson.getString("name"),
-                stationJson.getString("installedApplications"),
+                installedApplications,
                 stationJson.getInt("id"),
                 stationJson.getString("status"),
                 state,
@@ -94,7 +114,7 @@ public class StationFactory {
                 stationJson.getString("macAddress"),
                 stationJson.getString("ledRingId"));
 
-        setGameDetails(station, stationJson);
+        setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
 
         return station;
@@ -107,7 +127,7 @@ public class StationFactory {
      * @param stationJson JSON object containing game-related details.
      * @throws JSONException If there is an issue parsing the JSON data.
      */
-    private static void setGameDetails(Station station, JSONObject stationJson) throws JSONException {
+    private static void setExperienceDetails(Station station, JSONObject stationJson) throws JSONException {
         if (!stationJson.getString("gameName").equals("")) {
             station.gameName = stationJson.getString("gameName");
         }
