@@ -84,6 +84,16 @@ public class UIUpdateManager {
             }
 
             switch (actionNamespace) {
+                case "MessageType":
+                    if (additionalData.startsWith("Update")) {
+                        String[] split = additionalData.split(":");
+
+                        if (split.length > 1 && split[1].equals("Json")) {
+                            MainActivity.isNucJsonEnabled = true;
+                            Log.e("JSON", "JSON ENABLED");
+                        }
+                    }
+                    break;
                 case "Stations":
                     if (additionalData.startsWith("List")) {
                         updateStations(additionalData.split(":", 2)[1]);
@@ -153,6 +163,14 @@ public class UIUpdateManager {
                         return;
                     }
 
+                    if (additionalData.startsWith("SteamappsCorrupted")) {
+                        MainActivity.runOnUI(() ->
+                                DialogManager.createBasicDialog(
+                                        "Steam application corruption",
+                                        "Place a battery in the headset of " + station.name + ". After the headset is connected please select Restart VR System on " + station.name
+                                )
+                        );
+                    }
                     if (additionalData.startsWith("SteamVRError")) {
                         MainActivity.runOnUI(() -> {
                             BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {

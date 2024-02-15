@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -31,6 +32,9 @@ import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -102,7 +106,7 @@ public class ApplicationSelectionFragment extends Fragment {
         stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
 
-        GridView steamGridView = (GridView) view.findViewById(R.id.experience_list);
+        GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateSteamApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
@@ -182,10 +186,24 @@ public class ApplicationSelectionFragment extends Fragment {
      * Refresh the list of steam applications on a particular computer or on all.
      */
     private void refreshSteamGamesList() {
+        String stationIds;
         if(stationId > 0) {
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Refresh");
+            stationIds = String.valueOf(ApplicationAdapter.stationId);
         } else {
-            String stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
+            stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
+        }
+
+        //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
+        if (MainActivity.isNucJsonEnabled) {
+            JSONObject message = new JSONObject();
+            try {
+                message.put("Action", "Refresh");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + stationIds, "Experience", message.toString());
+        }
+        else {
             NetworkService.sendMessage("Station," + stationIds, "Experience", "Refresh");
         }
     }

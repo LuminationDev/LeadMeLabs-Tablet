@@ -51,4 +51,8 @@ public class Constants {
 
     //Request Codes
     public static int UPDATE_REQUEST_CODE = 99;
+
+    //Message constants
+    public static String Invalid = "invalid";
+    public static String ShareCode = "shareCode";
 }

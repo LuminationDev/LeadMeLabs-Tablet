@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isAppInForeground = false;
 
     public static boolean isNucUtf8 = true;
+    public static boolean isNucJsonEnabled = false;
 
     static ScheduledExecutorService scheduler;
 

@@ -344,4 +344,15 @@
     <style name="SpinnerTheme" parent="android:Widget.Spinner">
         <item name="android:background">@drawable/bg_spinner</item>
     </style>
+    <style name="ShareCodeEditText">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">90dp</item>
+        <item name="android:background">@drawable/share_input_middle</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:digits">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</item>
+    </style>
 </resources>

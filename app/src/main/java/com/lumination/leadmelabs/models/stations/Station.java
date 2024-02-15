@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
+import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
@@ -356,8 +357,15 @@ public class Station implements Cloneable {
                 String appName = appData[2].replace("\"", "");
                 String appId = appData[1];
                 boolean isVr = appData.length >= 4 && Boolean.parseBoolean(appData[3]); // Backwards compatibility
+                String subtype = appData.length >= 5 ? appData[4]: ""; // Backwards compatibility
 
-                Application newApplication = createNewApplication(appType, appName, appId, isVr);
+                JSONObject appSubtype = null;
+                try {
+                    appSubtype = new JSONObject(subtype);
+                }
+                catch (Exception ignored) {}
+
+                Application newApplication = createNewApplication(appType, appName, appId, isVr, appSubtype);
                 if (newApplication == null) continue;
                 newApplications.add(newApplication);
             }
@@ -394,8 +402,9 @@ public class Station implements Cloneable {
             String appName = entry.getString("Name");
             String appId = entry.getString("Id");
             boolean isVr = entry.getBoolean("IsVr");
+            JSONObject appSubtype = entry.optJSONObject("Subtype");
 
-            Application newApplication = createNewApplication(appType, appName, appId, isVr);
+            Application newApplication = createNewApplication(appType, appName, appId, isVr, appSubtype);
             if (newApplication == null) continue;
             newApplications.add(newApplication);
         }
@@ -411,21 +420,24 @@ public class Station implements Cloneable {
         ImageManager.CheckLocalCache(jsonArray);
     }
 
-    private Application createNewApplication(String appType, String appName, String appId, boolean isVr) {
+    private Application createNewApplication(String appType, String appName, String appId, boolean isVr, JSONObject appSubtype) {
         Application temp = null;
 
         switch (appType) {
             case "Custom":
-                temp = new CustomApplication(appType, appName, appId, isVr);
+                temp = new CustomApplication(appType, appName, appId, isVr, appSubtype);
+                break;
+            case "Embedded":
+                temp = new EmbeddedApplication(appType, appName, appId, isVr, appSubtype);
                 break;
             case "Steam":
-                temp = new SteamApplication(appType, appName, appId, isVr);
+                temp = new SteamApplication(appType, appName, appId, isVr, appSubtype);
                 break;
             case "Vive":
-                temp = new ViveApplication(appType, appName, appId, isVr);
+                temp = new ViveApplication(appType, appName, appId, isVr, appSubtype);
                 break;
             case "Revive":
-                temp = new ReviveApplication(appType, appName, appId, isVr);
+                temp = new ReviveApplication(appType, appName, appId, isVr, appSubtype);
                 break;
         }
 

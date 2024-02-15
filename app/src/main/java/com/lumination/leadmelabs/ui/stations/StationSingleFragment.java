@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.ui.stations;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
@@ -39,10 +33,6 @@ import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.applications.CustomApplication;
-import com.lumination.leadmelabs.models.applications.ReviveApplication;
-import com.lumination.leadmelabs.models.applications.SteamApplication;
-import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
@@ -51,7 +41,11 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -152,7 +146,19 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+            //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
+            if (MainActivity.isNucJsonEnabled) {
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("Action", "Restart");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", message.toString());
+            }
+            else {
+                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+            }
 
             ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
@@ -363,10 +369,9 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
 
-        ImageView experienceControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
-            updateExperienceImage(view, experienceControlImage, station);
+            updateExperienceImage(view, station);
             setupAudioSpinner(view, station);
         });
     }
@@ -484,53 +489,13 @@ public class StationSingleFragment extends Fragment {
     /**
      * Update the experience image to reflect what the selected Station is currently processing.
      * @param view The current fragment view.
-     * @param experienceControlImage The ImageView to be changed.
      * @param station The currently selected Station.
      */
-    private void updateExperienceImage(View view, ImageView experienceControlImage, Station station) {
+    private void updateExperienceImage(View view, Station station) {
         if (station.gameId != null && station.gameId.length() > 0) {
-            String filePath;
-            switch(station.gameType) {
-                case "Custom":
-                    filePath = CustomApplication.getImageUrl(station.gameName);
-                    break;
-                case "Steam":
-                    filePath = SteamApplication.getImageUrl(station.gameName, station.gameId);
-                    break;
-                case "Vive":
-                    filePath = ViveApplication.getImageUrl(station.gameId);
-                    break;
-                case "Revive":
-                    filePath = ReviveApplication.getImageUrl(station.gameId);
-                    break;
-                default:
-                    filePath = "";
-            }
-
-            //Load the image url or a default image if nothing is available
-            if(Objects.equals(filePath, "")) {
-                Glide.with(view).load(R.drawable.default_header).into(experienceControlImage);
-            } else {
-                Glide.with(view).load(filePath)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                // Error occurred while loading the image, change the imageUrl to the fallback image
-                                Glide.with(view)
-                                        .load(R.drawable.default_header)
-                                        .into((ImageView) view.findViewById(R.id.experience_image));
-                                return true;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                // Image loaded successfully
-                                return false;
-                            }
-                        })
-                        .into(experienceControlImage);
-            }
+            Helpers.SetExperienceImage(station.gameType, station.gameName, station.gameId, view);
         } else {
+            ImageView experienceControlImage = view.findViewById(R.id.experience_image);
             experienceControlImage.setImageDrawable(null);
         }
     }
