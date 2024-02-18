@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.application;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,39 +18,27 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding;
+import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
-import com.lumination.leadmelabs.ui.application.ApplicationShareCodeFragment;
-import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
-import com.lumination.leadmelabs.utilities.Identifier;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class StationSelectionPageFragment extends Fragment {
-
-    private FragmentPageStationSelectionBinding binding;
+public class ApplicationShareCodeFragment extends Fragment {
 
     public static FragmentManager childManager;
     public static StationsViewModel mViewModel;
 
-    public static StationSelectionPageFragment instance;
-    public static StationSelectionPageFragment getInstance() { return instance; }
+    private FragmentStationShareCodeBinding binding;
 
     private EditText[] editTexts;
 
@@ -58,18 +46,11 @@ public class StationSelectionPageFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_page_station_selection, container, false);
+        View view = inflater.inflate(R.layout.fragment_station_share_code, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
-        for (Station station:stations) {
-            station.selected = false;
-            mViewModel.updateStationById(station.id, station);
-        }
-
         return view;
     }
 
@@ -87,51 +68,26 @@ public class StationSelectionPageFragment extends Fragment {
         }
         SetupEditText(view);
 
-        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
-        helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
-        });
-
-        loadFragments();
-
-        CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
-        selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
-            ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<Station>) stations.clone();
-            for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
-                    station.selected = checked;
-                    mViewModel.updateStationById(station.id, station);
-                }
-            }
-        });
-
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
             mViewModel.selectSelectedApplication("");
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", null);
-        });
-
-        Button playButton = view.findViewById(R.id.select_stations);
-        playButton.setOnClickListener(v -> {
-            int[] selectedIds = mViewModel.getSelectedStationIds();
-            if (selectedIds.length > 0) {
-                confirmLaunchGame(selectedIds, selectedApplication);
+            // Go back to the application adapter page
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            if (fragmentManager.getBackStackEntryCount() > 1) {
+                fragmentManager.popBackStackImmediate();
             }
         });
 
-        View identifyStations = view.findViewById(R.id.identify_button);
-        identifyStations.setOnClickListener(v -> {
-            List<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            Identifier.identifyStations(stations);
+        Button playButton = view.findViewById(R.id.launch_experience);
+        playButton.setOnClickListener(v -> {
+            if (selectedApplication != null) {
+                confirmLaunchGame(selectedApplication);
+            }
         });
-
-        instance = this;
     }
 
-    public void confirmLaunchGame(int[] selectedIds, Application selectedApplication) {
-        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
-        String parameters = ApplicationShareCodeFragment.generateParameters(selectedApplication.name, editTexts);
+    public void confirmLaunchGame(Application selectedApplication) {
+        String parameters = generateParameters(selectedApplication.name, editTexts);
         if (parameters.equals(Constants.Invalid)) {
             return;
         }
@@ -142,25 +98,21 @@ public class StationSelectionPageFragment extends Fragment {
             try {
                 message.put("Action", "Launch");
                 message.put("ExperienceId", selectedApplication.id);
-                if (!parameters.isEmpty()) {
-                    message.put("Parameters", parameters);
-                }
+                message.put("Parameters", parameters);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            NetworkService.sendMessage("Station," + stationIds, "Experience", message.toString());
+            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message.toString());
         }
         else {
             String additionalData = "Launch:" + selectedApplication.id;
-            if (!parameters.isEmpty()) {
-                additionalData += ":Parameters:" + parameters;
-            }
+            additionalData += ":Parameters:" + parameters;
 
-            NetworkService.sendMessage("Station," + stationIds, "Experience", additionalData);
+            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", additionalData);
         }
 
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        DialogManager.awaitStationGameLaunch(new int[] { ApplicationAdapter.stationId }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**
@@ -210,21 +162,43 @@ public class StationSelectionPageFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
-        ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
-        for (Station station:stations) {
-            station.selected = false;
-            mViewModel.updateStationById(station.id, station);
-        }
-    }
+    /**
+     * Based on the supplied application name, create a set of parameters that will be inputted as
+     * a command line argument on a Station.
+     *
+     * @param editTexts An array of editText elements that contain the code
+     * @param applicationName A string of the application to be launched
+     * @return A string to be passed as command line parameters on a Station.
+     */
+    public static String generateParameters(String applicationName, EditText[] editTexts) {
+        StringBuilder combinedText = new StringBuilder();
 
-    private void loadFragments() {
-        childManager.beginTransaction()
-                .replace(R.id.station_selection_list_container, StationSelectionFragment.class, null)
-                .commitNow();
+        if (applicationName.equals("ThingLink")) {
+            for (EditText editText : editTexts) {
+                combinedText.append(editText.getText().toString());
+            }
+
+            //TODO put in validation for share code length of Thinglink etc...
+
+            return combinedText.toString();
+        }
+        else if (applicationName.equals("CoSpaces")) {
+            for (int i = 0; i < editTexts.length; i++) {
+                combinedText.append(editTexts[i].getText().toString().trim());
+                if (i == 2) { // After appending the third character
+                    combinedText.append('-');
+                }
+            }
+
+            //Check that there is 6 characters (and the '-') for a total of 7
+            if (combinedText.length() != 7) {
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Invalid Share Code", Toast.LENGTH_SHORT).show();
+                return Constants.Invalid;
+            }
+
+            return combinedText.toString();
+        }
+
+        return "";
     }
 }

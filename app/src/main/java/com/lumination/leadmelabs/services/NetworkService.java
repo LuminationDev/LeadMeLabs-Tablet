@@ -84,7 +84,9 @@ public class NetworkService extends Service {
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
-        NetworkService.sendMessage("NUC", "CanAcknowledge", "Unicode");
+        NetworkService.sendMessage("NUC", "CanAcknowledge", "");
+        NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
+        NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
     }
 
     /**

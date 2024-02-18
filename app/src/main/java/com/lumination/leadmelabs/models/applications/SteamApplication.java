@@ -2,9 +2,11 @@ package com.lumination.leadmelabs.models.applications;
 
 import com.lumination.leadmelabs.managers.ImageManager;
 
+import org.json.JSONObject;
+
 public class SteamApplication extends Application {
-    public SteamApplication(String type, String name, String id, boolean isVr) {
-        super(type, name, id, isVr);
+    public SteamApplication(String type, String name, String id, boolean isVr, JSONObject subtype) {
+        super(type, name, id, isVr, subtype);
     }
 
     /**

@@ -1,25 +1,17 @@
 package com.lumination.leadmelabs.ui.application;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardExperienceBinding;
@@ -27,19 +19,19 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.applications.CustomApplication;
-import com.lumination.leadmelabs.models.applications.ReviveApplication;
-import com.lumination.leadmelabs.models.applications.SteamApplication;
-import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ApplicationAdapter extends BaseAdapter {
     private final String TAG = "ApplicationAdapter";
@@ -86,52 +78,7 @@ public class ApplicationAdapter extends BaseAdapter {
         }
 
         Application currentApplication = getItem(position);
-
-        String filePath;
-        switch(currentApplication.type) {
-            case "Custom":
-                filePath = CustomApplication.getImageUrl(currentApplication.name);
-                break;
-            case "Steam":
-                filePath = SteamApplication.getImageUrl(currentApplication.name, currentApplication.id);
-                break;
-            case "Vive":
-                filePath = ViveApplication.getImageUrl(currentApplication.id);
-                break;
-            case "Revive":
-                filePath = ReviveApplication.getImageUrl(currentApplication.id);
-                break;
-            default:
-                filePath = "";
-        }
-
-        //Attempt to load the image url or a default image if nothing is available
-        if(Objects.equals(filePath, "")) {
-            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
-        } else {
-            View finalView1 = view;
-            Glide.with(view).load(filePath)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        // Error occurred while loading the image, change the imageUrl to the fallback image
-                        MainActivity.runOnUI(() -> {
-                            Glide.with(finalView1)
-                                    .load(R.drawable.default_header)
-                                    .into((ImageView) finalView1.findViewById(R.id.experience_image));
-                        });
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        // Image loaded successfully
-                        return false;
-                    }
-                })
-                .into((ImageView) view.findViewById(R.id.experience_image));
-        }
-
+        Helpers.SetExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
         binding.setApplication(currentApplication);
 
         View finalView = view;
@@ -173,22 +120,58 @@ public class ApplicationAdapter extends BaseAdapter {
     private void completeSelectApplicationAction(Application currentApplication) {
         if (stationId > 0) {
             Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
-            if (station != null) {
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
-                sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-                DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
+            if (station == null) {
+                return;
             }
+
+            //Check if application has a shareCode subtype and load the next fragment instead
+            if (currentApplication.HasCategory().equals(Constants.ShareCode)) {
+                mViewModel.selectSelectedApplication(currentApplication.id);
+                mViewModel.setSelectedApplication(currentApplication);
+                loadSingleShareCodeFragment();
+                return;
+            }
+
+            //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
+            if (MainActivity.isNucJsonEnabled) {
+                JSONObject message = new JSONObject();
+                try {
+                    message.put("Action", "Launch");
+                    message.put("ExperienceId", currentApplication.id);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message.toString());
+            }
+            else {
+                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
+            }
+
+            sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+            DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
+
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
+            mViewModel.setSelectedApplication(currentApplication);
             sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", null);
             fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
-
-            StationSelectionPageFragment fragment = (StationSelectionPageFragment) fragmentManager.findFragmentById(R.id.main);
-            View newView = fragment.getView();
-            TextView textView = newView.findViewById(R.id.station_selection_game_name);
-            textView.setText(currentApplication.name);
         }
+    }
+
+    /**
+     * The application has been detected as a Share code subtype. Load in the Share Code fragment
+     * for users to input the unique code to be sent to the selected Station.
+     */
+    private void loadSingleShareCodeFragment() {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out)
+                .replace(R.id.main, ApplicationShareCodeFragment.class, null)
+                .addToBackStack("menu:dashboard:stationSingle:shareCode")
+                .commit();
     }
 }
