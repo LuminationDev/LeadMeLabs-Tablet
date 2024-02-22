@@ -25,7 +25,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
+import com.lumination.leadmelabs.databinding.FragmentApplicationSelectionBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -47,7 +47,7 @@ public class ApplicationSelectionFragment extends Fragment {
     public static ApplicationAdapter installedApplicationAdapter;
     private static ArrayList<Application> installedApplicationList;
     private static int stationId = 0;
-    private static FragmentSteamSelectionBinding binding;
+    private static FragmentApplicationSelectionBinding binding;
     public static FragmentManager childManager;
 
     public static void setStationId (int stationId) {
@@ -69,7 +69,7 @@ public class ApplicationSelectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_steam_selection, container, false);
+        View view = inflater.inflate(R.layout.fragment_application_selection, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;
