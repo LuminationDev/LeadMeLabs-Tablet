@@ -83,9 +83,11 @@ public class StationSelectionPageFragment extends Fragment {
         Application selectedApplication = mViewModel.getSelectedApplication().getValue();
         binding.setSelectedApplication(selectedApplication);
         if (selectedApplication != null) {
-            Helpers.SetExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            //TODO uncomment when application experiences have descriptions
+            //Helpers.SetExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
         }
-        SetupEditText(view);
+        //TODO uncomment when application experiences have descriptions
+        //SetupEditText(view);
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
