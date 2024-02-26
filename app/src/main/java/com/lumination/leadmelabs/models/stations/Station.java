@@ -83,6 +83,14 @@ public class Station implements Cloneable {
     }
 
     /**
+     * Get the Id of the Station.
+     * @return An int representing the Id of the current Station.
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
      * Sets the applications for the station.
      *
      * @param applications The applications to be set. This can be either a JSON string

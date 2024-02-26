@@ -26,7 +26,10 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplicationSelectionBinding;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
+import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -40,6 +43,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ApplicationSelectionFragment extends Fragment {
 
@@ -160,8 +164,9 @@ public class ApplicationSelectionFragment extends Fragment {
             return false;
         });
 
+        //Check if there are any experiences running or if the selected Station has an experience running
         Button refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
-        refresh_btn.setOnClickListener(v -> refreshSteamGamesList());
+        refresh_btn.setOnClickListener(v -> checkForRunningExperiences());
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
@@ -180,6 +185,59 @@ public class ApplicationSelectionFragment extends Fragment {
     private void dismissKeyboard(View searchInput) {
         InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchInput.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    /**
+     * Checks if there are any running experiences on the current station or other stations.
+     * If running experiences are found, prompts the user with a confirmation dialog.
+     * If no running experiences are found, proceeds to refresh the list of Steam games.
+     */
+    private void checkForRunningExperiences() {
+        boolean showPrompt = false;
+        String message = "";
+
+        if (stationId > 0) {
+            Station station = mViewModel.getStationById(stationId);
+            if(!station.gameId.isEmpty()) {
+                showPrompt = true;
+                message = "Refreshing this experience list will stop: " + station.gameName + ", running on Station " + stationId;
+            }
+        } else {
+            ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
+            if (stations != null) {
+                ArrayList<Integer> stationIds = stations.stream()
+                        .filter(station -> !station.gameId.isEmpty())
+                        .map(Station::getId)
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                if (!stationIds.isEmpty()) {
+                    String joinedString = stationIds.stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining(","));
+
+                    showPrompt = true;
+                    message = "Refreshing this experience list will stop the currently open experiences on Stations: " + joinedString;
+                }
+            }
+        }
+
+        if (!showPrompt) {
+            refreshSteamGamesList();
+            return;
+        }
+
+        BooleanCallbackInterface booleanCallbackInterface = result -> {
+            if (result) {
+                refreshSteamGamesList();
+            }
+        };
+        DialogManager.createConfirmationDialog(
+                "Attention",
+                message,
+                booleanCallbackInterface,
+                "Cancel",
+                "Refresh",
+                false);
     }
 
     /**
