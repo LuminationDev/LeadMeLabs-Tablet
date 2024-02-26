@@ -200,7 +200,7 @@ public class ApplicationSelectionFragment extends Fragment {
             Station station = mViewModel.getStationById(stationId);
             if(!station.gameId.isEmpty()) {
                 showPrompt = true;
-                message = "Refreshing this experience list will stop: " + station.gameName + ", running on Station " + stationId;
+                message = "Refreshing this experience list will stop the experience: " + station.gameName + ", running on Station " + stationId;
             }
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
