@@ -54,6 +54,8 @@ public class ApplicationSelectionFragment extends Fragment {
     private static FragmentApplicationSelectionBinding binding;
     public static FragmentManager childManager;
 
+    private static String currentSearch = "";
+
     public static void setStationId (int stationId) {
         ApplicationSelectionFragment.stationId = stationId;
         if (stationId > 0) {
@@ -79,7 +81,22 @@ public class ApplicationSelectionFragment extends Fragment {
         return view;
     }
 
-    private void updateSteamApplicationList(int stationId, GridView view) {
+    /**
+     * Updates the application list displayed in the provided GridView based on the given station ID.
+     * If the new application list is the same as the currently installed application list, no update is performed.
+     * If a station ID is provided, updates the installed application list with applications specific to that station;
+     * otherwise, updates it with all applications. Then, sets the adapter's application list,
+     * updates the UI, performs a search (if applicable), and sets the adapter to the provided GridView.
+     *
+     * @param stationId The ID of the station to retrieve applications for, Id = 0 retrieves all applications.
+     * @param view The GridView to update with the application list.
+     */
+    private void updateApplicationList(int stationId, GridView view) {
+        ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+        if (newApplicationList.equals(installedApplicationList)) {
+            return;
+        }
+
         if (stationId > 0) {
             installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId);
         } else {
@@ -88,7 +105,9 @@ public class ApplicationSelectionFragment extends Fragment {
         installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
         binding.setApplicationList(installedApplicationAdapter.applicationList);
         binding.setApplicationsLoaded(mViewModel.getAllApplications().size() > 0);
-        installedApplicationAdapter.notifyDataSetChanged();
+
+        //The list has been updated, perform the search again
+        performSearch(currentSearch);
         view.setAdapter(installedApplicationAdapter);
     }
 
@@ -112,20 +131,21 @@ public class ApplicationSelectionFragment extends Fragment {
 
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateSteamApplicationList(stationId, steamGridView);
+        updateApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (stationId > 0) {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(stationId).size()) {
-                    updateSteamApplicationList(stationId, steamGridView);
+                    updateApplicationList(stationId, steamGridView);
                 }
             } else {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
-                    updateSteamApplicationList(stationId, steamGridView);
+                    updateApplicationList(stationId, steamGridView);
                 }
             }
         });
-        updateSteamApplicationList(stationId, steamGridView);
+        updateApplicationList(stationId, steamGridView);
 
+        //TODO this needs to be maintained over the ping update?
         EditText searchInput = view.findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -134,6 +154,7 @@ public class ApplicationSelectionFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String searchTerm = searchInput.getText().toString();
+                currentSearch = searchTerm;
                 performSearch(searchTerm);
             }
 
@@ -174,7 +195,7 @@ public class ApplicationSelectionFragment extends Fragment {
         });
     }
 
-    private void performSearch(String searchTerm) {
+    private static void performSearch(String searchTerm) {
         ArrayList<Application> filteredSteamApplicationList = (ArrayList<Application>) installedApplicationList.clone();
         filteredSteamApplicationList.removeIf(currentApplication -> !currentApplication.name.toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
         installedApplicationAdapter.applicationList = filteredSteamApplicationList;
