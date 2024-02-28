@@ -100,6 +100,8 @@ public class ApplianceViewModel extends ViewModel {
             }
             if (current.has("value") && !current.isNull("value")) {
                 appliance.value = current.getString("value");
+                // Set the current source value - bails out internally if not of type sources
+                appliance.setSourceStatus(current.getString("value"));
             }
             if (appliance.value.equals("0") || appliance.value.equals("")) {
                 inactiveObjects.put(appliance.id, "0");
@@ -125,23 +127,6 @@ public class ApplianceViewModel extends ViewModel {
                     }
                 }
 
-            }
-
-            // this is deprecated as of January 2023. Please delete if more than 2 releases have occured since.
-            if (appliance.type.equals((Constants.SOURCE))) {
-                if(current.has("labels")) {
-                    String labels = current.getString("labels");
-                    if(!labels.equals("null")) {
-                        ArrayList<String> customLabels = new ArrayList<>();
-                        JSONObject jObj = new JSONObject(labels);
-
-                        customLabels.add(!jObj.getString("hdmi1").equals("null") ? jObj.getString("hdmi1") : "HDMI 1");
-                        customLabels.add(!jObj.getString("hdmi2").equals("null") ? jObj.getString("hdmi2") : "HDMI 2");
-                        customLabels.add(!jObj.getString("hdmi3").equals("null") ? jObj.getString("hdmi3") : "HDMI 3");
-
-                        appliance.description = customLabels;
-                    }
-                }
             }
 
             st.add(appliance);
@@ -251,7 +236,7 @@ public class ApplianceViewModel extends ViewModel {
         if(temp != activeSceneList.get(room)) {
             updateIfVisible(id);
 
-            if(temp != null) {
+            if(temp != null && activeScenes.getValue() != null) {
                 activeScenes.getValue().remove(temp.id);
                 updateIfVisible(temp.id);
             }

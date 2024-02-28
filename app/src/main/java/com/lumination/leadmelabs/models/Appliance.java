@@ -70,6 +70,51 @@ public class Appliance {
         }
     }
 
+    /**
+     * Using a supplied Id, find the index of an option.
+     * @param id A string of the Id to search for.
+     * @return An int of the index or -1 if it is not found.
+     */
+    public int getIndexByOptionId(String id) {
+        for (int i = 0; i < options.size(); i++) {
+            Option option = options.get(i);
+            if (option.id.equals(id)) {
+                return i; // Return the index number if the id matches
+            }
+        }
+        return -1; // Return -1 if the id is not found in any Option object
+    }
+
+    /**
+     * Based on the value provided set the source status to the current value. There is a current
+     * maximum of three options for a source card, the index of the option in the options array
+     * determines what status the card should show for each value.
+     * @param sourceId A string of the source Id
+     */
+    public void setSourceStatus(String sourceId) {
+        if (!type.equals("sources")) return;
+
+        int index = getIndexByOptionId(sourceId);
+        //Default to the first index
+        String newStatus = Constants.ACTIVE;
+
+        switch (index) {
+            case 0:
+                newStatus = Constants.ACTIVE;
+                break;
+
+            case 1:
+                newStatus = Constants.INACTIVE;
+                break;
+
+            case 2:
+                newStatus = Constants.STOPPED;
+                break;
+        }
+
+        status = new MutableLiveData<>(newStatus);
+    }
+
     public String getLabelForIndex(int index) {
         if (this.options != null && this.options.size() > (index - 1)) {
             return this.options.get(index).name;

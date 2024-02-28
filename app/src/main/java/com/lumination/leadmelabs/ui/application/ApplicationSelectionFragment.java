@@ -145,7 +145,6 @@ public class ApplicationSelectionFragment extends Fragment {
         });
         updateApplicationList(stationId, steamGridView);
 
-        //TODO this needs to be maintained over the ping update?
         EditText searchInput = view.findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
