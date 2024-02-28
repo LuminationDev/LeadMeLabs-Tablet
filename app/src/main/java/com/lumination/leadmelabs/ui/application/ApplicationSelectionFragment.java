@@ -90,10 +90,11 @@ public class ApplicationSelectionFragment extends Fragment {
      *
      * @param stationId The ID of the station to retrieve applications for, Id = 0 retrieves all applications.
      * @param view The GridView to update with the application list.
+     * @param onCreate A boolean representing if the fragment has just been created.
      */
-    private void updateApplicationList(int stationId, GridView view) {
+    private void updateApplicationList(int stationId, GridView view, boolean onCreate) {
         ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
-        if (newApplicationList.equals(installedApplicationList)) {
+        if (!onCreate && newApplicationList.equals(installedApplicationList)) {
             return;
         }
 
@@ -131,19 +132,18 @@ public class ApplicationSelectionFragment extends Fragment {
 
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateApplicationList(stationId, steamGridView);
+        updateApplicationList(stationId, steamGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (stationId > 0) {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(stationId).size()) {
-                    updateApplicationList(stationId, steamGridView);
+                    updateApplicationList(stationId, steamGridView, false);
                 }
             } else {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
-                    updateApplicationList(stationId, steamGridView);
+                    updateApplicationList(stationId, steamGridView, false);
                 }
             }
         });
-        updateApplicationList(stationId, steamGridView);
 
         EditText searchInput = view.findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new TextWatcher() {
