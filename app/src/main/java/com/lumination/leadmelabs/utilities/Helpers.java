@@ -36,6 +36,10 @@ public class Helpers {
         return clone;
     }
 
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
     /**
      * Convert a density pixel value to regular pixels based on the tablets screen density.
      * Dynamically setting dimensions require pixel units instead of density pixels.

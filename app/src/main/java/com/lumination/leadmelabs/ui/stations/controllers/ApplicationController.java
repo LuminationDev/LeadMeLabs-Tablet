@@ -208,4 +208,16 @@ public class ApplicationController {
                 .findFirst();
         return optionalApp.orElse(null);
     }
+
+    /**
+     * Finds an application in the Station's applications list by its name.
+     *
+     * @return The application with the supplied name, or null otherwise.
+     */
+    public Application findApplicationByName(String name) {
+        Optional<Application> optionalApp = applications.stream()
+                .filter(app -> Objects.equals(app.getName(), name))
+                .findFirst();
+        return optionalApp.orElse(null);
+    }
 }
