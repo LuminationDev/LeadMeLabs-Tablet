@@ -22,6 +22,10 @@ public class Application {
         this.subtype = subtype;
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {

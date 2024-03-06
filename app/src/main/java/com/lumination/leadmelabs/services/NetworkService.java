@@ -22,7 +22,7 @@ import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
 
 import androidx.core.app.NotificationCompat;
 

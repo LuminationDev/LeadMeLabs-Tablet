@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.application;
+package com.lumination.leadmelabs.ui.library.application;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -34,14 +34,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ApplicationAdapter extends BaseAdapter {
-    private final String TAG = "ApplicationAdapter";
-
     public ArrayList<Application> applicationList = new ArrayList<>();
-    public static int stationId = 0;
     private final LayoutInflater mInflater;
     public static StationsViewModel mViewModel;
-    private FragmentManager fragmentManager;
-    private SideMenuFragment sideMenuFragment;
+    private final FragmentManager fragmentManager;
+    private final SideMenuFragment sideMenuFragment;
 
     ApplicationAdapter(Context context, FragmentManager fragmentManager, SideMenuFragment fragment) {
         this.mInflater = LayoutInflater.from(context);
@@ -85,7 +82,7 @@ public class ApplicationAdapter extends BaseAdapter {
         View.OnClickListener selectGame = view1 -> {
             InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-//                confirm if it is one of the dodgy apps
+            // confirm if it is one of the dodgy apps
             ArrayList<String> gamesWithAdditionalStepsRequired = new ArrayList<>();
 
             gamesWithAdditionalStepsRequired.add("513490"); // 1943 Berlin Blitz
@@ -118,8 +115,8 @@ public class ApplicationAdapter extends BaseAdapter {
     }
 
     private void completeSelectApplicationAction(Application currentApplication) {
-        if (stationId > 0) {
-            Station station = ApplicationAdapter.mViewModel.getStationById(ApplicationAdapter.stationId);
+        if (MainActivity.getStationId() > 0) {
+            Station station = ApplicationAdapter.mViewModel.getStationById(MainActivity.getStationId());
             if (station == null) {
                 return;
             }
@@ -141,10 +138,10 @@ public class ApplicationAdapter extends BaseAdapter {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message.toString());
+                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "Launch:" + currentApplication.id);
+                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", "Launch:" + currentApplication.id);
             }
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);

@@ -35,7 +35,10 @@
     <color name="grey_hint">#C4C4C4</color>
     <color name="grey_titles">#3A3A3A</color>
     <color name="grey_station">#DEE1EB</color>
+
     <color name="text">#808080</color>
+    <color name="text_dark">#344054</color>
+
     <color name="light_blue">#DEE1EB</color>
     <color name="light_blue_ripple">#CBD2EA</color>
 

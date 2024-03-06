@@ -55,4 +55,5 @@ public class Constants {
     //Message constants
     public static String Invalid = "invalid";
     public static String ShareCode = "shareCode";
+    public static String VideoPlayer = "videoPlayer";
 }

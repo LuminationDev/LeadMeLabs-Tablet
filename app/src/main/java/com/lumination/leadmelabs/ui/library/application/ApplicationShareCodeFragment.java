@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.application;
+package com.lumination.leadmelabs.ui.library.application;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -102,17 +102,17 @@ public class ApplicationShareCodeFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message.toString());
+            NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
         }
         else {
             String additionalData = "Launch:" + selectedApplication.id;
             additionalData += ":Parameters:" + parameters;
 
-            NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", additionalData);
+            NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", additionalData);
         }
 
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationGameLaunch(new int[] { ApplicationAdapter.stationId }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        DialogManager.awaitStationGameLaunch(new int[] { MainActivity.getStationId() }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**

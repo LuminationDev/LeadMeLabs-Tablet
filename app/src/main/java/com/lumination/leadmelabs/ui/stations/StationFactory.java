@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
+
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
@@ -89,6 +91,7 @@ public class StationFactory {
 
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
+        setVideoDetails(station, stationJson);
 
         return station;
     }
@@ -116,6 +119,7 @@ public class StationFactory {
 
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
+        setVideoDetails(station, stationJson);
 
         return station;
     }
@@ -129,13 +133,13 @@ public class StationFactory {
      */
     private static void setExperienceDetails(Station station, JSONObject stationJson) throws JSONException {
         if (!stationJson.getString("gameName").equals("")) {
-            station.gameName = stationJson.getString("gameName");
+            station.applicationController.setGameName(stationJson.getString("gameName"));
         }
         if (!stationJson.getString("gameId").equals("null")) {
-            station.gameId = stationJson.getString("gameId");
+            station.applicationController.setGameId(stationJson.getString("gameId"));
         }
         if (!stationJson.getString("gameType").equals("null")) {
-            station.gameType = stationJson.getString("gameType");
+            station.applicationController.setGameType(stationJson.getString("gameType"));
         }
     }
 
@@ -143,17 +147,37 @@ public class StationFactory {
      * Sets the audio related details that have been saved on the NUC for the current session.
      *
      * @param station     The BaseStation object to update with game details.
-     * @param stationJson JSON object containing game-related details.
+     * @param stationJson JSON object containing audio-related details.
      */
     private static void setAudioDetails(Station station, JSONObject stationJson) {
         String audio = stationJson.optString("audioDevices", "");
         if (!audio.equals("")) {
-            station.SetAudioDevices(audio);
+            station.audioController.setAudioDevices(audio);
         }
 
         String activeAudio = stationJson.optString("ActiveAudioDevice", "");
         if (!activeAudio.equals("")) {
-            station.SetActiveAudioDevice(activeAudio);
+            station.audioController.setActiveAudioDevice(activeAudio);
         }
+    }
+
+    /**
+     * Sets the video related details that have been saved on the NUC for the current session.
+     *
+     * @param station     The BaseStation object to update with game details.
+     * @param stationJson JSON object containing video-related details.
+     */
+    private static void setVideoDetails(Station station, JSONObject stationJson) {
+        String videos = stationJson.optString("videoFiles", "");
+        if (!videos.equals("")) {
+            station.videoController.setVideos(videos);
+        }
+
+        String activeVideo = stationJson.optString("CurrentVideo", "");
+        if (!activeVideo.equals("")) {
+            station.videoController.setActiveVideo(activeVideo);
+        }
+
+        Log.e("JSON", stationJson.toString());
     }
 }

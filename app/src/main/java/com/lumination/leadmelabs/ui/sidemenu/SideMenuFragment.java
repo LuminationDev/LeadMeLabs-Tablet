@@ -21,13 +21,14 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.util.Objects;
 
@@ -98,8 +99,8 @@ public class SideMenuFragment extends Fragment {
         buttonFeedback(sessionBtn, "session");
         sessionBtn.setOnClickListener(v -> {
             removeSubMenu();
-            loadFragment(ApplicationSelectionFragment.class, "session", null);
-            ApplicationSelectionFragment.setStationId(0);
+            StationsFragment.mViewModel.setSelectedStationId(0);
+            loadFragment(LibrarySelectionFragment.class, "session", null);
         });
 
         View controlsBtn = view.findViewById(R.id.controls_button);

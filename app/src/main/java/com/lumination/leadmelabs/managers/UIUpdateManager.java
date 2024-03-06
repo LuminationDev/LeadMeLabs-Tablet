@@ -445,13 +445,13 @@ public class UIUpdateManager {
                     station.status = value;
                     break;
                 case "gameName":
-                    station.gameName = value;
+                    station.applicationController.setGameName(value);
                     break;
                 case "gameId":
-                    station.gameId = value;
+                    station.applicationController.setGameId(value);
                     break;
                 case "gameType":
-                    station.gameType = value;
+                    station.applicationController.setGameType(value);
                     break;
             }
         }
@@ -545,20 +545,20 @@ public class UIUpdateManager {
                     station.state = value;
                     break;
 
-                case "gameId":
-                    station.gameId = value;
-                    break;
-
-                case "gameType":
-                    station.gameType = value;
-                    break;
-
                 case "name":
                     station.setName(value);
                     break;
 
+                case "gameId":
+                    station.applicationController.setGameId(value);
+                    break;
+
+                case "gameType":
+                    station.applicationController.setGameType(value);
+                    break;
+
                 case "gameName":
-                    station.gameName = value;
+                    station.applicationController.setGameName(value);
 
                     //Reset the selected application
                     if  ((value != null ? value.length() : 0) == 0) {
@@ -577,20 +577,20 @@ public class UIUpdateManager {
 
                 //BACKWARDS COMPATIBILITY
                 case "installedApplications":
-                    station.setApplicationsFromJsonString(value);
+                    station.applicationController.setApplicationsFromJsonString(value);
                     break;
 
                 case "installedJsonApplications":
                     try {
                         JSONArray jsonArray = new JSONArray(value);
-                        station.setApplicationsFromJson(jsonArray);
+                        station.applicationController.setApplicationsFromJson(jsonArray);
                     } catch (JSONException e) {
                         Sentry.captureException(e);
                     }
                     break;
 
                 case "volume":
-                    station.SetVolume(Integer.parseInt(value));
+                    station.audioController.setVolume(Integer.parseInt(value));
 
                     if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
@@ -602,15 +602,31 @@ public class UIUpdateManager {
                     break;
 
                 case "muted":
-                    station.SetMuted(Boolean.parseBoolean(value));
+                    station.audioController.setMuted(Boolean.parseBoolean(value));
                     break;
 
                 case "activeAudioDevice":
-                    station.SetActiveAudioDevice(value);
+                    station.audioController.setActiveAudioDevice(value);
                     break;
 
                 case "audioDevices":
-                    station.SetAudioDevices(value);
+                    station.audioController.setAudioDevices(value);
+                    break;
+
+                case "activeVideoPlaybackTime":
+                    station.videoController.updateVideoPlaybackTime(value);
+                    break;
+
+                case "activeVideoFile":
+                    station.videoController.setActiveVideo(value);
+                    break;
+
+                case "videoPlayerDetails":
+                    station.videoController.updateVideoPlayerDetails(value);
+                    break;
+
+                case "videoFiles":
+                    station.videoController.setVideos(value);
                     break;
 
                 case "details":

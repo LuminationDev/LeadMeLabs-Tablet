@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.application.Adapters;
+package com.lumination.leadmelabs.ui.library.application.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

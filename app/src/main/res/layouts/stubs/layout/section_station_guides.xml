@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:flexDirection="column">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/guide_vr_library"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/ripple_white_rounded"
+        android:paddingStart="20dp"
+        android:paddingEnd="10dp"
+        android:paddingVertical="10dp"
+        app:alignItems="center"
+        app:flexDirection="row">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="vr icon"
+            android:src="@drawable/library_active_vr"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textFontWeight="600"
+                android:text="VR Library"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_dark"
+                android:textSize="11sp"
+                android:text="My VR library is empty, or the experience I installed isn’t showing up."/>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/guide_steam_errors"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:background="@drawable/ripple_white_rounded"
+        android:paddingStart="20dp"
+        android:paddingEnd="10dp"
+        android:paddingVertical="10dp"
+        app:alignItems="center"
+        app:flexDirection="row">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="steam icon"
+            android:src="@drawable/guide_steam"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:flexDirection="column">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textFontWeight="600"
+                android:text="SteamVR Errors"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_dark"
+                android:textSize="11sp"
+                android:text="I’m getting SteamVR error messages when I try to launch an experience."/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</com.google.android.flexbox.FlexboxLayout>

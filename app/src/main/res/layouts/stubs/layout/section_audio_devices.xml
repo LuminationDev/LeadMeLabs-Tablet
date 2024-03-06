@@ -13,11 +13,10 @@
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="400dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="510dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_white_curved"
-        android:paddingVertical="20dp"
+        android:paddingVertical="10dp"
         android:paddingHorizontal="20dp"
         app:alignItems="center"
         app:flexDirection="row">
@@ -124,7 +123,7 @@
                     android:padding="25dp"
                     app:layout_flexShrink="0"
                     android:background="@drawable/three_dots"
-                    android:visibility="@{selectedStation.GetActiveAudioDevice() != null ? View.VISIBLE : View.GONE}"/>
+                    android:visibility="@{selectedStation.audioController.activeAudioDevice != null ? View.VISIBLE : View.GONE}"/>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>

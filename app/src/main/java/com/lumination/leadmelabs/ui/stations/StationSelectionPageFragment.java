@@ -26,13 +26,13 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
-import com.lumination.leadmelabs.ui.application.ApplicationShareCodeFragment;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
-import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 
 import org.json.JSONException;
@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+//TODO make this work for Videos or Applications??
+//TODO for videos if sending to many stations add the sync command?
 public class StationSelectionPageFragment extends Fragment {
 
     private FragmentPageStationSelectionBinding binding;
@@ -101,7 +103,7 @@ public class StationSelectionPageFragment extends Fragment {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             stations = (ArrayList<Station>) stations.clone();
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
+                if (!station.status.equals("Off") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
@@ -111,7 +113,7 @@ public class StationSelectionPageFragment extends Fragment {
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
             mViewModel.selectSelectedApplication("");
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", null);
+            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", null);
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
