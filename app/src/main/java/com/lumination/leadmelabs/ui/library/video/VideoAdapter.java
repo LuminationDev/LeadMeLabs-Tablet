@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.ui.library.video;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
@@ -91,35 +89,24 @@ public class VideoAdapter extends BaseAdapter {
     }
 
     private void completeSelectVideoAction(Video currentVideo) {
-        Log.e("VIDEO", currentVideo.getId());
-        Log.e("ID", "ID: " + MainActivity.getStationId());
-
         if (MainActivity.getStationId() > 0) {
             Station station = mViewModel.getStationById(MainActivity.getStationId());
             if (station == null) {
                 return;
             }
 
-            Log.e("VIDEO", currentVideo.getId());
-
-            //TODO
-            // Work out how to send the source to a Station
-            // Open the Video Play / VR Video Player (users choice) if not already open
-
             // Add an on click listener to the image if the video player is active
             Application current = station.applicationController.findCurrentApplication();
-            if (!(current instanceof EmbeddedApplication)) {
-                // Video player is not open
-
-                //TODO Open Video player and then send the source...
-                // or handle that on the station side??
-                // depends if we want control over what Video Player to open...
-                return;
+            if (!(current instanceof EmbeddedApplication)) { // Video player is not open
+                station.openApplicationAndSendMessage("Video Player", () -> station.videoController.loadTrigger(currentVideo.getSource()));
             }
-
-            String subtype = current.subtype.optString("category", "");
-            if (subtype.equals(Constants.VideoPlayer)) {
-                station.videoController.loadTrigger(currentVideo.getSource());
+            else {
+                String subtype = current.subtype.optString("category", "");
+                if (subtype.equals(Constants.VideoPlayer)) {
+                    station.videoController.loadTrigger(currentVideo.getSource());
+                } else { //Video player is not open
+                    station.openApplicationAndSendMessage("Video Player", () -> station.videoController.loadTrigger(currentVideo.getSource()));
+                }
             }
 
             sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);

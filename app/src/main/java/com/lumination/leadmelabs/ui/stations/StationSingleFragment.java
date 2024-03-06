@@ -554,7 +554,7 @@ public class StationSingleFragment extends Fragment {
      * @param station The currently selected Station.
      */
     private void updateExperienceImage(View view, Station station) {
-        if (station.applicationController.getGameId() != null && station.applicationController.getGameId().length() > 0) {
+        if (!Helpers.isNullOrEmpty(station.applicationController.getGameId()) || !Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
             Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
         } else {
             ImageView experienceControlImage = view.findViewById(R.id.experience_image);

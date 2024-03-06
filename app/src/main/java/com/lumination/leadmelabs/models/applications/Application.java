@@ -26,6 +26,10 @@ public class Application {
         return this.id;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
