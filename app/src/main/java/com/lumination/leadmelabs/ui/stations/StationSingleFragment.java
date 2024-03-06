@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.stations;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,17 +31,19 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
-import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 
@@ -53,6 +56,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class StationSingleFragment extends Fragment {
@@ -89,21 +93,87 @@ public class StationSingleFragment extends Fragment {
             inflateVRDevicesLayout();
         }
 
-        if (savedInstanceState == null) {
-            childManager.beginTransaction()
-                    .replace(R.id.logo, LogoFragment.class, null)
-                    .commitNow();
-        }
+        //region VideoControl
+        Slider stationVideoSlider = view.findViewById(R.id.station_video_slider);
+
+        // Set custom label formatter
+        stationVideoSlider.setLabelFormatter(value -> {
+            // Format the hint string as "xx:xx" (minutes:seconds)
+            int minutes = (int) value / 60;
+            int seconds = (int) value % 60;
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        });
+
+        stationVideoSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setSliderTracking(true);
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
+                selectedStation.videoController.setSliderTracking(false);
+            }
+        });
+
+        stationVideoSlider.addOnChangeListener((slider, value, fromUser) -> {
+            Station selectedStation = binding.getSelectedStation();
+            selectedStation.videoController.setSliderValue((int) slider.getValue());
+        });
+        //endregion
 
         //region AudioControl
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
-        stationVolumeSlider.addOnSliderTouchListener(touchListener);
+        stationVolumeSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.setVolume((int) slider.getValue());
+                selectedStation.volume = (int) slider.getValue();
+                mViewModel.updateStationById(selectedStation.id, selectedStation);
+
+                //backwards compat - remove this after next update
+                int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.getVolume();
+                NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
+                System.out.println(slider.getValue());
+            }
+        });
 
         if (newlySelectedStation != null) {
             setupAudioSpinner(view, newlySelectedStation);
             setupMuteButton(view);
+            updateLayout(view, newlySelectedStation);
         }
         //endregion
+
+        // Open the help (guide) modals
+        FlexboxLayout vrGuideButton = view.findViewById(R.id.guide_vr_library);
+        vrGuideButton.setOnClickListener(v -> {
+            DialogManager.createTroubleshootingTextDialog("VR Library", "Go to the VR library and press refresh. After approximately 1 minute, the experiences should be available in the list. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen.");
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "troubleshooting");
+                put("content_id", "vr_library");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+        });
+
+        FlexboxLayout steamErrorGuideButton = view.findViewById(R.id.guide_steam_errors);
+        steamErrorGuideButton.setOnClickListener(v -> {
+            DialogManager.createTroubleshootingTextDialog("SteamVR Errors", "Press ‘Restart VR System’ and wait while it restarts. This can be done on the individual station screen. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your IT department.");
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("content_type", "troubleshooting");
+                put("content_id", "steam_vr_errors");
+            }};
+            FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+        });
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
@@ -135,8 +205,20 @@ public class StationSingleFragment extends Fragment {
         newSession.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(ApplicationSelectionFragment.class, "session", bundle);
-            ApplicationSelectionFragment.setStationId(binding.getSelectedStation().id);
+            StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
+
+            // Open the video library as default if the video player is active
+            Application current = binding.getSelectedStation().findCurrentApplication();
+            if ((current instanceof EmbeddedApplication)) {
+                String subtype = current.subtype.optString("category", "");
+                if (subtype.equals(Constants.VideoPlayer)) {
+                    bundle.putString("library", "videos");
+                    ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                }
+                return;
+            }
+
+            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
         });
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
@@ -313,11 +395,11 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton headsetVolumeSelect = view.findViewById(R.id.headset_volume_select);
         headsetVolumeSelect.setOnClickListener(v -> {
-            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().hasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
                 return;
             }
 
-            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().FindAudioDevice(LocalAudioDevice.headsetAudioDeviceNames);
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().findAudioDevice(LocalAudioDevice.headsetAudioDeviceNames);
 
             Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
             int position = 0;  // Initialize with a value that indicates item not found
@@ -335,18 +417,18 @@ public class StationSingleFragment extends Fragment {
             // Set the selection if the item was found
             deviceSelection.setSelection(position);
 
-            mViewModel.getSelectedStation().getValue().SetActiveAudioDevice(selectedValue.getName());
+            mViewModel.getSelectedStation().getValue().setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
 
         MaterialButton projectorVolumeSelect = view.findViewById(R.id.projector_volume_select);
         projectorVolumeSelect.setOnClickListener(v -> {
-            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().HasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().hasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
                 return;
             }
 
-            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().FindAudioDevice(LocalAudioDevice.projectorAudioDeviceNames);
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().findAudioDevice(LocalAudioDevice.projectorAudioDeviceNames);
 
             Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
             int position = 0;  // Initialize with a value that indicates item not found
@@ -364,7 +446,7 @@ public class StationSingleFragment extends Fragment {
             // Set the selection if the item was found
             deviceSelection.setSelection(position);
 
-            mViewModel.getSelectedStation().getValue().SetActiveAudioDevice(selectedValue.getName());
+            mViewModel.getSelectedStation().getValue().setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
@@ -373,6 +455,7 @@ public class StationSingleFragment extends Fragment {
             binding.setSelectedStation(station);
             updateExperienceImage(view, station);
             setupAudioSpinner(view, station);
+            updateLayout(view, station);
         });
     }
 
@@ -380,33 +463,12 @@ public class StationSingleFragment extends Fragment {
         MaterialButton muteButton = view.findViewById(R.id.station_mute);
         muteButton.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            boolean currentValue = selectedStation.GetMuted();
-            selectedStation.SetMuted(!currentValue);
+            boolean currentValue = selectedStation.getMuted();
+            selectedStation.setMuted(!currentValue);
             mViewModel.updateStationById(selectedStation.id, selectedStation);
-            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.GetMuted());
+            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.getMuted());
         });
     }
-
-    private final Slider.OnSliderTouchListener touchListener =
-        new Slider.OnSliderTouchListener() {
-            @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
-                Station selectedStation = binding.getSelectedStation();
-                selectedStation.SetVolume((int) slider.getValue());
-                selectedStation.volume = (int) slider.getValue();
-                mViewModel.updateStationById(selectedStation.id, selectedStation);
-
-                //backwards compat - remove this after next update
-                int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.GetVolume();
-                NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
-                System.out.println(slider.getValue());
-            }
-        };
 
     private void setupAudioSpinner(View view, Station station) {
         // Create/Update the custom adapter if it's different from the existing one based on names
@@ -434,8 +496,8 @@ public class StationSingleFragment extends Fragment {
 
         // Set the selected to the active (if it exists)
         int position = 0;  // Initialize with a value that indicates item not found
-        if (station.GetActiveAudioDevice() != null) {
-            String activeName = station.GetActiveAudioDevice().getName();
+        if (station.getActiveAudioDevice() != null) {
+            String activeName = station.getActiveAudioDevice().getName();
 
             for (int i = 0; i < audioDeviceAdapter.getCount(); i++) {
                 LocalAudioDevice device = audioDeviceAdapter.getItem(i);
@@ -498,6 +560,71 @@ public class StationSingleFragment extends Fragment {
             ImageView experienceControlImage = view.findViewById(R.id.experience_image);
             experienceControlImage.setImageDrawable(null);
         }
+
+        // Add an on click listener to the image if the video player is active
+        Application current = station.findCurrentApplication();
+        if (!(current instanceof EmbeddedApplication)) {
+            resetLayout(view);
+            return;
+        }
+        String subtype = current.subtype.optString("category", "");
+        if (subtype.equals(Constants.VideoPlayer)) {
+            ImageView experienceControlImage = view.findViewById(R.id.experience_image);
+            experienceControlImage.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
+                StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
+                bundle.putString("library", "videos");
+                ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+            });
+        }
+    }
+
+    /**
+     * Depending on the experience that is being play update the layout to show the correct controls.
+     */
+    private void updateLayout(View view, Station station) {
+        // Check the current experience
+        Application current = station.findCurrentApplication();
+
+        if (!(current instanceof EmbeddedApplication)) {
+            resetLayout(view);
+            return;
+        }
+
+        String subtype = current.subtype.optString("category", "");
+        if (subtype.isEmpty()) {
+            resetLayout(view);
+            return;
+        }
+
+        if (subtype.equals(Constants.ShareCode)) {
+            Log.e("STATION", "SHARE CODE LAYOUT");
+        }
+        else if (subtype.equals(Constants.VideoPlayer)) {
+            FlexboxLayout guides = view.findViewById(R.id.guide_section);
+            guides.setVisibility(View.GONE);
+
+            FlexboxLayout controls = view.findViewById(R.id.video_controls);
+            controls.setVisibility(View.VISIBLE);
+        } else {
+            resetLayout(view);
+        }
+    }
+
+    /**
+     * Convert the layout back to it's original view (No video or share code controls present).
+     */
+    private void resetLayout(View view) {
+        //Reset the video controls
+        FlexboxLayout controls = view.findViewById(R.id.video_controls);
+        controls.setVisibility(View.GONE);
+
+        //Reset the share code controls
+
+        //Reset the guide section
+        FlexboxLayout guides = view.findViewById(R.id.guide_section);
+        guides.setVisibility(View.VISIBLE);
     }
 
     /**

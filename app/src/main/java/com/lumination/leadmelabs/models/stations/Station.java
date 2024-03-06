@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.ui.stations.controllers.VideoController;
 import com.lumination.leadmelabs.utilities.IconManager;
 
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,6 +61,9 @@ public class Station implements Cloneable {
 
     public Boolean requiresSteamGuard = false;
 
+    //Handle video management
+    public VideoController videoController;
+
     //Track animation of icons
     IconManager iconManager = new IconManager();
 
@@ -78,6 +83,7 @@ public class Station implements Cloneable {
         this.state = state;
         this.room = room;
         this.macAddress = macAddress;
+        this.videoController = new VideoController(id);
 
         this.setApplications(applications);
     }
@@ -90,25 +96,9 @@ public class Station implements Cloneable {
         return id;
     }
 
-    /**
-     * Sets the applications for the station.
-     *
-     * @param applications The applications to be set. This can be either a JSON string
-     *                     representing application data or a JSONArray containing application
-     *                     objects.
-     */
-    private void setApplications(Object applications) {
-        if (applications == null) return;
-
-        if (applications instanceof String) {
-            this.setApplicationsFromJsonString((String) applications);
-        } else if (applications instanceof JSONArray) {
-            try {
-                this.setApplicationsFromJson((JSONArray) applications);
-            } catch (JSONException e) {
-                Sentry.captureException(e);
-            }
-        }
+    public void setName(String newName)
+    {
+        name = newName;
     }
 
     @NonNull
@@ -124,13 +114,53 @@ public class Station implements Cloneable {
         return clonedStation;
     }
 
+    //region Power Control
+    /**
+     * Start a countdown to check the station status, if the station has not contacted the NUC
+     * within the time limit (3mins) then something has gone wrong and alert the user.
+     */
+    public void powerStatusCheck(long delay) {
+        //Cancel any previous power checks before starting a new one
+        cancelStatusCheck();
+
+        shutdownTimer = new CountDownTimer(delay, 1000) {
+            @Override
+            public void onTick(long l) {
+            }
+
+            @Override
+            public void onFinish() {
+                if(!SettingsFragment.checkLockedRooms(room)) {
+                    return;
+                }
+                DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
+                MainActivity.runOnUI(() -> {
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    station.status = "Off";
+                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Off");
+                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
+                });
+            }
+        }.start();
+    }
+
+    /**
+     * The station has turned on so cancel the automatic station check.
+     */
+    public void cancelStatusCheck() {
+        if(shutdownTimer != null) {
+            shutdownTimer.cancel();
+        }
+    }
+    //endregion
+
     //region Audio Devices
     /**
      * Retrieves the active audio device from the list based on a specified name.
      *
      * @return The active audio device or null if not found.
      */
-    public LocalAudioDevice GetActiveAudioDevice() {
+    public LocalAudioDevice getActiveAudioDevice() {
         return audioDevices.stream()
                 .filter(device -> device.getName().equals(activeAudioDevice))
                 .findFirst()
@@ -142,14 +172,14 @@ public class Station implements Cloneable {
      *
      * @return The active audio device or null if not found.
      */
-    public LocalAudioDevice FindAudioDevice(String[] deviceNames) {
+    public LocalAudioDevice findAudioDevice(String[] deviceNames) {
         return audioDevices.stream()
                 .filter(device -> Arrays.asList(deviceNames).contains(device.getName()))
                 .findFirst()
                 .orElse(null);
     }
 
-    public Boolean HasAudioDevice(String[] deviceNames) {
+    public Boolean hasAudioDevice(String[] deviceNames) {
         return audioDevices.stream().anyMatch(device -> Arrays.asList(deviceNames).contains(device.getName()));
     }
 
@@ -158,7 +188,7 @@ public class Station implements Cloneable {
      *
      * @param name The name to set as the active audio device.
      */
-    public void SetActiveAudioDevice(String name) {
+    public void setActiveAudioDevice(String name) {
         this.activeAudioDevice = name;
     }
 
@@ -167,8 +197,8 @@ public class Station implements Cloneable {
      *
      * @param volume The volume value to set.
      */
-    public void SetVolume(int volume) {
-        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+    public void setVolume(int volume) {
+        LocalAudioDevice foundDevice = getActiveAudioDevice();
 
         // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
         if (foundDevice != null) {
@@ -181,8 +211,8 @@ public class Station implements Cloneable {
      *
      * @param isMuted A boolean representing the muted value (true = muted).
      */
-    public void SetMuted(boolean isMuted) {
-        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+    public void setMuted(boolean isMuted) {
+        LocalAudioDevice foundDevice = getActiveAudioDevice();
 
         // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
         if (foundDevice != null) {
@@ -195,8 +225,8 @@ public class Station implements Cloneable {
      *
      * @return The muted value of the active audio device.
      */
-    public boolean GetMuted() {
-        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+    public boolean getMuted() {
+        LocalAudioDevice foundDevice = getActiveAudioDevice();
 
         // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
         if (foundDevice != null) {
@@ -211,8 +241,8 @@ public class Station implements Cloneable {
      *
      * @return The volume of the active audio device.
      */
-    public int GetVolume() {
-        LocalAudioDevice foundDevice = GetActiveAudioDevice();
+    public int getVolume() {
+        LocalAudioDevice foundDevice = getActiveAudioDevice();
 
         // Now 'foundDevice' contains the device with the supplied name, or it's null if not found
         if (foundDevice != null) {
@@ -228,7 +258,7 @@ public class Station implements Cloneable {
      *
      * @param jsonData The JSON data to parse.
      */
-    public void SetAudioDevices(String jsonData) {
+    public void setAudioDevices(String jsonData) {
         List<LocalAudioDevice> audioDevices = new ArrayList<>();
 
         try {
@@ -270,7 +300,7 @@ public class Station implements Cloneable {
             return;
         }
 
-        int value = selectedStation.GetVolume();
+        int value = selectedStation.getVolume();
         slider.setValue(value);
     }
 
@@ -286,7 +316,7 @@ public class Station implements Cloneable {
         };
 
         Drawable drawable;
-        boolean isMuted = selectedStation.GetMuted();
+        boolean isMuted = selectedStation.getMuted();
         if (isMuted) {
             drawable = ContextCompat.getDrawable(context, R.drawable.station_mute);
         } else {
@@ -310,7 +340,7 @@ public class Station implements Cloneable {
         // Get the context from the MaterialButton's View
         Context context = materialButton.getContext();
 
-        if (selectedStation.HasAudioDevice(deviceNames)) {
+        if (selectedStation.hasAudioDevice(deviceNames)) {
             materialButton.setEnabled(true);
         } else {
             materialButton.setEnabled(false);
@@ -320,8 +350,8 @@ public class Station implements Cloneable {
             materialButton.setIconTint(ContextCompat.getColorStateList(context, R.color.grey_titles));
         }
 
-        if(selectedStation.GetActiveAudioDevice() != null) {
-            LocalAudioDevice activeDevice = selectedStation.GetActiveAudioDevice();
+        if(selectedStation.getActiveAudioDevice() != null) {
+            LocalAudioDevice activeDevice = selectedStation.getActiveAudioDevice();
 
             if (Arrays.stream(deviceNames).anyMatch(activeDevice.getName()::equals)) {
                 // active
@@ -340,9 +370,26 @@ public class Station implements Cloneable {
     }
     //endregion
 
-    public void setName(String newName)
-    {
-        name = newName;
+    //region Applications
+    /**
+     * Sets the applications for the station.
+     *
+     * @param applications The applications to be set. This can be either a JSON string
+     *                     representing application data or a JSONArray containing application
+     *                     objects.
+     */
+    private void setApplications(Object applications) {
+        if (applications == null) return;
+
+        if (applications instanceof String) {
+            this.setApplicationsFromJsonString((String) applications);
+        } else if (applications instanceof JSONArray) {
+            try {
+                this.setApplicationsFromJson((JSONArray) applications);
+            } catch (JSONException e) {
+                Sentry.captureException(e);
+            }
+        }
     }
 
     //BACKWARDS COMPATIBILITY
@@ -467,43 +514,19 @@ public class Station implements Cloneable {
     }
 
     /**
-     * Start a countdown to check the station status, if the station has not contacted the NUC
-     * within the time limit (3mins) then something has gone wrong and alert the user.
+     * Finds the application or the current gameId in the Station's applications list.
+     *
+     * @return The application with the current gameId if found, or null otherwise.
      */
-    public void powerStatusCheck(long delay) {
-        //Cancel any previous power checks before starting a new one
-        cancelStatusCheck();
-
-        shutdownTimer = new CountDownTimer(delay, 1000) {
-            @Override
-            public void onTick(long l) {
-            }
-
-            @Override
-            public void onFinish() {
-                if(!SettingsFragment.checkLockedRooms(room)) {
-                    return;
-                }
-                DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
-                MainActivity.runOnUI(() -> {
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
-                    station.status = "Off";
-                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Off");
-                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
-                });
-            }
-        }.start();
+    public Application findCurrentApplication() {
+        Optional<Application> optionalApp = applications.stream()
+                .filter(app -> Objects.equals(app.getId(), this.gameId))
+                .findFirst();
+        return optionalApp.orElse(null);
     }
+    //endregion
 
-    /**
-     * The station has turned on so cancel the automatic station check.
-     */
-    public void cancelStatusCheck() {
-        if(shutdownTimer != null) {
-            shutdownTimer.cancel();
-        }
-    }
-
+    //region Data Binding
     /**
      * Data binding to update the Station content flexbox background.
      */
@@ -598,4 +621,5 @@ public class Station implements Cloneable {
             timer.cancel();
         }
     }
+    //endregion
 }

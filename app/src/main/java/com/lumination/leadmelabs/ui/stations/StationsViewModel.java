@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
     private MutableLiveData<Station> selectedStation = new MutableLiveData<>();
+    private MutableLiveData<Integer> selectedStationId = new MutableLiveData<>();
     private MutableLiveData<Application> selectedApplication = new MutableLiveData<>();
     private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
 
@@ -176,6 +178,11 @@ public class StationsViewModel extends ViewModel {
         return details;
     }
 
+    /**
+     * Retrieves all applications across all stations, ensuring each application's ID is unique.
+     * Applications are sorted alphabetically by name.
+     * @return A list of Application objects.
+     */
     public List<Application> getAllApplications() {
         HashSet<String> idSet = new HashSet<>();
 
@@ -192,6 +199,12 @@ public class StationsViewModel extends ViewModel {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * Retrieves applications associated with a specific station, subject to any room locks.
+     * Applications are sorted alphabetically by name.
+     * @param stationId The ID of the station to retrieve applications from.
+     * @return A list of Application objects.
+     */
     public List<Application> getStationApplications(int stationId) {
         ArrayList<Application> list = new ArrayList<>();
         if(stations.getValue() == null) {
@@ -208,8 +221,58 @@ public class StationsViewModel extends ViewModel {
         return list;
     }
 
+    /**
+     * Retrieves all videos across all stations, ensuring each video's ID is unique.
+     * Videos are sorted alphabetically by name.
+     * @return A list of Video objects.
+     */
+    public List<Video> getAllVideos() {
+        HashSet<String> idSet = new HashSet<>();
+
+        if(stations.getValue() == null) {
+            return new ArrayList<>();
+        }
+
+        //Only add applications with a unique id
+        return stations.getValue().stream()
+                .flatMap(station -> station.videoController.videos.stream())
+                .filter(video -> idSet.add(video.getId()))
+                .distinct()
+                .sorted((video, video2) -> video.getName().compareToIgnoreCase(video2.getName()))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Retrieves videos associated with a specific station, subject to certain conditions.
+     * Videos are sorted alphabetically by name.
+     * @param stationId The ID of the station to retrieve videos from.
+     * @return A list of Video objects.
+     */
+    public List<Video> getStationVideos(int stationId) {
+        ArrayList<Video> list = new ArrayList<>();
+        if(stations.getValue() == null) {
+            return list;
+        }
+        for (Station station: stations.getValue()) {
+            if (station.id == stationId) {
+                if(SettingsFragment.checkLockedRooms(station.room)) {
+                    list = new ArrayList<>(station.videoController.videos);
+                    list.sort((video, video2) -> video.getName().compareToIgnoreCase(video2.getName()));
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Updates the data of a station with the provided ID.
+     * @param id The ID of the station to update.
+     * @param station The updated Station object.
+     */
     public void updateStationById(int id, Station station) {
         List<Station> stationsData = stations.getValue();
+        if (stationsData == null) return;
+
         int index = -1;
         for(int i = 0; i < stationsData.size(); i++) {
             if (stationsData.get(i).id == id) {
@@ -279,9 +342,13 @@ public class StationsViewModel extends ViewModel {
     }
 
     private void selectStationById(int id) {
-        List<Station> filteredStations = stations.getValue().stream()
+        List<Station> stationList = stations.getValue();
+        if (stationList == null) return;
+
+        List<Station> filteredStations = stationList.stream()
                 .filter(station -> station.id == id)
                 .collect(Collectors.toList());
+
         if (!filteredStations.isEmpty()) {
             setSelectedStation(filteredStations.get(0));
         }
@@ -352,6 +419,18 @@ public class StationsViewModel extends ViewModel {
 
     public void loadStations() {
         NetworkService.sendMessage("NUC", "Stations", "List");
+    }
+
+    public void setSelectedStationId(int stationId) {
+        MainActivity.setStationId(stationId);
+        this.selectedStationId.setValue(stationId);
+    }
+    public LiveData<Integer> getSelectedStationId() {
+        if (selectedStationId == null) {
+            selectedStationId = new MutableLiveData<>(0);
+        }
+
+        return selectedStationId;
     }
 
     /**

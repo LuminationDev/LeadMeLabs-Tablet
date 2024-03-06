@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.application.Adapters;
+package com.lumination.leadmelabs.ui.library.application.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,26 +12,22 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder> {
+public class GlobalAdapter extends RecyclerView.Adapter<GlobalAdapter.ViewHolder> {
     private ArrayList<Actions> mData;
-    private boolean mIsExpanded;
-
-    public ActionAdapter(ArrayList<Actions> data) {
+    public GlobalAdapter(ArrayList<Actions> data) {
         mData = data;
-        mIsExpanded = false;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout_action, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout_global_action, parent, false);
         return new ViewHolder(view);
     }
 
@@ -50,33 +46,17 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", message.toString());
+                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," + ApplicationAdapter.stationId, "Experience", "PassToExperience:" + action.trigger);
+                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", "PassToExperience:" + action.trigger);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        if (mIsExpanded) {
-            return mData.size();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Toggle the visibility of the attached data set.
-     */
-    public void toggleExpanded() {
-        mIsExpanded = !mIsExpanded;
-        notifyDataSetChanged();
-    }
-
-    public boolean getExpanded() {
-        return this.mIsExpanded;
+        return mData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

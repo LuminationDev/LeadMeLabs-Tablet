@@ -590,7 +590,7 @@ public class UIUpdateManager {
                     break;
 
                 case "volume":
-                    station.SetVolume(Integer.parseInt(value));
+                    station.setVolume(Integer.parseInt(value));
 
                     if (Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
@@ -602,15 +602,31 @@ public class UIUpdateManager {
                     break;
 
                 case "muted":
-                    station.SetMuted(Boolean.parseBoolean(value));
+                    station.setMuted(Boolean.parseBoolean(value));
                     break;
 
                 case "activeAudioDevice":
-                    station.SetActiveAudioDevice(value);
+                    station.setActiveAudioDevice(value);
                     break;
 
                 case "audioDevices":
-                    station.SetAudioDevices(value);
+                    station.setAudioDevices(value);
+                    break;
+
+                case "activeVideoPlaybackTime":
+                    station.videoController.updateVideoPlaybackTime(value);
+                    break;
+
+                case "activeVideoFile":
+                    station.videoController.setActiveVideo(value);
+                    break;
+
+                case "videoPlayerDetails":
+                    station.videoController.updateVideoPlayerDetails(value);
+                    break;
+
+                case "videoFiles":
+                    station.videoController.setVideos(value);
                     break;
 
                 case "details":
