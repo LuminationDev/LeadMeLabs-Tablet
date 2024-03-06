@@ -125,13 +125,13 @@ public class StationsViewModel extends ViewModel {
 
         for (Station station: stations.getValue()) {
             //Check each station for the experience
-            for (Application application: station.applications) {
+            for (Application application: station.applicationController.applications) {
                 if (Objects.equals(application.name, details.name)) {
                     application.details = details;
 
-                    if(station.gameName != null) {
+                    if(station.applicationController.getGameName() != null) {
                         // Set as the selected application if this Station currently has it launched
-                        if (station.gameName.equals(application.name)) {
+                        if (station.applicationController.getGameName().equals(application.name)) {
                             this.setSelectedApplication(application);
                         }
                     }
@@ -192,7 +192,7 @@ public class StationsViewModel extends ViewModel {
 
         //Only add applications with a unique id
         return stations.getValue().stream()
-                .flatMap(station -> station.applications.stream())
+                .flatMap(station -> station.applicationController.applications.stream())
                 .filter(app -> idSet.add(app.id))
                 .distinct()
                 .sorted((application, application2) -> application.name.compareToIgnoreCase(application2.name))
@@ -213,7 +213,7 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
-                    list = new ArrayList<>(station.applications);
+                    list = new ArrayList<>(station.applicationController.applications);
                     list.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
                 }
             }
@@ -336,7 +336,7 @@ public class StationsViewModel extends ViewModel {
     public void selectStation(int id) {
         selectStationById(id);
         if (getSelectedStation().getValue() != null) {
-            selectApplicationByGameName(getSelectedStation().getValue().gameName);
+            selectApplicationByGameName(getSelectedStation().getValue().applicationController.getGameName());
         }
         getSelectedStation();
     }
@@ -358,8 +358,8 @@ public class StationsViewModel extends ViewModel {
         Station selectedStation = getSelectedStation().getValue();
         if(selectedStation == null) return;
 
-        if (selectedStation.applications != null) {
-            Optional<Application> selectedApplication = selectedStation.applications.stream()
+        if (selectedStation.applicationController.applications != null) {
+            Optional<Application> selectedApplication = selectedStation.applicationController.applications.stream()
                     .filter(application -> Objects.equals(application.name, gameName))
                     .findFirst();
 

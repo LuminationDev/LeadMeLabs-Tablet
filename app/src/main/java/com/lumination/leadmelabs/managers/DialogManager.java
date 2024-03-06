@@ -568,7 +568,7 @@ public class DialogManager {
 
             if (Patterns.WEB_URL.matcher(input).matches()) {
                 Station selectedStation = binding.getSelectedStation();
-                selectedStation.gameName = input;
+                selectedStation.applicationController.setGameName(input);
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "URL:" + input);
                 StationSingleFragment.mViewModel.updateStationById(selectedStation.id, selectedStation);
                 urlDialog.dismiss();

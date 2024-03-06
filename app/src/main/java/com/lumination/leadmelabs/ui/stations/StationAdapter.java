@@ -66,7 +66,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                     SideMenuFragment.currentType = "stationSingle";
                 });
             } else {
-                if (station.hasApplicationInstalled(viewModel.getSelectedApplicationId())) {
+                if (station.applicationController.hasApplicationInstalled(viewModel.getSelectedApplicationId())) {
                     finalResult.setOnClickListener(v -> {
                         station.selected = !station.selected;
                         viewModel.updateStationById(station.id, station);
@@ -119,7 +119,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      */
     public boolean isApplicationInstalledOnAll() {
         for (Station station : stationList) {
-            if(!station.hasApplicationInstalled(viewModel.getSelectedApplicationId())){
+            if(!station.applicationController.hasApplicationInstalled(viewModel.getSelectedApplicationId())){
                 return false;
             };
         }

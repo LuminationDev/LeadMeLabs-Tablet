@@ -107,7 +107,7 @@ public class VideoAdapter extends BaseAdapter {
             // Open the Video Play / VR Video Player (users choice) if not already open
 
             // Add an on click listener to the image if the video player is active
-            Application current = station.findCurrentApplication();
+            Application current = station.applicationController.findCurrentApplication();
             if (!(current instanceof EmbeddedApplication)) {
                 // Video player is not open
 

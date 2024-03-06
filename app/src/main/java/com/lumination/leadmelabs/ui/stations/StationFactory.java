@@ -133,13 +133,13 @@ public class StationFactory {
      */
     private static void setExperienceDetails(Station station, JSONObject stationJson) throws JSONException {
         if (!stationJson.getString("gameName").equals("")) {
-            station.gameName = stationJson.getString("gameName");
+            station.applicationController.setGameName(stationJson.getString("gameName"));
         }
         if (!stationJson.getString("gameId").equals("null")) {
-            station.gameId = stationJson.getString("gameId");
+            station.applicationController.setGameId(stationJson.getString("gameId"));
         }
         if (!stationJson.getString("gameType").equals("null")) {
-            station.gameType = stationJson.getString("gameType");
+            station.applicationController.setGameType(stationJson.getString("gameType"));
         }
     }
 
@@ -152,12 +152,12 @@ public class StationFactory {
     private static void setAudioDetails(Station station, JSONObject stationJson) {
         String audio = stationJson.optString("audioDevices", "");
         if (!audio.equals("")) {
-            station.setAudioDevices(audio);
+            station.audioController.setAudioDevices(audio);
         }
 
         String activeAudio = stationJson.optString("ActiveAudioDevice", "");
         if (!activeAudio.equals("")) {
-            station.setActiveAudioDevice(activeAudio);
+            station.audioController.setActiveAudioDevice(activeAudio);
         }
     }
 

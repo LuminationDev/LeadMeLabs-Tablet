@@ -159,7 +159,7 @@
                                     android:layout_height="164dp"
                                     android:layout_marginVertical="5dp"
                                     android:contentDescription="@string/experience_preview"
-                                    android:visibility="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? View.VISIBLE : View.GONE, default=gone}" />
+                                    android:visibility="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? View.VISIBLE : View.GONE, default=gone}" />
 
                                 <LinearLayout
                                     android:id="@+id/no_game_layout"
@@ -167,13 +167,13 @@
                                     android:layout_height="164dp"
                                     android:layout_marginVertical="5dp"
                                     android:gravity="center_horizontal"
-                                    android:visibility="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? View.GONE : View.VISIBLE}">
+                                    android:visibility="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? View.GONE : View.VISIBLE}">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
-                                        android:text="@{(!selectedStation.gameName.equals(`null`) &amp;&amp; selectedStation.gameName != null &amp;&amp; selectedStation.gameName.length() > 0) ? selectedStation.gameName : `No session running`}" />
+                                        android:text="@{(!selectedStation.applicationController.gameName.equals(`null`) &amp;&amp; selectedStation.applicationController.gameName != null &amp;&amp; selectedStation.applicationController.gameName.length() > 0) ? selectedStation.applicationController.gameName : `No session running`}" />
                                 </LinearLayout>
 
                                 <!--TODO this is completely hidden until required in the future-->
@@ -327,20 +327,20 @@
                                     android:id="@+id/station_restart_session"
                                     style="@style/StationSingleButton"
                                     android:layout_marginEnd="30dp"
-                                    android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
+                                    android:backgroundTint="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
                                     android:drawableTop="@drawable/session_restart"
                                     android:text="@string/restart_session_lower"
-                                    android:enabled="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0)}"
-                                    app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
+                                    android:enabled="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0)}"
+                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/station_end_session"
                                     style="@style/StationSingleButton"
-                                    android:backgroundTint="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) || selectedStation.gameName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
+                                    android:backgroundTint="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) || selectedStation.applicationController.gameName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
                                     android:drawableTop="@drawable/session_end"
                                     android:text="@string/end_session_lower"
-                                    android:enabled="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0)}"
-                                    app:rippleColor="@{(selectedStation.gameId != null &amp;&amp; selectedStation.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
+                                    android:enabled="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0)}"
+                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/ping_station"

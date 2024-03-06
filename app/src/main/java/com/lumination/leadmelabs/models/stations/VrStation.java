@@ -456,7 +456,7 @@ public class VrStation extends Station {
 
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.gameName != null && selectedStation.gameName.length() != 0 && !selectedStation.gameName.equals("null");
+        boolean hasGame = selectedStation.applicationController.getGameName() != null && selectedStation.applicationController.getGameName().length() != 0 && !selectedStation.applicationController.getGameName().equals("null");
 
         //Station is On and has either a State or a Game running
         if(isStatusOn && (hasState || hasGame)) {
@@ -476,7 +476,7 @@ public class VrStation extends Station {
         //Set the visibility value
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.gameName != null && selectedStation.gameName.length() != 0 && !selectedStation.gameName.equals("null");
+        boolean hasGame = selectedStation.applicationController.getGameName() != null && selectedStation.applicationController.getGameName().length() != 0 && !selectedStation.applicationController.getGameName().equals("null");
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
@@ -496,7 +496,7 @@ public class VrStation extends Station {
             }
         } else {
             selectedStation.stopAnimateDots();
-            textView.setText(selectedStation.gameName);
+            textView.setText(selectedStation.applicationController.getGameName());
         }
     }
 

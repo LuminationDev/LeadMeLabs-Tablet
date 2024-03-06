@@ -136,12 +136,12 @@ public class StationSingleFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 Station selectedStation = binding.getSelectedStation();
-                selectedStation.setVolume((int) slider.getValue());
-                selectedStation.volume = (int) slider.getValue();
+                selectedStation.audioController.setVolume((int) slider.getValue());
+                selectedStation.audioController.volume = (int) slider.getValue();
                 mViewModel.updateStationById(selectedStation.id, selectedStation);
 
                 //backwards compat - remove this after next update
-                int currentVolume = ((long) selectedStation.audioDevices.size() == 0) ? selectedStation.volume : selectedStation.getVolume();
+                int currentVolume = ((long) selectedStation.audioController.audioDevices.size() == 0) ? selectedStation.audioController.volume : selectedStation.audioController.getVolume();
                 NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
                 System.out.println(slider.getValue());
             }
@@ -208,7 +208,7 @@ public class StationSingleFragment extends Fragment {
             StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
 
             // Open the video library as default if the video player is active
-            Application current = binding.getSelectedStation().findCurrentApplication();
+            Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
                 String subtype = current.subtype.optString("category", "");
                 if (subtype.equals(Constants.VideoPlayer)) {
@@ -224,7 +224,7 @@ public class StationSingleFragment extends Fragment {
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
+            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
                 return;
             }
 
@@ -243,7 +243,7 @@ public class StationSingleFragment extends Fragment {
             }
 
             ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
+            DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -266,7 +266,7 @@ public class StationSingleFragment extends Fragment {
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.gameName == null || selectedStation.gameName.equals("")) {
+            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
                 return;
             }
 
@@ -324,9 +324,9 @@ public class StationSingleFragment extends Fragment {
                         station.id + ":"
                                 + NetworkService.getIPAddress());
             } else {
-                if(SettingsFragment.checkAdditionalExitPrompts() && station.gameName != null) {
+                if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getGameName() != null) {
                     //No game is present, shutdown is okay to continue
-                    if(station.gameName.length() == 0) {
+                    if(station.applicationController.getGameName().length() == 0) {
                         shutdownStation(shutdownButton, id);
                     }
 
@@ -355,11 +355,11 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
-            String gameName = mViewModel.getSelectedStation().getValue().gameName;
+            String gameName = mViewModel.getSelectedStation().getValue().applicationController.getGameName();
 
             Details details = null;
 
-            for (Application application: mViewModel.getSelectedStation().getValue().applications) {
+            for (Application application: mViewModel.getSelectedStation().getValue().applicationController.applications) {
                 if (Objects.equals(application.name, gameName)) {
                     details = application.details;
                 }
@@ -395,11 +395,11 @@ public class StationSingleFragment extends Fragment {
 
         MaterialButton headsetVolumeSelect = view.findViewById(R.id.headset_volume_select);
         headsetVolumeSelect.setOnClickListener(v -> {
-            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().hasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().audioController.hasAudioDevice(LocalAudioDevice.headsetAudioDeviceNames)) {
                 return;
             }
 
-            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().findAudioDevice(LocalAudioDevice.headsetAudioDeviceNames);
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().audioController.findAudioDevice(LocalAudioDevice.headsetAudioDeviceNames);
 
             Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
             int position = 0;  // Initialize with a value that indicates item not found
@@ -417,18 +417,18 @@ public class StationSingleFragment extends Fragment {
             // Set the selection if the item was found
             deviceSelection.setSelection(position);
 
-            mViewModel.getSelectedStation().getValue().setActiveAudioDevice(selectedValue.getName());
+            mViewModel.getSelectedStation().getValue().audioController.setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
 
         MaterialButton projectorVolumeSelect = view.findViewById(R.id.projector_volume_select);
         projectorVolumeSelect.setOnClickListener(v -> {
-            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().hasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
+            if (mViewModel.getSelectedStation().getValue() == null || !mViewModel.getSelectedStation().getValue().audioController.hasAudioDevice(LocalAudioDevice.projectorAudioDeviceNames)) {
                 return;
             }
 
-            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().findAudioDevice(LocalAudioDevice.projectorAudioDeviceNames);
+            LocalAudioDevice selectedValue = mViewModel.getSelectedStation().getValue().audioController.findAudioDevice(LocalAudioDevice.projectorAudioDeviceNames);
 
             Spinner deviceSelection = view.findViewById(R.id.audio_spinner);
             int position = 0;  // Initialize with a value that indicates item not found
@@ -446,7 +446,7 @@ public class StationSingleFragment extends Fragment {
             // Set the selection if the item was found
             deviceSelection.setSelection(position);
 
-            mViewModel.getSelectedStation().getValue().setActiveAudioDevice(selectedValue.getName());
+            mViewModel.getSelectedStation().getValue().audioController.setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
@@ -463,10 +463,10 @@ public class StationSingleFragment extends Fragment {
         MaterialButton muteButton = view.findViewById(R.id.station_mute);
         muteButton.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            boolean currentValue = selectedStation.getMuted();
-            selectedStation.setMuted(!currentValue);
+            boolean currentValue = selectedStation.audioController.getMuted();
+            selectedStation.audioController.setMuted(!currentValue);
             mViewModel.updateStationById(selectedStation.id, selectedStation);
-            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.getMuted());
+            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.audioController.getMuted());
         });
     }
 
@@ -474,7 +474,7 @@ public class StationSingleFragment extends Fragment {
         // Create/Update the custom adapter if it's different from the existing one based on names
         if (this.audioDeviceAdapter != null) {
             List<String> currentNames = getDeviceNames(audioDeviceAdapter.getAudioDevices());
-            List<String> newNames = getDeviceNames(station.audioDevices);
+            List<String> newNames = getDeviceNames(station.audioController.audioDevices);
 
             if (currentNames.equals(newNames)) {
                 return;
@@ -482,7 +482,7 @@ public class StationSingleFragment extends Fragment {
         }
 
         // Create a custom adapter
-        audioDeviceAdapter = new LocalAudioDeviceAdapter(getContext(), station.audioDevices);
+        audioDeviceAdapter = new LocalAudioDeviceAdapter(getContext(), station.audioController.audioDevices);
 
         // Get the Spinner reference from the layout
         Spinner spinner = view.findViewById(R.id.audio_spinner);
@@ -496,8 +496,8 @@ public class StationSingleFragment extends Fragment {
 
         // Set the selected to the active (if it exists)
         int position = 0;  // Initialize with a value that indicates item not found
-        if (station.getActiveAudioDevice() != null) {
-            String activeName = station.getActiveAudioDevice().getName();
+        if (station.audioController.getActiveAudioDevice() != null) {
+            String activeName = station.audioController.getActiveAudioDevice().getName();
 
             for (int i = 0; i < audioDeviceAdapter.getCount(); i++) {
                 LocalAudioDevice device = audioDeviceAdapter.getItem(i);
@@ -554,15 +554,15 @@ public class StationSingleFragment extends Fragment {
      * @param station The currently selected Station.
      */
     private void updateExperienceImage(View view, Station station) {
-        if (station.gameId != null && station.gameId.length() > 0) {
-            Helpers.SetExperienceImage(station.gameType, station.gameName, station.gameId, view);
+        if (station.applicationController.getGameId() != null && station.applicationController.getGameId().length() > 0) {
+            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
         } else {
             ImageView experienceControlImage = view.findViewById(R.id.experience_image);
             experienceControlImage.setImageDrawable(null);
         }
 
         // Add an on click listener to the image if the video player is active
-        Application current = station.findCurrentApplication();
+        Application current = station.applicationController.findCurrentApplication();
         if (!(current instanceof EmbeddedApplication)) {
             resetLayout(view);
             return;
@@ -585,7 +585,7 @@ public class StationSingleFragment extends Fragment {
      */
     private void updateLayout(View view, Station station) {
         // Check the current experience
-        Application current = station.findCurrentApplication();
+        Application current = station.applicationController.findCurrentApplication();
 
         if (!(current instanceof EmbeddedApplication)) {
             resetLayout(view);

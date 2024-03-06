@@ -103,7 +103,7 @@ public class StationSelectionPageFragment extends Fragment {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             stations = (ArrayList<Station>) stations.clone();
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
+                if (!station.status.equals("Off") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }

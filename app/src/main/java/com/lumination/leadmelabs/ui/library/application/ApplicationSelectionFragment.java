@@ -143,15 +143,15 @@ public class ApplicationSelectionFragment extends Fragment implements ILibraryIn
 
         if (MainActivity.getStationId() > 0) {
             Station station = mViewModel.getStationById(MainActivity.getStationId());
-            if(!station.gameId.isEmpty()) {
+            if(!station.applicationController.getGameId().isEmpty()) {
                 showPrompt = true;
-                message = "Refreshing this experience list will stop the experience: " + station.gameName + ", running on Station " + MainActivity.getStationId();
+                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getGameName() + ", running on Station " + MainActivity.getStationId();
             }
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
             if (stations != null) {
                 ArrayList<Integer> stationIds = stations.stream()
-                        .filter(station -> !station.gameId.isEmpty())
+                        .filter(station -> !station.applicationController.getGameId().isEmpty())
                         .map(Station::getId)
                         .collect(Collectors.toCollection(ArrayList::new));
 

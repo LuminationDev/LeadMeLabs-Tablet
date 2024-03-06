@@ -79,7 +79,7 @@
                     app:iconTint="@color/black"
                     app:iconGravity="textStart"
                     app:cornerRadius="10dp"
-                    app:iconPadding="-3dp"
+                    app:iconPadding="0dp"
                     app:iconSize="30dp"
                     app:icon="@drawable/video_control_stop"/>
 
