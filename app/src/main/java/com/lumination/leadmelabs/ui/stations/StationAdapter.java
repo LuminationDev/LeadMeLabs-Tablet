@@ -25,13 +25,13 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
 
     public ArrayList<Station> stationList = new ArrayList<>();
-    private boolean launchSingleOnTouch = false;
-    private final StationsViewModel viewModel;
-    private FragmentManager fragmentManager;
+    private boolean launchSingleOnTouch;
+    private final StationsViewModel mViewModel;
+    private final FragmentManager fragmentManager;
 
     public StationAdapter(StationsViewModel viewModel, boolean launchSingleOnTouch, FragmentManager fragmentManager) {
         this.launchSingleOnTouch = launchSingleOnTouch;
-        this.viewModel = viewModel;
+        this.mViewModel = viewModel;
         this.fragmentManager = fragmentManager;
     }
 
@@ -53,7 +53,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             if (launchSingleOnTouch) {
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
-                    viewModel.selectStation(station.id);
+                    mViewModel.selectStation(station.id);
                     fragmentManager.beginTransaction()
                             .addSharedElement(finalResult, "card_station")
                             .setCustomAnimations(android.R.anim.fade_in,
@@ -66,10 +66,16 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                     SideMenuFragment.currentType = "stationSingle";
                 });
             } else {
-                if (station.applicationController.hasApplicationInstalled(viewModel.getSelectedApplicationId())) {
+                String type = mViewModel.getSelectionType().getValue();
+                type = type != null ? type : "application";
+
+                boolean hasLocalApplication = type.equals("application") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId());
+                boolean hasLocalVideo = type.equals("video") && station.videoController.hasLocalVideo(mViewModel.getSelectedVideo().getValue());
+
+                if (hasLocalApplication || hasLocalVideo) {
                     finalResult.setOnClickListener(v -> {
                         station.selected = !station.selected;
-                        viewModel.updateStationById(station.id, station);
+                        mViewModel.updateStationById(station.id, station);
                     });
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
@@ -114,12 +120,26 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     }
 
     /**
-     * Detect if any stations do not have the selected steam application.
-     * @return A boolean representing if the Steam Experience is installed.
+     * Detect if any stations do not have the selected application.
+     * @return A boolean representing if the Experience is installed.
      */
     public boolean isApplicationInstalledOnAll() {
         for (Station station : stationList) {
-            if(!station.applicationController.hasApplicationInstalled(viewModel.getSelectedApplicationId())){
+            if(!station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())){
+                return false;
+            };
+        }
+
+        return true;
+    }
+
+    /**
+     * Detect if any stations do not have the selected video.
+     * @return A boolean representing if the Video exists.
+     */
+    public boolean isVideoOnAll() {
+        for (Station station : stationList) {
+            if(!station.videoController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())){
                 return false;
             };
         }

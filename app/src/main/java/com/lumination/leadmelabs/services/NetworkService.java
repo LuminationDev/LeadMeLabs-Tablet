@@ -22,7 +22,7 @@ import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 
 import androidx.core.app.NotificationCompat;
 
@@ -396,8 +396,8 @@ public class NetworkService extends Service {
 
         try {
             //Notify the ApplicationAdapter that the data has changed
-            if (ApplicationSelectionFragment.installedApplicationAdapter != null) {
-                MainActivity.runOnUI(() -> ApplicationSelectionFragment.installedApplicationAdapter.notifyDataSetChanged());
+            if (ApplicationLibraryFragment.installedApplicationAdapter != null) {
+                MainActivity.runOnUI(() -> ApplicationLibraryFragment.installedApplicationAdapter.notifyDataSetChanged());
             }
         }
         catch (Exception e) {

@@ -30,9 +30,13 @@ public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
     private MutableLiveData<Station> selectedStation = new MutableLiveData<>();
     private MutableLiveData<Integer> selectedStationId = new MutableLiveData<>();
+
+    private MutableLiveData<String> selectionType = new MutableLiveData<>("application");
     private MutableLiveData<Application> selectedApplication = new MutableLiveData<>();
     private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
+    private MutableLiveData<Video> selectedVideo = new MutableLiveData<>();
 
+    //region Stations
     public LiveData<List<Station>> getStations() {
         if (stations == null) {
             stations = new MutableLiveData<>();
@@ -51,21 +55,6 @@ public class StationsViewModel extends ViewModel {
         }
         stations.removeIf(station -> !stationIdsList.contains(station.id));
         return stations.stream().map(station -> station.name).collect(Collectors.toList());
-    }
-
-    public String getSelectedApplicationId() {
-        return selectedApplicationId.getValue();
-    }
-
-    public String getSelectedApplicationName(String applicationId) {
-        List<Application> allApps = getAllApplications();
-        allApps.removeIf(application -> !Objects.equals(application.id, applicationId));
-        if(allApps.size() == 0) return "experience";
-        return allApps.get(0).name;
-    }
-
-    public void selectSelectedApplication(String id) {
-        selectedApplicationId.setValue(id);
     }
 
     public int[] getSelectedStationIds() {
@@ -107,37 +96,6 @@ public class StationsViewModel extends ViewModel {
             }
         }
         return null;
-    }
-
-    /**
-     * Set the details of an application on a specified experience. The details can include, global
-     * actions and different levels. As there is no full list of experiences it needs to set the
-     * details for each instance of that experience. I.e one for each station it is installed on.
-     * @param applicationDetails A string representing the name of the application to update.
-     */
-    public void setApplicationDetails(JSONObject applicationDetails) throws JSONException {
-        if(stations.getValue() == null) {
-            return;
-        }
-
-        //Deconstruct the JSON object into the new details class and associated subclasses.
-        Details details = parseDetails(applicationDetails);
-
-        for (Station station: stations.getValue()) {
-            //Check each station for the experience
-            for (Application application: station.applicationController.applications) {
-                if (Objects.equals(application.name, details.name)) {
-                    application.details = details;
-
-                    if(station.applicationController.getGameName() != null) {
-                        // Set as the selected application if this Station currently has it launched
-                        if (station.applicationController.getGameName().equals(application.name)) {
-                            this.setSelectedApplication(application);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -354,36 +312,6 @@ public class StationsViewModel extends ViewModel {
         }
     }
 
-    private void selectApplicationByGameName(String gameName) {
-        Station selectedStation = getSelectedStation().getValue();
-        if(selectedStation == null) return;
-
-        if (selectedStation.applicationController.applications != null) {
-            Optional<Application> selectedApplication = selectedStation.applicationController.applications.stream()
-                    .filter(application -> Objects.equals(application.name, gameName))
-                    .findFirst();
-
-            selectedApplication.ifPresent(this::setSelectedApplication);
-            selectedApplication.orElseGet(() -> {
-                this.setSelectedApplication(null);
-                return null;
-            });
-        } else {
-            this.setSelectedApplication(null);
-        }
-    }
-
-    public void setSelectedApplication(Application application) {
-        this.selectedApplication.setValue(application);
-    }
-
-    public LiveData<Application> getSelectedApplication() {
-        if (selectedApplication == null) {
-            selectedApplication = new MutableLiveData<>();
-        }
-        return selectedApplication;
-    }
-
     public void setSelectedStation(Station station) {
         this.selectedStation.setValue(station);
     }
@@ -452,4 +380,112 @@ public class StationsViewModel extends ViewModel {
         vrStation.handleAnimationTimer();
         updateStationById(stationId, vrStation);
     }
+    //endregion
+
+    public LiveData<String> getSelectionType() {
+        if (this.selectionType == null) {
+            new MutableLiveData<>("application");
+        }
+
+        return this.selectionType;
+    }
+
+    public void setSelectionType(String type) {
+        this.selectionType.setValue(type);
+    }
+
+    //region Applications
+    /**
+     * Set the details of an application on a specified experience. The details can include, global
+     * actions and different levels. As there is no full list of experiences it needs to set the
+     * details for each instance of that experience. I.e one for each station it is installed on.
+     * @param applicationDetails A string representing the name of the application to update.
+     */
+    public void setApplicationDetails(JSONObject applicationDetails) throws JSONException {
+        if(stations.getValue() == null) {
+            return;
+        }
+
+        //Deconstruct the JSON object into the new details class and associated subclasses.
+        Details details = parseDetails(applicationDetails);
+
+        for (Station station: stations.getValue()) {
+            //Check each station for the experience
+            for (Application application: station.applicationController.applications) {
+                if (Objects.equals(application.name, details.name)) {
+                    application.details = details;
+
+                    if(station.applicationController.getGameName() != null) {
+                        // Set as the selected application if this Station currently has it launched
+                        if (station.applicationController.getGameName().equals(application.name)) {
+                            this.setSelectedApplication(application);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public String getSelectedApplicationId() {
+        return selectedApplicationId.getValue();
+    }
+
+    public String getSelectedApplicationName(String applicationId) {
+        List<Application> allApps = getAllApplications();
+        allApps.removeIf(application -> !Objects.equals(application.id, applicationId));
+        if(allApps.size() == 0) return "experience";
+        return allApps.get(0).name;
+    }
+
+    public String getSelectedApplicationByName(String name) {
+        List<Application> allApps = getAllApplications();
+        allApps.removeIf(application -> !Objects.equals(application.getName(), name));
+        if(allApps.size() == 0) return "experience";
+        return allApps.get(0).name;
+    }
+
+    public void selectSelectedApplication(String id) {
+        selectedApplicationId.setValue(id);
+    }
+
+    private void selectApplicationByGameName(String gameName) {
+        Station selectedStation = getSelectedStation().getValue();
+        if(selectedStation == null) return;
+
+        if (selectedStation.applicationController.applications != null) {
+            Optional<Application> selectedApplication = selectedStation.applicationController.applications.stream()
+                    .filter(application -> Objects.equals(application.name, gameName))
+                    .findFirst();
+
+            selectedApplication.ifPresent(this::setSelectedApplication);
+            selectedApplication.orElseGet(() -> {
+                this.setSelectedApplication(null);
+                return null;
+            });
+        } else {
+            this.setSelectedApplication(null);
+        }
+    }
+
+    public void setSelectedApplication(Application application) {
+        this.selectedApplication.setValue(application);
+    }
+
+    public LiveData<Application> getSelectedApplication() {
+        if (selectedApplication == null) {
+            selectedApplication = new MutableLiveData<>();
+        }
+        return selectedApplication;
+    }
+    //endregion
+
+    //region Videos
+    public LiveData<Video> getSelectedVideo() {
+        return this.selectedVideo;
+    }
+
+    public void setSelectedVideo(Video video) {
+        this.selectedVideo.setValue(video);
+    }
+    //endregion
 }

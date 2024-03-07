@@ -28,7 +28,7 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.library.LibraryViewModel;
-import com.lumination.leadmelabs.ui.library.video.VideoSelectionFragment;
+import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
@@ -47,7 +47,7 @@ import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 
 import java.util.concurrent.Executors;
@@ -245,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LibrarySelectionFragment.mViewModel = ViewModelProviders.of(this).get(LibraryViewModel.class);
-        ApplicationSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-        VideoSelectionFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        ApplicationLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        VideoLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);
         ApplianceFragment.mViewModel = ViewModelProviders.of(this).get(ApplianceViewModel.class);
         SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);

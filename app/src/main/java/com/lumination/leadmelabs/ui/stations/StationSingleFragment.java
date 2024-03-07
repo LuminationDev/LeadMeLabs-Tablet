@@ -38,7 +38,7 @@ import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
-import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -243,7 +243,7 @@ public class StationSingleFragment extends Fragment {
             }
 
             ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
+            DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));

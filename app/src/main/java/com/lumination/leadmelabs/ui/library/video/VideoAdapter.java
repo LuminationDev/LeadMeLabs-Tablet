@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.library.video;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,25 +95,14 @@ public class VideoAdapter extends BaseAdapter {
             if (station == null) {
                 return;
             }
-
-            // Add an on click listener to the image if the video player is active
-            Application current = station.applicationController.findCurrentApplication();
-            if (!(current instanceof EmbeddedApplication)) { // Video player is not open
-                station.openApplicationAndSendMessage("Video Player", () -> station.videoController.loadTrigger(currentVideo.getSource()));
-            }
-            else {
-                String subtype = current.subtype.optString("category", "");
-                if (subtype.equals(Constants.VideoPlayer)) {
-                    station.videoController.loadTrigger(currentVideo.getSource());
-                } else { //Video player is not open
-                    station.openApplicationAndSendMessage("Video Player", () -> station.videoController.loadTrigger(currentVideo.getSource()));
-                }
-            }
-
+            station.checkForVideoPlayer(currentVideo);
             sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
         } else {
-            // Go to the station selection screen
-            sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", null);
+            mViewModel.setSelectedVideo(currentVideo);
+
+            Bundle args = new Bundle();
+            args.putString("selection", "video");
+            sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", args);
             fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();

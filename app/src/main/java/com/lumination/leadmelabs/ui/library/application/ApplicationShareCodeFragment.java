@@ -112,7 +112,7 @@ public class ApplicationShareCodeFragment extends Fragment {
         }
 
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationGameLaunch(new int[] { MainActivity.getStationId() }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        DialogManager.awaitStationApplicationLaunch(new int[] { MainActivity.getStationId() }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**

@@ -8,7 +8,9 @@
         <variable
             name="selectedApplication"
             type="com.lumination.leadmelabs.models.applications.Application" />
-
+        <variable
+            name="selectedVideo"
+            type="com.lumination.leadmelabs.models.Video" />
         <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
         <variable
             name="stations"
@@ -93,10 +95,18 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/station_selection_game_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="@{stations.selectionType.equals(`application`) ? View.VISIBLE : View.GONE, default=visible}"
                         android:text="@{selectedApplication.name, default=`Google Earth VR`}"
+                        android:textColor="@color/blue"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{stations.selectionType.equals(`video`) ? View.VISIBLE : View.GONE, default=gone}"
+                        android:text="@{selectedVideo.name, default=`Sample Video`}"
                         android:textColor="@color/blue"
                         android:textSize="20sp" />
 
@@ -262,7 +272,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     android:src="@drawable/icon_alert_grey" />
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -274,7 +284,7 @@
                         android:id="@+id/not_installed_alert_top_line"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/not_installed_on_stations"
+                        android:text="@{stations.selectionType.equals(`application`) ? @string/not_installed_on_stations : `This video does not exist on some stations!`, default=@string/not_installed_on_stations"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -327,7 +337,7 @@
                             android:id="@+id/cancel_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:backgroundTint="@color/white"
                             android:letterSpacing="0.02"
                             android:paddingHorizontal="40dp"

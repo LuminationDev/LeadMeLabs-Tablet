@@ -56,4 +56,7 @@ public class Constants {
     public static String Invalid = "invalid";
     public static String ShareCode = "shareCode";
     public static String VideoPlayer = "videoPlayer";
+
+    //Embedded Application Constants
+    public static String VideoPlayerName = "Video Player";
 }

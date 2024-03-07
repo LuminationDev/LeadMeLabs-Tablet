@@ -13,13 +13,16 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.controllers.ApplicationController;
 import com.lumination.leadmelabs.ui.stations.controllers.AudioController;
 import com.lumination.leadmelabs.ui.stations.controllers.VideoController;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.IconManager;
 
 import org.json.JSONException;
@@ -239,6 +242,31 @@ public class Station implements Cloneable {
     private int elapsedTime = 0;
 
     /**
+     * Checks if a video player is active in the station and loads the current video.
+     * If the video player is not active, it opens the video player application and loads the video.
+     * @param currentVideo The current video to be loaded.
+     * @return A boolean of if the video was active.
+     */
+    public boolean checkForVideoPlayer(Video currentVideo) {
+        // Add an on click listener to the image if the video player is active
+        Application current = applicationController.findCurrentApplication();
+        if (!(current instanceof EmbeddedApplication)) { // Video player is not open
+            openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getSource()));
+            return false;
+        }
+        else {
+            String subtype = current.subtype.optString("category", "");
+            if (subtype.equals(Constants.VideoPlayer)) {
+                videoController.loadTrigger(currentVideo.getSource());
+                return true;
+            } else { //Video player is not open
+                openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getSource()));
+                return false;
+            }
+        }
+    }
+
+    /**
      * Opens an application and sends a command once the program has started.
      *
      * @param applicationName The application that is going to be launched.
@@ -256,7 +284,7 @@ public class Station implements Cloneable {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
+        NetworkService.sendMessage("Station," + getId(), "Experience", message.toString());
 
         //Set a watching to check the stations gameName
         startPeriodicChecks(applicationName, callback);
@@ -276,10 +304,12 @@ public class Station implements Cloneable {
                 if (applicationName.equals(applicationController.getGameName())) {
                     //When it is set to the correct application, send the additional message
                     callback.onApplicationLoaded();
+                    elapsedTime = 0; //reset
                     return;
                 }
                 // Check if timeout occurred
                 if (elapsedTime >= TIMEOUT_DURATION) {
+                    elapsedTime = 0; //reset
                     return;
                 }
                 // Schedule the next check after the interval
