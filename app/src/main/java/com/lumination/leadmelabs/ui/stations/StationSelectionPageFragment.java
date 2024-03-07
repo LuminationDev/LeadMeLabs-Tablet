@@ -309,11 +309,13 @@ public class StationSelectionPageFragment extends Fragment {
             @Override
             public void run() {
                 boolean ready = true;
+                ArrayList<Integer> failedStationIds = new ArrayList<>();
 
                 for (int id: selectedIds) {
                     Station station = mViewModel.getStationById(id);
                     //Check if the video player is active
                     if (!station.applicationController.getGameName().equals(applicationName)) {
+                        failedStationIds.add(station.getId());
                         ready = false;
                     }
                 }
@@ -327,6 +329,14 @@ public class StationSelectionPageFragment extends Fragment {
                 // Check if timeout occurred
                 if (elapsedTime >= TIMEOUT_DURATION) {
                     elapsedTime = 0; //reset
+
+                    String stationIds = failedStationIds.stream().map(Object::toString).collect(Collectors.joining(", "));
+                    MainActivity.runOnUI(() ->
+                            DialogManager.createBasicDialog(
+                                    "Experience launch failed",
+                                    "Launch of " + applicationName + " failed on " + stationIds
+                            )
+                    );
                     return;
                 }
                 // Schedule the next check after the interval

@@ -310,6 +310,13 @@ public class Station implements Cloneable {
                 // Check if timeout occurred
                 if (elapsedTime >= TIMEOUT_DURATION) {
                     elapsedTime = 0; //reset
+
+                    MainActivity.runOnUI(() ->
+                            DialogManager.createBasicDialog(
+                                    "Experience launch failed",
+                                    "Launch of " + applicationName + " failed on " + name
+                            )
+                    );
                     return;
                 }
                 // Schedule the next check after the interval
