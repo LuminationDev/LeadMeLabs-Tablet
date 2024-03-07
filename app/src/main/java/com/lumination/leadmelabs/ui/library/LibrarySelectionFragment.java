@@ -26,17 +26,14 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
-import com.lumination.leadmelabs.managers.DialogManager;
-import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
-import com.lumination.leadmelabs.ui.library.application.ApplicationSelectionFragment;
-import com.lumination.leadmelabs.ui.library.video.VideoSelectionFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
+import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 public class LibrarySelectionFragment extends Fragment {
     public static LibraryViewModel mViewModel;
@@ -171,11 +168,11 @@ public class LibrarySelectionFragment extends Fragment {
 
         switch (library) {
             case "vr_experiences":
-                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationSelectionFragment(), transaction);
+                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationLibraryFragment(), transaction);
                 break;
 
             case "videos":
-                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoSelectionFragment(), transaction);
+                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoLibraryFragment(), transaction);
                 break;
         }
 

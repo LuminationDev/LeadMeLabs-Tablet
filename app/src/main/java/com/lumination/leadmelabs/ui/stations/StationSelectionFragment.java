@@ -100,8 +100,25 @@ public class StationSelectionFragment extends Fragment {
         Button playBtn = fragment.getView().findViewById(R.id.select_stations);
         TextView top = fragment.getView().findViewById(R.id.not_installed_alert_top_line);
 
+        String type = mViewModel.getSelectionType().getValue();
+        type = type != null ? type : "application";
+
+        boolean isOnAll;
+        switch (type) {
+            case "application":
+                isOnAll = stationAdapter.isApplicationInstalledOnAll();
+                break;
+
+            case "video":
+                isOnAll = stationAdapter.isVideoOnAll();
+                break;
+
+            default:
+                isOnAll = stationAdapter.isApplicationInstalledOnAll();
+        }
+
         View container = fragment.getView().findViewById(R.id.not_installed_alert);
-        container.setVisibility(stationAdapter.isApplicationInstalledOnAll() && numOfStations > 0 ? View.GONE : View.VISIBLE);
+        container.setVisibility(isOnAll && numOfStations > 0 ? View.GONE : View.VISIBLE);
 
         TextView bottom = fragment.getView().findViewById(R.id.not_installed_alert_bottom_line);
         bottom.setVisibility((numOfStations == 0 || stationAdapter.areAllStationsOff()) ? View.GONE : View.VISIBLE);

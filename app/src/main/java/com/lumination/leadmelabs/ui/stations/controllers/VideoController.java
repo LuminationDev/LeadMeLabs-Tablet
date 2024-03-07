@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.sentry.Sentry;
 
@@ -239,6 +240,22 @@ public class VideoController {
 
     public Boolean getVideoPlaybackRepeat() {
         return this.playbackRepeat;
+    }
+
+    /**
+     * Detect if a particular station has a video on it
+     * @param checkVideo A Video object to check for.
+     * @return A boolean if the a video exists.
+     */
+    public Boolean hasLocalVideo(Video checkVideo) {
+        if (checkVideo == null) return false;
+
+        for (Video video:this.videos) {
+            if (Objects.equals(video.getId(), checkVideo.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //region Triggers

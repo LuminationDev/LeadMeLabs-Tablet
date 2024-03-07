@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentVideoSelectionBinding;
+import com.lumination.leadmelabs.databinding.FragmentLibraryVideoBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
@@ -26,18 +26,18 @@ import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class VideoSelectionFragment extends Fragment implements ILibraryInterface {
+public class VideoLibraryFragment extends Fragment implements ILibraryInterface {
     public static StationsViewModel mViewModel;
     public static VideoAdapter localVideoAdapter;
     private static ArrayList<Video> localVideoList;
-    private FragmentVideoSelectionBinding binding;
+    private FragmentLibraryVideoBinding binding;
     public static FragmentManager childManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_selection, container, false);
+        View view = inflater.inflate(R.layout.fragment_library_video, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;

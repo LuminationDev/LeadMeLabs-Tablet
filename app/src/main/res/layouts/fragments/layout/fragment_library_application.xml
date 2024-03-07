@@ -26,7 +26,7 @@
             android:clickable="true"
             android:focusableInTouchMode="true"
             app:flexDirection="column"
-            tools:context=".ui.library.application.ApplicationSelectionFragment">
+            tools:context=".ui.library.application.ApplicationLibraryFragment">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"

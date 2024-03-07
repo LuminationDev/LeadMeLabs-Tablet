@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.ui.library.application;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,12 +146,15 @@ public class ApplicationAdapter extends BaseAdapter {
             }
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
+            DialogManager.awaitStationApplicationLaunch(new int[] { station.id }, currentApplication.name, false);
 
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);
-            sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", null);
+
+            Bundle args = new Bundle();
+            args.putString("selection", "application");
+            sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", args);
             fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();

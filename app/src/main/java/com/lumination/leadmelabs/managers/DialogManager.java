@@ -1051,7 +1051,7 @@ public class DialogManager {
      * This is dismisses manually by the user or automatically when the NUC sends back confirmation
      * from the stations.
      */
-    public static void awaitStationGameLaunch(int[] stationIds, String gameName, boolean restarting)
+    public static void awaitStationApplicationLaunch(int[] stationIds, String gameName, boolean restarting)
     {
         View gameLaunchDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
         gameLaunchDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(gameLaunchDialogView).create();
