@@ -36,6 +36,14 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import java.text.MessageFormat;
 
 public class LibrarySelectionFragment extends Fragment {
+    private static int currentStationId = 0;
+    public static int getStationId() {
+        return currentStationId;
+    }
+    public static void setStationId(int id) {
+        currentStationId = id;
+    }
+
     public static LibraryViewModel mViewModel;
 
     private FragmentLibraryBinding binding;

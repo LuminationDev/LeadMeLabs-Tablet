@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.lumination.leadmelabs.models.stations.VrStation;
 import androidx.core.content.ContextCompat;
 
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     public ArrayList<CardStationBinding> stationBindings = new ArrayList<>();
 
     public ArrayList<Station> stationList = new ArrayList<>();
-    private boolean launchSingleOnTouch;
+    private final boolean launchSingleOnTouch;
     private final StationsViewModel mViewModel;
     private final FragmentManager fragmentManager;
 
@@ -51,6 +53,14 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             }
 
             if (launchSingleOnTouch) {
+                //Check if there are bound stations (meaning this must be the primary)
+                Fragment fragment;
+                if(station.boundStations == null || station.boundStations.isEmpty()) {
+                    fragment = new StationSingleFragment();
+                } else {
+                    fragment = new StationSingleBoundFragment();
+                }
+
                 finalResult.setOnClickListener(v -> {
                     finalResult.setTransitionName("card_station");
                     mViewModel.selectStation(station.id);
@@ -60,7 +70,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                                     android.R.anim.fade_out,
                                     android.R.anim.fade_in,
                                     android.R.anim.fade_out)
-                            .replace(R.id.main, StationSingleFragment.class, null)
+                            .replace(R.id.main, fragment, null)
                             .addToBackStack("menu:dashboard:stationSingle")
                             .commit();
                     SideMenuFragment.currentType = "stationSingle";

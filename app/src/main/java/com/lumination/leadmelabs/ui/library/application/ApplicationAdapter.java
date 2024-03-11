@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -116,8 +117,8 @@ public class ApplicationAdapter extends BaseAdapter {
     }
 
     private void completeSelectApplicationAction(Application currentApplication) {
-        if (MainActivity.getStationId() > 0) {
-            Station station = ApplicationAdapter.mViewModel.getStationById(MainActivity.getStationId());
+        if (LibrarySelectionFragment.getStationId() > 0) {
+            Station station = ApplicationAdapter.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
             if (station == null) {
                 return;
             }
@@ -139,10 +140,10 @@ public class ApplicationAdapter extends BaseAdapter {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
+                NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", "Launch:" + currentApplication.id);
+                NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", "Launch:" + currentApplication.id);
             }
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);

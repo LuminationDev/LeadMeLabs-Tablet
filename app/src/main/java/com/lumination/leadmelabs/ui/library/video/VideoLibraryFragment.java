@@ -50,15 +50,15 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
 
         GridView videoGridView = view.findViewById(R.id.video_list);
         localVideoAdapter = new VideoAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateVideoList(MainActivity.getStationId(), videoGridView, true);
+        updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            if (MainActivity.getStationId() > 0) {
-                if (localVideoAdapter.videoList.size() != mViewModel.getStationApplications(MainActivity.getStationId()).size()) {
-                    updateVideoList(MainActivity.getStationId(), videoGridView, false);
+            if (LibrarySelectionFragment.getStationId() > 0) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                    updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             } else {
                 if (localVideoAdapter.videoList.size() != mViewModel.getAllApplications().size()) {
-                    updateVideoList(MainActivity.getStationId(), videoGridView, false);
+                    updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             }
         });

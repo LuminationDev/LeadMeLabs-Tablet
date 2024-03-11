@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.models.applications.details.Levels;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
 import org.json.JSONArray;
@@ -350,7 +351,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public void setSelectedStationId(int stationId) {
-        MainActivity.setStationId(stationId);
+        LibrarySelectionFragment.setStationId(stationId);
         this.selectedStationId.setValue(stationId);
     }
     public LiveData<Integer> getSelectedStationId() {

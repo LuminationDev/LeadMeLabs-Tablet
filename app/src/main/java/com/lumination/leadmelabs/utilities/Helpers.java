@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
@@ -95,6 +96,44 @@ public class Helpers {
             default:
                 filePath = "";
         }
+
+        //Attempt to load the image url or a default image if nothing is available
+        if(Objects.equals(filePath, "")) {
+            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
+        } else {
+            Glide.with(view).load(filePath)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            // Error occurred while loading the image, change the imageUrl to the fallback image
+                            MainActivity.runOnUI(() -> {
+                                Glide.with(view)
+                                        .load(R.drawable.default_header)
+                                        .into((ImageView) view.findViewById(R.id.experience_image));
+                            });
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            // Image loaded successfully
+                            return false;
+                        }
+                    })
+                    .into((ImageView) view.findViewById(R.id.experience_image));
+        }
+    }
+
+    /**
+     * Sets the video thumbnail based on the selected application.
+     *
+     * @param id
+     * @param view
+     */
+    public static void SetVideoImage(String id, View view) {
+        String filePath = ImageManager.loadLocalImage(id, "video");
+
+        Log.e("FILE", "PATH: " + filePath);
 
         //Attempt to load the image url or a default image if nothing is available
         if(Objects.equals(filePath, "")) {

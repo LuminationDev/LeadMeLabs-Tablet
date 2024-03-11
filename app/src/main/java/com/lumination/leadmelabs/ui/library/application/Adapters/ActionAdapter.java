@@ -12,6 +12,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,10 +50,10 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", message.toString());
+                NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," + MainActivity.getStationId(), "Experience", "PassToExperience:" + action.trigger);
+                NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", "PassToExperience:" + action.trigger);
             }
         });
     }

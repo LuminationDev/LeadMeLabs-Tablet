@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.utilities.IconManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,9 +38,11 @@ public class Station implements Cloneable {
     public String status; //Describes the computer status (Off, On, Turning On)
     public String state; //Describes the state of the LeadMe software
     public String room;
+    public String macAddress;
+    public ArrayList<Integer> boundStations;
+
     public boolean selected = false;
     private CountDownTimer shutdownTimer;
-    public String macAddress;
 
     public Boolean requiresSteamGuard = false;
 
@@ -236,7 +239,7 @@ public class Station implements Cloneable {
     }
     //endregion
 
-    //region ApplicationMessage
+    //region Application Message
     private static final int CHECK_INTERVAL = 1000; // Interval to check the variable in milliseconds
     private static final int TIMEOUT_DURATION = 60000; // Timeout duration in milliseconds
     private int elapsedTime = 0;

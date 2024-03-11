@@ -61,15 +61,15 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
 
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateApplicationList(MainActivity.getStationId(), steamGridView, true);
+        updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            if (MainActivity.getStationId() > 0) {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(MainActivity.getStationId()).size()) {
-                    updateApplicationList(MainActivity.getStationId(), steamGridView, false);
+            if (LibrarySelectionFragment.getStationId() > 0) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                    updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             } else {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
-                    updateApplicationList(MainActivity.getStationId(), steamGridView, false);
+                    updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             }
         });
@@ -80,9 +80,9 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      * determines if the user is launching an application on a single Station or multiple.
      */
     public void UpdateCurrentStationId() {
-        MainActivity.setStationId(StationsFragment.mViewModel.getSelectedStationId().getValue());
-        if (MainActivity.getStationId() > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(MainActivity.getStationId());
+        LibrarySelectionFragment.setStationId(StationsFragment.mViewModel.getSelectedStationId().getValue());
+        if (LibrarySelectionFragment.getStationId() > 0) {
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId());
         } else {
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
         }
@@ -141,11 +141,11 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         boolean showPrompt = false;
         String message = "";
 
-        if (MainActivity.getStationId() > 0) {
-            Station station = mViewModel.getStationById(MainActivity.getStationId());
+        if (LibrarySelectionFragment.getStationId() > 0) {
+            Station station = mViewModel.getStationById(LibrarySelectionFragment.getStationId());
             if(!station.applicationController.getGameId().isEmpty()) {
                 showPrompt = true;
-                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getGameName() + ", running on Station " + MainActivity.getStationId();
+                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getGameName() + ", running on Station " + LibrarySelectionFragment.getStationId();
             }
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
@@ -190,8 +190,8 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      */
     private void refreshExperienceList() {
         String stationIds;
-        if(MainActivity.getStationId() > 0) {
-            stationIds = String.valueOf(MainActivity.getStationId());
+        if(LibrarySelectionFragment.getStationId() > 0) {
+            stationIds = String.valueOf(LibrarySelectionFragment.getStationId());
         } else {
             stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
         }

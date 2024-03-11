@@ -49,6 +49,7 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -70,15 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static boolean isNucUtf8 = true;
     public static boolean isNucJsonEnabled = false;
-
-    //TODO don't really like this here
-    private static int currentStationId = 0;
-    public static int getStationId() {
-        return currentStationId;
-    }
-    public static void setStationId(int id) {
-        currentStationId = id;
-    }
 
     static ScheduledExecutorService scheduler;
 
@@ -172,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                             NetworkService.refreshNUCAddress();
                         }
                     }, 10, 10, TimeUnit.MINUTES);
-                } else if (hasNotReceivedPing > 3 && !attemptedRefresh) {
+                } else if (hasNotReceivedPing > 3) {
                      /*
                     see if we can run a refresh before we show the dialog, in case the nuc has
                     shutdown, means we don't have to show a disruptive dialog
@@ -244,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        StationSingleBoundFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LibrarySelectionFragment.mViewModel = ViewModelProviders.of(this).get(LibraryViewModel.class);
         ApplicationLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         VideoLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);

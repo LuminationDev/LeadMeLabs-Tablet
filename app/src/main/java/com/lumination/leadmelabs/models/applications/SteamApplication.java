@@ -13,7 +13,7 @@ public class SteamApplication extends Application {
      * Check for a local file before trying to find it online.
      */
     public static String getImageUrl(String fileName, String id) {
-        String internalPath = ImageManager.loadLocalImage(fileName);
+        String internalPath = ImageManager.loadLocalImage(fileName, "experience");
 
         if(!internalPath.equals("")) {
             return internalPath;

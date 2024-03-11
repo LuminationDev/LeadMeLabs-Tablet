@@ -154,6 +154,7 @@ public class StationSingleFragment extends Fragment {
         }
         //endregion
 
+        //region Button Setup
         // Open the help (guide) modals
         FlexboxLayout vrGuideButton = view.findViewById(R.id.guide_vr_library);
         vrGuideButton.setOnClickListener(v -> {
@@ -450,6 +451,7 @@ public class StationSingleFragment extends Fragment {
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
         });
+        //endregion
 
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
