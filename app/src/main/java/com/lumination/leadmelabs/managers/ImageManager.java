@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.managers;
 
+import android.util.Log;
+
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.services.NetworkService;
 
@@ -23,7 +25,7 @@ public class ImageManager {
      * sent over from the NUC.
      * @param list A string of experiences that has been received from the NUC.
      */
-    public static void CheckLocalCache(String list) {
+    public static void CheckLocalExperienceCache(String list) {
         String[] apps = list.split("/");
 
         for (String app: apps) {
@@ -31,17 +33,17 @@ public class ImageManager {
 
             //Currently only tracking the Custom images
             if (appData.length > 1 && appData[0].equals("Custom")) {
-                loadLocalImage(appData[2]);
+                loadLocalImage(appData[2], "experience");
             }
         }
     }
 
     /**
-     * Check the local application directory to see if any experiences require their thumbnails
+     * Check the local directory to see if any experiences require their thumbnails
      * sent over from the NUC.
      * @param jsonArray A JSON array of experiences that has been received from the NUC.
      */
-    public static void CheckLocalCache(JSONArray jsonArray) throws JSONException {
+    public static void CheckLocalExperienceCache(JSONArray jsonArray) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             // Get the JSONObject at the current index
             JSONObject entry = jsonArray.getJSONObject(i);
@@ -51,36 +53,80 @@ public class ImageManager {
 
             //Currently only tracking the Custom images
             if (appType.equals("Custom")) {
-                loadLocalImage(appName);
+                loadLocalImage(appName, "experience");
             }
+        }
+    }
+
+    /**
+     * Check the local directory to see if any videos require their thumbnails
+     * sent over from the NUC.
+     * @param jsonArray A JSON array of videos that has been received from the NUC.
+     */
+    public static void CheckLocalVideoCache(JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            // Get the JSONObject at the current index
+            JSONObject entry = jsonArray.getJSONObject(i);
+
+            String id = entry.optString("id", "");
+
+            //Currently only tracking the Custom images
+            loadLocalImage(id, "video");
         }
     }
 
     /**
      * Send a socket message to the NUC requesting that and image associated with the supplied
      * experience name is sent over.
-     * @param experienceName A string of the experience whose image is missing.
+     * @param uniqueId A string of the experience whose image is missing.
+     * @param type A string of the model the image relates to.
      */
-    public static void requestImage(String experienceName) {
-        requestedImages.add(experienceName.replace(":", ""));
-        NetworkService.sendMessage("NUC", "ThumbnailRequest", experienceName);
+    private static void requestImage(String uniqueId, String type) {
+        switch (type) {
+            case "experience":
+                requestedImages.add(uniqueId.replace(":", ""));
+                break;
+
+            case "video":
+                requestedImages.add(uniqueId);
+                break;
+
+            default:
+                break;
+        }
+
+        NetworkService.sendMessage("NUC", "ThumbnailRequest", uniqueId);
     }
 
     /**
      * Load an image from the local storage, if it does not exist run the request image function
      * while returning an empty string.
-     * @param experienceName A string of the image to load.
+     * @param uniqueId A string of the image to load.
+     * @param type A string of the model the image relates to.
      * @return A string representing the absolute path of the image.
      */
-    public static String loadLocalImage(String experienceName) {
-        String filePath = MainActivity.getInstance().getApplicationContext().getFilesDir()+ "/" + experienceName.replace(":", "") + "_header.jpg";
+    public static String loadLocalImage(String uniqueId, String type) {
+        String filePath;
+        switch (type) {
+            case "experience":
+                filePath = MainActivity.getInstance().getApplicationContext().getFilesDir() + "/" + uniqueId.replace(":", "") + "_header.jpg";
+                break;
+
+            case "video":
+                filePath = MainActivity.getInstance().getApplicationContext().getFilesDir() + "/" + uniqueId + "_thumbnail.jpg";
+                break;
+
+            default:
+                return "";
+        }
+
         File image = new File(filePath);
 
         if(image.exists()) {
             return image.getPath();
         } else {
-            if(!requestedImages.contains(experienceName.replace(":", ""))) {
-                requestImage(experienceName);
+            if(!requestedImages.contains(uniqueId.replace(":", ""))) {
+                requestImage(uniqueId, type);
             }
 
             return "";

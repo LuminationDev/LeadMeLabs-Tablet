@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import io.sentry.Sentry;
 
 /**
@@ -89,6 +91,7 @@ public class StationFactory {
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"));
 
+        setBoundStations(station, stationJson);
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
         setVideoDetails(station, stationJson);
@@ -117,11 +120,37 @@ public class StationFactory {
                 stationJson.getString("macAddress"),
                 stationJson.getString("ledRingId"));
 
+        setBoundStations(station, stationJson);
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
         setVideoDetails(station, stationJson);
 
         return station;
+    }
+
+    /**
+     * Set any bound stations.
+     *
+     * @param station     The BaseStation object to update with game details.
+     * @param stationJson JSON object containing game-related details.
+     * @throws JSONException If there is an issue parsing the JSON data.
+     */
+    private static void setBoundStations(Station station, JSONObject stationJson) throws JSONException {
+        if (!stationJson.has("boundStations")) {
+            return;
+        }
+
+        JSONArray boundStations = stationJson.getJSONArray("boundStations");
+        ArrayList<Integer> boundStationsList = new ArrayList<>();
+
+        for (int i = 0; i < boundStations.length(); i++) {
+            boundStationsList.add(boundStations.getInt(i));
+        }
+        if (boundStationsList.isEmpty()) {
+            return;
+        }
+
+        station.boundStations = boundStationsList;
     }
 
     /**

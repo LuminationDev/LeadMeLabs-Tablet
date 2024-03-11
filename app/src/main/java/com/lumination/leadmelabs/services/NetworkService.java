@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 
@@ -274,7 +275,8 @@ public class NetworkService extends Service {
                 case "text":
                     receiveMessage(clientSocket, inputStream);
                     break;
-                case "image":
+                case "experienceThumbnail":
+                case "videoThumbnail":
                     receiveImage(clientSocket, inputStream);
                     break;
                 default:
@@ -296,7 +298,7 @@ public class NetworkService extends Service {
      */
     private boolean DetermineConnectionType(byte[] headerBuffer) {
         String message = new String(headerBuffer, StandardCharsets.UTF_16LE);
-        return !message.equals("text") && !message.equals("image");
+        return !message.equals("text") && !message.equals("experienceThumbnail") && !message.equals("videoThumbnail");
     }
 
     /**
@@ -398,6 +400,10 @@ public class NetworkService extends Service {
             //Notify the ApplicationAdapter that the data has changed
             if (ApplicationLibraryFragment.installedApplicationAdapter != null) {
                 MainActivity.runOnUI(() -> ApplicationLibraryFragment.installedApplicationAdapter.notifyDataSetChanged());
+            }
+
+            if (VideoLibraryFragment.localVideoAdapter != null) {
+                MainActivity.runOnUI(() -> VideoLibraryFragment.localVideoAdapter.notifyDataSetChanged());
             }
         }
         catch (Exception e) {

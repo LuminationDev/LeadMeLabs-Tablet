@@ -20,12 +20,14 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
 
@@ -71,7 +73,7 @@ public class VideoAdapter extends BaseAdapter {
         }
 
         Video currentVideo = getItem(position);
-        //Helpers.SetExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+        Helpers.SetVideoImage(currentVideo.getId(), view);
         binding.setVideo(currentVideo);
 
         View finalView = view;
@@ -90,8 +92,8 @@ public class VideoAdapter extends BaseAdapter {
     }
 
     private void completeSelectVideoAction(Video currentVideo) {
-        if (MainActivity.getStationId() > 0) {
-            Station station = mViewModel.getStationById(MainActivity.getStationId());
+        if (LibrarySelectionFragment.getStationId() > 0) {
+            Station station = mViewModel.getStationById(LibrarySelectionFragment.getStationId());
             if (station == null) {
                 return;
             }

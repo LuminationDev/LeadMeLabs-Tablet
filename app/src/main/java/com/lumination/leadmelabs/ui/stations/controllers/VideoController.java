@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.ui.stations.controllers;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.services.NetworkService;
 
@@ -74,6 +75,9 @@ public class VideoController {
             }
 
             this.videos = videos;
+
+            //Check for missing thumbnails
+            ImageManager.CheckLocalVideoCache(devices);
         } catch (JSONException e) {
             Sentry.captureException(e);
         }

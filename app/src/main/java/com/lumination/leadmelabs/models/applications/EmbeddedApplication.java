@@ -10,6 +10,6 @@ public class EmbeddedApplication extends Application {
     }
 
     public static String getImageUrl(String fileName) {
-        return ImageManager.loadLocalImage(fileName);
+        return ImageManager.loadLocalImage(fileName, "experience");
     }
 }

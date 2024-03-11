@@ -117,7 +117,7 @@ public class ApplicationController {
             this.applications = newApplications;
 
             //Check for missing thumbnails
-            ImageManager.CheckLocalCache(applicationsJson);
+            ImageManager.CheckLocalExperienceCache(applicationsJson);
         } catch (Exception e) {
             Sentry.captureException(e);
         }
@@ -156,7 +156,7 @@ public class ApplicationController {
         this.applications = newApplications;
 
         //Check for missing thumbnails
-        ImageManager.CheckLocalCache(jsonArray);
+        ImageManager.CheckLocalExperienceCache(jsonArray);
     }
 
     private Application createNewApplication(String appType, String appName, String appId, boolean isVr, JSONObject appSubtype) {
