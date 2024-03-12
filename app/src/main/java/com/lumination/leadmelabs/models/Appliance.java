@@ -76,8 +76,16 @@ public class Appliance {
      * @return An int of the index or -1 if it is not found.
      */
     public int getIndexByOptionId(String id) {
+        if (this.options == null) {
+            return -1;
+        }
+
         for (int i = 0; i < options.size(); i++) {
             Option option = options.get(i);
+            if (option.id == null) {
+                return -1;
+            }
+
             if (option.id.equals(id)) {
                 return i; // Return the index number if the id matches
             }
