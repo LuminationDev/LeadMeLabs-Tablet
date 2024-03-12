@@ -329,6 +329,7 @@ public class StationSingleFragment extends Fragment {
                     //No game is present, shutdown is okay to continue
                     if(station.applicationController.getGameName().length() == 0) {
                         shutdownStation(shutdownButton, id);
+                        return;
                     }
 
                     BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
