@@ -82,6 +82,10 @@ public class Appliance {
 
         for (int i = 0; i < options.size(); i++) {
             Option option = options.get(i);
+            if (option.id == null) {
+                return -1;
+            }
+
             if (option.id.equals(id)) {
                 return i; // Return the index number if the id matches
             }
