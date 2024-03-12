@@ -331,7 +331,7 @@
                                     android:drawableTop="@drawable/session_restart"
                                     android:text="@string/restart_session_lower"
                                     android:enabled="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0)}"
-                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
+                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/station_end_session"
@@ -340,7 +340,7 @@
                                     android:drawableTop="@drawable/session_end"
                                     android:text="@string/end_session_lower"
                                     android:enabled="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0)}"
-                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue_darkest : @color/grey_card}" />
+                                    app:rippleColor="@{(selectedStation.applicationController.gameId != null &amp;&amp; selectedStation.applicationController.gameId.length() > 0) ? @color/blue : @color/grey_card}" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/ping_station"
