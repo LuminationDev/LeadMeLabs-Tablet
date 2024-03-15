@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="change_scene">Change Scene</string>
+    <string name="change_backdrop">Change Backdrop</string>
+</resources>

@@ -1,12 +1,16 @@
 package com.lumination.leadmelabs.unique.snowHydro;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,14 +24,23 @@ import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBoundBinding;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.Video;
+import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class is designed specifically for the Snowy Hydro project. The single page handles a
@@ -37,8 +50,11 @@ import java.util.List;
  */
 public class StationSingleBoundFragment extends Fragment {
     public static StationsViewModel mViewModel;
+    public static BackdropAdapter localBackdropAdapter;
+
     public FragmentStationSingleBoundBinding binding;
     public static FragmentManager childManager;
+
     private LocalAudioDeviceAdapter audioDeviceAdapter;
 
     @Nullable
@@ -61,11 +77,50 @@ public class StationSingleBoundFragment extends Fragment {
         Station newlySelectedStation = mViewModel.getSelectedStation().getValue();
         binding.setSelectedStation(newlySelectedStation);
 
+        //Set the adapter for backdrops
+        if (newlySelectedStation != null) {
+            GridView backdropGridView = view.findViewById(R.id.backdrop_section);
+            localBackdropAdapter = new BackdropAdapter(getContext());
+            localBackdropAdapter.backdropList = (ArrayList<Video>) newlySelectedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+            backdropGridView.setAdapter(localBackdropAdapter);
+        }
+
         // Inflate and Bind the VR devices layout if the selected station is a VirtualStation
         if (newlySelectedStation instanceof ContentStation) {
             inflateVRDevicesLayout();
         }
 
+        //region VideoControl
+        Slider stationVideoSlider = view.findViewById(R.id.station_video_slider);
+
+        // Set custom label formatter
+        stationVideoSlider.setLabelFormatter(value -> {
+            // Format the hint string as "xx:xx" (minutes:seconds)
+            int minutes = (int) value / 60;
+            int seconds = (int) value % 60;
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        });
+
+        stationVideoSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setSliderTracking(true);
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
+                selectedStation.videoController.setSliderTracking(false);
+            }
+        });
+
+        stationVideoSlider.addOnChangeListener((slider, value, fromUser) -> {
+            Station selectedStation = binding.getSelectedStation();
+            selectedStation.videoController.setSliderValue((int) slider.getValue());
+        });
+        //endregion
 
         //region AudioControl
         Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
@@ -94,11 +149,16 @@ public class StationSingleBoundFragment extends Fragment {
         if (newlySelectedStation != null) {
             setupAudioSpinner(view, newlySelectedStation);
             setupMuteButton(view);
-
-            //TODO adjust the layout?
-            //updateLayout(view, newlySelectedStation);
+            updateLayout(view, newlySelectedStation);
         }
         //endregion
+
+        mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
+            binding.setSelectedStation(station);
+            updateExperienceImage(view, station);
+            setupAudioSpinner(view, station);
+            updateLayout(view, station);
+        });
     }
 
     /**
@@ -106,10 +166,6 @@ public class StationSingleBoundFragment extends Fragment {
      * main fragment_station_single.xml passes the current selectedStation binding down to the stub
      * as to pass on the data binding from the VirtualStation class.
      */
-    private void inflateVRDevicesLayout() {
-        ViewStub controlDevicesStub = binding.getRoot().findViewById(R.id.control_devices_section);
-        controlDevicesStub.inflate();
-    }
 
     //region AudioControl
     private void setupMuteButton(View view) {
@@ -189,6 +245,100 @@ public class StationSingleBoundFragment extends Fragment {
             }
         }
         return names;
+    }
+    //endregion
+
+    //TODO finish this off
+    //region Layout Control
+    private void inflateVRDevicesLayout() {
+        ViewStub controlDevicesStub = binding.getRoot().findViewById(R.id.control_devices_section);
+        controlDevicesStub.inflate();
+    }
+
+    /**
+     * Update the experience image to reflect what the selected Station is currently processing.
+     * @param view The current fragment view.
+     * @param station The currently selected Station.
+     */
+    private void updateExperienceImage(View view, Station station) {
+        if (Helpers.isNullOrEmpty(station.applicationController.getGameType()) || Helpers.isNullOrEmpty(station.applicationController.getGameId()) || Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
+            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
+            experienceControlImage.setImageDrawable(null);
+        } else {
+            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
+        }
+
+        // Add an on click listener to the image if the video player is active
+        Application current = station.applicationController.findCurrentApplication();
+        if (!(current instanceof EmbeddedApplication)) {
+            resetLayout(view);
+            return;
+        }
+        String subtype = current.subtype.optString("category", "");
+        if (subtype.equals(Constants.VideoPlayer)) {
+            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
+            experienceControlImage.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
+                StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
+                bundle.putString("library", "videos");
+                ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+            });
+        }
+    }
+
+    /**
+     * Depending on the experience that is being play update the layout to show the correct controls.
+     */
+    private void updateLayout(View view, Station station) {
+        // Check the current experience
+        Application current = station.applicationController.findCurrentApplication();
+
+        if (!(current instanceof EmbeddedApplication)) {
+            resetLayout(view);
+            return;
+        }
+
+        String subtype = current.subtype.optString("category", "");
+        if (subtype.isEmpty()) {
+            resetLayout(view);
+            return;
+        }
+
+        if (subtype.equals(Constants.ShareCode)) {
+            Log.e("STATION", "SHARE CODE LAYOUT");
+        }
+        else if (subtype.equals(Constants.VideoPlayer)) {
+            TextView controlTitle = view.findViewById(R.id.custom_controls_title);
+            controlTitle.setText("Playback");
+
+            GridView guides = view.findViewById(R.id.backdrop_section);
+            guides.setVisibility(View.GONE);
+
+            FlexboxLayout controls = view.findViewById(R.id.video_controls_bound);
+            controls.setVisibility(View.VISIBLE);
+        } else {
+            resetLayout(view);
+        }
+    }
+
+    /**
+     * Convert the layout back to it's original view (No video or share code controls present).
+     */
+    private void resetLayout(View view) {
+        //Reset the control title
+        TextView controlTitle = view.findViewById(R.id.custom_controls_title);
+        controlTitle.setText("Backdrop");
+
+        //Reset the video controls
+        FlexboxLayout controls = view.findViewById(R.id.video_controls_bound);
+        controls.setVisibility(View.GONE);
+
+        //Reset the share code controls
+
+        //Reset the guide section
+        GridView guides = view.findViewById(R.id.backdrop_section);
+        guides.setVisibility(View.VISIBLE);
     }
     //endregion
 }

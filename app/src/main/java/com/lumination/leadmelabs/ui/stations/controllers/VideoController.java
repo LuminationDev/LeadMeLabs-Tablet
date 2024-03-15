@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import io.sentry.Sentry;
 
@@ -67,10 +68,11 @@ public class VideoController {
                 String name = videoJson.optString("name", "");
                 String source = videoJson.optString("source", "");
                 int length = videoJson.optInt("length", 0);
-                boolean isVr = videoJson.optBoolean("isVr", false);
+                boolean hasSubtitles = videoJson.optBoolean("hasSubtitles", false);
+                String videoType = videoJson.optString("videoType", "Normal");
                 if (name.equals("") || source.equals("")) continue;
 
-                Video temp = new Video(id, name, source, length, isVr);
+                Video temp = new Video(id, name, source, length, hasSubtitles, videoType);
                 videos.add(temp);
             }
 
@@ -91,10 +93,24 @@ public class VideoController {
      * @example Video video = findVideoById("123");
      */
     public Video findVideoById(String id) {
+        if (videos == null) {
+            return null;
+        }
+
         return videos.stream()
                 .filter(video -> video.getId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Collect all the videos that are of a certain type.
+     * @return A List of videos matching the supplied type.
+     */
+    public List<Video> getVideosOfType(String type) {
+        return videos.stream()
+                .filter(video -> video.getVideoType().equals(type))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -229,14 +245,12 @@ public class VideoController {
     }
 
     public void setVideoPlaybackState(String state) {
-        if (activeVideoFile == null) return;
         if (this.playbackState != null && this.playbackState.equals(state)) return;
 
         this.playbackState = state;
     }
 
     public void setVideoPlaybackRepeat(Boolean repeat) {
-        if (activeVideoFile == null) return;
         if (this.playbackRepeat != null && this.playbackRepeat.equals(repeat)) return;
 
         this.playbackRepeat = repeat;

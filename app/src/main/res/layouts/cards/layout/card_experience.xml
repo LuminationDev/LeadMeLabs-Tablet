@@ -19,7 +19,7 @@
         android:elevation="10dp">
         <ImageView
             android:layout_marginBottom="15dp"
-            android:id="@+id/experience_image"
+            android:id="@+id/placeholder_image"
             android:layout_height="130dp"
             android:layout_width="285dp"
             android:contentDescription="Image" />

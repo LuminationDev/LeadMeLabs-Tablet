@@ -144,7 +144,7 @@
 <!--                        android:background="@drawable/card_white_border_gray">-->
 
 <!--                        <ImageView-->
-<!--                            android:id="@+id/experience_image"-->
+<!--                            android:id="@+id/placeholder_image"-->
 <!--                            android:layout_width="match_parent"-->
 <!--                            android:layout_height="165dp"-->
 <!--                            android:contentDescription="@string/experience_preview"-->

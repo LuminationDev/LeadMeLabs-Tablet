@@ -28,9 +28,11 @@ public class Video {
     private final int length;
 
     /**
-     * Is the video VR or a regular format.
+     * If the video has an associated subtitles file.
      */
-    private final boolean isVr;
+    private final boolean hasSubtitles;
+
+    private final String videoType;
 
     /**
      * Constructs a Video object with the specified name, source, playback state, length, and playback time.
@@ -39,14 +41,16 @@ public class Video {
      * @param name          The name of the video.
      * @param source        The source of the video (e.g., URL, file path).
      * @param length        The total length of the video in seconds.
-     * @param isVr          If the video is VR (true) format of regular (false).
+     * @param hasSubtitles  If the video has a subtitles file associated with it.
+     * @param videoType     The type of video, (Normal, Vr, Backdrop, etc..)
      */
-    public Video(String id, String name, String source, int length, boolean isVr) {
+    public Video(String id, String name, String source, int length, boolean hasSubtitles, String videoType) {
         this.id = id;
         this.name = name;
         this.source = source;
         this.length = length;
-        this.isVr = isVr;
+        this.hasSubtitles = hasSubtitles;
+        this.videoType = videoType;
     }
 
     //region Getters
@@ -66,8 +70,12 @@ public class Video {
         return length;
     }
 
-    public boolean getIsVr() {
-        return isVr;
+    public boolean getHasSubtitles() {
+        return hasSubtitles;
+    }
+
+    public String getVideoType() {
+        return videoType;
     }
     //endregion
 }

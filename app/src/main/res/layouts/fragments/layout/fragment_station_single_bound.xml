@@ -159,7 +159,7 @@
 
                                 <!--TODO change this to the scene/layout thing-->
                                 <ImageView
-                                    android:id="@+id/experience_image"
+                                    android:id="@+id/placeholder_image"
                                     android:layout_width="360dp"
                                     android:layout_height="164dp"
                                     android:layout_marginVertical="5dp"
@@ -264,12 +264,14 @@
                                 android:id="@+id/backdrop_section"
                                 layout="@layout/section_backdrops" />
 
-                            <!--VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
+                            <!--CONDENSED VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
                             <include
-                                android:id="@+id/video_controls"
+                                android:id="@+id/video_controls_bound"
                                 android:visibility="gone"
-                                layout="@layout/section_video_controls"
+                                layout="@layout/section_video_controls_bound"
                                 app:selectedStation="@{selectedStation}"/>
+
+                            <!--CHANGE OPTIONS (When other controls are present)-->
 
                         </com.google.android.flexbox.FlexboxLayout>
 
@@ -288,7 +290,7 @@
                                 android:textColor="@color/text_dark"
                                 android:textFontWeight="600" />
 
-                            <!-- VR DEVICES (Optionally inflated view) -->
+                            <!-- CONTROL DEVICES (Mouse & Keyboard) -->
                             <!-- app:selectedStation="@{selectedStation}" <- Passes the data through to the Stub -->
                             <ViewStub
                                 android:id="@+id/control_devices_section"

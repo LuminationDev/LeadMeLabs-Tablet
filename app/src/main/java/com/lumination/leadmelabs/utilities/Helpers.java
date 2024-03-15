@@ -13,7 +13,6 @@ import com.bumptech.glide.request.target.Target;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.ImageManager;
-import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
@@ -68,9 +67,9 @@ public class Helpers {
     /**
      * Sets the experience image based on the selected application.
      *
-     * @param type
-     * @param name
-     * @param id
+     * @param type A string of the experience type.
+     * @param name A string of the experience name used to collect the image from memory
+     * @param id A string of the id, used mainly for Steam collection
      * @param view The view containing the ImageView for the experience image.
      */
     public static void SetExperienceImage(String type, String name, String id, View view) {
@@ -99,7 +98,7 @@ public class Helpers {
 
         //Attempt to load the image url or a default image if nothing is available
         if(Objects.equals(filePath, "")) {
-            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
+            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.placeholder_image));
         } else {
             Glide.with(view).load(filePath)
                     .listener(new RequestListener<Drawable>() {
@@ -109,7 +108,7 @@ public class Helpers {
                             MainActivity.runOnUI(() -> {
                                 Glide.with(view)
                                         .load(R.drawable.default_header)
-                                        .into((ImageView) view.findViewById(R.id.experience_image));
+                                        .into((ImageView) view.findViewById(R.id.placeholder_image));
                             });
                             return true;
                         }
@@ -120,15 +119,15 @@ public class Helpers {
                             return false;
                         }
                     })
-                    .into((ImageView) view.findViewById(R.id.experience_image));
+                    .into((ImageView) view.findViewById(R.id.placeholder_image));
         }
     }
 
     /**
      * Sets the video thumbnail based on the selected application.
      *
-     * @param id
-     * @param view
+     * @param id A string of the id, used mainly for Steam collection
+     * @param view The view containing the ImageView for the experience image.
      */
     public static void SetVideoImage(String id, View view) {
         String filePath = ImageManager.loadLocalImage(id, "video");
@@ -137,7 +136,7 @@ public class Helpers {
 
         //Attempt to load the image url or a default image if nothing is available
         if(Objects.equals(filePath, "")) {
-            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
+            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.placeholder_image));
         } else {
             Glide.with(view).load(filePath)
                     .listener(new RequestListener<Drawable>() {
@@ -147,7 +146,7 @@ public class Helpers {
                             MainActivity.runOnUI(() -> {
                                 Glide.with(view)
                                         .load(R.drawable.default_header)
-                                        .into((ImageView) view.findViewById(R.id.experience_image));
+                                        .into((ImageView) view.findViewById(R.id.placeholder_image));
                             });
                             return true;
                         }
@@ -158,7 +157,7 @@ public class Helpers {
                             return false;
                         }
                     })
-                    .into((ImageView) view.findViewById(R.id.experience_image));
+                    .into((ImageView) view.findViewById(R.id.placeholder_image));
         }
     }
 }
