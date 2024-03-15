@@ -4,9 +4,9 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
-def keyStorePropertiesFile = rootProject.file("keystore.properties")
-def keyStoreProperties = new Properties()
-keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
+//def keyStorePropertiesFile = rootProject.file("keystore.properties")
+//def keyStoreProperties = new Properties()
+//keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
 
 android {
     compileSdk 33
@@ -21,22 +21,22 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        release {
-            keyAlias keyStoreProperties['releaseKeyAlias']
-            keyPassword keyStoreProperties['releaseKeyPassword']
-            storeFile keyStoreProperties['releaseKeyStore'] ? file(keyStoreProperties['releaseKeyStore']) : null
-            storePassword keyStoreProperties['releaseStorePassword']
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+//    signingConfigs {
+//        release {
+//            keyAlias keyStoreProperties['releaseKeyAlias']
+//            keyPassword keyStoreProperties['releaseKeyPassword']
+//            storeFile keyStoreProperties['releaseKeyStore'] ? file(keyStoreProperties['releaseKeyStore']) : null
+//            storePassword keyStoreProperties['releaseStorePassword']
+//        }
+//    }
+//
+//    buildTypes {
+//        release {
+//            signingConfig signingConfigs.release
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
 
     sourceSets {
         main {

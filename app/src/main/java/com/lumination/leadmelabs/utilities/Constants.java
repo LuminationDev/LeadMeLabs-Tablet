@@ -59,4 +59,7 @@ public class Constants {
 
     //Embedded Application Constants
     public static String VideoPlayerName = "Video Player";
+    public static String VideoTypeNormal = "Normal";
+    public static String VideoTypeVr = "Vr";
+    public static String VideoTypeBackdrop = "Backdrop";
 }

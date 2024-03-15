@@ -14,7 +14,7 @@
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="400dp"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp"
         android:background="@drawable/bg_white_curved"
         app:alignItems="center"
         app:flexDirection="column">

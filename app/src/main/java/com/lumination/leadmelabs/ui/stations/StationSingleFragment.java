@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -541,6 +542,7 @@ public class StationSingleFragment extends Fragment {
         return names;
     }
 
+    //region Layout Control
     /**
      * If the selected Station is of type VirtualStation, inflate the Vr devices stub layout. The
      * main fragment_station_single.xml passes the current selectedStation binding down to the stub
@@ -557,11 +559,11 @@ public class StationSingleFragment extends Fragment {
      * @param station The currently selected Station.
      */
     private void updateExperienceImage(View view, Station station) {
-        if (!Helpers.isNullOrEmpty(station.applicationController.getGameId()) || !Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
-            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
-        } else {
-            ImageView experienceControlImage = view.findViewById(R.id.experience_image);
+        if (Helpers.isNullOrEmpty(station.applicationController.getGameType()) || Helpers.isNullOrEmpty(station.applicationController.getGameId()) || Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
+            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setImageDrawable(null);
+        } else {
+            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
         }
 
         // Add an on click listener to the image if the video player is active
@@ -572,7 +574,7 @@ public class StationSingleFragment extends Fragment {
         }
         String subtype = current.subtype.optString("category", "");
         if (subtype.equals(Constants.VideoPlayer)) {
-            ImageView experienceControlImage = view.findViewById(R.id.experience_image);
+            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
@@ -605,6 +607,9 @@ public class StationSingleFragment extends Fragment {
             Log.e("STATION", "SHARE CODE LAYOUT");
         }
         else if (subtype.equals(Constants.VideoPlayer)) {
+            TextView controlTitle = view.findViewById(R.id.custom_controls_title);
+            controlTitle.setText("Playback");
+
             FlexboxLayout guides = view.findViewById(R.id.guide_section);
             guides.setVisibility(View.GONE);
 
@@ -619,6 +624,10 @@ public class StationSingleFragment extends Fragment {
      * Convert the layout back to it's original view (No video or share code controls present).
      */
     private void resetLayout(View view) {
+        //Reset the control title
+        TextView controlTitle = view.findViewById(R.id.custom_controls_title);
+        controlTitle.setText("Guides");
+
         //Reset the video controls
         FlexboxLayout controls = view.findViewById(R.id.video_controls);
         controls.setVisibility(View.GONE);
@@ -629,6 +638,7 @@ public class StationSingleFragment extends Fragment {
         FlexboxLayout guides = view.findViewById(R.id.guide_section);
         guides.setVisibility(View.VISIBLE);
     }
+    //endregion
 
     /**
      * Shutdown a station, allowing a user to cancel the command within a set period of time.

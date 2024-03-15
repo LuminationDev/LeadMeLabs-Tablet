@@ -19,7 +19,7 @@
         android:elevation="10dp">
         <ImageView
             android:layout_marginBottom="15dp"
-            android:id="@+id/experience_image"
+            android:id="@+id/placeholder_image"
             android:layout_height="130dp"
             android:layout_width="285dp"
             android:contentDescription="Image" />
@@ -51,13 +51,13 @@
                 android:textAllCaps="false"
                 android:text="Watch"/>
 
-            <!--            TODO: Made invisible until icons etc are implemented-->
+            <!--TODO: Made invisible until icons etc are implemented-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:visibility="visible"
-                android:text="@{video.isVr ? `VR` : `Non-VR`, default=VR}"
+                android:text="@{video.videoType.equals(`Vr`) ? `VR` : `Non-VR`, default=VR}"
                 app:layout_alignSelf="flex_end"/>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>
