@@ -332,6 +332,26 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/lab_location"
+                    style="@style/SettingsItemContainer"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:flexDirection="row"
+                    app:justifyContent="space_between">
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:layout_height="25dp"
+                        android:text="Lab Location: "/>
+
+                    <TextView
+                        style="@style/SettingsText"
+                        android:textAlignment="textEnd"
+                        android:layout_height="25dp"
+                        android:text="@{settings.labLocation.length == 0 ? `Not set` : settings.labLocation}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/ip_address"
                     style="@style/SettingsItemContainer"
                     android:background="@drawable/card_ripple_white_rounded"

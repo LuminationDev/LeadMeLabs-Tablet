@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -88,6 +89,11 @@ public class NetworkService extends Service {
         NetworkService.sendMessage("NUC", "CanAcknowledge", "");
         NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
         NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
+
+        //Ask for the lab location if not already set.
+        if (!Segment.getIsIdSet()) {
+            NetworkService.sendMessage("NUC", "LabLocation", "");
+        }
     }
 
     /**

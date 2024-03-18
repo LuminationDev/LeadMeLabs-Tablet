@@ -22,6 +22,10 @@ public class Application {
         this.subtype = subtype;
     }
 
+    public String getType() {
+        return this.type;
+    }
+
     public String getId() {
         return this.id;
     }

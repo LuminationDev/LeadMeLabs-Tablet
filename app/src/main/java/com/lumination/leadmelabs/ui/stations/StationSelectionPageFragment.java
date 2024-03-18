@@ -24,9 +24,13 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
+import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFragment;
@@ -155,6 +159,9 @@ public class StationSelectionPageFragment extends Fragment {
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Selection Page");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
         });
 
         Button backButton = view.findViewById(R.id.cancel_button);
@@ -228,6 +235,17 @@ public class StationSelectionPageFragment extends Fragment {
             }
 
             NetworkService.sendMessage("Station," + stationIds, "Experience", additionalData);
+        }
+
+        // Send data to Segment - track the launch for each Station
+        for (int station: selectedIds) {
+            SegmentExperienceEvent event = new SegmentExperienceEvent(
+                    SegmentConstants.Event_Experience_Launch,
+                    station,
+                    selectedApplication.getName(),
+                    selectedApplication.getId(),
+                    selectedApplication.getType());
+            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
         }
 
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);

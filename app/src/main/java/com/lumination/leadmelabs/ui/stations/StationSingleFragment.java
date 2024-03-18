@@ -37,6 +37,11 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
+import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
+import com.lumination.leadmelabs.segment.classes.SegmentStationEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -160,6 +165,11 @@ public class StationSingleFragment extends Fragment {
         FlexboxLayout vrGuideButton = view.findViewById(R.id.guide_vr_library);
         vrGuideButton.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("VR Library", "Go to the VR library and press refresh. After approximately 1 minute, the experiences should be available in the list. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "VR Library");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "vr_library");
@@ -170,6 +180,11 @@ public class StationSingleFragment extends Fragment {
         FlexboxLayout steamErrorGuideButton = view.findViewById(R.id.guide_steam_errors);
         steamErrorGuideButton.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("SteamVR Errors", "Press ‘Restart VR System’ and wait while it restarts. This can be done on the individual station screen. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your IT department.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Steam VR Errors");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "steam_vr_errors");
@@ -180,6 +195,9 @@ public class StationSingleFragment extends Fragment {
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Single Page");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
         });
 
         Button menuButton = view.findViewById(R.id.station_single_menu_button);
@@ -201,6 +219,10 @@ public class StationSingleFragment extends Fragment {
         pingStation.setOnClickListener(v -> {
             List<Station> stations = Collections.singletonList(binding.getSelectedStation());
             Identifier.identifyStations(stations);
+
+            // Send data to Segment
+            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Identify, binding.getSelectedStation().id);
+            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
         });
 
         MaterialButton newSession = view.findViewById(R.id.new_session_button);
@@ -247,6 +269,16 @@ public class StationSingleFragment extends Fragment {
             ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
 
+            // Send data to Segment
+            SegmentExperienceEvent event = new SegmentExperienceEvent(
+                    SegmentConstants.Event_Experience_Restart,
+                    selectedStation.getId(),
+                    selectedStation.applicationController.getGameName(),
+                    selectedStation.applicationController.getGameId(),
+                    selectedStation.applicationController.getGameType()
+            );
+            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
             }};
@@ -259,6 +291,11 @@ public class StationSingleFragment extends Fragment {
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(binding.getSelectedStation().id, true);
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
             DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
+
+            // Send data to Segment
+            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
+            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
             }};
@@ -348,6 +385,10 @@ public class StationSingleFragment extends Fragment {
                             false);
                 } else {
                     shutdownStation(shutdownButton, id);
+
+                    // Send data to Segment
+                    SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Shutdown, binding.getSelectedStation().id);
+                    Segment.trackAction(SegmentConstants.Event_Type_Station, event);
                 }
             }
         });

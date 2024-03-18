@@ -22,6 +22,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         preloadViewModels();
         preloadData();
+        Segment.initialise(); //This needs to be after preloading the view models
 
         FirebaseManager.validateLicenseKey();
         scheduleJobs();

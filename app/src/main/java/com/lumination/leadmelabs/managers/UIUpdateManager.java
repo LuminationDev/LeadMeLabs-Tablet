@@ -10,14 +10,19 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.QaChecks;
 
 import org.json.JSONArray;
@@ -52,29 +57,20 @@ public class UIUpdateManager {
         String destination = messageParts[1];
         String actionNamespace = messageParts[2];
         String additionalData = messageParts.length > 3 ? messageParts[3] : null;
+
         if (!destination.equals("Android")) {
             return;
         }
 
-        try {
-            // while we send pings to maintain connection info, any message acts as confirmation that connection is working
-            MainActivity.hasNotReceivedPing = 0;
-            MainActivity.attemptedRefresh = false;
-            MainActivity.reconnectionIgnored = false;
-            if (DialogManager.reconnectDialog != null) {
-                if(DialogManager.reconnectDialog.isShowing()) {
-                    FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
-                    if (reconnect != null) {
-                        reconnect.setVisibility(View.GONE);
-                    }
-                    DialogManager.reconnectDialog.dismiss();
-                }
-            }
+        // Reset connection status indicators
+        resetConnectionStatusIndicators();
 
-            if(actionNamespace.equals("Ping")) {
-                if(additionalData != null && additionalData.length() > 0) {
-                    updateStationsFromJson(additionalData);
-                }
+        // Dismiss reconnect dialog if showing
+        dismissReconnectDialog();
+
+        try {
+            if (actionNamespace.equals("Ping") && additionalData != null && !additionalData.isEmpty()) {
+                updateStationsFromJson(additionalData);
                 return;
             }
 
@@ -84,279 +80,31 @@ public class UIUpdateManager {
             }
 
             switch (actionNamespace) {
-                case "MessageType":
-                    if (additionalData.startsWith("Update")) {
-                        String[] split = additionalData.split(":");
-
-                        if (split.length > 1 && split[1].equals("Json")) {
-                            MainActivity.isNucJsonEnabled = true;
-                            Log.e("JSON", "JSON ENABLED");
-                        }
-                    }
+                case Constants.MESSAGE_TYPE:
+                    handleMessageTypeUpdate(additionalData);
                     break;
-                case "Stations":
-                    if (additionalData.startsWith("List")) {
-                        updateStations(additionalData.split(":", 2)[1]);
-                    }
+                case Constants.LAB_LOCATION:
+                    handleLabLocationUpdate(additionalData);
                     break;
-                case "Appliances":
-                    if (additionalData.startsWith("List")) {
-                        updateAppliances(additionalData.split(":", 2)[1]);
-                    }
-                    if (additionalData.startsWith("ProjectorSlowDown")) {
-                        String projectorName = additionalData.split(",")[1];
-                        String projectorId = additionalData.split(",")[2];
-
-                        List<Appliance> applianceList = ApplianceFragment.mViewModel.getAppliances().getValue();
-                        if(applianceList == null) {
-                            return;
-                        }
-
-                        //Check if the projector is in a locked room
-                        for(Appliance appliance: applianceList) {
-                            if(Objects.equals(appliance.id, projectorId)) {
-                                if(SettingsFragment.checkLockedRooms(appliance.room)) {
-                                    MainActivity.runOnUI(() ->
-                                            DialogManager.createBasicDialog(
-                                                    "Warning",
-                                                    projectorName + " has already been powered on or off in the last 10 seconds. The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off."
-                                            )
-                                    );
-                                }
-                            }
-                        }
-                    }
+                case Constants.STATIONS:
+                    handleStationsUpdate(additionalData);
                     break;
-                case "Station":
-                    if (additionalData.startsWith("SetValue")) {
-                        Log.e("Apps", additionalData);
-
-                        String[] keyValue = additionalData.split(":", 3);
-                        String key = keyValue[1];
-                        String value = keyValue[2];
-                        updateStation(source.split(",")[1], key, value);
-                    }
-
-                    if (additionalData.startsWith("DeviceStatus")) {
-                        //[0] - 'DeviceStatus'
-                        //[1] - DeviceType
-                        //[2] - Values
-                        String[] keyValue = additionalData.split(":", 3); //Only split the key off
-                        String key = keyValue[1];
-                        String value = keyValue[2];
-                        updateStationDevices(source.split(",")[1], key, value);
-                    }
-
-                    //Everything below should only trigger if within the locked room
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
-                    HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
-
-                    //Check if the computer is in the locked room
-                    if(rooms != null) {
-                        if(rooms.size() != 0 && !rooms.contains(station.room)) {
-                            return;
-                        }
-                    }
-
-                    //Early return statement
-                    if(station == null || Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
-                        return;
-                    }
-
-                    if (additionalData.startsWith("SteamappsCorrupted")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Steam application corruption",
-                                        "Place a battery in the headset of " + station.name + ". After the headset is connected please select Restart VR System on " + station.name
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("SteamVRError")) {
-                        MainActivity.runOnUI(() -> {
-                            BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
-                                if (confirmationResult) {
-                                    DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{station.id}, null);
-                                }
-                            };
-
-                            DialogManager.createConfirmationDialog(
-                                    "SteamVR Error",
-                                    "SteamVR has encountered an error and cannot recover automatically. Please restart the Station 102",
-                                    confirmAppRestartCallback,
-                                    "Cancel",
-                                    "Restart",
-                                    false);
-                        });
-                    }
-                    if (additionalData.startsWith("GameLaunchFailed")) {
-                        DialogManager.gameLaunchedOnStation(station.id);
-                        String[] data = additionalData.split(":", 2);
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Experience launch failed",
-                                        "Launch of " + data[1] + " failed on " + station.name
-                                )
-                        );
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("PopupDetected")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Cannot launch experience",
-                                        "The experience launching on " + station.name + " requires additional input from the keyboard."
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("AlreadyLaunchingGame")) {
-                        DialogManager.gameLaunchedOnStation(station.id);
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Cannot launch experience",
-                                        "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("SteamError")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Steam error",
-                                        "A Steam error occurred on " + station.name + ". Check the station for more details."
-                                )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("LostHeadset")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                        station.name + "'s headset has disconnected. Please check the battery is charged.",
-                                        station.name
-                                )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("headset_disconnected", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("FoundHeadset")) {
-                        //Close the dialog relating to that
-                        DialogManager.closeOpenDialog(
-                                MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                station.name);
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("headset_reconnected", analyticsAttributes);
-                    }
-                    if (additionalData.startsWith("HeadsetTimeout")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        MainActivity.getInstance().getResources().getString(R.string.oh_no),
-                                        station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
-                                )
-                        );
-                    }
-                    if (additionalData.startsWith("FailedRestart")) {
-                        MainActivity.runOnUI(() ->
-                                DialogManager.createBasicDialog(
-                                        "Failed to restart station",
-                                        station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
-                                )
-                        );
-
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("station_id", String.valueOf(station.id));
-                        }};
-                        FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
-                    }
+                case Constants.APPLIANCES:
+                    handleAppliancesUpdate(additionalData);
                     break;
-                case "Automation":
-                    if (additionalData.startsWith("Update")) {
-                        syncAppliances(additionalData);
-                    }
+                case Constants.STATION:
+                    handleStationUpdate(additionalData, source);
                     break;
-                case "Analytics":
-                    if (additionalData.startsWith("ExperienceTime")) {
-                        String[] parts = additionalData.split(",", 7);
-                        if (parts.length < 7) {
-                            break;
-                        }
-                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                            put("experience_time", parts[2]);
-                            put("station_id", parts[4]);
-                            put("experience_name", parts[6]);
-                        }};
-                        FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
-                    }
+                case Constants.AUTOMATION:
+                    handleAutomationUpdate(additionalData);
                     break;
-                case "QA":
-                    JSONObject request = new JSONObject(additionalData);
-                    if (request.getString("action").equals("Connect")) {
-                        JSONObject response = new JSONObject();
-                        response.put("response", "TabletConnected");
-                        response.put("responseData", new JSONObject());
-                        response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-                        break;
-                    }
-
-                    QaChecks qaChecks = new QaChecks();
-
-                    if (request.getString("action").equals("RunAuto")) {
-                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
-
-                        JSONObject response = new JSONObject();
-                        response.put("response", "TabletChecks");
-                        response.put("responseData", (new Gson().toJson(qaCheckList)));
-                        response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-                    }
-
-                    if (request.getString("action").equals("RunGroup")) {
-                        String group = request.getJSONObject("actionData").getString("group");
-                        JSONObject response = new JSONObject();
-                        response.put("response", "RunTabletGroup");
-                        response.put("ipAddress", NetworkService.getIPAddress());
-                        JSONObject responseData = new JSONObject();
-                        responseData.put("group", group);
-                        switch (group) {
-                            case "network_checks": {
-                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runNetworkChecks();
-                                responseData.put("data", (new Gson().toJson(qaCheckList)));
-                                break;
-                            }
-                            case "security_checks": {
-                                List<QaChecks.QaCheck> qaCheckList = qaChecks.runSecurityChecks();
-                                responseData.put("data", (new Gson().toJson(qaCheckList)));
-                                break;
-                            }
-                        }
-                        response.put("responseData", responseData);
-
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-                    }
-
-                    if (request.getString("action").equals("RunAuto")) {
-                        List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
-
-                        JSONObject response = new JSONObject();
-                        response.put("response", "RunTabletGroup");
-                        response.put("responseData", (new Gson().toJson(qaCheckList)));
-                        response.put("ipAddress", NetworkService.getIPAddress());
-                        NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-                    }
-
-
-                    // handle checks
+                case Constants.ANALYTICS:
+                    handleAnalyticsUpdate(additionalData);
+                    break;
+                case Constants.QA:
+                    handleQaUpdate(additionalData);
+                    break;
+                default:
                     break;
             }
         } catch(JSONException e) {
@@ -364,6 +112,384 @@ public class UIUpdateManager {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Helper method to reset connection status indicators
+     */
+    private static void resetConnectionStatusIndicators() {
+        MainActivity.hasNotReceivedPing = 0;
+        MainActivity.attemptedRefresh = false;
+        MainActivity.reconnectionIgnored = false;
+    }
+
+    /**
+     * Helper method to dismiss reconnect dialog
+     */
+    private static void dismissReconnectDialog() {
+        if (DialogManager.reconnectDialog != null && DialogManager.reconnectDialog.isShowing()) {
+            FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
+            if (reconnect != null) {
+                reconnect.setVisibility(View.GONE);
+            }
+            DialogManager.reconnectDialog.dismiss();
+        }
+    }
+
+    //region Message Handlers
+    /**
+     * Handles the update for MessageType action namespace.
+     * This method processes updates related to message types.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleMessageTypeUpdate(String additionalData) {
+        if (additionalData.startsWith("Update")) {
+            String[] split = additionalData.split(":");
+
+            if (split.length > 1 && split[1].equals("Json")) {
+                MainActivity.isNucJsonEnabled = true;
+                Log.e("JSON", "JSON ENABLED");
+            }
+        }
+    }
+
+    /**
+     * Handles the update for LabLocation action namespace.
+     * This method processes updates related to laboratory locations.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleLabLocationUpdate(String additionalData) throws JSONException {
+        JSONObject details = new JSONObject(additionalData);
+        String location = details.optString("location", "Unknown");
+
+        if (location.equals("Unknown")) {
+            Sentry.captureMessage("Both the Tablet and NUC location is not set. NUC address is: " + SettingsFragment.mViewModel.getNucAddress());
+            return;
+        }
+
+        MainActivity.runOnUI(() -> {
+            SettingsFragment.mViewModel.setLabLocation(location);
+            Segment.updateUserId();
+        });
+    }
+
+    /**
+     * Handles the update for Stations action namespace.
+     * This method processes updates related to stations.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleStationsUpdate(String additionalData) throws JSONException {
+        if (additionalData.startsWith("List")) {
+            updateStations(additionalData.split(":", 2)[1]);
+        }
+    }
+
+    /**
+     * Handles the update for Appliances action namespace.
+     * This method processes updates related to appliances.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleAppliancesUpdate(String additionalData) throws JSONException {
+        if (additionalData.startsWith("List")) {
+            updateAppliances(additionalData.split(":", 2)[1]);
+        }
+        if (additionalData.startsWith("ProjectorSlowDown")) {
+            String projectorName = additionalData.split(",")[1];
+            String projectorId = additionalData.split(",")[2];
+
+            List<Appliance> applianceList = ApplianceFragment.mViewModel.getAppliances().getValue();
+            if(applianceList == null) {
+                return;
+            }
+
+            //Check if the projector is in a locked room
+            for(Appliance appliance: applianceList) {
+                if(Objects.equals(appliance.id, projectorId)) {
+                    if(SettingsFragment.checkLockedRooms(appliance.room)) {
+                        MainActivity.runOnUI(() ->
+                                DialogManager.createBasicDialog(
+                                        "Warning",
+                                        projectorName + " has already been powered on or off in the last 10 seconds. The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off."
+                                )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles the update for Station action namespace.
+     * This method processes updates related to individual stations.
+     *
+     * @param additionalData The additional data associated with the update.
+     * @param source         The source identifier of the station.
+     */
+    private static void handleStationUpdate(String additionalData, String source) throws JSONException {
+        if (additionalData.startsWith("SetValue")) {
+            Log.e("Apps", additionalData);
+
+            String[] keyValue = additionalData.split(":", 3);
+            String key = keyValue[1];
+            String value = keyValue[2];
+            updateStation(source.split(",")[1], key, value);
+        }
+
+        if (additionalData.startsWith("DeviceStatus")) {
+            //[0] - 'DeviceStatus'
+            //[1] - DeviceType
+            //[2] - Values
+            String[] keyValue = additionalData.split(":", 3); //Only split the key off
+            String key = keyValue[1];
+            String value = keyValue[2];
+            updateStationDevices(source.split(",")[1], key, value);
+        }
+
+        //Everything below should only trigger if within the locked room
+        Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(source.split(",")[1]));
+        HashSet<String> rooms = SettingsFragment.mViewModel.getLockedIfEnabled().getValue();
+
+        //Check if the computer is in the locked room
+        if(rooms != null) {
+            if(rooms.size() != 0 && !rooms.contains(station.room)) {
+                return;
+            }
+        }
+
+        //Early return statement
+        if(station == null || Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+            return;
+        }
+
+        if (additionalData.startsWith("SteamappsCorrupted")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Steam application corruption",
+                            "Place a battery in the headset of " + station.name + ". After the headset is connected please select Restart VR System on " + station.name
+                    )
+            );
+        }
+        if (additionalData.startsWith("SteamVRError")) {
+            MainActivity.runOnUI(() -> {
+                BooleanCallbackInterface confirmAppRestartCallback = confirmationResult -> {
+                    if (confirmationResult) {
+                        DialogManager.buildShutdownOrRestartDialog(MainActivity.getInstance(), "Restart", new int[]{station.id}, null);
+                    }
+                };
+
+                DialogManager.createConfirmationDialog(
+                        "SteamVR Error",
+                        "SteamVR has encountered an error and cannot recover automatically. Please restart the Station 102",
+                        confirmAppRestartCallback,
+                        "Cancel",
+                        "Restart",
+                        false);
+            });
+        }
+        if (additionalData.startsWith("GameLaunchFailed")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            String[] data = additionalData.split(":", 2);
+
+            if (data.length < 2) {
+                return;
+            }
+
+            String experienceName = data[1];
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Experience launch failed",
+                            "Launch of " + experienceName + " failed on " + station.name
+                    )
+            );
+
+            //Collect the station to find the extra experience details required
+            Application application = station.applicationController.findApplicationByName(experienceName);
+            if (application == null) {
+                return;
+            }
+
+            //Send data to Segment
+            SegmentExperienceEvent event = new SegmentExperienceEvent(
+                    SegmentConstants.Event_Experience_Failed,
+                    station.id,
+                    experienceName,
+                    application.getId(),
+                    application.getType());
+            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+                put("experience_name", experienceName);
+            }};
+            FirebaseManager.logAnalyticEvent("experience_launch_failed", analyticsAttributes);
+        }
+        if (additionalData.startsWith("PopupDetected")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Cannot launch experience",
+                            "The experience launching on " + station.name + " requires additional input from the keyboard."
+                    )
+            );
+        }
+        if (additionalData.startsWith("AlreadyLaunchingGame")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Cannot launch experience",
+                            "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
+                    )
+            );
+        }
+        if (additionalData.startsWith("SteamError")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Steam error",
+                            "A Steam error occurred on " + station.name + ". Check the station for more details."
+                    )
+            );
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("steam_error", analyticsAttributes);
+        }
+        if (additionalData.startsWith("LostHeadset")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                            station.name + "'s headset has disconnected. Please check the battery is charged.",
+                            station.name
+                    )
+            );
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("headset_disconnected", analyticsAttributes);
+        }
+        if (additionalData.startsWith("FoundHeadset")) {
+            //Close the dialog relating to that
+            DialogManager.closeOpenDialog(
+                    MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                    station.name);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("headset_reconnected", analyticsAttributes);
+        }
+        if (additionalData.startsWith("HeadsetTimeout")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            MainActivity.getInstance().getResources().getString(R.string.oh_no),
+                            station.name + "'s headset connection has timed out. Please connect the battery and launch the experience again."
+                    )
+            );
+        }
+        if (additionalData.startsWith("FailedRestart")) {
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Failed to restart station",
+                            station.name + " was not able to restart all required VR processes. Try again, or shut down and reboot the station."
+                    )
+            );
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(station.id));
+            }};
+            FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
+        }
+    }
+
+    /**
+     * Handles the update for Automation action namespace.
+     * This method processes updates related to automation tasks.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleAutomationUpdate(String additionalData) {
+        if (additionalData.startsWith("Update")) {
+            syncAppliances(additionalData);
+        }
+    }
+
+    /**
+     * Handles the update for Analytics action namespace.
+     * This method processes updates related to analytics data.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleAnalyticsUpdate(String additionalData) {
+        //TODO this is a place holder for now
+    }
+
+    /**
+     * Handles the update for QA action namespace.
+     * This method processes updates related to quality assurance tasks.
+     *
+     * @param additionalData The additional data associated with the update.
+     */
+    private static void handleQaUpdate(String additionalData) throws JSONException {
+        JSONObject request = new JSONObject(additionalData);
+        if (request.getString("action").equals("Connect")) {
+            JSONObject response = new JSONObject();
+            response.put("response", "TabletConnected");
+            response.put("responseData", new JSONObject());
+            response.put("ipAddress", NetworkService.getIPAddress());
+            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+            return;
+        }
+
+        QaChecks qaChecks = new QaChecks();
+
+        if (request.getString("action").equals("RunAuto")) {
+            List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+
+            JSONObject response = new JSONObject();
+            response.put("response", "TabletChecks");
+            response.put("responseData", (new Gson().toJson(qaCheckList)));
+            response.put("ipAddress", NetworkService.getIPAddress());
+            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+        }
+
+        if (request.getString("action").equals("RunGroup")) {
+            String group = request.getJSONObject("actionData").getString("group");
+            JSONObject response = new JSONObject();
+            response.put("response", "RunTabletGroup");
+            response.put("ipAddress", NetworkService.getIPAddress());
+            JSONObject responseData = new JSONObject();
+            responseData.put("group", group);
+            switch (group) {
+                case "network_checks": {
+                    List<QaChecks.QaCheck> qaCheckList = qaChecks.runNetworkChecks();
+                    responseData.put("data", (new Gson().toJson(qaCheckList)));
+                    break;
+                }
+                case "security_checks": {
+                    List<QaChecks.QaCheck> qaCheckList = qaChecks.runSecurityChecks();
+                    responseData.put("data", (new Gson().toJson(qaCheckList)));
+                    break;
+                }
+            }
+            response.put("responseData", responseData);
+
+            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+        }
+
+        if (request.getString("action").equals("RunAuto")) {
+            List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
+
+            JSONObject response = new JSONObject();
+            response.put("response", "RunTabletGroup");
+            response.put("responseData", (new Gson().toJson(qaCheckList)));
+            response.put("ipAddress", NetworkService.getIPAddress());
+            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
+        }
+    }
+    //endregion
 
     /**
      * Updates the Station objects with data parsed from JSON entries.
