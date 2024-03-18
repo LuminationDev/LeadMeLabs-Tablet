@@ -22,6 +22,11 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
+import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
+import com.lumination.leadmelabs.segment.classes.SegmentLabEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -95,7 +100,12 @@ public class DashboardPageFragment extends Fragment {
 
         //Switch to VR mode
         FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
-        vrMode.setOnClickListener(v -> searchForSceneTrigger("vr"));
+        vrMode.setOnClickListener(v -> {
+            searchForSceneTrigger("vr");
+            // Send data to Segment
+            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
+            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+        });
 
         //Launch the new session flow
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
@@ -145,6 +155,10 @@ public class DashboardPageFragment extends Fragment {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
                         restartAllStations(restartHeading, restartContent);
+
+                        // Send data to Segment
+                        SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
+                        Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
                     }
                 };
 
@@ -157,24 +171,39 @@ public class DashboardPageFragment extends Fragment {
                         false);
             } else {
                 restartAllStations(restartHeading, restartContent);
+
+                // Send data to Segment
+                SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
+                Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
             }
         });
 
         //Switch to classroom mode
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
-        classroomMode.setOnClickListener(v -> searchForSceneTrigger("classroom"));
+        classroomMode.setOnClickListener(v -> {
+            searchForSceneTrigger("classroom");
+            // Send data to Segment
+            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
+            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+        });
 
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
+            // Send data to Segment
+            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Identify);
+            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
         });
       
         //Open the help page
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Dashboard");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);

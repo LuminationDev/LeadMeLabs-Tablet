@@ -15,9 +15,11 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentHelpBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.HashMap;
@@ -32,11 +34,16 @@ public class HelpPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_help, container, false);
         childManager = getChildFragmentManager();
-        FragmentHelpBinding binding = DataBindingUtil.bind(view);
+        DataBindingUtil.bind(view);
 
         FlexboxLayout roomAutomations = view.findViewById(R.id.room_automations);
         roomAutomations.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Room Automations", "The server that connects to the room automations may have lost connection. Contact your local ICT department and ask them to restart it.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Room Automations");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "room_automations");
@@ -47,6 +54,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout serverConnection = view.findViewById(R.id.server_connection);
         serverConnection.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Server Connection", "The server that connects the lab may have turned off or lost network connection. Contact your local ICT department and ask them to restart it.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Server Connection");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "server_connection");
@@ -57,6 +69,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout vrLibrary = view.findViewById(R.id.vr_library);
         vrLibrary.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("VR Library", "Go to the VR library and press refresh. After approximately 1 minute, the experiences should be available in the list. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "VR Library");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "vr_library");
@@ -67,6 +84,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout headsetConnection = view.findViewById(R.id.headset_connection);
         headsetConnection.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Headset Connection Issues", "Check that the headset for that station is inside the LED ring and has a charged battery plugged in and turned on. If this doesn’t fix the issue, press ‘Restart VR System’ and wait while it restarts. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your local ICT department.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset Connection");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "headset_connection");
@@ -77,6 +99,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout steamVRErrors = view.findViewById(R.id.steam_vr_errors);
         steamVRErrors.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("SteamVR Errors", "Press ‘Restart VR System’ and wait while it restarts. This can be done on the individual station screen. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your IT department.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Steam VR Errors");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "steam_vr_errors");
@@ -87,6 +114,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout launchingExperience = view.findViewById(R.id.controller_issues);
         launchingExperience.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Controller connectivity", "For detailed instructions visit: https://help.lumination.com.au/knowledge/vive-controller-troubleshooting-connectivity-issues\n1. Make sure that your device has enough battery charge.\n2. Ensure the controllers are set to never timeout in SteamVR.\n3. Re-pair the controllers in SteamVR.\n4. Ensure that the base stations have adequate line-of-sight to the controllers.\n5. Enable bluetooth connectivity and update the base station firmware.\n");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Controller Issues");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "controller_issues");
@@ -97,6 +129,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout headsetIsBlank = view.findViewById(R.id.headset_is_blank);
         headsetIsBlank.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Headset is blank", "Check that the headset battery is charged and try unplugging and plugging it and then waiting 30 seconds. If this does not resolve the issue, try pressing 'restart session'. If this does not resolve the issue, try pressing 'Restart VR system'. If this does not resolve the issue, try restarting the computer.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset is Blank");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "headset_is_blank");
@@ -107,6 +144,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout quickstartGuide = view.findViewById(R.id.quickstart_guide);
         quickstartGuide.setOnClickListener(v -> {
             DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/14h2zlMhjIK_cZnGobyfysYmOPzjnmkjK/view?usp=drive_link");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Quickstart Guide");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "quickstart_guide");
@@ -117,6 +159,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout lessonPlans = view.findViewById(R.id.lesson_plans);
         lessonPlans.setOnClickListener(v -> {
             DialogManager.createTextDialog("Lesson Plans", "Visit https://lms.lumination.com.au in a web browser to access lesson plans designed for use in a Lumination Learning Lab");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Lesson Plans");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "lesson_plans");
@@ -127,6 +174,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout updateDetails = view.findViewById(R.id.update_details);
         updateDetails.setOnClickListener(v -> {
             DialogManager.createUpdateDetailsDialog();
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Update Details");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "update_details");
@@ -137,6 +189,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout contactSupportButton = view.findViewById(R.id.knowledge_bank);
         contactSupportButton.setOnClickListener(v -> {
             DialogManager.createTextDialog("Knowledge Bank", "Visit https://help.lumination.com.au/knowledge/lumination-learning-labs in a web browser to access Lumination's Knowledge Bank.");
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Knowledge Bank");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "knowledge_bank");
@@ -147,6 +204,11 @@ public class HelpPageFragment extends Fragment {
         FlexboxLayout submitTicketButton = view.findViewById(R.id.submit_ticket_button);
         submitTicketButton.setOnClickListener(v -> {
             DialogManager.createSubmitTicketDialog();
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Submit Ticket");
+            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
                 put("content_id", "submit_ticket_button");

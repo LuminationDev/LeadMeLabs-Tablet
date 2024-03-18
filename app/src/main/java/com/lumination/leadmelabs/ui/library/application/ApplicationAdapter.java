@@ -18,8 +18,11 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardExperienceBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -145,6 +148,15 @@ public class ApplicationAdapter extends BaseAdapter {
             else {
                 NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", "Launch:" + currentApplication.id);
             }
+
+            // Send data to Segment
+            SegmentExperienceEvent event = new SegmentExperienceEvent(
+                    SegmentConstants.Event_Experience_Launch,
+                    LibrarySelectionFragment.getStationId(),
+                    currentApplication.getName(),
+                    currentApplication.getId(),
+                    currentApplication.getType());
+            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationApplicationLaunch(new int[] { station.id }, currentApplication.name, false);

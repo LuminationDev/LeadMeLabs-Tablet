@@ -40,6 +40,9 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Details;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.application.Adapters.GlobalAdapter;
 import com.lumination.leadmelabs.ui.library.application.Adapters.LevelAdapter;
@@ -229,6 +232,10 @@ public class DialogManager {
                         });
                         NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
 
+                        // Send data to Segment
+                        SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, subject);
+                        Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("content_type", "submit");
                             put("content_id", "submit_ticket");
@@ -242,6 +249,10 @@ public class DialogManager {
                             errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                             errorText.setVisibility(View.VISIBLE);
                         });
+
+                        // Send data to Segment
+                        SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
+                        Segment.trackAction(SegmentConstants.Event_Type_Help, event);
                     }
 
                 } catch (IOException e) {
@@ -252,7 +263,10 @@ public class DialogManager {
                         errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                         errorText.setVisibility(View.VISIBLE);
                     });
-                    return;
+
+                    // Send data to Segment
+                    SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
+                    Segment.trackAction(SegmentConstants.Event_Type_Help, event);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Sentry.captureException(e);
@@ -261,7 +275,10 @@ public class DialogManager {
                         errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
                         errorText.setVisibility(View.VISIBLE);
                     });
-                    return;
+
+                    // Send data to Segment
+                    SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
+                    Segment.trackAction(SegmentConstants.Event_Type_Help, event);
                 }
             });
             thread.start();

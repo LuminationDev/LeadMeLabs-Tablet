@@ -6,6 +6,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -196,6 +197,8 @@ public class VideoController {
      */
     public void updateVideoPlaybackTime(String input) {
         if (activeVideoFile == null) return;
+        if (Helpers.isNullOrEmpty(input)) return;
+        if (Integer.parseInt(input) > getVideoLength()) return;
 
         try {
             this.playbackTime = Integer.parseInt(input);

@@ -1,6 +1,17 @@
 package com.lumination.leadmelabs.utilities;
 
 public class Constants {
+    //Action namespace Constants
+    public static final String MESSAGE_TYPE = "MessageType";
+    public static final String LAB_LOCATION = "LabLocation";
+    public static final String STATIONS = "Stations";
+    public static final String APPLIANCES = "Appliances";
+    public static final String STATION = "Station";
+    public static final String AUTOMATION = "Automation";
+    public static final String ANALYTICS = "Analytics";
+    public static final String QA = "QA";
+
+
     //Room Constants
     public static String VR_ROOM = "VR Room";
 
@@ -44,18 +55,22 @@ public class Constants {
     public static String BLIND_SCENE_STOPPED = "1";
     public static String BLIND_SCENE_OPEN = "2";
 
+
     //HDMI VALUES
     public static String SOURCE_HDMI_1 = "255";
     public static String SOURCE_HDMI_2 = "0";
     public static String SOURCE_HDMI_3 = "127";
 
+
     //Request Codes
     public static int UPDATE_REQUEST_CODE = 99;
+
 
     //Message constants
     public static String Invalid = "invalid";
     public static String ShareCode = "shareCode";
     public static String VideoPlayer = "videoPlayer";
+
 
     //Embedded Application Constants
     public static String VideoPlayerName = "Video Player";

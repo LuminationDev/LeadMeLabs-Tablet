@@ -1,5 +1,8 @@
 package com.lumination.leadmelabs.utilities;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -132,8 +135,6 @@ public class Helpers {
     public static void SetVideoImage(String id, View view) {
         String filePath = ImageManager.loadLocalImage(id, "video");
 
-        Log.e("FILE", "PATH: " + filePath);
-
         //Attempt to load the image url or a default image if nothing is available
         if(Objects.equals(filePath, "")) {
             Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.placeholder_image));
@@ -158,6 +159,23 @@ public class Helpers {
                         }
                     })
                     .into((ImageView) view.findViewById(R.id.placeholder_image));
+        }
+    }
+
+    /**
+     * Retrieves the version name of the application.
+     * If the version name cannot be retrieved, returns "0.0.0".
+     *
+     * @return The version name of the application.
+     */
+    public static String getAppVersion() {
+        Context context = MainActivity.getInstance();
+
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "0.0.0";
         }
     }
 }
