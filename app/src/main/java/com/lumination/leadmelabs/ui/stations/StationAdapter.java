@@ -53,9 +53,9 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
             }
 
             if (launchSingleOnTouch) {
-                //Check if there are bound stations (meaning this must be the primary)
+                //Check if there are nested stations (meaning this must be the primary)
                 Fragment fragment;
-                if(station.boundStations == null || station.boundStations.isEmpty()) {
+                if(station.nestedStations == null || station.nestedStations.isEmpty()) {
                     fragment = new StationSingleFragment();
                 } else {
                     fragment = new StationSingleBoundFragment();
