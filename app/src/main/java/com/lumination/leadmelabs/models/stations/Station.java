@@ -39,7 +39,7 @@ public class Station implements Cloneable {
     public String state; //Describes the state of the LeadMe software
     public String room;
     public String macAddress;
-    public ArrayList<Integer> boundStations;
+    public ArrayList<Integer> nestedStations;
 
     public boolean selected = false;
     private CountDownTimer shutdownTimer;

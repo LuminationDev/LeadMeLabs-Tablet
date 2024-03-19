@@ -91,7 +91,7 @@ public class StationFactory {
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"));
 
-        setBoundStations(station, stationJson);
+        setNestedStations(station, stationJson);
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
         setVideoDetails(station, stationJson);
@@ -120,7 +120,7 @@ public class StationFactory {
                 stationJson.getString("macAddress"),
                 stationJson.getString("ledRingId"));
 
-        setBoundStations(station, stationJson);
+        setNestedStations(station, stationJson);
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);
         setVideoDetails(station, stationJson);
@@ -129,28 +129,28 @@ public class StationFactory {
     }
 
     /**
-     * Set any bound stations.
+     * Set any nested stations.
      *
      * @param station     The BaseStation object to update with game details.
      * @param stationJson JSON object containing game-related details.
      * @throws JSONException If there is an issue parsing the JSON data.
      */
-    private static void setBoundStations(Station station, JSONObject stationJson) throws JSONException {
-        if (!stationJson.has("boundStations")) {
+    private static void setNestedStations(Station station, JSONObject stationJson) throws JSONException {
+        if (!stationJson.has("nestedStations")) {
             return;
         }
 
-        JSONArray boundStations = stationJson.getJSONArray("boundStations");
-        ArrayList<Integer> boundStationsList = new ArrayList<>();
+        JSONArray nestedStations = stationJson.getJSONArray("nestedStations");
+        ArrayList<Integer> nestedStationsList = new ArrayList<>();
 
-        for (int i = 0; i < boundStations.length(); i++) {
-            boundStationsList.add(boundStations.getInt(i));
+        for (int i = 0; i < nestedStations.length(); i++) {
+            nestedStationsList.add(nestedStations.getInt(i));
         }
-        if (boundStationsList.isEmpty()) {
+        if (nestedStationsList.isEmpty()) {
             return;
         }
 
-        station.boundStations = boundStationsList;
+        station.nestedStations = nestedStationsList;
     }
 
     /**
