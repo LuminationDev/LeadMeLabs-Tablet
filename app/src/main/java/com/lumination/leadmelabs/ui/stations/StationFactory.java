@@ -89,7 +89,8 @@ public class StationFactory {
                 stationJson.getString("status"),
                 state,
                 stationJson.getString("room"),
-                stationJson.getString("macAddress"));
+                stationJson.getString("macAddress"),
+                stationJson.optBoolean("isHiddenStation", false));
 
         setNestedStations(station, stationJson);
         setExperienceDetails(station, stationJson);
@@ -118,6 +119,7 @@ public class StationFactory {
                 state,
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"),
+                stationJson.optBoolean("isHiddenStation", false),
                 stationJson.getString("ledRingId"));
 
         setNestedStations(station, stationJson);

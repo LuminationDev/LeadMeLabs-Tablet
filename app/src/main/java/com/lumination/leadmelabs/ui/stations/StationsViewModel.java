@@ -385,7 +385,7 @@ public class StationsViewModel extends ViewModel {
 
     public LiveData<String> getSelectionType() {
         if (this.selectionType == null) {
-            new MutableLiveData<>("application");
+            this.selectionType = new MutableLiveData<>("application");
         }
 
         return this.selectionType;
@@ -446,7 +446,11 @@ public class StationsViewModel extends ViewModel {
     }
 
     public void selectSelectedApplication(String id) {
-        selectedApplicationId.setValue(id);
+        if (this.selectedApplicationId == null) {
+            this.selectedApplicationId = new MutableLiveData<>();
+        }
+
+        this.selectedApplicationId.setValue(id);
     }
 
     private void selectApplicationByGameName(String gameName) {
@@ -486,7 +490,25 @@ public class StationsViewModel extends ViewModel {
     }
 
     public void setSelectedVideo(Video video) {
+        if (this.selectedVideo == null) {
+            this.selectedVideo = new MutableLiveData<>();
+        }
+
         this.selectedVideo.setValue(video);
+    }
+    //endregion
+
+    //region Layouts
+    private MutableLiveData<String> layoutTab = new MutableLiveData<>("layouts");
+    public MutableLiveData<String> getLayoutTab() {
+        if (layoutTab == null) {
+            layoutTab = new MutableLiveData<>("layouts");
+        }
+        return layoutTab;
+    }
+
+    public void setLayoutTab(String libraryType) {
+        this.layoutTab.setValue(libraryType);
     }
     //endregion
 }

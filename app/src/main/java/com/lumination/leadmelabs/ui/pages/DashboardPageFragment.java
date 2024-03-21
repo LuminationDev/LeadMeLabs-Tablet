@@ -24,7 +24,6 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentLabEvent;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -122,7 +121,11 @@ public class DashboardPageFragment extends Fragment {
                     endAllSessionsConfirmation();
                 } else {
                     ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
-                    DialogManager.createEndSessionDialog(stationsToSelectFrom);
+                    List<Station> filteredList = stationsToSelectFrom.stream()
+                            .filter(station -> !station.getIsHidden())
+                            .collect(Collectors.toList());
+
+                    DialogManager.createEndSessionDialog(new ArrayList<>(filteredList));
                 }
             };
             DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences",

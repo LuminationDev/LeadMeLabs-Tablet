@@ -79,6 +79,11 @@ public class StationsFragment extends Fragment {
         }
 
         for(Station station : stations) {
+            // Do not show hidden stations
+            if (station.getIsHidden()) {
+                continue;
+            }
+
             if(roomType.equals("All")) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
                     stationRoom.add(station);

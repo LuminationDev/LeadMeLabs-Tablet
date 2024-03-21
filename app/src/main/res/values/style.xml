@@ -288,6 +288,12 @@
         <item name="android:background">@drawable/bg_alertdialog_vern</item>
     </style>
 
+    <style name="CurvedDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/modal_background_curved</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
     <style name="HelpCardGuides">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

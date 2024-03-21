@@ -30,6 +30,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<String> licenseKey;
     private MutableLiveData<String> ipAddress;
     private MutableLiveData<Boolean> hideStationControls;
+    private MutableLiveData<Boolean> showHiddenStations;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
     private MutableLiveData<Boolean> additionalExitPrompts;
     private MutableLiveData<Boolean> internalTraffic;
@@ -134,6 +135,30 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("hide_station_controls", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("hide_station_controls", value);
+        editor.apply();
+    }
+
+    /**
+     * Determine whether the tablet should show the hidden Stations and send commands to those
+     * Stations or not.
+     */
+    public LiveData<Boolean> getShowHiddenStations() {
+        if (showHiddenStations == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("show_hidden_stations", Context.MODE_PRIVATE);
+            showHiddenStations = new MutableLiveData<>(sharedPreferences.getBoolean("show_hidden_stations", true));
+        }
+        return showHiddenStations;
+    }
+
+    /**
+     * Set the tablet to show/command hidden Stations.
+     * @param value A boolean to represent if Hidden stations are shown (true) or not (false).
+     */
+    public void setShowHiddenStations(Boolean value) {
+        showHiddenStations.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("show_hidden_stations", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("show_hidden_stations", value);
         editor.apply();
     }
 

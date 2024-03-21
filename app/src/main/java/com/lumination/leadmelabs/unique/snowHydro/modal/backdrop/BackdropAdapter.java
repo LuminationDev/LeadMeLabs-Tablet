@@ -1,18 +1,20 @@
-package com.lumination.leadmelabs.unique.snowHydro;
+package com.lumination.leadmelabs.unique.snowHydro.modal.backdrop;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.BR;
 import com.lumination.leadmelabs.databinding.CardBackdropBinding;
+import com.lumination.leadmelabs.databinding.CardBackdropSmallBinding;
 import com.lumination.leadmelabs.models.Video;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Helpers;
 
@@ -24,8 +26,15 @@ public class BackdropAdapter extends BaseAdapter {
 
     public static StationsViewModel mViewModel;
 
-    BackdropAdapter(Context context) {
+    /**
+     * A boolean representing if the backdrop is just the small preview. If the card_backdrop_small
+     * should be used (true) or if the regular card_backdrop should be used (false).
+     */
+    private final boolean isPreview;
+
+    public BackdropAdapter(Context context, boolean isPreview) {
         this.mInflater = LayoutInflater.from(context);
+        this.isPreview = isPreview;
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
     }
     @Override
@@ -45,24 +54,32 @@ public class BackdropAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        CardBackdropBinding binding;
         if (view == null) {
-            mInflater.inflate(R.layout.card_backdrop, null);
-            binding = CardBackdropBinding.inflate(mInflater, parent, false);
+            ViewDataBinding binding;
+            if (isPreview) {
+                binding = CardBackdropSmallBinding.inflate(mInflater, parent, false);
+            } else {
+                binding = CardBackdropBinding.inflate(mInflater, parent, false);
+            }
             view = binding.getRoot();
             view.setTag(binding);
-        } else {
-            binding = (CardBackdropBinding) view.getTag();
         }
 
+        ViewDataBinding binding = (ViewDataBinding) view.getTag();
         Video currentVideo = getItem(position);
         Helpers.SetVideoImage(currentVideo.getId(), view);
-        binding.setVideo(currentVideo);
+        binding.setVariable(BR.video, currentVideo);
 
-        view.setOnClickListener(v -> {
-            Log.e("BACKDROP", "SELECTED BACKDROP: " + currentVideo.getName());
-            //Send the video launch command to all bound stations
-        });
+        Station station = mViewModel.getSelectedStation().getValue();
+        if (station != null) {
+            Station nestedStation = station.getFirstNestedStationOrNull();
+            binding.setVariable(BR.selectedNestedStation, nestedStation);
+            view.setOnClickListener(v -> {
+                if (nestedStation != null) {
+                    nestedStation.checkForVideoPlayer(currentVideo);
+                }
+            });
+        }
 
         return view;
     }

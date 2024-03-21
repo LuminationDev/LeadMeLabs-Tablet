@@ -124,4 +124,12 @@
     <string name="vr_controller">VR Controller</string>
     <string name="vive_icon">Vive Icon</string>
     <string name="openvr_icon">OpenVR icon</string>
+    <string name="change_scene">Change Scene</string>
+    <string name="change_backdrop">Change Backdrop</string>
+    <string name="change_layout">Change Layout</string>
+    <string name="layouts_tab_title">Layouts</string>
+    <string name="backdrops_tab_title">Backdrops</string>
+    <string name="playback_title">Playback</string>
+    <string name="backdrop_title">Backdrop</string>
+    <string name="show_hidden_stations">Show hidden stations</string>
 </resources>

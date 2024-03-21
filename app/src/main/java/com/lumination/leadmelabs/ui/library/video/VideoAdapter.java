@@ -26,6 +26,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
@@ -98,7 +99,14 @@ public class VideoAdapter extends BaseAdapter {
                 return;
             }
             station.checkForVideoPlayer(currentVideo);
-            sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
+
+            //Return to the regular station view or the nested station view
+            if (station.nestedStations == null || station.nestedStations.isEmpty()) {
+                sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
+            }
+            else {
+                sideMenuFragment.loadFragment(StationSingleBoundFragment.class, "dashboard", null);
+            }
         } else {
             mViewModel.setSelectedVideo(currentVideo);
 

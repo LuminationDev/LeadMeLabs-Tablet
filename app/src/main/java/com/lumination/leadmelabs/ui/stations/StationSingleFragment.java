@@ -200,6 +200,11 @@ public class StationSingleFragment extends Fragment {
             Segment.trackAction(SegmentConstants.Event_Type_Help, event);
         });
 
+        Button button = view.findViewById(R.id.enter_url);
+        button.setOnClickListener(v ->
+                DialogManager.buildURLDialog(getContext(), binding)
+        );
+
         Button menuButton = view.findViewById(R.id.station_single_menu_button);
         menuButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(getActivity(), menuButton);
@@ -213,16 +218,6 @@ public class StationSingleFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(onMenuItemClickListener);
             popupMenu.inflate(R.menu.station_single_menu_actions);
             popupMenu.show();
-        });
-
-        Button pingStation = view.findViewById(R.id.ping_station);
-        pingStation.setOnClickListener(v -> {
-            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
-            Identifier.identifyStations(stations);
-
-            // Send data to Segment
-            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Identify, binding.getSelectedStation().id);
-            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
         });
 
         MaterialButton newSession = view.findViewById(R.id.new_session_button);
@@ -285,23 +280,6 @@ public class StationSingleFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
         });
 
-        Button restartVr = view.findViewById(R.id.station_restart_vr);
-        restartVr.setOnClickListener(v -> {
-            //Start flashing the VR icons
-            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(binding.getSelectedStation().id, true);
-            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
-            DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
-
-            // Send data to Segment
-            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
-            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
-
-            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                put("station_id", String.valueOf(binding.getSelectedStation().id));
-            }};
-            FirebaseManager.logAnalyticEvent("station_vr_system_restarted", analyticsAttributes);
-        });
-
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
@@ -328,10 +306,32 @@ public class StationSingleFragment extends Fragment {
             }
         });
 
-        Button button = view.findViewById(R.id.enter_url);
-        button.setOnClickListener(v ->
-                DialogManager.buildURLDialog(getContext(), binding)
-        );
+        Button pingStation = view.findViewById(R.id.ping_station);
+        pingStation.setOnClickListener(v -> {
+            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+            Identifier.identifyStations(stations);
+
+            // Send data to Segment
+            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Identify, binding.getSelectedStation().id);
+            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
+        });
+
+        Button restartVr = view.findViewById(R.id.station_restart_vr);
+        restartVr.setOnClickListener(v -> {
+            //Start flashing the VR icons
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStationFlashing(binding.getSelectedStation().id, true);
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
+            DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
+
+            // Send data to Segment
+            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
+            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(binding.getSelectedStation().id));
+            }};
+            FirebaseManager.logAnalyticEvent("station_vr_system_restarted", analyticsAttributes);
+        });
 
         MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
         shutdownButton.setOnClickListener(v -> {
