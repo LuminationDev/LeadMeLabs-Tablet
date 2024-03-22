@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.segment.classes;
 
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.interfaces.IStationEventDetails;
 
 /**
@@ -17,7 +18,7 @@ public class SegmentStationEvent extends SegmentEvent implements IStationEventDe
      * @param stationId The id of the station related to the event.
      */
     public SegmentStationEvent(String event, int stationId) {
-        super(event);
+        super(Segment.getSessionId(), event);
         this.stationId = stationId;
     }
 

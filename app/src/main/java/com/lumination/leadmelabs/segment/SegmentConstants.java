@@ -6,6 +6,7 @@ public class SegmentConstants {
     public static String Event_Type_Station = "Station";
     public static String Event_Type_Experience = "Experience";
     public static String Event_Type_Help = "Help";
+    public static String Event_Type_Session = "Session";
     public static String Event_Type_Crash = "Crash";
 
     //Segment Lab Events
@@ -29,6 +30,10 @@ public class SegmentConstants {
     public static String Event_Help_Ticket_Lodged = "Ticket Lodged";
     public static String Event_Help_Page_Accessed = "Help Page";
     public static String Event_Help_Troubleshooting = "Troubleshooting Accessed";
+
+    //Segment Session Events
+    public static String Event_Session_Start = "Session Start";
+    public static String Event_Session_End = "Session End";
 
     //Segment Crash Events
 }

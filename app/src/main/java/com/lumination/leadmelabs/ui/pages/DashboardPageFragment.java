@@ -102,6 +102,7 @@ public class DashboardPageFragment extends Fragment {
         vrMode.setOnClickListener(v -> {
             searchForSceneTrigger("vr");
             // Send data to Segment
+            Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
             Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
         });
@@ -188,6 +189,7 @@ public class DashboardPageFragment extends Fragment {
             // Send data to Segment
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
             Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
 
         //Run the identify flow

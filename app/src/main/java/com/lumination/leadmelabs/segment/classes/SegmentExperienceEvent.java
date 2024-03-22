@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.segment.classes;
 
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.interfaces.IExperienceEventDetails;
 
 /**
@@ -23,7 +24,7 @@ public class SegmentExperienceEvent extends SegmentEvent implements IExperienceE
      * @param type      The type associated with the experience event.
      */
     public SegmentExperienceEvent(String event, int stationId, String name, String id, String type) {
-        super(event);
+        super(Segment.getSessionId(), event);
         this.stationId = stationId;
         this.name = name;
         this.id = id;

@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.segment.classes;
 
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.interfaces.ILabEventDetails;
 
 /**
@@ -14,6 +15,6 @@ public class SegmentLabEvent extends SegmentEvent implements ILabEventDetails {
      * @param event     The name of the event.
      */
     public SegmentLabEvent(String event) {
-        super(event);
+        super(Segment.getSessionId(), event);
     }
 }
