@@ -24,7 +24,6 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentLabEvent;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -103,6 +102,7 @@ public class DashboardPageFragment extends Fragment {
         vrMode.setOnClickListener(v -> {
             searchForSceneTrigger("vr");
             // Send data to Segment
+            Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
             Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
         });
@@ -122,7 +122,11 @@ public class DashboardPageFragment extends Fragment {
                     endAllSessionsConfirmation();
                 } else {
                     ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
-                    DialogManager.createEndSessionDialog(stationsToSelectFrom);
+                    List<Station> filteredList = stationsToSelectFrom.stream()
+                            .filter(station -> !station.getIsHidden())
+                            .collect(Collectors.toList());
+
+                    DialogManager.createEndSessionDialog(new ArrayList<>(filteredList));
                 }
             };
             DialogManager.createConfirmationDialog("End session on all stations?", "This will stop any running experiences",
@@ -185,6 +189,7 @@ public class DashboardPageFragment extends Fragment {
             // Send data to Segment
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
             Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
 
         //Run the identify flow

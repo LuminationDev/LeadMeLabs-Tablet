@@ -110,6 +110,17 @@ public class SettingsFragment extends Fragment {
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
 
+        //The toggle for turning show hidden stations
+        FlexboxLayout showHiddenStationsLayout = view.findViewById(R.id.show_hidden_stations);
+        SwitchCompat showHiddenStationsToggle = view.findViewById(R.id.show_hidden_stations_toggle);
+        showHiddenStationsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getShowHiddenStations().getValue()));
+        showHiddenStationsLayout.setOnClickListener(v ->
+                showHiddenStationsToggle.setChecked(!showHiddenStationsToggle.isChecked())
+        );
+        showHiddenStationsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setShowHiddenStations(isChecked)
+        );
+
         //The toggle for turning analytics on and off
         FlexboxLayout enableAnalyticsLayout = view.findViewById(R.id.enable_analytical_collection);
         SwitchCompat enableAnalyticsToggle = view.findViewById(R.id.enable_analytical_collection_toggle);
@@ -117,7 +128,6 @@ public class SettingsFragment extends Fragment {
         enableAnalyticsLayout.setOnClickListener(v ->
                 enableAnalyticsToggle.setChecked(!enableAnalyticsToggle.isChecked())
         );
-
         enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setAnalyticsEnabled(isChecked)
         );
@@ -129,7 +139,6 @@ public class SettingsFragment extends Fragment {
         enableExitPromptsLayout.setOnClickListener(v ->
                 enableExitPromptsToggle.setChecked(!enableExitPromptsToggle.isChecked())
         );
-
         enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setAdditionalExitPrompts(isChecked)
         );
@@ -145,7 +154,9 @@ public class SettingsFragment extends Fragment {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
             } catch (android.content.ActivityNotFoundException e) {
-                Log.e("Activity Not found", e.getLocalizedMessage());
+                if (e.getLocalizedMessage() != null) {
+                    Log.e("Activity Not found", e.getLocalizedMessage());
+                }
             }
         }));
 
@@ -158,7 +169,6 @@ public class SettingsFragment extends Fragment {
         enableRoomLockLayout.setOnClickListener(v ->
                 enableRoomLockToggle.setChecked(!enableRoomLockToggle.isChecked())
         );
-
         enableRoomLockToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setRoomLockEnabled(isChecked)
         );
@@ -174,7 +184,6 @@ public class SettingsFragment extends Fragment {
         internalTrafficLayout.setOnClickListener(v ->
                 internalTrafficToggle.setChecked(!internalTrafficToggle.isChecked())
         );
-
         internalTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setInternalTrafficValue(isChecked)
         );
@@ -185,7 +194,6 @@ public class SettingsFragment extends Fragment {
         developerTrafficLayout.setOnClickListener(v ->
                 developerTrafficToggle.setChecked(!developerTrafficToggle.isChecked())
         );
-
         developerTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 mViewModel.setDeveloperTrafficValue(isChecked)
         );

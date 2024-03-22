@@ -43,6 +43,13 @@ public class Helpers {
         return str == null || str.isEmpty();
     }
 
+    public static String capitalizeFirstLetter(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+    }
+
     /**
      * Convert a density pixel value to regular pixels based on the tablets screen density.
      * Dynamically setting dimensions require pixel units instead of density pixels.

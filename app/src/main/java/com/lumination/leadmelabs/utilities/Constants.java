@@ -8,7 +8,7 @@ public class Constants {
     public static final String APPLIANCES = "Appliances";
     public static final String STATION = "Station";
     public static final String AUTOMATION = "Automation";
-    public static final String ANALYTICS = "Analytics";
+    public static final String SEGMENT = "Segment";
     public static final String QA = "QA";
 
 

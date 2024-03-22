@@ -28,6 +28,9 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 
 import androidx.core.app.NotificationCompat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -89,6 +92,14 @@ public class NetworkService extends Service {
         NetworkService.sendMessage("NUC", "CanAcknowledge", "");
         NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
         NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
+
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Action", "Request");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("NUC", "Segment", message.toString());
 
         //Ask for the lab location if not already set.
         if (!Segment.getIsIdSet()) {

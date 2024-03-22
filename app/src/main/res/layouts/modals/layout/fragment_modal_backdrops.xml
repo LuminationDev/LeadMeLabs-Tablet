@@ -12,19 +12,19 @@
             type="com.lumination.leadmelabs.models.stations.Station" />
     </data>
 
-    <!--LIMITED: 2 columns, 2 rows. Scroll is not wanted in the section for now-->
     <GridView
-        android:layout_width="400dp"
-        android:layout_height="200dp"
+        android:id="@+id/backdrop_section"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:fadeScrollbars="false"
         android:horizontalSpacing="20dp"
-        android:numColumns="2"
-        android:rowCount="2"
+        android:numColumns="3"
         android:scrollbarStyle="insideInset"
         android:scrollbarThumbVertical="@color/blue"
         android:scrollbarTrackVertical="@color/grey_medium"
         android:smoothScrollbar="true"
         android:verticalSpacing="30dp"
-        tools:listitem="@layout/card_backdrop_small" />
+        tools:listitem="@layout/card_backdrop" />
+
 </layout>

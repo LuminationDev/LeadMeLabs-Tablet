@@ -98,8 +98,8 @@ public class UIUpdateManager {
                 case Constants.AUTOMATION:
                     handleAutomationUpdate(additionalData);
                     break;
-                case Constants.ANALYTICS:
-                    handleAnalyticsUpdate(additionalData);
+                case Constants.SEGMENT:
+                    handleSegmentUpdate(additionalData);
                     break;
                 case Constants.QA:
                     handleQaUpdate(additionalData);
@@ -422,8 +422,18 @@ public class UIUpdateManager {
      *
      * @param additionalData The additional data associated with the update.
      */
-    private static void handleAnalyticsUpdate(String additionalData) {
-        //TODO this is a place holder for now
+    private static void handleSegmentUpdate(String additionalData) throws JSONException {
+        JSONObject details = new JSONObject(additionalData);
+        String sessionId = details.optString("SessionId", "");
+        String sessionStart = details.optString("SessionStart", "");
+
+
+        if (sessionStart.isEmpty()) {
+            sessionStart = null;
+        }
+
+        if (sessionId.isEmpty()) return;
+        Segment.setSessionFromExternal(sessionId, sessionStart);
     }
 
     /**

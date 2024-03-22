@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.controllers.ApplicationController;
 import com.lumination.leadmelabs.ui.stations.controllers.AudioController;
@@ -39,6 +40,7 @@ public class Station implements Cloneable {
     public String state; //Describes the state of the LeadMe software
     public String room;
     public String macAddress;
+    private final boolean isHiddenStation; //If the Station should be shown and sent messages normally
     public ArrayList<Integer> nestedStations;
 
     public boolean selected = false;
@@ -62,13 +64,14 @@ public class Station implements Cloneable {
     private Timer timer;
     int dotsCount = 0;
 
-    public Station(String name, Object applications, int id, String status, String state, String room, String macAddress) {
+    public Station(String name, Object applications, int id, String status, String state, String room, String macAddress, boolean isHiddenStation) {
         this.name = name;
         this.id = id;
         this.status = status;
         this.state = state;
         this.room = room;
         this.macAddress = macAddress;
+        this.isHiddenStation = isHiddenStation;
 
         //Setup the controllers
         this.videoController = new VideoController(id);
@@ -87,6 +90,17 @@ public class Station implements Cloneable {
     public void setName(String newName)
     {
         name = newName;
+    }
+
+    /**
+     * If the Station is hidden, it does not receive commands or is shown like normal Stations. They
+     * are controlled either through the SingleBoundFragment or if you turn on ShowHiddenStations in
+     * the Settings page.
+     * @return A boolean of if the Station should be shown and sent commands.
+     */
+    public boolean getIsHidden() {
+        boolean hidden = Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getShowHiddenStations().getValue());
+        return this.isHiddenStation && !hidden;
     }
 
     @NonNull
@@ -254,16 +268,16 @@ public class Station implements Cloneable {
         // Add an on click listener to the image if the video player is active
         Application current = applicationController.findCurrentApplication();
         if (!(current instanceof EmbeddedApplication)) { // Video player is not open
-            openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getSource()));
+            openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getName()));
             return false;
         }
         else {
             String subtype = current.subtype.optString("category", "");
             if (subtype.equals(Constants.VideoPlayer)) {
-                videoController.loadTrigger(currentVideo.getSource());
+                videoController.loadTrigger(currentVideo.getName());
                 return true;
             } else { //Video player is not open
-                openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getSource()));
+                openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getName()));
                 return false;
             }
         }
@@ -330,6 +344,22 @@ public class Station implements Cloneable {
 
         // Start the first check immediately
         MainActivity.handler.post(checkRunnable);
+    }
+    //endregion
+
+    //region Nested Stations
+    /**
+     * Collect the first nested station in the Nested Station array. The Snowy Hydro project only
+     * ever has one nested station, however future iterations of the lab may have more.
+     * @return A Station object or null.
+     */
+    public Station getFirstNestedStationOrNull() {
+        if (this.nestedStations == null || this.nestedStations.isEmpty())  {
+            return null;
+        }
+
+        int stationId = this.nestedStations.get(0);
+        return ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(stationId);
     }
     //endregion
 }

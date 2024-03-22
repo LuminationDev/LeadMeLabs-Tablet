@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.segment.classes;
 
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.interfaces.IHelpEventDetails;
 
 /**
@@ -17,7 +18,7 @@ public class SegmentHelpEvent extends SegmentEvent implements IHelpEventDetails 
      * @param topic     The details associated with the help event.
      */
     public SegmentHelpEvent(String event, String topic) {
-        super(event);
+        super(Segment.getSessionId(), event);
         this.topic = topic;
     }
 

@@ -9,8 +9,8 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 
 public class ContentStation extends Station {
-    public ContentStation(String name, Object applications, int id, String status, String state, String room, String macAddress) {
-        super(name, applications, id, status, state, room, macAddress);
+    public ContentStation(String name, Object applications, int id, String status, String state, String room, String macAddress, boolean isHiddenStation) {
+        super(name, applications, id, status, state, room, macAddress, isHiddenStation);
     }
 
     //region Station State & GameName Binding
