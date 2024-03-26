@@ -8,7 +8,7 @@
         <import type="com.lumination.leadmelabs.models.stations.Station"/>
 
         <variable
-            name="selectedStation"
+            name="selectedNestedStation"
             type="com.lumination.leadmelabs.models.stations.Station" />
     </data>
 

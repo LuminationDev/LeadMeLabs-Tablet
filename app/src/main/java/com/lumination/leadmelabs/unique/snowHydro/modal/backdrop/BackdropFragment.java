@@ -38,16 +38,18 @@ public class BackdropFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        //Specifically set the selected station - used to populate the layouts parts
         Station newlySelectedStation = ModalDialogFragment.mViewModel.getSelectedStation().getValue();
-        binding.setSelectedStation(newlySelectedStation);
+        if (newlySelectedStation == null) return;
+
+        //Specifically set the selected nested station - used to populate the backdrop parts
+        Station nestedStation = newlySelectedStation.getFirstNestedStationOrNull();
+        if (nestedStation == null) return;
 
         //Set the adapter for backdrops
-        if (newlySelectedStation != null) {
-            GridView backdropGridView = view.findViewById(R.id.backdrop_section);
-            localBackdropAdapter = new BackdropAdapter(getContext(), false);
-            localBackdropAdapter.backdropList = (ArrayList<Video>) newlySelectedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
-            backdropGridView.setAdapter(localBackdropAdapter);
-        }
+        binding.setSelectedNestedStation(nestedStation);
+        GridView backdropGridView = view.findViewById(R.id.backdrop_section);
+        localBackdropAdapter = new BackdropAdapter(getContext(), false);
+        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+        backdropGridView.setAdapter(localBackdropAdapter);
     }
 }

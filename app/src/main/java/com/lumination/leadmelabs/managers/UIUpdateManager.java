@@ -581,13 +581,13 @@ public class UIUpdateManager {
                     station.status = value;
                     break;
                 case "gameName":
-                    station.applicationController.setGameName(value);
+                    station.applicationController.setExperienceName(value);
                     break;
                 case "gameId":
-                    station.applicationController.setGameId(value);
+                    station.applicationController.setExperienceId(value);
                     break;
                 case "gameType":
-                    station.applicationController.setGameType(value);
+                    station.applicationController.setExperienceType(value);
                     break;
             }
         }
@@ -686,15 +686,15 @@ public class UIUpdateManager {
                     break;
 
                 case "gameId":
-                    station.applicationController.setGameId(value);
+                    station.applicationController.setExperienceId(value);
                     break;
 
                 case "gameType":
-                    station.applicationController.setGameType(value);
+                    station.applicationController.setExperienceType(value);
                     break;
 
                 case "gameName":
-                    station.applicationController.setGameName(value);
+                    station.applicationController.setExperienceName(value);
 
                     //Reset the selected application
                     if  ((value != null ? value.length() : 0) == 0) {

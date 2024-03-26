@@ -13,12 +13,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardVideoBinding;
 import com.lumination.leadmelabs.models.Video;
-import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
@@ -26,8 +23,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
-import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
@@ -105,7 +101,7 @@ public class VideoAdapter extends BaseAdapter {
                 sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
             }
             else {
-                sideMenuFragment.loadFragment(StationSingleBoundFragment.class, "dashboard", null);
+                sideMenuFragment.loadFragment(StationSingleNestedFragment.class, "dashboard", null);
             }
         } else {
             mViewModel.setSelectedVideo(currentVideo);

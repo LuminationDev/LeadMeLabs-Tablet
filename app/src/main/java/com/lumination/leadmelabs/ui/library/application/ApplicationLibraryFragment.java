@@ -60,7 +60,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         super.onViewCreated(view, savedInstanceState);
 
         GridView steamGridView = view.findViewById(R.id.experience_list);
-        installedApplicationAdapter = new ApplicationAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        installedApplicationAdapter = new ApplicationAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
@@ -80,7 +80,12 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      * determines if the user is launching an application on a single Station or multiple.
      */
     public void UpdateCurrentStationId() {
-        LibrarySelectionFragment.setStationId(StationsFragment.mViewModel.getSelectedStationId().getValue());
+        int stationId = 0;
+        if(StationsFragment.mViewModel.getSelectedStationId().getValue() != null) {
+            stationId = StationsFragment.mViewModel.getSelectedStationId().getValue();
+        }
+
+        LibrarySelectionFragment.setStationId(stationId);
         if (LibrarySelectionFragment.getStationId() > 0) {
             installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId());
         } else {
@@ -143,15 +148,15 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
 
         if (LibrarySelectionFragment.getStationId() > 0) {
             Station station = mViewModel.getStationById(LibrarySelectionFragment.getStationId());
-            if(!station.applicationController.getGameId().isEmpty()) {
+            if(station.applicationController.getExperienceId() != null && !station.applicationController.getExperienceId().isEmpty()) {
                 showPrompt = true;
-                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getGameName() + ", running on Station " + LibrarySelectionFragment.getStationId();
+                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getExperienceName() + ", running on Station " + LibrarySelectionFragment.getStationId();
             }
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
             if (stations != null) {
                 ArrayList<Integer> stationIds = stations.stream()
-                        .filter(station -> !station.applicationController.getGameId().isEmpty())
+                        .filter(station -> !station.applicationController.getExperienceId().isEmpty())
                         .map(Station::getId)
                         .collect(Collectors.toCollection(ArrayList::new));
 

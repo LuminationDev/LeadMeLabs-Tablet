@@ -194,7 +194,10 @@ public class StationSingleFragment extends Fragment {
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Single Page");
             Segment.trackAction(SegmentConstants.Event_Type_Help, event);
@@ -232,18 +235,24 @@ public class StationSingleFragment extends Fragment {
                 String subtype = current.subtype.optString("category", "");
                 if (subtype.equals(Constants.VideoPlayer)) {
                     bundle.putString("library", "videos");
-                    ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                    SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                    if (fragment == null) return;
+
+                    fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
                 }
                 return;
             }
 
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
         });
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
                 return;
             }
 
@@ -261,16 +270,19 @@ public class StationSingleFragment extends Fragment {
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
             }
 
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+            DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getExperienceId()), true);
 
             // Send data to Segment
             SegmentExperienceEvent event = new SegmentExperienceEvent(
                     SegmentConstants.Event_Experience_Restart,
                     selectedStation.getId(),
-                    selectedStation.applicationController.getGameName(),
-                    selectedStation.applicationController.getGameId(),
-                    selectedStation.applicationController.getGameType()
+                    selectedStation.applicationController.getExperienceName(),
+                    selectedStation.applicationController.getExperienceId(),
+                    selectedStation.applicationController.getExperienceType()
             );
             Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
 
@@ -283,7 +295,7 @@ public class StationSingleFragment extends Fragment {
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
                 return;
             }
 
@@ -363,9 +375,9 @@ public class StationSingleFragment extends Fragment {
                         station.id + ":"
                                 + NetworkService.getIPAddress());
             } else {
-                if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getGameName() != null) {
+                if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getExperienceName() != null) {
                     //No game is present, shutdown is okay to continue
-                    if(station.applicationController.getGameName().length() == 0) {
+                    if(station.applicationController.getExperienceName().length() == 0) {
                         shutdownStation(shutdownButton, id);
                         return;
                     }
@@ -399,7 +411,7 @@ public class StationSingleFragment extends Fragment {
                 return;
             }
 
-            String gameName = mViewModel.getSelectedStation().getValue().applicationController.getGameName();
+            String gameName = mViewModel.getSelectedStation().getValue().applicationController.getExperienceName();
 
             Details details = null;
 
@@ -554,6 +566,9 @@ public class StationSingleFragment extends Fragment {
             }
         }
 
+        // Do not attempt to set the listeners if there is nothing to attach them to
+        if (audioDeviceAdapter.getCount() == 0) return;
+
         // Set the selection if the item was found
         spinner.setSelection(position);
 
@@ -600,11 +615,11 @@ public class StationSingleFragment extends Fragment {
      * @param station The currently selected Station.
      */
     private void updateExperienceImage(View view, Station station) {
-        if (Helpers.isNullOrEmpty(station.applicationController.getGameType()) || Helpers.isNullOrEmpty(station.applicationController.getGameId()) || Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
+        if (Helpers.isNullOrEmpty(station.applicationController.getExperienceType()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceId()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceName())) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setImageDrawable(null);
         } else {
-            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
+            Helpers.SetExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
         }
 
         // Add an on click listener to the image if the video player is active
@@ -621,7 +636,10 @@ public class StationSingleFragment extends Fragment {
                 bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
                 StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
                 bundle.putString("library", "videos");
-                ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                if (fragment == null) return;
+
+                fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
             });
         }
     }

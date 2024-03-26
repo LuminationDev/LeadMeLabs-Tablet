@@ -12,18 +12,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentModalBackdropsBinding;
 import com.lumination.leadmelabs.databinding.FragmentModalLayoutsBinding;
-import com.lumination.leadmelabs.models.Video;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
-import com.lumination.leadmelabs.unique.snowHydro.modal.backdrop.BackdropAdapter;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LayoutFragment extends Fragment {
     private FragmentModalLayoutsBinding binding;
+
+    public static LayoutAdapter layoutAdapter;
 
     @Nullable
     @Override
@@ -45,7 +47,30 @@ public class LayoutFragment extends Fragment {
 
         //Set the adapter for backdrops
         if (newlySelectedStation != null) {
-            //TODO do stuff
+            GridView layoutGridView = view.findViewById(R.id.layout_section);
+            layoutAdapter = new LayoutAdapter(getContext());
+            reloadLayouts(); //Get the led wall (NovaStar) options
+            layoutGridView.setAdapter(layoutAdapter);
+        }
+
+        //Observe any changes to the layout appliances
+        ApplianceFragment.mViewModel.getAppliances().observe(getViewLifecycleOwner(), v -> reloadLayouts());
+    }
+
+    public void reloadLayouts() {
+        ArrayList<Appliance.Option> allOptions = new ArrayList<>();
+
+        List<Appliance> allAppliances = ApplianceFragment.mViewModel.getAppliances().getValue();
+        if (allAppliances == null) return;
+
+        for (Appliance appliance : allAppliances) {
+            if (appliance.matchesDisplayCategory(Constants.LED_WALLS)) {
+                allOptions.addAll(appliance.options);
+            }
+        }
+
+        if (layoutAdapter != null) {
+            layoutAdapter.setLayoutList(allOptions);
         }
     }
 }

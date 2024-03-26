@@ -19,7 +19,7 @@ import com.lumination.leadmelabs.models.stations.VrStation;
 import androidx.core.content.ContextCompat;
 
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 
 import java.util.ArrayList;
 
@@ -58,7 +58,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 if(station.nestedStations == null || station.nestedStations.isEmpty()) {
                     fragment = new StationSingleFragment();
                 } else {
-                    fragment = new StationSingleBoundFragment();
+                    fragment = new StationSingleNestedFragment();
                 }
 
                 finalResult.setOnClickListener(v -> {

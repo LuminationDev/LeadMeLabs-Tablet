@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.unique.snowHydro;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,10 +63,10 @@ import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * This class is designed specifically for the Snowy Hydro project. The single page handles a
@@ -73,12 +74,14 @@ import java.util.Locale;
  * between this class and the StationSingleFragment but for ease of use this class is kept completely
  * separate.
  */
-public class StationSingleBoundFragment extends Fragment {
+public class StationSingleNestedFragment extends Fragment {
     public static StationsViewModel mViewModel;
     public static BackdropAdapter localBackdropAdapter;
 
     public FragmentStationSingleBoundBinding binding;
     private static boolean cancelledShutdown = false;
+    public static int primaryStationId = 0; //track how the side menu's back action is handled
+
     public static FragmentManager childManager;
 
     private LocalAudioDeviceAdapter audioDeviceAdapter;
@@ -104,14 +107,19 @@ public class StationSingleBoundFragment extends Fragment {
         binding.setSelectedStation(newlySelectedStation);
 
         if (newlySelectedStation != null) {
-            // Set up the nested Station
-            binding.setSelectedNestedStation(newlySelectedStation.getFirstNestedStationOrNull());
+            primaryStationId = newlySelectedStation.getId();
 
-            // Set the adapter for backdrops
-            GridView backdropGridView = view.findViewById(R.id.backdrop_section);
-            localBackdropAdapter = new BackdropAdapter(getContext(), true);
-            localBackdropAdapter.backdropList = (ArrayList<Video>) newlySelectedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
-            backdropGridView.setAdapter(localBackdropAdapter);
+            // Set up the nested Station
+            Station nestedStation = newlySelectedStation.getFirstNestedStationOrNull();
+            if (nestedStation != null) {
+                binding.setSelectedNestedStation(nestedStation);
+
+                // Set the adapter for backdrops
+                GridView backdropGridView = view.findViewById(R.id.backdrop_section);
+                localBackdropAdapter = new BackdropAdapter(getContext(), true);
+                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+                backdropGridView.setAdapter(localBackdropAdapter);
+            }
         }
 
         //region Button Setup
@@ -119,22 +127,26 @@ public class StationSingleBoundFragment extends Fragment {
         FlexboxLayout nestedStationButton = view.findViewById(R.id.nested_station_button);
         nestedStationButton.setOnClickListener(v -> {
             if (binding.getSelectedNestedStation() == null) return;
-
-            mViewModel.selectStation(binding.getSelectedNestedStation().id);
-            requireActivity().getSupportFragmentManager().beginTransaction()
+            MainActivity.getInstance().getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out,
                             android.R.anim.fade_in,
                             android.R.anim.fade_out)
                     .replace(R.id.main, StationSingleFragment.class, null)
-                    .addToBackStack("menu:dashboard:stationSingle")
+                    .addToBackStack("menu:stations:nested")
                     .commit();
+
+            // Delay the change over so the nested xml section does not switch
+            new Handler().postDelayed(() -> mViewModel.selectStation(binding.getSelectedNestedStation().id), 200);
             SideMenuFragment.currentType = "stationSingle";
         });
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Single Page");
             Segment.trackAction(SegmentConstants.Event_Type_Help, event);
@@ -148,7 +160,6 @@ public class StationSingleBoundFragment extends Fragment {
             modalFragment.show(MainActivity.getInstance().getSupportFragmentManager(), "modalFragmentTag");
         });
 
-        //TODO make sure this goes to the nested Stations as well? But only for the unity project??
         MaterialButton newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -161,19 +172,24 @@ public class StationSingleBoundFragment extends Fragment {
                 String subtype = current.subtype.optString("category", "");
                 if (subtype.equals(Constants.VideoPlayer)) {
                     bundle.putString("library", "videos");
-                    ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                    SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                    if (fragment == null) return;
+
+                    fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
                 }
                 return;
             }
 
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
         });
 
-        //TODO make sure this goes to the nested Stations as well? But only for the unity project??
-        Button restartGame = view.findViewById(R.id.station_restart_session);
-        restartGame.setOnClickListener(v -> {
+        Button restartExperience = view.findViewById(R.id.station_restart_session);
+        restartExperience.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
                 return;
             }
 
@@ -185,43 +201,45 @@ public class StationSingleBoundFragment extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", message.toString());
+                NetworkService.sendMessage("Station," +  collectNestedStations(selectedStation, String.class), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+                NetworkService.sendMessage("Station," +  collectNestedStations(selectedStation, String.class), "Experience", "Restart");
             }
 
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getGameId()), true);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+            DialogManager.awaitStationApplicationLaunch(collectNestedStations(selectedStation, int[].class), ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()), true);
 
             // Send data to Segment
             SegmentExperienceEvent event = new SegmentExperienceEvent(
                     SegmentConstants.Event_Experience_Restart,
                     selectedStation.getId(),
-                    selectedStation.applicationController.getGameName(),
-                    selectedStation.applicationController.getGameId(),
-                    selectedStation.applicationController.getGameType()
+                    selectedStation.applicationController.getExperienceName(),
+                    selectedStation.applicationController.getExperienceId(),
+                    selectedStation.applicationController.getExperienceType()
             );
             Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                put("station_id", String.valueOf(binding.getSelectedStation().id));
+                put("station_id", String.valueOf(selectedStation.getId()));
             }};
             FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
         });
 
-        //TODO make sure this goes to the nested Stations as well
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getGameName() == null || selectedStation.applicationController.getGameName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
                 return;
             }
 
             if(SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
-                        NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+                        NetworkService.sendMessage("Station," + collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
                     }
                 };
 
@@ -233,7 +251,7 @@ public class StationSingleBoundFragment extends Fragment {
                         "Confirm",
                         false);
             } else {
-                NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
+                NetworkService.sendMessage("Station," + collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
             }
         });
 
@@ -245,7 +263,6 @@ public class StationSingleBoundFragment extends Fragment {
             modalFragment.show(MainActivity.getInstance().getSupportFragmentManager(), "modalFragmentTag");
         });
 
-        //TODO make sure this goes to the nested Stations as well
         Button restartVr = view.findViewById(R.id.station_restart_vr);
         restartVr.setOnClickListener(v -> {
             //Start flashing the VR icons
@@ -263,11 +280,11 @@ public class StationSingleBoundFragment extends Fragment {
             FirebaseManager.logAnalyticEvent("station_vr_system_restarted", analyticsAttributes);
         });
 
-        //TODO make sure this shuts down nested Stations as well (also turns them on)
         MaterialButton shutdownButton = view.findViewById(R.id.shutdown_station);
         shutdownButton.setOnClickListener(v -> {
             int id = binding.getSelectedStation().id;
             Station station = mViewModel.getStationById(id);
+            String joinedStations = collectNestedStations(station, String.class);
 
             if (station.status.equals("Off")) {
                 station.powerStatusCheck(3 * 1000 * 60);
@@ -277,7 +294,7 @@ public class StationSingleBoundFragment extends Fragment {
                 //Action : [cbus unit : group address : id address : value] : [type : room : id station]
                 NetworkService.sendMessage("NUC",
                         "WOL",
-                        station.id + ":"
+                        joinedStations + ":"
                                 + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
@@ -291,19 +308,19 @@ public class StationSingleBoundFragment extends Fragment {
                 //Send the WOL command again, in case a user shutdown and started up to quickly
                 NetworkService.sendMessage("NUC",
                         "WOL",
-                        station.id + ":"
+                        joinedStations + ":"
                                 + NetworkService.getIPAddress());
             } else {
-                if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getGameName() != null) {
+                if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getExperienceName() != null) {
                     //No game is present, shutdown is okay to continue
-                    if(station.applicationController.getGameName().length() == 0) {
-                        shutdownStation(shutdownButton, id);
+                    if(station.applicationController.getExperienceName().length() == 0) {
+                        shutdownStation(shutdownButton, station);
                         return;
                     }
 
                     BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                         if (confirmationResult) {
-                            shutdownStation(shutdownButton, id);
+                            shutdownStation(shutdownButton, station);
                         }
                     };
 
@@ -315,7 +332,7 @@ public class StationSingleBoundFragment extends Fragment {
                             "Confirm",
                             false);
                 } else {
-                    shutdownStation(shutdownButton, id);
+                    shutdownStation(shutdownButton, station);
 
                     // Send data to Segment
                     SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Shutdown, binding.getSelectedStation().id);
@@ -388,20 +405,67 @@ public class StationSingleBoundFragment extends Fragment {
         }
         //endregion
 
-        mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
-            binding.setSelectedStation(station);
-            binding.setSelectedNestedStation(station.getFirstNestedStationOrNull());
-            updateExperienceImage(view, station);
-            setupAudioSpinner(view, station);
-            updateLayout(view, station);
+        /*
+         * Observes changes in the list of stations and updates the UI accordingly.
+         * If the selected station or the list of stations is null, no action is taken.
+         * For each station in the list, if it is a nested station of the selected primary station,
+         * it updates the UI and notifies the backdrop adapters.
+         */
+        mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
+            Station primary = mViewModel.getSelectedStation().getValue();
+            if (primary == null || stations == null) return;
 
-            if (BackdropFragment.localBackdropAdapter != null) {
-                BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
-            }
-            if (localBackdropAdapter != null) {
-                localBackdropAdapter.notifyDataSetChanged();
-            }
+            stations.forEach(station -> {
+                //Update the primary station
+                if (primary.getId() == station.getId()) {
+                    binding.setSelectedStation(station);
+                    updateExperienceImage(view, station);
+                    setupAudioSpinner(view, station);
+                    updateLayout(view, station);
+                }
+                //Update any nested stations
+                if (primary.nestedStations.contains(station.getId())) {
+                    binding.setSelectedNestedStation(primary.getFirstNestedStationOrNull());
+                    if (BackdropFragment.localBackdropAdapter != null) {
+                        BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
+                    }
+                    if (localBackdropAdapter != null) {
+                        localBackdropAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
         });
+    }
+
+    /**
+     * Collects the IDs of the provided station and its nested stations into either a comma-separated string or an integer array,
+     * based on the specified return type.
+     *
+     * @param station The main station whose ID and nested station IDs are to be collected.
+     * @param returnType The class object representing the desired return type: String.class for a comma-separated string or int[].class for an integer array.
+     * @return If returnType is String.class, returns a string containing the IDs of the main station and its nested stations, separated by commas.
+     *         If returnType is int[].class, returns an integer array containing the IDs of the main station and its nested stations.
+     * @throws IllegalArgumentException if returnType is neither String.class nor int[].class.
+     */
+    public static <T> T collectNestedStations(Station station, Class<T> returnType) {
+        List<Integer> stations = new ArrayList<>();
+        stations.add(station.getId());
+
+        if (station.nestedStations != null) {
+            stations.addAll(station.nestedStations);
+        }
+
+        if (returnType == String.class) {
+            return returnType.cast(stations.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(",")));
+        } else if (returnType == int[].class) {
+            return returnType.cast(stations.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
+        } else {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getSimpleName());
+        }
     }
 
     /**
@@ -498,11 +562,11 @@ public class StationSingleBoundFragment extends Fragment {
      * @param station The currently selected Station.
      */
     private void updateExperienceImage(View view, Station station) {
-        if (Helpers.isNullOrEmpty(station.applicationController.getGameType()) || Helpers.isNullOrEmpty(station.applicationController.getGameId()) || Helpers.isNullOrEmpty(station.applicationController.getGameName())) {
+        if (Helpers.isNullOrEmpty(station.applicationController.getExperienceType()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceId()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceName())) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setImageDrawable(null);
         } else {
-            Helpers.SetExperienceImage(station.applicationController.getGameType(), station.applicationController.getGameName(), station.applicationController.getGameId(), view);
+            Helpers.SetExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
         }
 
         // Add an on click listener to the image if the video player is active
@@ -519,7 +583,11 @@ public class StationSingleBoundFragment extends Fragment {
                 bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
                 StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
                 bundle.putString("library", "videos");
-                ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", bundle);
+
+                SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                if (fragment == null) return;
+
+                fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
             });
         }
     }
@@ -583,9 +651,9 @@ public class StationSingleBoundFragment extends Fragment {
      * Shutdown a station, allowing a user to cancel the command within a set period of time.
      * @param shutdownButton A Material button which has the text changed to reflect the current
      *                       shutdown status.
-     * @param id An integer representing the ID of the station.
+     * @param station A station object that is going to be shutdown
      */
-    private void shutdownStation(MaterialButton shutdownButton, int id) {
+    private void shutdownStation(MaterialButton shutdownButton, Station station) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
                 shutdownButton.setText(R.string.shut_down_station);
@@ -597,10 +665,10 @@ public class StationSingleBoundFragment extends Fragment {
         };
         if (shutdownButton.getText().toString().startsWith("Shut Down")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", new int[]{id}, shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", collectNestedStations(station, int[].class), shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
-            String stationIdsString = String.join(", ", Arrays.stream(new int[]{id}).mapToObj(String::valueOf).toArray(String[]::new));
+            String stationIdsString = collectNestedStations(station, String.class);
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
             if (DialogManager.shutdownTimer != null) {
                 DialogManager.shutdownTimer.cancel();
