@@ -295,7 +295,7 @@ public class StationsViewModel extends ViewModel {
     public void selectStation(int id) {
         selectStationById(id);
         if (getSelectedStation().getValue() != null) {
-            selectApplicationByGameName(getSelectedStation().getValue().applicationController.getGameName());
+            selectApplicationByGameName(getSelectedStation().getValue().applicationController.getExperienceName());
         }
         getSelectedStation();
     }
@@ -416,9 +416,9 @@ public class StationsViewModel extends ViewModel {
                 if (Objects.equals(application.name, details.name)) {
                     application.details = details;
 
-                    if(station.applicationController.getGameName() != null) {
+                    if(station.applicationController.getExperienceName() != null) {
                         // Set as the selected application if this Station currently has it launched
-                        if (station.applicationController.getGameName().equals(application.name)) {
+                        if (station.applicationController.getExperienceName().equals(application.name)) {
                             this.setSelectedApplication(application);
                         }
                     }

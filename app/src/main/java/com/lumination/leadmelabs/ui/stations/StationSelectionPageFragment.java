@@ -37,6 +37,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFrag
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Identifier;
 
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class StationSelectionPageFragment extends Fragment {
     private static final int CHECK_INTERVAL = 1000; // Interval to check the variable in milliseconds
@@ -158,7 +160,10 @@ public class StationSelectionPageFragment extends Fragment {
     private void setupButtons(View view) {
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Selection Page");
             Segment.trackAction(SegmentConstants.Event_Type_Help, event);
@@ -167,7 +172,10 @@ public class StationSelectionPageFragment extends Fragment {
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
             mViewModel.selectSelectedApplication("");
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
@@ -208,11 +216,15 @@ public class StationSelectionPageFragment extends Fragment {
      */
     private void confirmLaunchApplication(int[] selectedIds) {
         Application selectedApplication = binding.getSelectedApplication();
-        String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         String parameters = ApplicationShareCodeFragment.generateParameters(selectedApplication.name, editTexts);
         if (parameters.equals(Constants.Invalid)) {
             return;
         }
+
+        //TODO not sure if I like this here
+        //STRICTLY FOR SNOWY HYDRO - If launching the Snowy Hydro Story, launch on the primary and the nested stations
+        int[] allStations = combineStationIdsWithNested(selectedIds, selectedApplication.getName());
+        String stationIds = String.join(", ", Arrays.stream(allStations).mapToObj(String::valueOf).toArray(String[]::new));
 
         //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
         if (MainActivity.isNucJsonEnabled) {
@@ -248,8 +260,32 @@ public class StationSelectionPageFragment extends Fragment {
             Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
         }
 
-        ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
+        SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        if (fragment == null) return;
+
+        fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
         DialogManager.awaitStationApplicationLaunch(selectedIds, mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+    }
+
+    /**
+     * Combines the selected station ids with their nested station ids for Snowy Hydro application.
+     *
+     * @param selectedIds           The array of selected station ids.
+     * @param experienceName        The name of the experience that will be launched.
+     * @return An array containing the original station ids along with their nested station ids.
+     */
+    public int[] combineStationIdsWithNested(int[] selectedIds, String experienceName) {
+        return Arrays.stream(selectedIds)
+                .flatMap(id -> {
+                    Station station = mViewModel.getStationById(id);
+                    if (experienceName.toLowerCase().contains("snowy hydro")) {
+                        int[] nestedStations = StationSingleNestedFragment.collectNestedStations(station, int[].class);
+                        return IntStream.concat(IntStream.of(id), Arrays.stream(nestedStations));
+                    } else {
+                        return IntStream.of(id);
+                    }
+                })
+                .toArray();
     }
 
     /**
@@ -274,7 +310,7 @@ public class StationSelectionPageFragment extends Fragment {
             for (int id: selectedIds) {
                 Station station = mViewModel.getStationById(id);
                 //Check if the video player is active
-                if (!station.applicationController.getGameName().equals(Constants.VideoPlayerName)) {
+                if (!station.applicationController.getExperienceName().equals(Constants.VideoPlayerName)) {
                     modifiedSelectedIds.add(station.getId());
                 }
             }
@@ -303,7 +339,10 @@ public class StationSelectionPageFragment extends Fragment {
         }
 
         //Wait for the video players to be open (if some of the Stations do not have it open)
-        ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
+        SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        if (fragment == null) return;
+
+        fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
         if (modifiedSelectedIds.isEmpty()) return;
 
         //Convert the ArrayList into an int[]
@@ -332,7 +371,7 @@ public class StationSelectionPageFragment extends Fragment {
                 for (int id: selectedIds) {
                     Station station = mViewModel.getStationById(id);
                     //Check if the video player is active
-                    if (!station.applicationController.getGameName().equals(applicationName)) {
+                    if (!station.applicationController.getExperienceName().equals(applicationName)) {
                         failedStationIds.add(station.getId());
                         ready = false;
                     }

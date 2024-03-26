@@ -39,19 +39,19 @@ public class ModelUnitTest {
     public void station_creation() {
         String apps = "212680|FTL/231324|Test";
 
-        VrStation station = new VrStation("One", apps, 0, "Online", "", "", "", "0");
+        VrStation station = new VrStation("One", apps, 0, "Online", "", "", "", false, "0");
 
         assertEquals(station.name, "One");
         assertEquals(station.id, 0);
         assertEquals(station.status, "Online");
 
         //Test added steam applications
-        assertEquals(station.applications.size(), 2);
-        assertEquals(station.applications.get(0).name, "FTL");
-        assertEquals(station.applications.get(0).id, "212680");
-        assertEquals(SteamApplication.getImageUrl("FTL", station.applications.get(0).id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
+        assertEquals(station.applicationController.applications.size(), 2);
+        assertEquals(station.applicationController.applications.get(0).name, "FTL");
+        assertEquals(station.applicationController.applications.get(0).id, "212680");
+        assertEquals(SteamApplication.getImageUrl("FTL", station.applicationController.applications.get(0).id), "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/header.jpg");
 
-        String url = SteamApplication.getImageUrl("FTL", station.applications.get(0).id);
+        String url = SteamApplication.getImageUrl("FTL", station.applicationController.applications.get(0).id);
         assertEquals(TestUtils.MimicHttpRequest(url), 200);
 
         String invalid = "xyz";
@@ -60,7 +60,7 @@ public class ModelUnitTest {
 
     @Test
     public void steam_application_creation() {
-        SteamApplication steamApp = new SteamApplication("Steam", "FTL", "212680");
+        SteamApplication steamApp = new SteamApplication("Steam", "FTL", "212680", true, null);
 
         assertEquals(steamApp.name, "FTL");
         assertEquals(steamApp.id, "212680");

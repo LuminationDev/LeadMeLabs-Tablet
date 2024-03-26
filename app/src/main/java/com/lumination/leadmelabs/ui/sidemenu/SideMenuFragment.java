@@ -29,6 +29,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 
 import java.util.Objects;
 
@@ -113,11 +114,11 @@ public class SideMenuFragment extends Fragment {
         View settingsBtn = view.findViewById(R.id.settings_button);
         buttonFeedback(settingsBtn, "settings");
         settingsBtn.setOnClickListener(v ->
-                DialogManager.confirmPinCode(this, "replace")
+            DialogManager.confirmPinCode(this, "replace")
         );
 
         view.findViewById(R.id.back_button).setOnClickListener(v ->
-                handleBackState()
+            handleBackState()
         );
     }
 
@@ -186,10 +187,17 @@ public class SideMenuFragment extends Fragment {
     private void handleBackState() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         if (fragmentManager.getBackStackEntryCount() > 1) {
+            FragmentManager.BackStackEntry immediateBackStackEntry = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1);
             FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 2);
+
             if (Objects.equals(backStackEntry.getName(), "menu:settings")) {
                 DialogManager.confirmPinCode(this, "back");
-            } else {
+            } else if (Objects.equals(immediateBackStackEntry.getName(), "menu:stations:nested")) {
+                if (StationSingleNestedFragment.primaryStationId != 0) {
+                    StationSingleNestedFragment.mViewModel.selectStation(StationSingleNestedFragment.primaryStationId);
+                }
+                fragmentManager.popBackStackImmediate();
+            }else {
                 fragmentManager.popBackStackImmediate();
             }
         }

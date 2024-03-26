@@ -146,10 +146,10 @@ public class DashboardPageFragment extends Fragment {
             //Check what stations are still running an experience
             ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
             for(Station station: stations) {
-                if(station.applicationController.getGameName() == null) {
+                if(station.applicationController.getExperienceName() == null) {
                     continue;
                 }
-                if(station.applicationController.getGameName().length() == 0 || station.applicationController.getGameName().equals("null")) {
+                if(station.applicationController.getExperienceName().length() == 0 || station.applicationController.getExperienceName().equals("null")) {
                     continue;
                 }
                 active.add(station.id);

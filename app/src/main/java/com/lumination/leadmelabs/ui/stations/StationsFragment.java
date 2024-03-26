@@ -20,6 +20,8 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,8 +110,11 @@ public class StationsFragment extends Fragment {
     {
         ArrayList<Station> checkList = new ArrayList<>();
 
+        List<Station> allStations = mViewModel.getStations().getValue();
+        if (allStations == null) return checkList;
+        
         //Limit to the locked rooms
-        for(Station station: stationAdapter.stationList) {
+        for(Station station: allStations) {
             if(SettingsFragment.checkLockedRooms(station.room)) {
                 checkList.add(station);
             }

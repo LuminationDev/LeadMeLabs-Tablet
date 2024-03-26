@@ -166,7 +166,7 @@ public class Station implements Cloneable {
 
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getGameName() != null && selectedStation.applicationController.getGameName().length() != 0 && !selectedStation.applicationController.getGameName().equals("null");
+        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
 
         //Station is On and has either a State or a Game running
         if(isStatusOn && (hasState || hasGame)) {
@@ -186,7 +186,7 @@ public class Station implements Cloneable {
         //Set the visibility value
         boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getGameName() != null && selectedStation.applicationController.getGameName().length() != 0 && !selectedStation.applicationController.getGameName().equals("null");
+        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
@@ -206,7 +206,7 @@ public class Station implements Cloneable {
             }
         } else {
             selectedStation.stopAnimateDots();
-            textView.setText(selectedStation.applicationController.getGameName());
+            textView.setText(selectedStation.applicationController.getExperienceName());
         }
     }
 
@@ -318,7 +318,7 @@ public class Station implements Cloneable {
         final Runnable checkRunnable = new Runnable() {
             @Override
             public void run() {
-                if (applicationName.equals(applicationController.getGameName())) {
+                if (applicationName.equals(applicationController.getExperienceName())) {
                     //When it is set to the correct application, send the additional message
                     callback.onApplicationLoaded();
                     elapsedTime = 0; //reset

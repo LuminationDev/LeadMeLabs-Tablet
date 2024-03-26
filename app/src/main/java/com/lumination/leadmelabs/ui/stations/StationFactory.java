@@ -164,13 +164,13 @@ public class StationFactory {
      */
     private static void setExperienceDetails(Station station, JSONObject stationJson) throws JSONException {
         if (!stationJson.getString("gameName").equals("")) {
-            station.applicationController.setGameName(stationJson.getString("gameName"));
+            station.applicationController.setExperienceName(stationJson.getString("gameName"));
         }
         if (!stationJson.getString("gameId").equals("null")) {
-            station.applicationController.setGameId(stationJson.getString("gameId"));
+            station.applicationController.setExperienceId(stationJson.getString("gameId"));
         }
         if (!stationJson.getString("gameType").equals("null")) {
-            station.applicationController.setGameType(stationJson.getString("gameType"));
+            station.applicationController.setExperienceType(stationJson.getString("gameType"));
         }
     }
 

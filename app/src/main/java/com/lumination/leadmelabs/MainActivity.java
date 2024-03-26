@@ -50,7 +50,7 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleBoundFragment;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
 
 import java.util.concurrent.Executors;
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-        StationSingleBoundFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        StationSingleNestedFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         ModalDialogFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LibrarySelectionFragment.mViewModel = ViewModelProviders.of(this).get(LibraryViewModel.class);
         ApplicationLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);

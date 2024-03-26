@@ -83,6 +83,7 @@ public class Helpers {
      * @param view The view containing the ImageView for the experience image.
      */
     public static void SetExperienceImage(String type, String name, String id, View view) {
+        if (view == null) return;
 
         //Set the experience image
         String filePath;

@@ -19,6 +19,7 @@ import java.util.Optional;
 import io.sentry.Sentry;
 
 public class ApplicationController {
+    //NOTE: Cannot change *game* out of the variables without changing it on the NUC and Station as well
     private String gameName = null;
     private String gameId;
     private String gameType;
@@ -30,27 +31,27 @@ public class ApplicationController {
     }
 
     //region Setters & Getters
-    public void setGameName(String name) {
+    public void setExperienceName(String name) {
         this.gameName = name;
     }
 
-    public String getGameName() {
+    public String getExperienceName() {
         return this.gameName;
     }
 
-    public void setGameId(String id) {
+    public void setExperienceId(String id) {
         this.gameId = id;
     }
 
-    public String getGameId() {
+    public String getExperienceId() {
         return this.gameId;
     }
 
-    public void setGameType(String type) {
+    public void setExperienceType(String type) {
         this.gameType = type;
     }
 
-    public String getGameType() {
+    public String getExperienceType() {
         return this.gameType;
     }
     //endregion
