@@ -82,7 +82,7 @@ public class Helpers {
      * @param id A string of the id, used mainly for Steam collection
      * @param view The view containing the ImageView for the experience image.
      */
-    public static void SetExperienceImage(String type, String name, String id, View view) {
+    public static void setExperienceImage(String type, String name, String id, View view) {
         if (view == null) return;
 
         //Set the experience image
@@ -140,7 +140,7 @@ public class Helpers {
      * @param id A string of the id, used mainly for Steam collection
      * @param view The view containing the ImageView for the experience image.
      */
-    public static void SetVideoImage(String id, View view) {
+    public static void setVideoImage(String id, View view) {
         String filePath = ImageManager.loadLocalImage(id, "video");
 
         //Attempt to load the image url or a default image if nothing is available

@@ -1,7 +1,9 @@
 package com.lumination.leadmelabs.segment.classes;
 
 import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.interfaces.IExperienceEventDetails;
+import com.segment.analytics.Properties;
 
 /**
  * Represents an event related to a Station experience, to be tracked using Segment analytics.
@@ -24,7 +26,7 @@ public class SegmentExperienceEvent extends SegmentEvent implements IExperienceE
      * @param type      The type associated with the experience event.
      */
     public SegmentExperienceEvent(String event, int stationId, String name, String id, String type) {
-        super(Segment.getSessionId(), event);
+        super(Segment.getSessionId(), event, SegmentConstants.Event_Type_Experience);
         this.stationId = stationId;
         this.name = name;
         this.id = id;
@@ -49,5 +51,22 @@ public class SegmentExperienceEvent extends SegmentEvent implements IExperienceE
     @Override
     public String getType() {
         return type;
+    }
+
+    /**
+     * Converts the SegmentExperienceEvent object into a Map<String, ?>.
+     *
+     * @return A map representing the SegmentExperienceEvent object.
+     */
+    @Override
+    public Properties toProperties() {
+        Properties map = new Properties();
+        map.put("sessionId", Segment.getSessionId());
+        map.put("stationId", stationId);
+        map.put("name", name);
+        map.put("id", id);
+        map.put("type", type);
+        map.put("classification", getClassification());
+        return map;
     }
 }

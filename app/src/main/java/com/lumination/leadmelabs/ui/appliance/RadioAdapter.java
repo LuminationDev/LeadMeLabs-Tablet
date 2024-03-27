@@ -16,6 +16,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.RadioApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Option;
 
 import java.util.ArrayList;
 
@@ -43,10 +44,10 @@ public class RadioAdapter extends BaseAdapter {
             RadioGroup radioGroup = binding.getRoot().findViewById(R.id.radio_group);
             int size = appliance.options.size();
             for (int i = 0; i < size; i++) {
-                Appliance.Option option = appliance.options.get(i);
+                Option option = appliance.options.get(i);
                 RadioButton radioButton = new RadioButton(radioGroup.getContext());
-                radioButton.setId(Integer.parseInt(option.id));
-                radioButton.setText(option.name);
+                radioButton.setId(Integer.parseInt(option.getId()));
+                radioButton.setText(option.getName());
                 radioButton.setTextColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.white));
                 radioButton.setTextSize(20);
                 radioButton.setButtonTintList(new ColorStateList(new int[][]
@@ -64,7 +65,7 @@ public class RadioAdapter extends BaseAdapter {
                 radioButton.setLayoutParams(params);
                 radioButton.setPadding(0, 10, 30, 10);
 
-                if (appliance.value != null && appliance.value.length() > 0 && appliance.value == option.id) {
+                if (appliance.value != null && appliance.value.length() > 0 && appliance.value.equals(option.getId())) {
                     radioButton.setChecked(true);
                     radioButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.on_text,0);
                     radioButton.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_radio_blue_to_grey, null));

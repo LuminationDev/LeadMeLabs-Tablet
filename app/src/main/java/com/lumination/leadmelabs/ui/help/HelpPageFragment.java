@@ -42,7 +42,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Room Automations");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -57,7 +57,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Server Connection");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -72,7 +72,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "VR Library");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -87,7 +87,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset Connection");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -102,7 +102,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Steam VR Errors");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -117,7 +117,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Controller Issues");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -132,7 +132,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset is Blank");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -147,7 +147,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Quickstart Guide");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -162,7 +162,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Lesson Plans");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -177,7 +177,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Update Details");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -192,7 +192,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Knowledge Bank");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -207,7 +207,7 @@ public class HelpPageFragment extends Fragment {
 
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Submit Ticket");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");

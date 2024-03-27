@@ -70,7 +70,7 @@ public class VideoAdapter extends BaseAdapter {
         }
 
         Video currentVideo = getItem(position);
-        Helpers.SetVideoImage(currentVideo.getId(), view);
+        Helpers.setVideoImage(currentVideo.getId(), view);
         binding.setVideo(currentVideo);
 
         View finalView = view;

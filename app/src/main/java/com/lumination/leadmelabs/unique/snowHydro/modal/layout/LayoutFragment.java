@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentModalLayoutsBinding;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Option;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
@@ -57,8 +58,11 @@ public class LayoutFragment extends Fragment {
         ApplianceFragment.mViewModel.getAppliances().observe(getViewLifecycleOwner(), v -> reloadLayouts());
     }
 
+    /**
+     * Set the NovaStar options in the layout adapter.
+     */
     public void reloadLayouts() {
-        ArrayList<Appliance.Option> allOptions = new ArrayList<>();
+        ArrayList<Option> allOptions = new ArrayList<>();
 
         List<Appliance> allAppliances = ApplianceFragment.mViewModel.getAppliances().getValue();
         if (allAppliances == null) return;

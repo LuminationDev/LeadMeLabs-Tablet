@@ -104,7 +104,7 @@ public class DashboardPageFragment extends Fragment {
             // Send data to Segment
             Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
-            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.trackAction(event);
         });
 
         //Launch the new session flow
@@ -162,7 +162,7 @@ public class DashboardPageFragment extends Fragment {
 
                         // Send data to Segment
                         SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                        Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+                        Segment.trackAction(event);
                     }
                 };
 
@@ -178,7 +178,7 @@ public class DashboardPageFragment extends Fragment {
 
                 // Send data to Segment
                 SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+                Segment.trackAction(event);
             }
         });
 
@@ -188,7 +188,7 @@ public class DashboardPageFragment extends Fragment {
             searchForSceneTrigger("classroom");
             // Send data to Segment
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
-            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.trackAction(event);
             Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
 
@@ -199,7 +199,7 @@ public class DashboardPageFragment extends Fragment {
             Identifier.identifyStations(stations);
             // Send data to Segment
             SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Identify);
-            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.trackAction(event);
         });
       
         //Open the help page
@@ -208,7 +208,7 @@ public class DashboardPageFragment extends Fragment {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Dashboard");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);

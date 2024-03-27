@@ -234,7 +234,7 @@ public class DialogManager {
 
                         // Send data to Segment
                         SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, subject);
-                        Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+                        Segment.trackAction(event);
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("content_type", "submit");
@@ -252,7 +252,7 @@ public class DialogManager {
 
                         // Send data to Segment
                         SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                        Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+                        Segment.trackAction(event);
                     }
 
                 } catch (IOException e) {
@@ -266,7 +266,7 @@ public class DialogManager {
 
                     // Send data to Segment
                     SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                    Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+                    Segment.trackAction(event);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Sentry.captureException(e);
@@ -278,7 +278,7 @@ public class DialogManager {
 
                     // Send data to Segment
                     SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                    Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+                    Segment.trackAction(event);
                 }
             });
             thread.start();
@@ -801,6 +801,7 @@ public class DialogManager {
             pinDialog.dismiss();
         });
 
+        pinDialog.setCancelable(false);
         pinDialog.show();
     }
 

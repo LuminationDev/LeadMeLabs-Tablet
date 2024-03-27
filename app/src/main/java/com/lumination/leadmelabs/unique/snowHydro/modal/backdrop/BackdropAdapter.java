@@ -67,7 +67,7 @@ public class BackdropAdapter extends BaseAdapter {
 
         ViewDataBinding binding = (ViewDataBinding) view.getTag();
         Video currentVideo = getItem(position);
-        Helpers.SetVideoImage(currentVideo.getId(), view);
+        Helpers.setVideoImage(currentVideo.getId(), view);
         binding.setVariable(BR.video, currentVideo);
 
         Station station = mViewModel.getSelectedStation().getValue();

@@ -149,7 +149,7 @@ public class StationSingleNestedFragment extends Fragment {
             fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Single Page");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
         });
 
         FlexboxLayout seeMoreButton = view.findViewById(R.id.open_modal_text);
@@ -221,7 +221,7 @@ public class StationSingleNestedFragment extends Fragment {
                     selectedStation.applicationController.getExperienceId(),
                     selectedStation.applicationController.getExperienceType()
             );
-            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(selectedStation.getId()));
@@ -272,7 +272,7 @@ public class StationSingleNestedFragment extends Fragment {
 
             // Send data to Segment
             SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
-            Segment.trackAction(SegmentConstants.Event_Type_Station, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -336,7 +336,7 @@ public class StationSingleNestedFragment extends Fragment {
 
                     // Send data to Segment
                     SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Shutdown, binding.getSelectedStation().id);
-                    Segment.trackAction(SegmentConstants.Event_Type_Station, event);
+                    Segment.trackAction(event);
                 }
             }
         });
@@ -566,7 +566,7 @@ public class StationSingleNestedFragment extends Fragment {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setImageDrawable(null);
         } else {
-            Helpers.SetExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
+            Helpers.setExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
         }
 
         // Add an on click listener to the image if the video player is active

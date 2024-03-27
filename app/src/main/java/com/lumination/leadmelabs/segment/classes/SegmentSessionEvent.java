@@ -1,8 +1,9 @@
 package com.lumination.leadmelabs.segment.classes;
 
 import com.lumination.leadmelabs.segment.Segment;
-import com.lumination.leadmelabs.segment.interfaces.ILabEventDetails;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.interfaces.ISessionEventDetails;
+import com.segment.analytics.Properties;
 
 /**
  * Represents an event related to the a Session, to be tracked using Segment analytics.
@@ -20,7 +21,7 @@ public class SegmentSessionEvent extends SegmentEvent implements ISessionEventDe
      * @param event     The name of the event.
      */
     public SegmentSessionEvent(String event, String start, String end, String duration) {
-        super(Segment.getSessionId(), event);
+        super(Segment.getSessionId(), event, SegmentConstants.Event_Type_Session);
         this.start = start;
         this.end = end;
         this.duration = duration;
@@ -39,5 +40,21 @@ public class SegmentSessionEvent extends SegmentEvent implements ISessionEventDe
     @Override
     public String getDuration() {
         return duration;
+    }
+
+    /**
+     * Converts the SegmentExperienceEvent object into a Map<String, ?>.
+     *
+     * @return A map representing the SegmentExperienceEvent object.
+     */
+    @Override
+    public Properties toProperties() {
+        Properties map = new Properties();
+        map.put("sessionId", Segment.getSessionId());
+        map.put("sessionStart", getStart());
+        map.put("sessionEnd", getEnd());
+        map.put("duration", getDuration());
+        map.put("classification", getClassification());
+        return map;
     }
 }
