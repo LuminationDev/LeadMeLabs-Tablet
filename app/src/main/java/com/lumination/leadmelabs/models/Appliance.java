@@ -11,9 +11,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Turn into generic abstract class in the future for all the different appliances
- */
 public class Appliance {
     public String type;
     public String name;
@@ -27,15 +24,6 @@ public class Appliance {
     public ArrayList<String> description;
     public MutableLiveData<Integer> icon;
     public MutableLiveData<String> status;
-
-    public class Option {
-        public String id;
-        public String name;
-        public Option(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-    }
 
     public Appliance(String type, String name, String room, String id) {
         this.type = type;
@@ -66,7 +54,7 @@ public class Appliance {
         this.options = new ArrayList<>();
         for (int i = 0; i < length; i++) {
             JSONObject option = options.getJSONObject(i);
-            this.options.add(new Option(option.getString("id"), option.getString("name")));
+            this.options.add(new Option(option.getString("id"), option.getString("name"), this.id));
         }
     }
 

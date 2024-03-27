@@ -81,7 +81,7 @@ public class ApplicationAdapter extends BaseAdapter {
         }
 
         Application currentApplication = getItem(position);
-        Helpers.SetExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
         binding.setApplication(currentApplication);
 
         View finalView = view;
@@ -164,7 +164,7 @@ public class ApplicationAdapter extends BaseAdapter {
                     currentApplication.getName(),
                     currentApplication.getId(),
                     currentApplication.getType());
-            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+            Segment.trackAction(event);
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
 

@@ -90,8 +90,8 @@ public class NetworkService extends Service {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
         NetworkService.sendMessage("NUC", "CanAcknowledge", "");
-        NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
-        NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
+        NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode:");
+        NetworkService.sendMessage("NUC", "MessageType", "Android:Json:");
 
         JSONObject message = new JSONObject();
         try {

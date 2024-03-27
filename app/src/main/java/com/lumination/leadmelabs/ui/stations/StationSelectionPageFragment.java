@@ -166,7 +166,7 @@ public class StationSelectionPageFragment extends Fragment {
             fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Selection Page");
-            Segment.trackAction(SegmentConstants.Event_Type_Help, event);
+            Segment.trackAction(event);
         });
 
         Button backButton = view.findViewById(R.id.cancel_button);
@@ -257,7 +257,7 @@ public class StationSelectionPageFragment extends Fragment {
                     selectedApplication.getName(),
                     selectedApplication.getId(),
                     selectedApplication.getType());
-            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+            Segment.trackAction(event);
         }
 
         SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));

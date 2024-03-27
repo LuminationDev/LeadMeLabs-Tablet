@@ -65,7 +65,7 @@ public class ApplicationShareCodeFragment extends Fragment {
         Application selectedApplication = mViewModel.getSelectedApplication().getValue();
         binding.setSelectedApplication(selectedApplication);
         if (selectedApplication != null) {
-            Helpers.SetExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            Helpers.setExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
         }
         SetupEditText(view);
 

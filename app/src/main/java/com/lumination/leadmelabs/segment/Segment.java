@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.segment;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.segment.classes.SegmentEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentSessionEvent;
 import com.lumination.leadmelabs.segment.interfaces.IEventDetails;
@@ -7,14 +8,14 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Analytics;
-import com.segment.analytics.messages.IdentifyMessage;
-import com.segment.analytics.messages.TrackMessage;
+import com.segment.analytics.Traits;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +25,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Segment {
     private final static String writeKey = "val2jLThqRiUEQGFGzDyHzT4ehtMXsKA";
-    private static Analytics analytics;
     private static boolean isIdSet = false;
     private static String sessionId = "Session not started";
     private static Date sessionStart;
@@ -54,7 +54,9 @@ public class Segment {
      * Setup the analytics class and the user id (location) for the session.
      */
     public static void initialise() {
-        analytics = Analytics.builder(writeKey).build();
+        Analytics analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey).build();
+        Analytics.setSingletonInstance(analytics); // Set the initialized instance as a globally accessible instance.
+
         userId = SettingsFragment.mViewModel.getLabLocation().getValue();
 
         // If the location is not set, when the tablet connects to the NUC it will ask for its
@@ -72,12 +74,13 @@ public class Segment {
      * Set the user for Segment to track against for the current session.
      */
     private static void setUserId() {
-        Hashtable<String, String> map = new Hashtable<>();
+        Traits map =  new Traits();
+        map.putUsername(userId);
+        map.putName(userId);
         map.put("location", userId);
         map.put("app_version", Helpers.getAppVersion());
-        analytics.enqueue(IdentifyMessage.builder()
-                .userId(userId)
-                .traits(map));
+
+        Analytics.with(MainActivity.getInstance().getBaseContext()).identify(userId, map, null);
     }
 
     /**
@@ -131,7 +134,7 @@ public class Segment {
 
             // Send an end Session event
             SegmentSessionEvent event = new SegmentSessionEvent(SegmentConstants.Event_Session_End, start, end, duration);
-            Segment.trackAction(SegmentConstants.Event_Type_Lab, event);
+            Segment.trackAction(event);
         }
 
         sessionStart = null;
@@ -158,28 +161,25 @@ public class Segment {
         if (newSessionId.equals(sessionId)) return;
 
         sessionId = newSessionId;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
-        //TODO update this? -
-        // SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // Date dateTime = format.parse(dateTimeString);
-        sessionStart = new Date(newSessionStart);
+        try {
+            // Parse the dateString back into a Date object
+            sessionStart = dateFormat.parse(newSessionStart);
+        } catch (ParseException e) {
+            e.printStackTrace(); // Handle parsing exception
+        }
     }
 
     /**
      * Tracks an action/event with associated details using Segment analytics.
      * @param <T> The type of values stored in the details hashtable.
-     * @param event A string of the event type to store the action against in Segment.
      * @param details A {@link SegmentEvent} containing additional details or properties associated with the event.
      */
-    public static <T extends IEventDetails> void trackAction(String event, T details) {
+    public static <T extends IEventDetails> void trackAction(T details) {
         if (!isIdSet) return;
 
-        Hashtable<String, T> action = new Hashtable<>();
-        action.put(details.getEvent(), details);
-
-        analytics.enqueue(TrackMessage.builder(event)
-                .userId(userId)
-                .properties(action)
-        );
+        Analytics.with(MainActivity.getInstance().getBaseContext())
+                .track(details.getEvent(), details.toProperties());
     }
 }

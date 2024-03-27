@@ -318,7 +318,7 @@ public class UIUpdateManager {
                     experienceName,
                     application.getId(),
                     application.getType());
-            Segment.trackAction(SegmentConstants.Event_Type_Experience, event);
+            Segment.trackAction(event);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(station.id));
