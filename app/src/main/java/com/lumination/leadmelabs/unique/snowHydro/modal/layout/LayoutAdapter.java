@@ -1,7 +1,6 @@
 package com.lumination.leadmelabs.unique.snowHydro.modal.layout;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardLayoutBinding;
 import com.lumination.leadmelabs.models.Option;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
@@ -66,20 +66,14 @@ public class LayoutAdapter extends BaseAdapter {
         binding.setVariable(BR.option, currentOption);
 
         view.setOnClickListener(v -> {
-            //trigger the scene change
-            Log.e("CHANGE", "SCENE: " + currentOption.getId());
-            Log.e("CHANGE", "SCENE: " + currentOption.getName());
-            Log.e("CHANGE", "SCENE: " + currentOption.getParentId());
-
-            //TODO work out how to get the appliance in here??
             //additionalData break down
             //Action : [cbus unit : group address : id address : value] : [type : room : id appliance]
-//            NetworkService.sendMessage("NUC",
-//                    "Automation",
-//                    "Set" + ":"
-//                            + currentOption.getParentId() + ":"
-//                            + currentOption.getId() + ":"
-//                            + NetworkService.getIPAddress());
+            NetworkService.sendMessage("NUC",
+                    "Automation",
+                    "Set" + ":"
+                            + currentOption.getParentId() + ":"
+                            + currentOption.getId() + ":"
+                            + NetworkService.getIPAddress());
         });
 
         return view;

@@ -29,6 +29,8 @@ public class Segment {
     private static String sessionId = "Session not started";
     private static Date sessionStart;
 
+    private static Analytics analytics;
+
     /**
      * The unique identifier to distinguish the users on the database. The location of the lab is
      * being used for this.
@@ -54,15 +56,17 @@ public class Segment {
      * Setup the analytics class and the user id (location) for the session.
      */
     public static void initialise() {
-        Analytics analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey).build();
-        Analytics.setSingletonInstance(analytics); // Set the initialized instance as a globally accessible instance.
+        if (analytics == null) {
+            analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey).build();
+            Analytics.setSingletonInstance(analytics); // Set the initialized instance as a globally accessible instance.
+        }
 
         userId = SettingsFragment.mViewModel.getLabLocation().getValue();
 
         // If the location is not set, when the tablet connects to the NUC it will ask for its
         // location. Upon receiving, the location will be saved in shared preferences and set as
-        // the userId.
-        if (Helpers.isNullOrEmpty(userId)) {
+        // the userId. Or if the Id is already set, do not attempt to set again.
+        if (Helpers.isNullOrEmpty(userId) || isIdSet) {
             return;
         }
 
