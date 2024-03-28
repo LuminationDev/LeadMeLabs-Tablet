@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.gson.Gson;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
@@ -13,17 +12,16 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
+import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
-import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
-import com.lumination.leadmelabs.utilities.QaChecks;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,7 +100,7 @@ public class UIUpdateManager {
                     handleSegmentUpdate(additionalData);
                     break;
                 case Constants.QA:
-                    handleQaUpdate(additionalData);
+                    QaManager.handleQaUpdate(additionalData);
                     break;
                 default:
                     break;
@@ -434,70 +432,6 @@ public class UIUpdateManager {
 
         if (sessionId.isEmpty()) return;
         Segment.setSessionFromExternal(sessionId, sessionStart);
-    }
-
-    /**
-     * Handles the update for QA action namespace.
-     * This method processes updates related to quality assurance tasks.
-     *
-     * @param additionalData The additional data associated with the update.
-     */
-    private static void handleQaUpdate(String additionalData) throws JSONException {
-        JSONObject request = new JSONObject(additionalData);
-        if (request.getString("action").equals("Connect")) {
-            JSONObject response = new JSONObject();
-            response.put("response", "TabletConnected");
-            response.put("responseData", new JSONObject());
-            response.put("ipAddress", NetworkService.getIPAddress());
-            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-            return;
-        }
-
-        QaChecks qaChecks = new QaChecks();
-
-        if (request.getString("action").equals("RunAuto")) {
-            List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
-
-            JSONObject response = new JSONObject();
-            response.put("response", "TabletChecks");
-            response.put("responseData", (new Gson().toJson(qaCheckList)));
-            response.put("ipAddress", NetworkService.getIPAddress());
-            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-        }
-
-        if (request.getString("action").equals("RunGroup")) {
-            String group = request.getJSONObject("actionData").getString("group");
-            JSONObject response = new JSONObject();
-            response.put("response", "RunTabletGroup");
-            response.put("ipAddress", NetworkService.getIPAddress());
-            JSONObject responseData = new JSONObject();
-            responseData.put("group", group);
-            switch (group) {
-                case "network_checks": {
-                    List<QaChecks.QaCheck> qaCheckList = qaChecks.runNetworkChecks();
-                    responseData.put("data", (new Gson().toJson(qaCheckList)));
-                    break;
-                }
-                case "security_checks": {
-                    List<QaChecks.QaCheck> qaCheckList = qaChecks.runSecurityChecks();
-                    responseData.put("data", (new Gson().toJson(qaCheckList)));
-                    break;
-                }
-            }
-            response.put("responseData", responseData);
-
-            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-        }
-
-        if (request.getString("action").equals("RunAuto")) {
-            List<QaChecks.QaCheck> qaCheckList = qaChecks.runQa();
-
-            JSONObject response = new JSONObject();
-            response.put("response", "RunTabletGroup");
-            response.put("responseData", (new Gson().toJson(qaCheckList)));
-            response.put("ipAddress", NetworkService.getIPAddress());
-            NetworkService.sendMessage("NUC", "QA", (new Gson().toJson(response.toString())));
-        }
     }
     //endregion
 
