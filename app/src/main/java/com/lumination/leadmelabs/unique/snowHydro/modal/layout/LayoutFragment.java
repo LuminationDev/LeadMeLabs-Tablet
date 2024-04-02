@@ -48,20 +48,20 @@ public class LayoutFragment extends Fragment {
 
         //Set the adapter for backdrops
         if (newlySelectedStation != null) {
-            GridView layoutGridView = view.findViewById(R.id.layout_section);
+            GridView layoutGridView = view.findViewById(R.id.layout_grid);
             layoutAdapter = new LayoutAdapter(getContext());
-            reloadLayouts(); //Get the led wall (NovaStar) options
+            reloadLayouts(view); //Get the led wall (NovaStar) options
             layoutGridView.setAdapter(layoutAdapter);
         }
 
         //Observe any changes to the layout appliances
-        ApplianceFragment.mViewModel.getAppliances().observe(getViewLifecycleOwner(), v -> reloadLayouts());
+        ApplianceFragment.mViewModel.getAppliances().observe(getViewLifecycleOwner(), v -> reloadLayouts(view));
     }
 
     /**
      * Set the NovaStar options in the layout adapter.
      */
-    public void reloadLayouts() {
+    public void reloadLayouts(View view) {
         ArrayList<Option> allOptions = new ArrayList<>();
 
         List<Appliance> allAppliances = ApplianceFragment.mViewModel.getAppliances().getValue();
@@ -71,6 +71,15 @@ public class LayoutFragment extends Fragment {
             if (appliance.matchesDisplayCategory(Constants.LED_WALLS)) {
                 allOptions.addAll(appliance.options);
             }
+        }
+
+        // Show/hide the empty state or layout grid depending on if there are layout options available
+        if (allOptions.isEmpty()) {
+            view.findViewById(R.id.layout_grid).setVisibility(View.GONE);
+            view.findViewById(R.id.layout_empty_state).setVisibility(View.VISIBLE);
+        } else {
+            view.findViewById(R.id.layout_grid).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.layout_empty_state).setVisibility(View.GONE);
         }
 
         if (layoutAdapter != null) {

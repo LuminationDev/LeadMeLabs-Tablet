@@ -8,23 +8,39 @@
         <import type="com.lumination.leadmelabs.models.stations.Station"/>
 
         <variable
-            name="selectedStation"
+            name="selectedNestedStation"
             type="com.lumination.leadmelabs.models.stations.Station" />
     </data>
 
-    <!--LIMITED: 2 columns, 2 rows. Scroll is not wanted in the section for now-->
-    <GridView
-        android:layout_width="400dp"
-        android:layout_height="200dp"
-        android:clipToPadding="false"
-        android:fadeScrollbars="false"
-        android:horizontalSpacing="20dp"
-        android:numColumns="2"
-        android:rowCount="2"
-        android:scrollbarStyle="insideInset"
-        android:scrollbarThumbVertical="@color/blue"
-        android:scrollbarTrackVertical="@color/grey_medium"
-        android:smoothScrollbar="true"
-        android:verticalSpacing="30dp"
-        tools:listitem="@layout/card_backdrop_small" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/backdrop_empty_state"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No backdrops detected..."
+            android:paddingHorizontal="20dp" />
+
+        <!--LIMITED: 2 columns, 2 rows. Scroll is not wanted in the section for now-->
+        <GridView
+            android:id="@+id/backdrop_grid"
+            android:visibility="gone"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:clipToPadding="false"
+            android:fadeScrollbars="false"
+            android:horizontalSpacing="20dp"
+            android:numColumns="2"
+            android:rowCount="2"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarThumbVertical="@color/blue"
+            android:scrollbarTrackVertical="@color/grey_medium"
+            android:smoothScrollbar="true"
+            android:verticalSpacing="30dp"
+            tools:listitem="@layout/card_backdrop_small" />
+    </RelativeLayout>
+
 </layout>
