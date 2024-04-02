@@ -12,19 +12,31 @@
             type="com.lumination.leadmelabs.models.stations.Station" />
     </data>
 
-    <GridView
-        android:id="@+id/backdrop_section"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:fadeScrollbars="false"
-        android:horizontalSpacing="20dp"
-        android:numColumns="3"
-        android:scrollbarStyle="insideInset"
-        android:scrollbarThumbVertical="@color/blue"
-        android:scrollbarTrackVertical="@color/grey_medium"
-        android:smoothScrollbar="true"
-        android:verticalSpacing="30dp"
-        tools:listitem="@layout/card_backdrop" />
+        android:layout_height="match_parent">
 
+        <!--Empty state-->
+        <TextView
+            android:visibility="@{selectedNestedStation.videoController.getVideosOfType(`Backdrop`).size() == 0 ? View.VISIBLE : View.GONE, default=visible}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No backdrops detected..." />
+
+        <GridView
+            android:id="@+id/backdrop_grid"
+            android:visibility="@{selectedNestedStation.videoController.getVideosOfType(`Backdrop`).size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fadeScrollbars="false"
+            android:horizontalSpacing="20dp"
+            android:numColumns="3"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarThumbVertical="@color/blue"
+            android:scrollbarTrackVertical="@color/grey_medium"
+            android:smoothScrollbar="true"
+            android:verticalSpacing="30dp"
+            tools:listitem="@layout/card_backdrop" />
+    </RelativeLayout>
 </layout>

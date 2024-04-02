@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +27,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentStationSingleBoundBinding;
+import com.lumination.leadmelabs.databinding.FragmentStationSingleNestedBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -78,7 +79,7 @@ public class StationSingleNestedFragment extends Fragment {
     public static StationsViewModel mViewModel;
     public static BackdropAdapter localBackdropAdapter;
 
-    public FragmentStationSingleBoundBinding binding;
+    public FragmentStationSingleNestedBinding binding;
     private static boolean cancelledShutdown = false;
     public static int primaryStationId = 0; //track how the side menu's back action is handled
 
@@ -90,7 +91,7 @@ public class StationSingleNestedFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_station_single_bound, container, false);
+        View view = inflater.inflate(R.layout.fragment_station_single_nested, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;
@@ -115,7 +116,7 @@ public class StationSingleNestedFragment extends Fragment {
                 binding.setSelectedNestedStation(nestedStation);
 
                 // Set the adapter for backdrops
-                GridView backdropGridView = view.findViewById(R.id.backdrop_section);
+                GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
                 localBackdropAdapter = new BackdropAdapter(getContext(), true);
                 localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
                 backdropGridView.setAdapter(localBackdropAdapter);
@@ -427,10 +428,21 @@ public class StationSingleNestedFragment extends Fragment {
                 if (primary.nestedStations.contains(station.getId())) {
                     binding.setSelectedNestedStation(primary.getFirstNestedStationOrNull());
                     if (BackdropFragment.localBackdropAdapter != null) {
+                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VideoTypeBackdrop);
                         BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
                     }
                     if (localBackdropAdapter != null) {
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VideoTypeBackdrop);
                         localBackdropAdapter.notifyDataSetChanged();
+
+                        //Update the sections visibility
+                        if (localBackdropAdapter.backdropList.isEmpty()) {
+                            view.findViewById(R.id.backdrop_grid).setVisibility(View.GONE);
+                            view.findViewById(R.id.backdrop_empty_state).setVisibility(View.VISIBLE);
+                        } else {
+                            view.findViewById(R.id.backdrop_grid).setVisibility(View.VISIBLE);
+                            view.findViewById(R.id.backdrop_empty_state).setVisibility(View.GONE);
+                        }
                     }
                 }
             });
@@ -617,7 +629,7 @@ public class StationSingleNestedFragment extends Fragment {
             TextView controlTitle = view.findViewById(R.id.custom_controls_title);
             controlTitle.setText(R.string.playback_title);
 
-            GridView guides = view.findViewById(R.id.backdrop_section);
+            RelativeLayout guides = view.findViewById(R.id.backdrop_section);
             guides.setVisibility(View.GONE);
 
             FlexboxLayout controls = view.findViewById(R.id.video_controls);
@@ -642,7 +654,7 @@ public class StationSingleNestedFragment extends Fragment {
         //Reset the share code controls
 
         //Reset the guide section
-        GridView guides = view.findViewById(R.id.backdrop_section);
+        RelativeLayout guides = view.findViewById(R.id.backdrop_section);
         guides.setVisibility(View.VISIBLE);
     }
     //endregion

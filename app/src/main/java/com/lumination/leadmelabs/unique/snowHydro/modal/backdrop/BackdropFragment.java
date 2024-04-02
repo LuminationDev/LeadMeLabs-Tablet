@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentModalBackdropsBinding;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
@@ -47,9 +48,30 @@ public class BackdropFragment extends Fragment {
 
         //Set the adapter for backdrops
         binding.setSelectedNestedStation(nestedStation);
-        GridView backdropGridView = view.findViewById(R.id.backdrop_section);
+        GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
         localBackdropAdapter = new BackdropAdapter(getContext(), false);
         localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
         backdropGridView.setAdapter(localBackdropAdapter);
+
+
+        /*
+         * Observes changes in the list of stations and updates the UI accordingly.
+         * For each station in the list, if it the selected nested station,
+         * it updates the UI and notifies the backdrop adapter.
+         */
+        StationSingleNestedFragment.mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
+            if (stations == null) return;
+
+            stations.forEach(station -> {
+                //Only update the nested station
+                if (nestedStation.getId() == station.getId()) {
+                    binding.setSelectedNestedStation(nestedStation);
+                    if (localBackdropAdapter != null) {
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+                        localBackdropAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        });
     }
 }
