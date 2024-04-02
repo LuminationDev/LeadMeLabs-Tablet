@@ -58,6 +58,7 @@ import com.lumination.leadmelabs.unique.snowHydro.modal.backdrop.BackdropAdapter
 import com.lumination.leadmelabs.unique.snowHydro.modal.backdrop.BackdropFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.lumination.leadmelabs.utilities.Interlinking;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +68,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * This class is designed specifically for the Snowy Hydro project. The single page handles a
@@ -202,17 +202,17 @@ public class StationSingleNestedFragment extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                NetworkService.sendMessage("Station," +  collectNestedStations(selectedStation, String.class), "Experience", message.toString());
+                NetworkService.sendMessage("Station," +  Interlinking.collectNestedStations(selectedStation, String.class), "Experience", message.toString());
             }
             else {
-                NetworkService.sendMessage("Station," +  collectNestedStations(selectedStation, String.class), "Experience", "Restart");
+                NetworkService.sendMessage("Station," +  Interlinking.collectNestedStations(selectedStation, String.class), "Experience", "Restart");
             }
 
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
             if (fragment == null) return;
 
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationApplicationLaunch(collectNestedStations(selectedStation, int[].class), ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()), true);
+            DialogManager.awaitStationApplicationLaunch(Interlinking.collectNestedStations(selectedStation, int[].class), ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()), true);
 
             // Send data to Segment
             SegmentExperienceEvent event = new SegmentExperienceEvent(
@@ -240,7 +240,7 @@ public class StationSingleNestedFragment extends Fragment {
             if(SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
-                        NetworkService.sendMessage("Station," + collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
+                        NetworkService.sendMessage("Station," + Interlinking.collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
                     }
                 };
 
@@ -252,7 +252,7 @@ public class StationSingleNestedFragment extends Fragment {
                         "Confirm",
                         false);
             } else {
-                NetworkService.sendMessage("Station," + collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
+                NetworkService.sendMessage("Station," + Interlinking.collectNestedStations(selectedStation, String.class), "CommandLine", "StopGame");
             }
         });
 
@@ -285,7 +285,7 @@ public class StationSingleNestedFragment extends Fragment {
         shutdownButton.setOnClickListener(v -> {
             int id = binding.getSelectedStation().id;
             Station station = mViewModel.getStationById(id);
-            String joinedStations = collectNestedStations(station, String.class);
+            String joinedStations = Interlinking.collectNestedStations(station, String.class);
 
             if (station.status.equals("Off")) {
                 station.powerStatusCheck(3 * 1000 * 60);
@@ -447,37 +447,6 @@ public class StationSingleNestedFragment extends Fragment {
                 }
             });
         });
-    }
-
-    /**
-     * Collects the IDs of the provided station and its nested stations into either a comma-separated string or an integer array,
-     * based on the specified return type.
-     *
-     * @param station The main station whose ID and nested station IDs are to be collected.
-     * @param returnType The class object representing the desired return type: String.class for a comma-separated string or int[].class for an integer array.
-     * @return If returnType is String.class, returns a string containing the IDs of the main station and its nested stations, separated by commas.
-     *         If returnType is int[].class, returns an integer array containing the IDs of the main station and its nested stations.
-     * @throws IllegalArgumentException if returnType is neither String.class nor int[].class.
-     */
-    public static <T> T collectNestedStations(Station station, Class<T> returnType) {
-        List<Integer> stations = new ArrayList<>();
-        stations.add(station.getId());
-
-        if (station.nestedStations != null) {
-            stations.addAll(station.nestedStations);
-        }
-
-        if (returnType == String.class) {
-            return returnType.cast(stations.stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(",")));
-        } else if (returnType == int[].class) {
-            return returnType.cast(stations.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray());
-        } else {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getSimpleName());
-        }
     }
 
     /**
@@ -677,10 +646,10 @@ public class StationSingleNestedFragment extends Fragment {
         };
         if (shutdownButton.getText().toString().startsWith("Shut Down")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", collectNestedStations(station, int[].class), shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), "Shutdown", Interlinking.collectNestedStations(station, int[].class), shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
-            String stationIdsString = collectNestedStations(station, String.class);
+            String stationIdsString = Interlinking.collectNestedStations(station, String.class);
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
             if (DialogManager.shutdownTimer != null) {
                 DialogManager.shutdownTimer.cancel();

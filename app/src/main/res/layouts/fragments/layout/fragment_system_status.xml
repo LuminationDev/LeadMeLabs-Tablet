@@ -21,20 +21,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="-25dp"
-            android:drawableTop="@drawable/ic_network_connected"
             android:layout_marginEnd="10dp"
+            app:drawableTopCompat="@drawable/ic_network_connected"
             />
-        <TextView
-            android:id="@+id/battery_level"
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:drawablePadding="-25dp"
-            android:textSize="13dp"
-            android:text="99"
-            android:drawableTop="@drawable/ic_battery_level_green"
-            />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/battery_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:drawablePadding="-25dp"
+                android:text="99"
+                android:textSize="13sp"
+                app:drawableTopCompat="@drawable/ic_battery_level_green"
+                />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/charge_icon"
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/battery_level"
+                android:layout_marginEnd="3.5dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/charge_icon"
+                android:contentDescription="charging" />
+        </RelativeLayout>
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

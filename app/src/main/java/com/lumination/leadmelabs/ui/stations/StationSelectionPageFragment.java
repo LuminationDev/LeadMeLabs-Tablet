@@ -37,32 +37,27 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFrag
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.lumination.leadmelabs.utilities.Interlinking;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class StationSelectionPageFragment extends Fragment {
     private static final int CHECK_INTERVAL = 1000; // Interval to check the variable in milliseconds
     private static final int TIMEOUT_DURATION = 60000; // Timeout duration in milliseconds
     private int elapsedTime = 0;
-
     private FragmentPageStationSelectionBinding binding;
 
     public static FragmentManager childManager;
     public static StationsViewModel mViewModel;
-
     public static StationSelectionPageFragment instance;
     public static StationSelectionPageFragment getInstance() { return instance; }
-
     private EditText[] editTexts;
 
     @Nullable
@@ -221,11 +216,7 @@ public class StationSelectionPageFragment extends Fragment {
             return;
         }
 
-        //TODO not sure if I like this here
-        //STRICTLY FOR SNOWY HYDRO - If launching the Snowy Hydro Story, launch on the primary and the nested stations
-        int[] allStations = combineStationIdsWithNested(selectedIds, selectedApplication.getName());
-        String stationIds = String.join(", ", Arrays.stream(allStations).mapToObj(String::valueOf).toArray(String[]::new));
-
+        String joinedStations = Interlinking.combineStationIdsWithNested(selectedIds, selectedApplication.getName());
         //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
         if (MainActivity.isNucJsonEnabled) {
             JSONObject message = new JSONObject();
@@ -238,7 +229,7 @@ public class StationSelectionPageFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            NetworkService.sendMessage("Station," + stationIds, "Experience", message.toString());
+            NetworkService.sendMessage("Station," + joinedStations, "Experience", message.toString());
         }
         else {
             String additionalData = "Launch:" + selectedApplication.id;
@@ -246,7 +237,7 @@ public class StationSelectionPageFragment extends Fragment {
                 additionalData += ":Parameters:" + parameters;
             }
 
-            NetworkService.sendMessage("Station," + stationIds, "Experience", additionalData);
+            NetworkService.sendMessage("Station," + joinedStations, "Experience", additionalData);
         }
 
         // Send data to Segment - track the launch for each Station
@@ -265,27 +256,6 @@ public class StationSelectionPageFragment extends Fragment {
 
         fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
         DialogManager.awaitStationApplicationLaunch(selectedIds, mViewModel.getSelectedApplicationName(selectedApplication.id), false);
-    }
-
-    /**
-     * Combines the selected station ids with their nested station ids for Snowy Hydro application.
-     *
-     * @param selectedIds           The array of selected station ids.
-     * @param experienceName        The name of the experience that will be launched.
-     * @return An array containing the original station ids along with their nested station ids.
-     */
-    public int[] combineStationIdsWithNested(int[] selectedIds, String experienceName) {
-        return Arrays.stream(selectedIds)
-                .flatMap(id -> {
-                    Station station = mViewModel.getStationById(id);
-                    if (experienceName.toLowerCase().contains("snowy hydro")) {
-                        int[] nestedStations = StationSingleNestedFragment.collectNestedStations(station, int[].class);
-                        return IntStream.concat(IntStream.of(id), Arrays.stream(nestedStations));
-                    } else {
-                        return IntStream.of(id);
-                    }
-                })
-                .toArray();
     }
 
     /**

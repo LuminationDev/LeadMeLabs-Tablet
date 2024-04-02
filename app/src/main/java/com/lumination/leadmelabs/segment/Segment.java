@@ -56,6 +56,11 @@ public class Segment {
      * Setup the analytics class and the user id (location) for the session.
      */
     public static void initialise() {
+        // Check if analytic logging is allowed
+        if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+
         if (analytics == null) {
             analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey).build();
             Analytics.setSingletonInstance(analytics); // Set the initialized instance as a globally accessible instance.
@@ -94,6 +99,11 @@ public class Segment {
      * The resulting session ID is stored in the 'sessionId' variable.
      */
     public static void generateNewSessionId() {
+        // Check if analytic logging is allowed
+        if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+
         if (!sessionId.equals("Session not started")) {
             return;
         }
@@ -181,6 +191,11 @@ public class Segment {
      * @param details A {@link SegmentEvent} containing additional details or properties associated with the event.
      */
     public static <T extends IEventDetails> void trackAction(T details) {
+        // Check if analytic logging is allowed
+        if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+
         if (!isIdSet) return;
 
         Analytics.with(MainActivity.getInstance().getBaseContext())

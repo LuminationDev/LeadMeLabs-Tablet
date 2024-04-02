@@ -15,8 +15,8 @@
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="180dp"
-        android:layout_height="80dp"
+        android:layout_width="194dp"
+        android:layout_height="90dp"
         android:background="@{selectedNestedStation.videoController.currentVideoName == video.name ? @drawable/backdrop_ripple_white_rounded_border_blue : @drawable/backdrop_ripple_white_rounded_border_gray, default=@drawable/backdrop_ripple_white_rounded_border_gray}"
         android:clickable="true"
         android:focusable="true"
@@ -25,9 +25,9 @@
         app:alignItems="center">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="31dp"
-            android:layout_height="31dp"
-            android:layout_marginStart="20dp"
+            android:layout_width="41dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="25dp"
             android:layout_marginEnd="10dp"
             app:cardCornerRadius="16dp">
 

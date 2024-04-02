@@ -1,11 +1,11 @@
 package com.lumination.leadmelabs.ui.systemStatus;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,8 +23,6 @@ import com.lumination.leadmelabs.receivers.BatteryLevelReceiver;
 
 public class SystemStatusFragment extends Fragment {
 
-    private BatteryLevelReceiver batteryLevelReceiver;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -35,14 +33,37 @@ public class SystemStatusFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        batteryLevelReceiver = new BatteryLevelReceiver();
-        batteryLevelReceiver.setBatteryTextView(view.findViewById(R.id.battery_level));
+
+        setupBatteryMonitor(view);
+        setupNetworkMonitor(view);
+    }
+
+    /**
+     * Sets up a battery monitor to display battery level updates in a TextView.
+     *
+     * @param view The view containing the TextView for displaying battery level.
+     */
+    private void setupBatteryMonitor(View view) {
+        Context context = getContext();
+        if (context == null) return;
+
+        BatteryLevelReceiver batteryLevelReceiver = new BatteryLevelReceiver();
+        batteryLevelReceiver.setBatteryTextView(view.findViewById(R.id.battery_level), view.findViewById(R.id.charge_icon));
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         filter.addAction(Intent.ACTION_BATTERY_LOW);
         filter.addAction(Intent.ACTION_BATTERY_OKAY);
-        getContext().registerReceiver(batteryLevelReceiver, filter);
+        context.registerReceiver(batteryLevelReceiver, filter);
+    }
 
+    /**
+     * Sets up a network monitor to track network availability and update UI accordingly.
+     *
+     * @param view The view containing the TextView for displaying network connection status.
+     */
+    private void setupNetworkMonitor(View view) {
+        Context context = getContext();
+        if (context == null) return;
 
         NetworkRequest networkRequest = new NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -73,11 +94,20 @@ public class SystemStatusFragment extends Fragment {
             }
         };
 
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getContext().getSystemService(ConnectivityManager.class);
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         connectivityManager.requestNetwork(networkRequest, networkCallback);
-        NetworkInfo nInfo = connectivityManager.getActiveNetworkInfo();
-        boolean connected = nInfo != null && nInfo.isConnected();
+
+        NetworkCapabilities networkCapabilities = null;
+        Network[] networks = connectivityManager.getAllNetworks();
+        for (Network network : networks) {
+            networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+            if (networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+                break;
+            }
+        }
+
+        boolean connected = networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
         if (MainActivity.getInstance() != null) {
             MainActivity.runOnUI(() -> {
                 ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, connected ? R.drawable.ic_network_connected : R.drawable.ic_network_not_connected, 0, 0);
