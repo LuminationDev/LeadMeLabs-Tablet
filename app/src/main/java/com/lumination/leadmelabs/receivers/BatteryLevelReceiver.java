@@ -8,8 +8,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProviders;
+
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.segment.classes.SegmentTabletEvent;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import java.util.Locale;
 
@@ -53,12 +60,29 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
                 batteryChargingIcon.setVisibility(isCharging ? View.VISIBLE : View.GONE);
                 batteryTextView.setText(isCharging ? "" : String.format(Locale.ENGLISH, "%d", batteryPct));
 
+                int drawableId;
+                String eventToTrack = null;
+
                 if (batteryPct > 60) {
-                    batteryTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_battery_level_green, 0, 0);
+                    drawableId = R.drawable.ic_battery_level_green;
                 } else if (batteryPct > 15) {
-                    batteryTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_battery_level_yellow, 0, 0);
+                    drawableId = R.drawable.ic_battery_level_yellow;
+                } else if (batteryPct > 1) {
+                    drawableId = R.drawable.ic_battery_level_red;
+                    eventToTrack = SegmentConstants.Event_Tablet_Low_Battery;
                 } else {
-                    batteryTextView.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_battery_level_red, 0, 0);
+                    drawableId = R.drawable.ic_battery_level_red;
+                    eventToTrack = SegmentConstants.Event_Tablet_Flat_Battery;
+                }
+
+                batteryTextView.setCompoundDrawablesWithIntrinsicBounds(0, drawableId, 0, 0);
+
+                // Track a low battery event (below 15%) or flat battery event (1% left)
+                if (eventToTrack != null) {
+                    boolean hideStationControls = Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance())
+                            .get(SettingsViewModel.class).getHideStationControls().getValue());
+                    SegmentTabletEvent event = new SegmentTabletEvent(eventToTrack, hideStationControls);
+                    Segment.trackAction(event);
                 }
             }
         }
