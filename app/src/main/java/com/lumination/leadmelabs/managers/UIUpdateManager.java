@@ -645,11 +645,6 @@ public class UIUpdateManager {
                     }
                     break;
 
-                //BACKWARDS COMPATIBILITY
-                case "installedApplications":
-                    station.applicationController.setApplicationsFromJsonString(value);
-                    break;
-
                 case "installedJsonApplications":
                     try {
                         JSONArray jsonArray = new JSONArray(value);

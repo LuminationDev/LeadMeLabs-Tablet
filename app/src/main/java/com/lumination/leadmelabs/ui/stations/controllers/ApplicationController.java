@@ -1,5 +1,8 @@
 package com.lumination.leadmelabs.ui.stations.controllers;
 
+import androidx.lifecycle.ViewModelProviders;
+
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.CustomApplication;
@@ -7,6 +10,7 @@ import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,61 +70,16 @@ public class ApplicationController {
     private void setApplications(Object applications) {
         if (applications == null) return;
 
-        if (applications instanceof String) {
-            this.setApplicationsFromJsonString((String) applications);
-        } else if (applications instanceof JSONArray) {
+        if (applications instanceof JSONArray) {
             try {
                 this.setApplicationsFromJson((JSONArray) applications);
             } catch (JSONException e) {
                 Sentry.captureException(e);
             }
-        }
-    }
-
-    //BACKWARDS COMPATIBILITY
-    /**
-     * Parses a JSON string containing application data and updates the list of applications.
-     *
-     * @param applicationsJson The JSON string containing application data (string list).
-     */
-    public void setApplicationsFromJsonString(String applicationsJson) {
-        // Wrap with a catch for unforeseen characters - this will method will be removed in the future
-        try {
-            ArrayList<Application> newApplications = new ArrayList<>();
-            String[] apps = applicationsJson.split("/");
-
-            for (String app : apps) {
-                String[] appData = app.split("\\|");
-                if (appData.length <= 1) continue;
-
-                String appType = appData[0];
-                String appName = appData[2].replace("\"", "");
-                String appId = appData[1];
-                boolean isVr = appData.length >= 4 && Boolean.parseBoolean(appData[3]); // Backwards compatibility
-                String subtype = appData.length >= 5 ? appData[4]: ""; // Backwards compatibility
-
-                JSONObject appSubtype = null;
-                try {
-                    appSubtype = new JSONObject(subtype);
-                }
-                catch (Exception ignored) {}
-
-                Application newApplication = createNewApplication(appType, appName, appId, isVr, appSubtype);
-                if (newApplication == null) continue;
-                newApplications.add(newApplication);
-            }
-
-            if (newApplications.isEmpty()) {
-                return;
-            }
-
-            newApplications.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
-            this.applications = newApplications;
-
-            //Check for missing thumbnails
-            ImageManager.CheckLocalExperienceCache(applicationsJson);
-        } catch (Exception e) {
-            Sentry.captureException(e);
+        } else {
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                    + ": ApplicationController - applications not sent in JSON format.");
         }
     }
 
