@@ -52,6 +52,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -380,16 +381,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         isAppInForeground = true;
 
-        // If the tablet has lost connection, attempt to re-connect, otherwise collect the active appliances
-        if (hasNotReceivedPing > 3 && NetworkService.getNUCAddress() != null) {
-            NetworkService.refreshNUCAddress();
-        } else {
-            ApplianceFragment.mViewModel.getActiveAppliances();
-        }
-
+        // Prompt the user to pin the application
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         if(am.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_PINNED) {
             startLockTask();
+        }
+
+        // Check if the nuc address is set, if not do not attempt to contact the NUC
+        if (NetworkService.getNUCAddress() == null || Helpers.isNullOrEmpty(NetworkService.getNUCAddress())) return;
+
+        // If the tablet has lost connection, attempt to re-connect, otherwise collect the active appliances
+        if (hasNotReceivedPing > 3) {
+            NetworkService.refreshNUCAddress();
+        } else {
+            ApplianceFragment.mViewModel.getActiveAppliances();
         }
     }
 }
