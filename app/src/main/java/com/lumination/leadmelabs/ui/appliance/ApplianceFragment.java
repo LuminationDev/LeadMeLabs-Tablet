@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,14 +23,15 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Filler;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -88,6 +90,8 @@ public class ApplianceFragment extends Fragment {
         //Or if there is nothing present in other rooms display the single
         if(Objects.equals(roomType, "All") && checkForEmptyRooms(roomType)) {
             loadMultiRecycler(view);
+        } else if (Helpers.isNullOrEmpty(type.getValue())) {
+            loadMultiRecycler(view);
         } else {
             loadSingleRecycler(view, type.getValue());
         }
@@ -97,7 +101,7 @@ public class ApplianceFragment extends Fragment {
 
         mViewModel.getActiveAppliances().observe(getViewLifecycleOwner(), active -> {
             ApplianceViewModel.activeApplianceList = active;
-            new filler(active);
+            new Filler(active, overrideRoom);
         });
 
         instance = this;
@@ -191,34 +195,6 @@ public class ApplianceFragment extends Fragment {
     }
 
     /**
-     * If the lambda from observer does not access anything then it compiles as a singleton and
-     * does not allow for movement between subpages. Instantiating a class bypasses this base
-     * behaviour.
-     */
-    class filler {
-        /*
-         * Update all available ApplianceAdapters, depending if all rooms are visible or just a single
-         * one is active.
-         * @param active A list containing the IDs of any appliance card that needs to be refreshed due
-         *             to information changing.
-         */
-        public filler(HashMap<String, String> active) {
-            String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
-
-            boolean roomCheck = checkForEmptyRooms(roomType);
-            if((!Objects.equals(roomType, "All") || overrideRoom != null) && !roomCheck) {
-                for (String cards : active.keySet()) {
-                    ApplianceAdapter.getInstance().updateIfVisible(cards);
-                }
-            } else {
-                for (String cards : active.keySet()) {
-                    ApplianceParentAdapter.getInstance().updateIfVisible(cards);
-                }
-            }
-        }
-    }
-
-    /**
      * Reload the current appliance fragment when a room is changed. Reloading will trigger the view
      * creation redraw, switching between different layouts depending on what rooms are selected.
      */
@@ -287,6 +263,12 @@ public class ApplianceFragment extends Fragment {
      * @param roomType A string representing what room is being loaded.
      */
     private void loadSingleRoomData(List<Appliance> appliances, String roomType, View view) {
+        if (appliances.isEmpty()) {
+            loadSingleRecycler(view, "Scenes");
+            Toast.makeText(MainActivity.getInstance(), "No appliances have been sent from the NUC.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(applianceAdapter == null) {
             loadSingleRecycler(view, appliances.get(0).type);
         }
