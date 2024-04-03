@@ -30,9 +30,9 @@ import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.lumination.leadmelabs.utilities.Interlinking;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -135,13 +135,7 @@ public class ApplicationAdapter extends BaseAdapter {
                 return;
             }
 
-            //TODO not sure if I like this here
-            String joinedStations = String.valueOf(LibrarySelectionFragment.getStationId());
-            //STRICTLY FOR SNOWY HYDRO - If launching the Snowy Hydro Story, launch on the primary and the nested stations
-            if (currentApplication.getName().toLowerCase().contains("snowy hydro")) {
-                joinedStations = StationSingleNestedFragment.collectNestedStations(station, String.class);
-            }
-
+            String joinedStations = Interlinking.joinStations(station, LibrarySelectionFragment.getStationId(), currentApplication.getName());
             //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
             if (MainActivity.isNucJsonEnabled) {
                 JSONObject message = new JSONObject();
@@ -168,13 +162,12 @@ public class ApplicationAdapter extends BaseAdapter {
 
             sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
 
-            //TODO not sure if I like this here
-            //STRICTLY FOR SNOWY HYDRO - If launching the Snowy Hydro Story, wait for the primary and the nested stations
-            if (currentApplication.getName().toLowerCase().contains("snowy hydro")) {
-                DialogManager.awaitStationApplicationLaunch(StationSingleNestedFragment.collectNestedStations(station, int[].class), currentApplication.name, false);
-            } else {
-                DialogManager.awaitStationApplicationLaunch(new int[]{station.id}, currentApplication.name, false);
+            int[] ids = new int[]{station.id};
+            if (Interlinking.multiLaunch(currentApplication.getName())) {
+                ids = Interlinking.collectNestedStations(station, int[].class);
             }
+
+            DialogManager.awaitStationApplicationLaunch(ids, currentApplication.name, false);
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);

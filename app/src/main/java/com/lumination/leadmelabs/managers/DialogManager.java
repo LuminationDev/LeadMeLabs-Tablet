@@ -222,9 +222,8 @@ public class DialogManager {
                         .url("https://us-central1-leadme-labs.cloudfunctions.net/submitTicket")
                         .post(body)
                         .build();
-                Response response;
-                try {
-                    response = client.newCall(request).execute();
+                
+                try (Response response = client.newCall(request).execute()) {
                     if (response.isSuccessful()) {
                         MainActivity.runOnUI(() -> {
                             successText.setText("Ticket successfully submitted. This dialog will close in two seconds.");
@@ -810,6 +809,7 @@ public class DialogManager {
         View view = View.inflate(sideMenuFragment.getContext(), R.layout.dialog_pin, null);
         AlertDialog pinDialog = new AlertDialog.Builder(sideMenuFragment.getContext()).setView(view).create();
 
+        pinDialog.setCancelable(false);
         pinDialog.show();
         EditText pinEditText = view.findViewById(R.id.pin_code_input);
         pinEditText.requestFocus();
@@ -935,6 +935,7 @@ public class DialogManager {
         //Get the currently selected value for the locked room or 'None' if nothing has been selected
         TextView preview = view.findViewById(R.id.locked_room_preview);
         preview.setText(
+                SettingsFragment.mViewModel.getLockedRooms().getValue() == null ||
                 SettingsFragment.mViewModel.getLockedRooms().getValue().size() == 0 ?
                         "None" :
                         String.join(", ", SettingsFragment.mViewModel.getLockedRooms().getValue()));

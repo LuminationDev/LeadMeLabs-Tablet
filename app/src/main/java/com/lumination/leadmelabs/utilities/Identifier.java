@@ -10,6 +10,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 
 import java.util.HashMap;
 import java.util.List;
+
 /**
  * Class used to identify different areas of the lab. This can be built out to identify different
  * stations, rooms, lighting areas, etc..
@@ -17,7 +18,6 @@ import java.util.List;
 public class Identifier {
     //Detect if the function is already running, do not want to double up.
     private static boolean identifying = false;
-    public static int initialDelay = 2500;
 
     /**
      * Cycle through the currently viewable stations, triggering the identify stations overlay and the
@@ -29,7 +29,8 @@ public class Identifier {
             return;
         }
         identifying = true;
-        CountDownTimer timer = new CountDownTimer(4000L * (stations.size()), 4000) {
+
+        new CountDownTimer(4000L * (stations.size()), 4000) {
             @Override
             public void onTick(long l) {
                 int listIndex = (stations.size() - 1) - index[0];
@@ -37,7 +38,7 @@ public class Identifier {
                     return;
                 }
                 Station station = stations.get((stations.size() - 1) - index[0]);
-                NetworkService.sendMessage("NUC", "IdentifyStation", station.id + "");
+                NetworkService.sendMessage("NUC", "IdentifyStation", String.valueOf(station.id));
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Successfully located " + station.name, Toast.LENGTH_SHORT).show();
                 index[0]--;
 

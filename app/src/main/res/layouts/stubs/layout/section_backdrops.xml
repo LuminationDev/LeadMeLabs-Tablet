@@ -32,14 +32,14 @@
             android:layout_height="200dp"
             android:clipToPadding="false"
             android:fadeScrollbars="false"
-            android:horizontalSpacing="20dp"
+            android:horizontalSpacing="15dp"
             android:numColumns="2"
             android:rowCount="2"
             android:scrollbarStyle="insideInset"
             android:scrollbarThumbVertical="@color/blue"
             android:scrollbarTrackVertical="@color/grey_medium"
             android:smoothScrollbar="true"
-            android:verticalSpacing="30dp"
+            android:verticalSpacing="15dp"
             tools:listitem="@layout/card_backdrop_small" />
     </RelativeLayout>
 

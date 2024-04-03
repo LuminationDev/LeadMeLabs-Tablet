@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.databinding.CardLayoutBinding;
 import com.lumination.leadmelabs.models.Option;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.Interlinking;
 
 import java.util.ArrayList;
 
@@ -66,6 +67,10 @@ public class LayoutAdapter extends BaseAdapter {
         binding.setVariable(BR.option, currentOption);
 
         view.setOnClickListener(v -> {
+            //Launch a backdrop on the nested Station(s) when switching between the layouts
+            //(this may be the rings or logo video)
+            Interlinking.performAssociatedLayoutActions(mViewModel.getSelectedStation().getValue(), currentOption.getName());
+
             //additionalData break down
             //Action : [cbus unit : group address : id address : value] : [type : room : id appliance]
             NetworkService.sendMessage("NUC",

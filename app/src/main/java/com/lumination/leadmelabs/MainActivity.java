@@ -52,6 +52,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
 import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -280,11 +281,18 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private boolean isServiceRunning(Class<?> serviceClass) {
+    /**
+     * Checks if the NetworkService is currently running.
+     *
+     * @return true if the NetworkService is running, false otherwise.
+     */
+    private boolean isNetworkServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+        if (manager != null) {
+            for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+                if (processInfo.processName.equals(NetworkService.class.getName())) {
+                    return true;
+                }
             }
         }
         return false;
@@ -304,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
      * Start the network service.
      */
     public void restartNetworkService() {
-        if (!isServiceRunning(NetworkService.class) || !isAppInForeground) {
+        if (!isNetworkServiceRunning() || !isAppInForeground) {
             return;
         }
         Log.d(TAG, "restartNetworkService: ");
@@ -372,11 +380,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         isAppInForeground = true;
-        ApplianceFragment.mViewModel.getActiveAppliances();
 
+        // Prompt the user to pin the application
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         if(am.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_PINNED) {
             startLockTask();
+        }
+
+        // Check if the nuc address is set, if not do not attempt to contact the NUC
+        if (NetworkService.getNUCAddress() == null || Helpers.isNullOrEmpty(NetworkService.getNUCAddress())) return;
+
+        // If the tablet has lost connection, attempt to re-connect, otherwise collect the active appliances
+        if (hasNotReceivedPing > 3) {
+            NetworkService.refreshNUCAddress();
+        } else {
+            ApplianceFragment.mViewModel.getActiveAppliances();
         }
     }
 }
