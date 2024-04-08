@@ -10,6 +10,9 @@ import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.applications.ReviveApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
+import com.lumination.leadmelabs.models.applications.information.Information;
+import com.lumination.leadmelabs.models.applications.information.InformationConstants;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
@@ -17,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -138,6 +143,19 @@ public class ApplicationController {
             case "Revive":
                 temp = new ReviveApplication(appType, appName, appId, isVr, appSubtype);
                 break;
+        }
+
+        //Collect the description, tags & yearLevels from the InformationConstants file
+        Information information = InformationConstants.getValue(appId);
+        if (temp != null && information != null) {
+            temp.setInformation(information);
+        }
+        else if (temp != null) {
+            //No information exists, add a default information class
+            temp.setInformation(new Information(null,
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    new ArrayList<>()));
         }
 
         return temp;

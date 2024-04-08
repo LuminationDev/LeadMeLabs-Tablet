@@ -7,20 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardExperienceBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
-import com.lumination.leadmelabs.segment.Segment;
-import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.information.TagAdapter;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
+import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -38,16 +42,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ApplicationAdapter extends BaseAdapter {
     public ArrayList<Application> applicationList = new ArrayList<>();
     private final LayoutInflater mInflater;
+    private final Context context;
     public static StationsViewModel mViewModel;
     private final FragmentManager fragmentManager;
     private final SideMenuFragment sideMenuFragment;
 
     ApplicationAdapter(Context context, FragmentManager fragmentManager, SideMenuFragment fragment) {
         this.mInflater = LayoutInflater.from(context);
+        this.context = context;
         this.fragmentManager = fragmentManager;
         this.sideMenuFragment = fragment;
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
@@ -80,8 +87,10 @@ public class ApplicationAdapter extends BaseAdapter {
             binding = (CardExperienceBinding) view.getTag();
         }
 
+        //Set the experience image, tags and sub tags
         Application currentApplication = getItem(position);
-        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+        loadAdditionalInformation(view, currentApplication);
+
         binding.setApplication(currentApplication);
 
         View finalView = view;
@@ -114,10 +123,44 @@ public class ApplicationAdapter extends BaseAdapter {
         };
 
         view.setOnClickListener(selectGame);
-        Button playButton = view.findViewById(R.id.experience_play_button);
-        playButton.setOnClickListener(selectGame);
-
         return view;
+    }
+
+    /**
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param view               The parent view where the information will be displayed.
+     * @param currentApplication The application object containing information to be displayed.
+     */
+    private void loadAdditionalInformation(View view, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+
+        MainActivity.runOnUI(() -> {
+            //Setup the tags
+            RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+
+            // Add a default tag if none exist
+            List<String> tags = currentApplication.getInformation().getTags();
+            if (tags.isEmpty()) {
+                tags.add(TagConstants.DEFAULT);
+            }
+            TagAdapter adapter = new TagAdapter(tags);
+            recyclerView.setAdapter(adapter);
+
+            //Setup the sub tags
+            TextView textView = view.findViewById(R.id.subTags);
+            String subTags = String.join(", ", currentApplication.getInformation().getSubTags());
+
+            if (Helpers.isNullOrEmpty(subTags)) {
+                textView.setVisibility(View.GONE);
+            }
+            else {
+                textView.setVisibility(View.VISIBLE);
+                textView.setText(String.join(", ", currentApplication.getInformation().getSubTags()));
+            }
+        });
     }
 
     private void completeSelectApplicationAction(Application currentApplication) {
@@ -132,42 +175,17 @@ public class ApplicationAdapter extends BaseAdapter {
                 mViewModel.selectSelectedApplication(currentApplication.id);
                 mViewModel.setSelectedApplication(currentApplication);
                 loadSingleShareCodeFragment();
-                return;
             }
-
-            String joinedStations = Interlinking.joinStations(station, LibrarySelectionFragment.getStationId(), currentApplication.getName());
-            //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
-            if (MainActivity.isNucJsonEnabled) {
-                JSONObject message = new JSONObject();
-                try {
-                    message.put("Action", "Launch");
-                    message.put("ExperienceId", currentApplication.id);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                NetworkService.sendMessage("Station," + joinedStations, "Experience", message.toString());
+            //Check if application is of a video type and continue as normal
+            else if (currentApplication.HasCategory().equals(Constants.VideoPlayer)) {
+                loadApplication(station, currentApplication);
             }
+            //load the application details fragment instead
             else {
-                NetworkService.sendMessage("Station," + joinedStations, "Experience", "Launch:" + currentApplication.id);
+                mViewModel.selectSelectedApplication(currentApplication.id);
+                mViewModel.setSelectedApplication(currentApplication);
+                loadSingleApplicationFragment();
             }
-
-            // Send data to Segment
-            SegmentExperienceEvent event = new SegmentExperienceEvent(
-                    SegmentConstants.Event_Experience_Launch,
-                    LibrarySelectionFragment.getStationId(),
-                    currentApplication.getName(),
-                    currentApplication.getId(),
-                    currentApplication.getType());
-            Segment.trackAction(event);
-
-            sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-
-            int[] ids = new int[]{station.id};
-            if (Interlinking.multiLaunch(currentApplication.getName())) {
-                ids = Interlinking.collectNestedStations(station, int[].class);
-            }
-
-            DialogManager.awaitStationApplicationLaunch(ids, currentApplication.name, false);
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);
@@ -182,6 +200,52 @@ public class ApplicationAdapter extends BaseAdapter {
     }
 
     /**
+     * Loads the specified application onto the given station. This method handles the loading of
+     * the specified application onto the provided station. It constructs a message containing
+     * necessary information about the application launch, and sends it either using a JSON
+     * messaging system with fallback or a simpler string-based messaging system, depending on the
+     * application's compatibility settings.
+     *
+     * @param station The station onto which the application is to be loaded.
+     * @param currentApplication The application to be loaded.
+     */
+    private void loadApplication(Station station, Application currentApplication) {
+        String joinedStations = Interlinking.joinStations(station, LibrarySelectionFragment.getStationId(), currentApplication.getName());
+        //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
+        if (MainActivity.isNucJsonEnabled) {
+            JSONObject message = new JSONObject();
+            try {
+                message.put("Action", "Launch");
+                message.put("ExperienceId", currentApplication.id);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            NetworkService.sendMessage("Station," + joinedStations, "Experience", message.toString());
+        }
+        else {
+            NetworkService.sendMessage("Station," + joinedStations, "Experience", "Launch:" + currentApplication.id);
+        }
+
+        // Send data to Segment
+        SegmentExperienceEvent event = new SegmentExperienceEvent(
+                SegmentConstants.Event_Experience_Launch,
+                LibrarySelectionFragment.getStationId(),
+                currentApplication.getName(),
+                currentApplication.getId(),
+                currentApplication.getType());
+        Segment.trackAction(event);
+
+        sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+
+        int[] ids = new int[]{station.id};
+        if (Interlinking.multiLaunch(currentApplication.getName())) {
+            ids = Interlinking.collectNestedStations(station, int[].class);
+        }
+
+        DialogManager.awaitStationApplicationLaunch(ids, currentApplication.name, false);
+    }
+
+    /**
      * The application has been detected as a Share code subtype. Load in the Share Code fragment
      * for users to input the unique code to be sent to the selected Station.
      */
@@ -193,6 +257,21 @@ public class ApplicationAdapter extends BaseAdapter {
                         android.R.anim.fade_out)
                 .replace(R.id.main, ApplicationShareCodeFragment.class, null)
                 .addToBackStack("menu:dashboard:stationSingle:shareCode")
+                .commit();
+    }
+
+    /**
+     * The application has been detected as a Share code subtype. Load in the Share Code fragment
+     * for users to input the unique code to be sent to the selected Station.
+     */
+    private void loadSingleApplicationFragment() {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out)
+                .replace(R.id.main, ApplicationDetailsFragment.class, null)
+                .addToBackStack("menu:dashboard:stationSingle:applicationDetails")
                 .commit();
     }
 }

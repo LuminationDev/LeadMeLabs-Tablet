@@ -43,6 +43,8 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
     private FragmentLibraryApplicationBinding binding;
     public static FragmentManager childManager;
 
+    public static boolean isVr;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -59,16 +61,19 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+        isVr = bundle == null || bundle.getBoolean("isVr");
+
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr).size()) {
                     updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             } else {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplicationsByType(isVr).size()) {
                     updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             }
@@ -87,9 +92,9 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
 
         LibrarySelectionFragment.setStationId(stationId);
         if (LibrarySelectionFragment.getStationId() > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId());
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
         if (installedApplicationAdapter != null) {
             installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
@@ -110,19 +115,19 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      * @param onCreate A boolean representing if the fragment has just been created.
      */
     private void updateApplicationList(int stationId, GridView view, boolean onCreate) {
-        ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+        ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         if (!onCreate && newApplicationList.equals(installedApplicationList)) {
             return;
         }
 
         if (stationId > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId);
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId, isVr);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
         installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
         binding.setApplicationList(installedApplicationAdapter.applicationList);
-        binding.setApplicationsLoaded(mViewModel.getAllApplications().size() > 0);
+        binding.setApplicationsLoaded(mViewModel.getAllApplicationsByType(isVr).size() > 0);
 
         //The list has been updated, perform the search again
         performSearch(LibrarySelectionFragment.mViewModel.getCurrentSearch().getValue());

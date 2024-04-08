@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter your code!"
+                    android:text="Launch experience"
                     android:textColor="@color/black"
                     android:textFontWeight="600"
                     android:textSize="32sp" />
@@ -52,7 +52,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="To view your created "
+                        android:text="This will launch "
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
@@ -81,7 +81,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" in VR, you must first enter your share code:"
+                        android:text=", ending the current session."
                         android:textColor="@color/black"
                         android:textSize="14sp" />
                 </com.google.android.flexbox.FlexboxLayout>
@@ -139,11 +139,12 @@
                     app:layout_flexBasisPercent="65%"
                     app:layout_flexGrow="1">
 
-                    <!-- Display for code sharing applications -->
+                    <!--Display for regular non-share code experiences-->
                     <include
+                        android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        layout="@layout/section_experience_share_code"
+                        layout="@layout/section_experience_details"
                         app:selectedApplication="@{selectedApplication}"
                         app:layout_flexGrow="1"/>
 

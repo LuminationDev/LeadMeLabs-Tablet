@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
@@ -24,6 +27,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.applications.information.TagAdapter;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -38,6 +43,7 @@ import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.lumination.leadmelabs.utilities.Interlinking;
 
@@ -115,11 +121,9 @@ public class StationSelectionPageFragment extends Fragment {
         binding.setSelectedApplication(selectedApplication);
 
         if (selectedApplication != null) {
-            //TODO uncomment when application experiences have descriptions
-            //Helpers.SetExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            loadAdditionalInformation(view, selectedApplication);
         }
-        //TODO uncomment when application experiences have descriptions
-        //SetupEditText(view);
+        SetupEditText(view);
 
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
@@ -130,6 +134,43 @@ public class StationSelectionPageFragment extends Fragment {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
+            }
+        });
+    }
+
+    /**
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param view               The parent view where the information will be displayed.
+     * @param currentApplication The application object containing information to be displayed.
+     */
+    private void loadAdditionalInformation(View view, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+
+        MainActivity.runOnUI(() -> {
+            //Setup the tags
+            RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.getInstance(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+
+            // Add a default tag if none exist
+            List<String> tags = currentApplication.getInformation().getTags();
+            if (tags.isEmpty()) {
+                tags.add(TagConstants.DEFAULT);
+            }
+            TagAdapter adapter = new TagAdapter(tags);
+            recyclerView.setAdapter(adapter);
+
+            //Setup the sub tags
+            TextView textView = view.findViewById(R.id.subTags);
+            String subTags = String.join(", ", currentApplication.getInformation().getSubTags());
+
+            if (Helpers.isNullOrEmpty(subTags)) {
+                textView.setVisibility(View.GONE);
+            }
+            else {
+                textView.setVisibility(View.VISIBLE);
+                textView.setText(String.join(", ", currentApplication.getInformation().getSubTags()));
             }
         });
     }

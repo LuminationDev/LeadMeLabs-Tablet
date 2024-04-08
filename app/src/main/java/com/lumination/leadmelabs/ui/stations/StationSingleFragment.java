@@ -44,8 +44,8 @@ import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentStationEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
-import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
+import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -274,7 +274,10 @@ public class StationSingleFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getExperienceId()), true);
+            DialogManager.awaitStationApplicationLaunch(
+                    new int[] { binding.getSelectedStation().id },
+                    ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getExperienceId()),
+                    true);
 
             // Send data to Segment
             SegmentExperienceEvent event = new SegmentExperienceEvent(

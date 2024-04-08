@@ -14,7 +14,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryVideoBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
@@ -53,11 +52,11 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
         updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
-                if (localVideoAdapter.videoList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getStationVideos(LibrarySelectionFragment.getStationId()).size()) {
                     updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             } else {
-                if (localVideoAdapter.videoList.size() != mViewModel.getAllApplications().size()) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getAllVideos().size()) {
                     updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             }

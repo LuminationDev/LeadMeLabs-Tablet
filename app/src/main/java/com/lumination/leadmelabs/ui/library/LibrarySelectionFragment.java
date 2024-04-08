@@ -145,6 +145,12 @@ public class LibrarySelectionFragment extends Fragment {
             searchInput.setText("");
         });
 
+        FlexboxLayout applicationsButton = view.findViewById(R.id.view_applications_button);
+        applicationsButton.setOnClickListener(v -> {
+            switchLibrary("applications");
+            searchInput.setText("");
+        });
+
         FlexboxLayout videoButton = view.findViewById(R.id.view_video_button);
         videoButton.setOnClickListener(v -> {
             switchLibrary("videos");
@@ -157,7 +163,10 @@ public class LibrarySelectionFragment extends Fragment {
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Library");
             Segment.trackAction(event);
@@ -174,25 +183,40 @@ public class LibrarySelectionFragment extends Fragment {
     private void switchLibrary(String library) {
         // Refresh the search
         mViewModel.setCurrentSearch("");
+
+        // Begin a fragment transaction with fade animations
         FragmentTransaction transaction = childManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out,
                         android.R.anim.fade_in,
                         android.R.anim.fade_out);
 
+        // Create a Bundle to pass data to the fragment
+        Bundle bundle = new Bundle();
+
         switch (library) {
             case "vr_experiences":
-                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationLibraryFragment(), transaction);
+                // Set up the Bundle for VR experiences
+                bundle.putBoolean("isVr", true);
+                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationLibraryFragment(), bundle, transaction);
+                break;
+
+            case "applications":
+                // Set up the Bundle for applications
+                bundle.putBoolean("isVr", false);
+                setupLibrary("Application Library", "Application Library", "Pick an application to load", new ApplicationLibraryFragment(), bundle, transaction);
                 break;
 
             case "videos":
-                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoLibraryFragment(), transaction);
+                // Set up the Video Library
+                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoLibraryFragment(), null, transaction);
                 break;
         }
 
-        // Update the library type
+        // Update the library type in the ViewModel
         mViewModel.setLibraryType(library);
 
+        // Commit the transaction immediately
         transaction.commitNow();
     }
 
@@ -205,12 +229,18 @@ public class LibrarySelectionFragment extends Fragment {
      * @param libraryTitle The title of the library.
      * @param subTitle     The subtitle of the library.
      * @param fragment     The fragment representing the library.
+     * @param bundle       A argument bundle to be passed to the fragment.
      * @param transaction  The FragmentTransaction used for the transaction.
      */
-    private void setupLibrary(String pageTitle, String libraryTitle, String subTitle, Fragment fragment, FragmentTransaction transaction) {
+    private void setupLibrary(String pageTitle, String libraryTitle, String subTitle, Fragment fragment, Bundle bundle, FragmentTransaction transaction) {
         mViewModel.setPageTitle(pageTitle);
         mViewModel.setLibraryTitle(libraryTitle);
         mViewModel.setSubTitle(subTitle);
+
+        // Set arguments if bundle is provided
+        if (bundle != null) {
+            fragment.setArguments(bundle);
+        }
 
         if (fragment instanceof ILibraryInterface) {
             setInterface((ILibraryInterface) fragment);

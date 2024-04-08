@@ -23,10 +23,12 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
@@ -59,7 +61,9 @@ public class ApplicationShareCodeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
-        binding.setStations(mViewModel);
+
+        Station station = StationsFragment.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        binding.setSelectedStation(station);
 
         //Specifically set the selected application
         Application selectedApplication = mViewModel.getSelectedApplication().getValue();
@@ -112,8 +116,11 @@ public class ApplicationShareCodeFragment extends Fragment {
             NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", additionalData);
         }
 
-        ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        if (fragment != null) {
+            fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+        }
+        DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, StationsFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**

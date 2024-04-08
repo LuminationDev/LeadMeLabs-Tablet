@@ -9,4 +9,9 @@
     <corners
         android:topLeftRadius="8dp"
         android:topRightRadius="8dp"/>
+
+    <!-- Border color: Light Grey -->
+    <stroke
+        android:width="4dp"
+        android:color="#DCDFEA"/>
 </shape>

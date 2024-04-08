@@ -120,139 +120,116 @@
             </com.google.android.flexbox.FlexboxLayout>
 
 
-            <!--TODO hidden until there are descriptions about the applications-->
             <!-- Experience Section -->
-<!--            <com.google.android.flexbox.FlexboxLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="250dp"-->
-<!--                android:layout_marginHorizontal="30dp"-->
-<!--                app:flexDirection="row">-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="30dp"
+                app:flexDirection="row">
 
-                <!-- Experience image -->
-<!--                <com.google.android.flexbox.FlexboxLayout-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginEnd="20dp"-->
-<!--                    app:flexDirection="column"-->
-<!--                    app:layout_flexBasisPercent="35%"-->
-<!--                    app:layout_flexGrow="1">-->
+                <!--Experience image-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="20dp"
+                    app:flexDirection="column"
+                    app:layout_flexBasisPercent="35%"
+                    app:layout_flexGrow="1">
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:background="@drawable/card_white_border_gray">-->
+                    <include
+                        layout="@layout/section_experience_image"
+                        app:selectedApplication="@{selectedApplication}"/>
 
-<!--                        <ImageView-->
-<!--                            android:id="@+id/placeholder_image"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="165dp"-->
-<!--                            android:contentDescription="@string/experience_preview"-->
-<!--                            android:background="@drawable/image_background"-->
-<!--                            android:clipToOutline="true" />-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:paddingTop="15dp"-->
-<!--                            android:paddingStart="15dp"-->
-<!--                            android:text="@{selectedApplication.name, default=`Google Earth VR`}"-->
-<!--                            android:textColor="@color/black"-->
-<!--                            android:textSize="18sp"-->
-<!--                            tools:ignore="RtlSymmetry" />-->
-<!--                    </LinearLayout>-->
-
-
-<!--                </com.google.android.flexbox.FlexboxLayout>-->
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <!-- Experience details -->
-<!--                <com.google.android.flexbox.FlexboxLayout-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:flexDirection="column"-->
-<!--                    app:layout_flexBasisPercent="65%"-->
-<!--                    app:layout_flexGrow="1">-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    app:flexDirection="column"
+                    app:layout_flexBasisPercent="65%"
+                    app:layout_flexGrow="1">
 
-                    <!-- Display for regular non-share code experiences -->
-<!--                    <include-->
-<!--                        android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="0dp"-->
-<!--                        layout="@layout/section_experience_details"-->
-<!--                        app:selectedApplication="@{selectedApplication}"-->
-<!--                        app:layout_flexGrow="1"/>-->
+                    <!--Display for regular non-share code experiences-->
+                    <include
+                        android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        layout="@layout/section_experience_details"
+                        app:selectedApplication="@{selectedApplication}"
+                        app:layout_flexGrow="1"/>
 
-                    <!-- Display for code sharing applications -->
-<!--                    <include-->
-<!--                        android:visibility="@{selectedApplication.HasCategory().equals(`shareCode`) ? View.VISIBLE : View.GONE, default=gone }"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="0dp"-->
-<!--                        layout="@layout/section_experience_share_code"-->
-<!--                        app:selectedApplication="@{selectedApplication}"-->
-<!--                        app:layout_flexGrow="1"/>-->
+                    <!--Display for code sharing applications-->
+                    <include
+                        android:visibility="@{selectedApplication.HasCategory().equals(`shareCode`) ? View.VISIBLE : View.GONE, default=gone }"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        layout="@layout/section_experience_share_code"
+                        app:selectedApplication="@{selectedApplication}"
+                        app:layout_flexGrow="1"/>
 
-                    <!-- Display for video players (same as no-category for now) -->
-<!--                    <include-->
-<!--                        android:visibility="@{selectedApplication.HasCategory().equals(`video`) ? View.VISIBLE : View.GONE, default=gone }"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="0dp"-->
-<!--                        layout="@layout/section_experience_details"-->
-<!--                        app:selectedApplication="@{selectedApplication}"-->
-<!--                        app:layout_flexGrow="1"/>-->
+                    <!--Display for video players (same as no-category for now, in the future can select what player to use (Flat vs Regular))-->
+                    <include
+                        android:visibility="@{selectedApplication.HasCategory().equals(`video`) ? View.VISIBLE : View.GONE, default=gone }"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        layout="@layout/section_experience_details"
+                        app:selectedApplication="@{selectedApplication}"
+                        app:layout_flexGrow="1"/>
 
-                    <!-- Action buttons -->
-<!--                    <com.google.android.flexbox.FlexboxLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        app:flexDirection="row"-->
-<!--                        app:justifyContent="space_between">-->
+                    <!--Action buttons-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:flexDirection="row"
+                        app:justifyContent="space_between">
 
-<!--                        <CheckBox-->
-<!--                            android:id="@+id/select_all_checkbox"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginHorizontal="20dp"-->
-<!--                            android:buttonTint="@color/blue"-->
-<!--                            android:gravity="center"-->
-<!--                            android:text="Select all available stations" />-->
+                        <CheckBox
+                            android:id="@+id/select_all_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:buttonTint="@color/blue"
+                            android:gravity="center"
+                            android:text="Select all available stations" />
 
-<!--                        <com.google.android.flexbox.FlexboxLayout-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content">-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-<!--                            <Button-->
-<!--                                android:id="@+id/cancel_button"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginRight="10dp"-->
-<!--                                android:backgroundTint="@color/white"-->
-<!--                                android:letterSpacing="0.02"-->
-<!--                                android:paddingHorizontal="40dp"-->
-<!--                                android:paddingVertical="10dp"-->
-<!--                                android:text="Cancel"-->
-<!--                                android:textAllCaps="false"-->
-<!--                                android:textColor="@color/black"-->
-<!--                                android:textSize="16sp"/>-->
+                            <Button
+                                android:id="@+id/cancel_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:backgroundTint="@color/white"
+                                android:letterSpacing="0.02"
+                                android:paddingHorizontal="40dp"
+                                android:paddingVertical="10dp"
+                                android:text="Cancel"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"/>
 
-<!--                            <com.google.android.material.button.MaterialButton-->
-<!--                                android:id="@+id/select_stations"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:backgroundTint="@color/blue"-->
-<!--                                android:letterSpacing="0.02"-->
-<!--                                android:paddingHorizontal="50dp"-->
-<!--                                android:paddingVertical="10dp"-->
-<!--                                android:text="Play"-->
-<!--                                android:textAllCaps="false"-->
-<!--                                android:textSize="16sp" />-->
-<!--                        </com.google.android.flexbox.FlexboxLayout>-->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/select_stations"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/blue"
+                                android:letterSpacing="0.02"
+                                android:paddingHorizontal="50dp"
+                                android:paddingVertical="10dp"
+                                android:text="Play"
+                                android:textAllCaps="false"
+                                android:textSize="16sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
 
-<!--                    </com.google.android.flexbox.FlexboxLayout>-->
+                    </com.google.android.flexbox.FlexboxLayout>
 
-<!--                </com.google.android.flexbox.FlexboxLayout>-->
+                </com.google.android.flexbox.FlexboxLayout>
 
-<!--            </com.google.android.flexbox.FlexboxLayout>-->
+            </com.google.android.flexbox.FlexboxLayout>
 
             <!-- Station selection -->
             <com.google.android.flexbox.FlexboxLayout
@@ -303,66 +280,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:orientation="horizontal" />
-
-            <!--TODO remove this when applications have descriptions-->
-            <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                app:flexDirection="row">
-
-                <!-- Action buttons -->
-                <com.google.android.flexbox.FlexboxLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:flexDirection="row"
-                    app:justifyContent="space_between">
-
-                    <CheckBox
-                        android:id="@+id/select_all_checkbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:buttonTint="@color/blue"
-                        android:gravity="center"
-                        android:text="Select all available stations" />
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <Button
-                            android:id="@+id/cancel_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:backgroundTint="@color/white"
-                            android:letterSpacing="0.02"
-                            android:paddingHorizontal="40dp"
-                            android:paddingVertical="10dp"
-                            android:text="Cancel"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/select_stations"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/blue"
-                            android:letterSpacing="0.02"
-                            android:paddingHorizontal="50dp"
-                            android:paddingVertical="10dp"
-                            android:text="Play"
-                            android:textAllCaps="false"
-                            android:textSize="16sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                </com.google.android.flexbox.FlexboxLayout>
-
-            </com.google.android.flexbox.FlexboxLayout>
 
         </com.google.android.flexbox.FlexboxLayout>
 
