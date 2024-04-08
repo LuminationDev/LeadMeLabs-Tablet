@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class Interlinking {
     private static final ArrayList<String> multiLaunchApplications =
-            new ArrayList<>(Collections.singletonList("snow hydro"));
+            new ArrayList<>(Collections.singletonList("snowy hydro"));
 
     /**
      * Check if the experience that is about to be launch is supposed to be linked with another Station,
@@ -51,6 +51,28 @@ public class Interlinking {
                 .flatMapToInt(Arrays::stream)
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Collects nested integer arrays from selectedIds based on the provided experience name.
+     * Each element of the selectedIds array is mapped to a Station object using the ViewModel.
+     * If the experience allows multi-launch, nested stations are collected recursively.
+     *
+     * @param selectedIds An array of integer IDs representing selected stations.
+     * @param experienceName The name of the experience determining the collection behavior.
+     * @return An array of integers representing collected nested station IDs.
+     */
+    public static int[] collectNestedIntArray(int[] selectedIds, String experienceName) {
+        return Arrays.stream(selectedIds)
+                .mapToObj(StationsFragment.mViewModel::getStationById)
+                .flatMapToInt(station -> {
+                    int[] ids = new int[]{station.id};
+                    if (Interlinking.multiLaunch(experienceName)) {
+                        ids = Interlinking.collectNestedStations(station, int[].class);
+                    }
+                    return Arrays.stream(ids);
+                })
+                .toArray();
     }
 
     /**

@@ -240,8 +240,11 @@ public class StationSelectionPageFragment extends Fragment {
             NetworkService.sendMessage("Station," + joinedStations, "Experience", additionalData);
         }
 
+        // Get all the Stations it is launching on
+        int[] resultIds = Interlinking.collectNestedIntArray(selectedIds, selectedApplication.getName());
+
         // Send data to Segment - track the launch for each Station
-        for (int station: selectedIds) {
+        for (int station: resultIds) {
             SegmentExperienceEvent event = new SegmentExperienceEvent(
                     SegmentConstants.Event_Experience_Launch,
                     station,
@@ -255,7 +258,7 @@ public class StationSelectionPageFragment extends Fragment {
         if (fragment == null) return;
 
         fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationApplicationLaunch(selectedIds, mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        DialogManager.awaitStationApplicationLaunch(resultIds, mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**
