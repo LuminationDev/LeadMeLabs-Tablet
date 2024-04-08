@@ -2,63 +2,77 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="video"
             type="com.lumination.leadmelabs.models.Video" />
     </data>
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/logo_fragment"
-        android:background="@drawable/ripple_white"
+
+    <LinearLayout
+        android:layout_width="323dp"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:flexDirection="column"
-        android:clickable="true"
-        app:justifyContent="flex_end"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="15dp"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:background="@drawable/card_white_border_gray"
         android:elevation="10dp">
+
         <ImageView
-            android:layout_marginBottom="15dp"
             android:id="@+id/placeholder_image"
-            android:layout_height="130dp"
-            android:layout_width="285dp"
-            android:contentDescription="Image" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="@{video.name, default=Google}"/>
+            android:layout_height="147dp"
+            android:layout_width="match_parent"
+            android:contentDescription="@string/experience_preview"
+            android:background="@drawable/image_background"
+            android:scaleType="fitXY"
+            android:clipToOutline="true" />
 
         <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="270dp"
-            app:flexDirection="row"
-            app:justifyContent="space_between">
+            android:paddingHorizontal="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            app:flexDirection="column">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/video_watch_button"
-                android:layout_width="wrap_content"
-                app:strokeColor="@color/blue"
-                app:strokeWidth="2dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/blue"
-                app:backgroundTint="@color/white"
-                android:elevation="0dp"
-                android:gravity="center"
-                app:rippleColor="@color/grey"
-                android:stateListAnimator="@null"
-                android:backgroundTint="@android:color/white"
-                android:textAllCaps="false"
-                android:text="Watch"/>
-
-            <!--TODO: Made invisible until icons etc are implemented-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:visibility="visible"
-                android:text="@{video.videoType.equals(`Vr`) ? `VR` : `Non-VR`, default=VR}"
-                app:layout_alignSelf="flex_end"/>
+                android:textSize="17sp"
+                android:text="@{video.name, default=Google}"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:flexDirection="row"
+                app:justifyContent="space_between"
+                app:alignItems="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/video_watch_button"
+                    android:layout_width="wrap_content"
+                    app:strokeColor="@color/blue"
+                    app:strokeWidth="2dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blue"
+                    app:backgroundTint="@color/white"
+                    android:elevation="0dp"
+                    android:gravity="center"
+                    app:rippleColor="@color/grey"
+                    android:stateListAnimator="@null"
+                    android:backgroundTint="@android:color/white"
+                    android:textAllCaps="false"
+                    android:text="Watch"/>
+
+                <ImageView
+                    android:visibility="@{video.videoType.equals(`Vr`) ? View.VISIBLE : View.GONE, default=gone}"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Vr icon"
+                    android:src="@drawable/vr_headset_gray"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
         </com.google.android.flexbox.FlexboxLayout>
-    </com.google.android.flexbox.FlexboxLayout>
+
+    </LinearLayout>
+
 </layout>
