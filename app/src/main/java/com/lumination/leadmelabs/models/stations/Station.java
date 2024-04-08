@@ -121,6 +121,7 @@ public class Station implements Cloneable {
             e.printStackTrace();
         }
 
+        assert clonedStation != null;
         return clonedStation;
     }
 

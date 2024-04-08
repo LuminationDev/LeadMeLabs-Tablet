@@ -76,7 +76,9 @@ public class StationSelectionPageFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
+        if (stations == null) return view;
+
+        stations = new ArrayList<>(stations);
         for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);
@@ -128,7 +130,9 @@ public class StationSelectionPageFragment extends Fragment {
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<Station>) stations.clone();
+            if (stations == null) return;
+
+            stations = new ArrayList<>(stations);
             for (Station station:stations) {
                 if (!station.status.equals("Off") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
@@ -183,7 +187,9 @@ public class StationSelectionPageFragment extends Fragment {
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<Station>) stations.clone();
+            if (stations == null) return;
+
+            stations = new ArrayList<>(stations);
             for (Station station:stations) {
                 if (!station.status.equals("Off") && station.videoController.hasLocalVideo(selectedVideo)) {
                     station.selected = checked;
@@ -472,7 +478,9 @@ public class StationSelectionPageFragment extends Fragment {
         super.onDestroyView();
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
+        if (stations == null) return;
+
+        stations = new ArrayList<>(stations);
         for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);

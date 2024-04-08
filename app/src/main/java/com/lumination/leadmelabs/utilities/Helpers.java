@@ -32,9 +32,9 @@ import java.util.Objects;
 
 public class Helpers {
     public static ArrayList<Station> cloneStationList(List<Station> stationList) {
-        ArrayList<Station> clone = new ArrayList<Station>(stationList.size());
+        ArrayList<Station> clone = new ArrayList<>(stationList.size());
         for (Station station:stationList) {
-            clone.add((Station) station.clone());
+            clone.add(station.clone());
         }
         return clone;
     }

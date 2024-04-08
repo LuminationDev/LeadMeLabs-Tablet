@@ -48,8 +48,10 @@ public class StationsViewModel extends ViewModel {
 
     public List<String> getStationNames(int[] stationIds) {
         ArrayList<Station> stations = (ArrayList<Station>) this.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
-        List<Integer> stationIdsList =  new ArrayList<Integer>(stationIds.length);
+        if (stations == null) return new ArrayList<>();
+
+        stations = new ArrayList<>(stations);
+        List<Integer> stationIdsList =  new ArrayList<>(stationIds.length);
         for (int i : stationIds)
         {
             stationIdsList.add(i);
@@ -81,7 +83,9 @@ public class StationsViewModel extends ViewModel {
 
     public ArrayList<Station> getSelectedStations() {
         ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
-        selectedStations = (ArrayList<Station>) selectedStations.clone();
+        if (selectedStations == null) return new ArrayList<>();
+
+        selectedStations = new ArrayList<>(selectedStations);
         selectedStations.removeIf(station -> !station.selected);
         return selectedStations;
     }

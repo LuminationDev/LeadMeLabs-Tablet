@@ -121,7 +121,10 @@ public class DashboardPageFragment extends Fragment {
                 if (confirmationResult) {
                     endAllSessionsConfirmation();
                 } else {
-                    ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
+                    ArrayList<Station> stationsToSelectFrom = StationsFragment.getInstance().getRoomStations();
+                    if (stationsToSelectFrom == null) return;
+
+                    stationsToSelectFrom = new ArrayList<>(stationsToSelectFrom);
                     List<Station> filteredList = stationsToSelectFrom.stream()
                             .filter(station -> !station.getIsHidden())
                             .collect(Collectors.toList());

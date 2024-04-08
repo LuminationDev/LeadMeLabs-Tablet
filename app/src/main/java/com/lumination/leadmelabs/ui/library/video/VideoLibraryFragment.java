@@ -86,7 +86,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
             localVideoList = (ArrayList<Video>) mViewModel.getAllVideos();
         }
 
-        localVideoAdapter.videoList = (ArrayList<Video>) localVideoList.clone();
+        localVideoAdapter.videoList = new ArrayList<>(localVideoList);
         binding.setVideoList(localVideoAdapter.videoList);
         binding.setVideosLoaded(mViewModel.getAllApplications().size() > 0);
 
@@ -96,7 +96,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     }
 
     public void performSearch(String searchTerm) {
-        ArrayList<Video> filteredVideoList = (ArrayList<Video>) localVideoList.clone();
+        ArrayList<Video> filteredVideoList = new ArrayList<>(localVideoList);
         filteredVideoList.removeIf(currentVideo -> !currentVideo.getName().toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
         localVideoAdapter.videoList = filteredVideoList;
         binding.setVideoList(localVideoAdapter.videoList);

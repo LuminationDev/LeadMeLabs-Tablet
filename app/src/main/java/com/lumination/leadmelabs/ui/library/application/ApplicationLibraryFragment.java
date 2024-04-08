@@ -97,7 +97,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
         if (installedApplicationAdapter != null) {
-            installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
+            installedApplicationAdapter.applicationList = new ArrayList<>(installedApplicationList);
             binding.setApplicationList(installedApplicationAdapter.applicationList);
             installedApplicationAdapter.notifyDataSetChanged();
         }
@@ -125,7 +125,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         } else {
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
-        installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
+        installedApplicationAdapter.applicationList = new ArrayList<>(installedApplicationList);
         binding.setApplicationList(installedApplicationAdapter.applicationList);
         binding.setApplicationsLoaded(mViewModel.getAllApplicationsByType(isVr).size() > 0);
 
@@ -135,7 +135,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
     }
 
     public void performSearch(String searchTerm) {
-        ArrayList<Application> filteredApplicationList = (ArrayList<Application>) installedApplicationList.clone();
+        ArrayList<Application> filteredApplicationList = new ArrayList<>(installedApplicationList);
         filteredApplicationList.removeIf(currentApplication -> !currentApplication.name.toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
         installedApplicationAdapter.applicationList = filteredApplicationList;
         binding.setApplicationList(installedApplicationAdapter.applicationList);
