@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.models.applications.information;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,10 +11,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardTagBinding;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     private final List<String> tags;
+    private static final HashMap<String, Integer> DEFAULT_TAG_DRAWABLE_MAP = new HashMap<>();
+
+    // Initialize default tag drawable map
+    static {
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.HASS, R.drawable.tag_yellow_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.MATHS, R.drawable.tag_blue_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.SCIENCE, R.drawable.tag_green_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.ART, R.drawable.tag_purple_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.HEALTH_PE, R.drawable.tag_orange_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.ENGLISH, R.drawable.tag_rose_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.DESIGN_TECH, R.drawable.tag_teal_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.LANGUAGES, R.drawable.tag_fuchsia_curved);
+    }
 
     public TagAdapter(List<String> tags) {
         this.tags = tags;
@@ -40,57 +55,24 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
 
     public static class TagViewHolder extends RecyclerView.ViewHolder {
         private final CardTagBinding binding;
+        private final Context context;
 
         TagViewHolder(CardTagBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            this.context = binding.getRoot().getContext();
         }
 
         void bind(String tag) {
             binding.setTag(tag);
 
-            //Assign the background 'color' based on the tag type
-            int backgroundResource;
-
-            switch (tag) {
-                case TagConstants.HASS:
-                    backgroundResource = R.drawable.tag_yellow_curved;
-                    break;
-
-                case TagConstants.MATHS:
-                    backgroundResource = R.drawable.tag_blue_curved;
-                    break;
-
-                case TagConstants.SCIENCE:
-                    backgroundResource = R.drawable.tag_green_curved;
-                    break;
-
-                case TagConstants.ART:
-                    backgroundResource = R.drawable.tag_purple_curved;
-                    break;
-
-                case TagConstants.HEALTH_PE:
-                    backgroundResource = R.drawable.tag_orange_curved;
-                    break;
-
-                case TagConstants.ENGLISH:
-                    backgroundResource = R.drawable.tag_rose_curved;
-                    break;
-
-                case TagConstants.DESIGN_TECH:
-                    backgroundResource = R.drawable.tag_teal_curved;
-                    break;
-
-                case TagConstants.LANGUAGES:
-                    backgroundResource = R.drawable.tag_fuchsia_curved;
-                    break;
-
-                case TagConstants.DEFAULT:
-                default:
-                    backgroundResource = R.drawable.tag_default_curved;
+            // Assign background drawable resource based on tag type
+            Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(tag);
+            if (backgroundResource != null) {
+                binding.setBackgroundResource(ContextCompat.getDrawable(context, backgroundResource));
+            } else {
+                binding.setBackgroundResource(ContextCompat.getDrawable(context, R.drawable.tag_default_curved));
             }
-
-            binding.setBackgroundResource(ContextCompat.getDrawable(binding.getRoot().getContext(), backgroundResource));
         }
     }
 }

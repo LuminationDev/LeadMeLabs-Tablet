@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -28,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Helpers {
     public static ArrayList<Station> cloneStationList(List<Station> stationList) {
@@ -85,52 +86,45 @@ public class Helpers {
     public static void setExperienceImage(String type, String name, String id, View view) {
         if (view == null) return;
 
-        //Set the experience image
-        String filePath;
-        switch(type) {
-            case "Custom":
-                filePath = CustomApplication.getImageUrl(name);
-                break;
-            case "Embedded":
-                filePath = EmbeddedApplication.getImageUrl(name);
-                break;
-            case "Steam":
-                filePath = SteamApplication.getImageUrl(name, id);
-                break;
-            case "Vive":
-                filePath = ViveApplication.getImageUrl(id);
-                break;
-            case "Revive":
-                filePath = ReviveApplication.getImageUrl(id);
-                break;
-            default:
-                filePath = "";
-        }
+        // Set the experience image
+        String filePath = getImageFilePath(type, name , id);
 
-        //Attempt to load the image url or a default image if nothing is available
-        if(Objects.equals(filePath, "")) {
-            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.placeholder_image));
+        ImageView imageView = view.findViewById(R.id.placeholder_image);
+        LinearLayout progressBarContainer = view.findViewById(R.id.progress_spinner_container);
+
+        // Show progress spinner while image is loading
+        showProgressBar(progressBarContainer, imageView);
+
+        // Load the image using Glide
+        if (TextUtils.isEmpty(filePath)) {
+            hideProgressBar(progressBarContainer, imageView);
+
+            // Load default placeholder image if filePath is empty
+            Glide.with(view)
+                    .load(R.drawable.default_header)
+                    .into(imageView);
         } else {
-            Glide.with(view).load(filePath)
+            // Load the image from filePath
+            Glide.with(view)
+                    .load(filePath)
+                    .placeholder(R.drawable.default_header) // Set a placeholder image
+                    .error(R.drawable.default_header) // Set an error image
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            // Error occurred while loading the image, change the imageUrl to the fallback image
-                            MainActivity.runOnUI(() -> {
-                                Glide.with(view)
-                                        .load(R.drawable.default_header)
-                                        .into((ImageView) view.findViewById(R.id.placeholder_image));
-                            });
-                            return true;
+                            // Hide progress spinner if loading failed
+                            hideProgressBar(progressBarContainer, imageView);
+                            return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            // Image loaded successfully
+                            // Hide progress spinner if image loaded successfully
+                            hideProgressBar(progressBarContainer, imageView);
                             return false;
                         }
                     })
-                    .into((ImageView) view.findViewById(R.id.placeholder_image));
+                    .into(imageView);
         }
     }
 
@@ -142,32 +136,70 @@ public class Helpers {
      */
     public static void setVideoImage(String id, View view) {
         String filePath = ImageManager.loadLocalImage(id, "video");
+        ImageView imageView = view.findViewById(R.id.placeholder_image);
+        LinearLayout progressBarContainer = view.findViewById(R.id.progress_spinner_container);
 
-        //Attempt to load the image url or a default image if nothing is available
-        if(Objects.equals(filePath, "")) {
-            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.placeholder_image));
+        // Show progress spinner while image is loading
+        showProgressBar(progressBarContainer, imageView);
+
+        // Load the image using Glide
+        if (TextUtils.isEmpty(filePath)) {
+            hideProgressBar(progressBarContainer, imageView);
+
+            // Load default placeholder image if filePath is empty
+            Glide.with(view)
+                    .load(R.drawable.default_header)
+                    .into(imageView);
         } else {
-            Glide.with(view).load(filePath)
+            // Load the image from filePath
+            Glide.with(view)
+                    .load(filePath)
+                    .placeholder(R.drawable.default_header) // Set a placeholder image
+                    .error(R.drawable.default_header) // Set an error image
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            // Error occurred while loading the image, change the imageUrl to the fallback image
-                            MainActivity.runOnUI(() -> {
-                                Glide.with(view)
-                                        .load(R.drawable.default_header)
-                                        .into((ImageView) view.findViewById(R.id.placeholder_image));
-                            });
-                            return true;
+                            // Hide progress spinner if loading failed
+                            hideProgressBar(progressBarContainer, imageView);
+                            return false;
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            // Image loaded successfully
+                            // Hide progress spinner if image loaded successfully
+                            hideProgressBar(progressBarContainer, imageView);
                             return false;
                         }
                     })
-                    .into((ImageView) view.findViewById(R.id.placeholder_image));
+                    .into(imageView);
         }
+    }
+
+    private static String getImageFilePath(String type, String name, String id) {
+        switch (type) {
+            case "Custom":
+                return CustomApplication.getImageUrl(name);
+            case "Embedded":
+                return EmbeddedApplication.getImageUrl(name);
+            case "Steam":
+                return SteamApplication.getImageUrl(name, id);
+            case "Vive":
+                return ViveApplication.getImageUrl(id);
+            case "Revive":
+                return ReviveApplication.getImageUrl(id);
+            default:
+                return "";
+        }
+    }
+
+    private static void showProgressBar(LinearLayout progressBarContainer, ImageView imageView) {
+        progressBarContainer.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.INVISIBLE);
+    }
+
+    private static void hideProgressBar(LinearLayout progressBarContainer, ImageView imageView) {
+        progressBarContainer.setVisibility(View.GONE);
+        imageView.setVisibility(View.VISIBLE);
     }
 
     /**

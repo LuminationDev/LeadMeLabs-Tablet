@@ -193,7 +193,6 @@ public class LibrarySelectionFragment extends Fragment {
 
         // Create a Bundle to pass data to the fragment
         Bundle bundle = new Bundle();
-
         switch (library) {
             case "vr_experiences":
                 // Set up the Bundle for VR experiences
@@ -204,7 +203,7 @@ public class LibrarySelectionFragment extends Fragment {
             case "applications":
                 // Set up the Bundle for applications
                 bundle.putBoolean("isVr", false);
-                setupLibrary("Application Library", "Application Library", "Pick an application to load", new ApplicationLibraryFragment(), bundle, transaction);
+                setupLibrary("App Library", "Application Library", "Pick an application to load", new ApplicationLibraryFragment(), bundle, transaction);
                 break;
 
             case "videos":
@@ -250,7 +249,10 @@ public class LibrarySelectionFragment extends Fragment {
     }
 
     private void dismissKeyboard(View searchInput) {
-        InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        Context context = getContext();
+        if (context == null) return;
+
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchInput.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

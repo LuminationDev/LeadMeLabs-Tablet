@@ -16,13 +16,31 @@
         android:padding="4dp"
         android:background="@drawable/card_white_border_gray">
 
-        <ImageView
-            android:id="@+id/placeholder_image"
-            android:layout_height="147dp"
+        <FrameLayout
             android:layout_width="315dp"
-            android:contentDescription="@string/experience_preview"
-            android:background="@drawable/image_background"
-            android:clipToOutline="true" />
+            android:layout_height="147dp">
+
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/experience_preview"
+                android:background="@drawable/image_background"
+                android:clipToOutline="true" />
+
+            <LinearLayout
+                android:id="@+id/progress_spinner_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progress_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </FrameLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"

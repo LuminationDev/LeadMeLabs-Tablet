@@ -75,92 +75,114 @@ public class ApplicationAdapter extends BaseAdapter {
         return 0;
     }
 
+    /**
+     * Sets up the view for an item in the ListView.
+     *
+     * @param position           The position of the item in the ListView.
+     * @param convertView        The recycled view to populate.
+     * @param parent             The parent ViewGroup.
+     * @return                   The populated view for the item.
+     */
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        CardExperienceBinding binding;
-        if (view == null) {
-            mInflater.inflate(R.layout.card_experience, null);
-            binding = CardExperienceBinding.inflate(mInflater, parent, false);
-            view = binding.getRoot();
-            view.setTag(binding);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            CardExperienceBinding binding = CardExperienceBinding.inflate(mInflater, parent, false);
+            convertView = binding.getRoot();
+            viewHolder = new ViewHolder(binding);
+            convertView.setTag(viewHolder);
         } else {
-            binding = (CardExperienceBinding) view.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //Set the experience image, tags and sub tags
+        //Set the experience image, tags, and sub tags
         Application currentApplication = getItem(position);
-        loadAdditionalInformation(view, currentApplication);
+        loadAdditionalInformation(viewHolder, currentApplication);
 
-        binding.setApplication(currentApplication);
+        viewHolder.binding.setApplication(currentApplication);
 
-        View finalView = view;
-        View.OnClickListener selectGame = view1 -> {
-            InputMethodManager inputManager = (InputMethodManager) finalView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(finalView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            // confirm if it is one of the dodgy apps
-            ArrayList<String> gamesWithAdditionalStepsRequired = new ArrayList<>();
+        convertView.setOnClickListener(v -> selectGame(v, currentApplication));
 
-            gamesWithAdditionalStepsRequired.add("513490"); // 1943 Berlin Blitz
-            gamesWithAdditionalStepsRequired.add("408340"); // Gravity Lab
-            gamesWithAdditionalStepsRequired.add("1053760"); // Arkio
+        return convertView;
+    }
 
-            if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
-                BooleanCallbackInterface booleanCallbackInterface = result -> {
-                    if (result) {
-                        completeSelectApplicationAction(currentApplication);
-                    }
-                };
-                DialogManager.createConfirmationDialog(
-                        "Attention",
-                        "This game may require additional steps to launch and may not be able to launch automatically.",
-                        booleanCallbackInterface,
-                        "Go Back",
-                        "Continue",
-                        false);
-            } else {
-                completeSelectApplicationAction(currentApplication);
-            }
-        };
+    /**
+     * ViewHolder class to hold the binding object for each item view.
+     */
+    private static class ViewHolder {
+        final CardExperienceBinding binding;
 
-        view.setOnClickListener(selectGame);
-        return view;
+        ViewHolder(CardExperienceBinding binding) {
+            this.binding = binding;
+        }
+    }
+
+    /**
+     * Handles the selection of a game/application.
+     *
+     * @param view                The View that triggered the selection action.
+     * @param currentApplication  The Application object representing the selected game/application.
+     */
+    private void selectGame(View view, Application currentApplication) {
+        InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        // confirm if it is one of the dodgy apps
+        ArrayList<String> gamesWithAdditionalStepsRequired = new ArrayList<>();
+
+        gamesWithAdditionalStepsRequired.add("513490"); // 1943 Berlin Blitz
+        gamesWithAdditionalStepsRequired.add("408340"); // Gravity Lab
+        gamesWithAdditionalStepsRequired.add("1053760"); // Arkio
+
+        if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
+            BooleanCallbackInterface booleanCallbackInterface = result -> {
+                if (result) {
+                    completeSelectApplicationAction(currentApplication);
+                }
+            };
+            DialogManager.createConfirmationDialog(
+                    "Attention",
+                    "This game may require additional steps to launch and may not be able to launch automatically.",
+                    booleanCallbackInterface,
+                    "Go Back",
+                    "Continue",
+                    false);
+        } else {
+            completeSelectApplicationAction(currentApplication);
+        }
     }
 
     /**
      * Loads additional information for the given application and updates the UI.
      *
-     * @param view               The parent view where the information will be displayed.
+     * @param viewHolder         The ViewHolder object containing the binding for the item view.
      * @param currentApplication The application object containing information to be displayed.
      */
-    private void loadAdditionalInformation(View view, Application currentApplication) {
-        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+    private void loadAdditionalInformation(ViewHolder viewHolder, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, viewHolder.binding.getRoot());
 
-        MainActivity.runOnUI(() -> {
-            //Setup the tags
-            RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            recyclerView.setLayoutManager(layoutManager);
+        //Setup the tags
+        RecyclerView recyclerView = viewHolder.binding.getRoot().findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
-            // Add a default tag if none exist
-            List<String> tags = currentApplication.getInformation().getTags();
-            if (tags.isEmpty()) {
-                tags.add(TagConstants.DEFAULT);
-            }
-            TagAdapter adapter = new TagAdapter(tags);
-            recyclerView.setAdapter(adapter);
+        // Add a default tag if none exist
+        List<String> tags = new ArrayList<>(currentApplication.getInformation().getTags());
+        if (tags.isEmpty()) {
+            tags.add(TagConstants.DEFAULT);
+        }
+        TagAdapter adapter = new TagAdapter(tags);
+        recyclerView.setAdapter(adapter);
 
-            //Setup the sub tags
-            TextView textView = view.findViewById(R.id.subTags);
-            String subTags = String.join(", ", currentApplication.getInformation().getSubTags());
+        //Setup the sub tags
+        TextView textView = viewHolder.binding.getRoot().findViewById(R.id.subTags);
+        String subTags = String.join(", ", currentApplication.getInformation().getSubTags());
 
-            if (Helpers.isNullOrEmpty(subTags)) {
-                textView.setVisibility(View.GONE);
-            }
-            else {
-                textView.setVisibility(View.VISIBLE);
-                textView.setText(String.join(", ", currentApplication.getInformation().getSubTags()));
-            }
-        });
+        if (Helpers.isNullOrEmpty(subTags)) {
+            textView.setVisibility(View.GONE);
+        } else {
+            textView.setVisibility(View.VISIBLE);
+            textView.setText(subTags);
+        }
     }
 
     private void completeSelectApplicationAction(Application currentApplication) {
