@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
@@ -37,6 +39,8 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LibrarySelectionFragment extends Fragment {
     private static int currentStationId = 0;
@@ -95,7 +99,25 @@ public class LibrarySelectionFragment extends Fragment {
         stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
 
+        setupFilter(view);
         setupButtons(view);
+
+        mViewModel.getSubjectFilters().observe(getViewLifecycleOwner(), filters -> {
+            String currentSearch = mViewModel.getCurrentSearch().getValue();
+            libraryInterface.performSearch(currentSearch);
+        });
+    }
+
+    private void setupFilter(View view) {
+        // Setup the filter dropdown
+        Spinner customSpinner = (Spinner)view.findViewById(R.id.subject_filter_spinner);
+        List<String> data = new ArrayList<>(TagConstants.ALL_FILTERS);
+        LibrarySubjectFilterAdapter adapter = new LibrarySubjectFilterAdapter(getContext(), data, getViewLifecycleOwner());
+        customSpinner.setAdapter(adapter);
+
+        // Setup the filter container
+        FlexboxLayout container = view.findViewById(R.id.subject_filter_placeholder);
+        container.setOnClickListener(v -> customSpinner.performClick());
     }
 
     /**

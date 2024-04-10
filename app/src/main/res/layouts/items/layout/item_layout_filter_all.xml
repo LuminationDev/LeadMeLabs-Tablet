@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="library"
+            type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="@{() -> library.resetFilter()}"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_margin="5dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="-5dp"
+            android:background="@{library.subjectFilters.size() == 0 ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_gray_rounded}"
+            app:alignItems="center"
+            app:flexDirection="row">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:text="All Subjects"
+                android:textColor="@color/black"
+                app:layout_flexGrow="1"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:checked="@{library.subjectFilters.size() == 0}"
+                android:background="@null"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="#DCDFEA"/>
+    </LinearLayout>
+</layout>

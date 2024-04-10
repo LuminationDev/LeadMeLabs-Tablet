@@ -47,7 +47,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        GridView videoGridView = view.findViewById(R.id.video_list);
+        GridView videoGridView = view.findViewById(R.id.video_grid);
         localVideoAdapter = new VideoAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
@@ -98,6 +98,9 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     public void performSearch(String searchTerm) {
         ArrayList<Video> filteredVideoList = new ArrayList<>(localVideoList);
         filteredVideoList.removeIf(currentVideo -> !currentVideo.getName().toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
+
+        //NOTE: Tags do not exists for Videos yet
+
         localVideoAdapter.videoList = filteredVideoList;
         binding.setVideoList(localVideoAdapter.videoList);
         localVideoAdapter.notifyDataSetChanged();

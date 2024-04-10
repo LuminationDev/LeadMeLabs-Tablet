@@ -28,7 +28,7 @@ public class InformationConstants {
         // Tilt Brush
         Information tiltBrush = new Information(
                 "Unleash your creativity with three-dimensional brush strokes, stars, light, and even fire. Your room is your canvas. Your palette is your imagination. The possibilities are endless.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.PAINTING, TagConstants.DIGITAL_ART)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -73,7 +73,7 @@ public class InformationConstants {
         // Space Dance Harmony
         Information spaceDanceHarmony = new Information(
                 "A VR dance rhythm game where you replicate real dance choreographies with your entire body to play.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.DANCE)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -163,7 +163,7 @@ public class InformationConstants {
         // Sculptr VR
         Information sculptrVr = new Information(
                 "Unleash your creativity by building with SculptrVR’s intuitive and fun creation tools.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.SCULPTING, TagConstants.VISUAL_ARTS)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -172,7 +172,7 @@ public class InformationConstants {
         // Mona Lisa: Beyond The Glass
         Information monaLisa = new Information(
                 "Visit The Louvre and have a deep dive learning experience of one of the most famous paintings on earth.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.PAINTING)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -199,7 +199,7 @@ public class InformationConstants {
         // IL DIVINO: Michelangelo's Sistine Ceiling in VR
         Information sistineCeiling = new Information(
                 "Step onto Michelangelo’s scaffold to learn about how he painted the ceiling, or enter a Vatican conservator’s mobile aerial platform to see the ceiling up close and learn about the controversial cleaning. Over 100 clickable elements about Michelangelo’s work.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -235,7 +235,7 @@ public class InformationConstants {
         // The VR Museum of Fine Art
         Information museumOfFineArt = new Information(
                 "Explore a virtual museum in room-scale VR: see famous sculptures in full, 1:1 scale and see famous paintings without the limitations of glass and security guards.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -244,7 +244,7 @@ public class InformationConstants {
         // The Night Cafe
         Information nightCafe = new Information(
                 "A VR environment that allows you to explore the world of Vincent van Gogh. Explore some of Van Gogh's pieces in 3 dimensions , with the vivid colors straight from his palette.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.VINCENT_VAN_GOGH)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -298,7 +298,7 @@ public class InformationConstants {
         // The Dawn Of Art
         Information dawnOfArt = new Information(
                 "Explore the Chauvet Cave 36,000 years ago, with Daisy Ridley’s voice as your guide. It’s in the Ardèche gorges, in the south of France, that our ancestors drew humanity’s first masterpieces, giving life to their beliefs. Maybe you will also meet the cave bear…",
-                new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.ART)),
+                new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.CAVE_PAINTINGS)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -343,7 +343,7 @@ public class InformationConstants {
         // Great Paintings VR
         Information greatPaintings = new Information(
                 "Great Paintings from the Great Museums of the World in Virtual Reality. More than 1000 famous paintings to admire and enjoy.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -352,7 +352,7 @@ public class InformationConstants {
         // Edmersiv
         Information edmersiv = new Information(
                 "An educational lab for VR. Interact with several different educational objects, simulations, animations, environments and games.",
-                new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH, TagConstants.ART, TagConstants.HASS)),
+                new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH, TagConstants.ARTS, TagConstants.HASS)),
                 new ArrayList<>(),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );
@@ -433,7 +433,7 @@ public class InformationConstants {
         // Lyra VR
         Information lyraVr = new Information(
                 "Music creation app that offers everyone a fun and unique music-making experience. Make music in 3D and interact with music sequences from entirely new perspectives in virtual reality.",
-                new ArrayList<>(Collections.singletonList(TagConstants.ART)),
+                new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.MUSIC, TagConstants.COMPOSITION)),
                 new ArrayList<>(Arrays.asList("1", "2", "3"))
         );

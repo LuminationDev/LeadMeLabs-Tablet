@@ -3,12 +3,16 @@ package com.lumination.leadmelabs.ui.library;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class LibraryViewModel extends ViewModel {
     private MutableLiveData<String> pageTitle = new MutableLiveData<>("VR Library");
     private MutableLiveData<String> libraryTitle = new MutableLiveData<>("VR Library");
     private MutableLiveData<String> subTitle = new MutableLiveData<>("Pick an experience to play in VR");
     private MutableLiveData<String> currentSearch = new MutableLiveData<>("");
     private MutableLiveData<String> libraryType = new MutableLiveData<>("vr_experiences");
+    private MutableLiveData<ArrayList<String>> subjectFilters = new MutableLiveData<>(new ArrayList<>());
 
     public MutableLiveData<String> getPageTitle() {
         if (pageTitle == null) {
@@ -63,5 +67,32 @@ public class LibraryViewModel extends ViewModel {
 
     public void setLibraryType(String libraryType) {
         this.libraryType.setValue(libraryType);
+    }
+
+    public MutableLiveData<ArrayList<String>> getSubjectFilters() {
+        if (subjectFilters == null) {
+            subjectFilters = new MutableLiveData<>(new ArrayList<>());
+        }
+        return subjectFilters;
+    }
+
+    public void setSubjectFilters(ArrayList<String> subjectFilters) {
+        this.subjectFilters.setValue(subjectFilters);
+    }
+
+    public void toggleFilter(String filter) {
+        ArrayList<String> filters = this.subjectFilters.getValue();
+
+        if (Objects.requireNonNull(filters).contains(filter)) {
+            filters.remove(filter);
+        } else {
+            filters.add(filter);
+        }
+
+        setSubjectFilters(filters);
+    }
+
+    public void resetFilter() {
+        setSubjectFilters(new ArrayList<>());
     }
 }

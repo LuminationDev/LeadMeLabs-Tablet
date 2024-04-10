@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -43,9 +45,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class ApplicationAdapter extends BaseAdapter {
+//TODO implement filterable for easy searching
+public class ApplicationAdapter extends BaseAdapter implements Filterable {
     public ArrayList<Application> applicationList = new ArrayList<>();
+    private ArrayList<Application> filteredList = new ArrayList<>();
+
     private final LayoutInflater mInflater;
     private final Context context;
     public static StationsViewModel mViewModel;
@@ -58,6 +64,15 @@ public class ApplicationAdapter extends BaseAdapter {
         this.fragmentManager = fragmentManager;
         this.sideMenuFragment = fragment;
         mViewModel = ViewModelProviders.of((FragmentActivity) context).get(StationsViewModel.class);
+    }
+
+    /**
+     * Set the adapters primary application list and the filtered application list.
+     * @param applications A list of application model objects.
+     */
+    public void setApplications(ArrayList<Application> applications) {
+        applicationList = applications;
+        filteredList = applications;
     }
 
     @Override
@@ -73,6 +88,53 @@ public class ApplicationAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    //TODO make this more efficient
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchTerm = constraint.toString().toLowerCase(Locale.ROOT);
+                filteredList.clear();
+
+                final ArrayList<Application> originalList = ApplicationLibraryFragment.installedApplicationList;
+
+                for (Application application : originalList) {
+                    // Apply search filter
+                    if (application.name.toLowerCase(Locale.ROOT).contains(searchTerm)) {
+                        // Apply tag filter
+                        if (shouldInclude(application)) {
+                            filteredList.add(application);
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                filterResults.count = filteredList.size();
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                ArrayList<Application> filteredResults = (ArrayList<Application>) results.values;
+                if (filteredResults != null) {
+                    applicationList = filteredResults; // Update applicationList with filtered results
+                    notifyDataSetChanged(); // Notify adapter about the data change
+                }
+            }
+        };
+    }
+
+    private boolean shouldInclude(Application application) {
+        ArrayList<String> subjectFilters = LibrarySelectionFragment.mViewModel.getSubjectFilters().getValue();
+        if (subjectFilters != null && !subjectFilters.isEmpty()) {
+            return application.getInformation().getTags().stream()
+                    .anyMatch(subjectFilters::contains);
+        }
+        return true; // Include if no subject filters are set
     }
 
     /**

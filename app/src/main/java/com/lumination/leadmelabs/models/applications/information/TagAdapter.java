@@ -23,7 +23,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.HASS, R.drawable.tag_yellow_curved);
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.MATHS, R.drawable.tag_blue_curved);
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.SCIENCE, R.drawable.tag_green_curved);
-        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.ART, R.drawable.tag_purple_curved);
+        DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.ARTS, R.drawable.tag_purple_curved);
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.HEALTH_PE, R.drawable.tag_orange_curved);
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.ENGLISH, R.drawable.tag_rose_curved);
         DEFAULT_TAG_DRAWABLE_MAP.put(TagConstants.DESIGN_TECH, R.drawable.tag_teal_curved);

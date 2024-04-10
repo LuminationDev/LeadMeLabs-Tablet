@@ -1,5 +1,8 @@
 package com.lumination.leadmelabs.models.applications.information;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * A class dedicated to holding the different tag values, this is to ensure that all values are spelt
  * correctly and the same throughout the software.
@@ -9,12 +12,15 @@ public class TagConstants {
     public static final String HASS = "HASS";
     public static final String MATHS = "Maths";
     public static final String SCIENCE = "Science";
-    public static final String ART = "Art";
+    public static final String ARTS = "Arts";
     public static final String HEALTH_PE = "Health & PE";
     public static final String ENGLISH = "English";
     public static final String DESIGN_TECH = "Design & Tech";
     public static final String LANGUAGES = "Languages";
     public static final String DEFAULT = "Experience";
+
+    public static final ArrayList<String> ALL_FILTERS = new ArrayList<>(
+            Arrays.asList(DEFAULT, HASS, MATHS, SCIENCE, ARTS, HEALTH_PE, ENGLISH, DESIGN_TECH, LANGUAGES));
 
 
 

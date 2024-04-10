@@ -51,6 +51,10 @@ public class Helpers {
         return Character.toUpperCase(text.charAt(0)) + text.substring(1);
     }
 
+    public static String concatArray(ArrayList<String> list) {
+        return String.join(", ", list);
+    }
+
     /**
      * Convert a density pixel value to regular pixels based on the tablets screen density.
      * Dynamically setting dimensions require pixel units instead of density pixels.

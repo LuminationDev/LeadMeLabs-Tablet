@@ -24,7 +24,6 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import org.json.JSONException;
@@ -32,14 +31,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ApplicationLibraryFragment extends Fragment implements ILibraryInterface {
 
     public static StationsViewModel mViewModel;
     public static ApplicationAdapter installedApplicationAdapter;
-    private static ArrayList<Application> installedApplicationList;
+    public static ArrayList<Application> installedApplicationList;
     private FragmentLibraryApplicationBinding binding;
     public static FragmentManager childManager;
 
@@ -86,8 +84,8 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      */
     public void UpdateCurrentStationId() {
         int stationId = 0;
-        if(StationsFragment.mViewModel.getSelectedStationId().getValue() != null) {
-            stationId = StationsFragment.mViewModel.getSelectedStationId().getValue();
+        if(mViewModel.getSelectedStationId().getValue() != null) {
+            stationId = mViewModel.getSelectedStationId().getValue();
         }
 
         LibrarySelectionFragment.setStationId(stationId);
@@ -97,7 +95,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
         if (installedApplicationAdapter != null) {
-            installedApplicationAdapter.applicationList = new ArrayList<>(installedApplicationList);
+            installedApplicationAdapter.setApplications(new ArrayList<>(installedApplicationList));
             binding.setApplicationList(installedApplicationAdapter.applicationList);
             installedApplicationAdapter.notifyDataSetChanged();
         }
@@ -125,7 +123,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         } else {
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
-        installedApplicationAdapter.applicationList = new ArrayList<>(installedApplicationList);
+        installedApplicationAdapter.setApplications(new ArrayList<>(installedApplicationList));
         binding.setApplicationList(installedApplicationAdapter.applicationList);
         binding.setApplicationsLoaded(mViewModel.getAllApplicationsByType(isVr).size() > 0);
 
@@ -134,12 +132,9 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         view.setAdapter(installedApplicationAdapter);
     }
 
+    //TODO make this more efficient
     public void performSearch(String searchTerm) {
-        ArrayList<Application> filteredApplicationList = new ArrayList<>(installedApplicationList);
-        filteredApplicationList.removeIf(currentApplication -> !currentApplication.name.toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
-        installedApplicationAdapter.applicationList = filteredApplicationList;
-        binding.setApplicationList(installedApplicationAdapter.applicationList);
-        installedApplicationAdapter.notifyDataSetChanged();
+        installedApplicationAdapter.getFilter().filter(searchTerm);
     }
 
     /**
