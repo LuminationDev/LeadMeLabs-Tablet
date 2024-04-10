@@ -23,12 +23,11 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class VideoLibraryFragment extends Fragment implements ILibraryInterface {
     public static StationsViewModel mViewModel;
     public static VideoAdapter localVideoAdapter;
-    private static ArrayList<Video> localVideoList;
+    public static ArrayList<Video> localVideoList;
     private FragmentLibraryVideoBinding binding;
     public static FragmentManager childManager;
 
@@ -48,7 +47,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
         super.onViewCreated(view, savedInstanceState);
 
         GridView videoGridView = view.findViewById(R.id.video_grid);
-        localVideoAdapter = new VideoAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        localVideoAdapter = new VideoAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
@@ -96,14 +95,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     }
 
     public void performSearch(String searchTerm) {
-        ArrayList<Video> filteredVideoList = new ArrayList<>(localVideoList);
-        filteredVideoList.removeIf(currentVideo -> !currentVideo.getName().toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
-
-        //NOTE: Tags do not exists for Videos yet
-
-        localVideoAdapter.videoList = filteredVideoList;
-        binding.setVideoList(localVideoAdapter.videoList);
-        localVideoAdapter.notifyDataSetChanged();
+        localVideoAdapter.getFilter().filter(searchTerm);
     }
 
     public void refreshList() {

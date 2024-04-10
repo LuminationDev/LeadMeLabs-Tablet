@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -27,8 +29,11 @@ import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
-public class VideoAdapter extends BaseAdapter {
+public class VideoAdapter extends BaseAdapter implements Filterable {
     public ArrayList<Video> videoList = new ArrayList<>();
     private final LayoutInflater mInflater;
     public static StationsViewModel mViewModel;
@@ -55,6 +60,38 @@ public class VideoAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchTerm = constraint.toString().toLowerCase(Locale.ROOT);
+
+                List<Video> filteredList = VideoLibraryFragment.localVideoList.stream()
+                        .filter(video ->
+                                video.getName().toLowerCase(Locale.ROOT).contains(searchTerm))
+                        .collect(Collectors.toList());
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                filterResults.count = filteredList.size();
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.values instanceof ArrayList<?>) {
+                    videoList = ((ArrayList<?>) results.values)
+                            .stream()
+                            .filter(obj -> obj instanceof Video)
+                            .map(obj -> (Video) obj)
+                            .collect(Collectors.toCollection(ArrayList::new));
+                    notifyDataSetChanged(); // Notify adapter about the data change
+                }
+            }
+        };
     }
 
     @Override

@@ -57,36 +57,33 @@ public class LibrarySubjectFilterAdapter extends BaseAdapter {
         return position;
     }
 
-    //TODO remove the random extra space at the end
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
-        if (convertView == null) {
-            if (position == 0) {
-                // Inflate layout for special item
-                ItemLayoutFilterAllBinding specialBinding = ItemLayoutFilterAllBinding.inflate(inflater, parent, false);
-                specialBinding.setLibrary(LibrarySelectionFragment.mViewModel);
-                specialBinding.setLifecycleOwner(mLifecycleOwner);
-                convertView = specialBinding.getRoot();
+        if (position == 0) {
+            // Inflate layout for special item
+            ItemLayoutFilterAllBinding specialBinding = ItemLayoutFilterAllBinding.inflate(inflater, parent, false);
+            specialBinding.setLibrary(LibrarySelectionFragment.mViewModel);
+            specialBinding.setLifecycleOwner(mLifecycleOwner);
+            convertView = specialBinding.getRoot();
+        } else {
+            // Inflate layout for normal items
+            ItemLayoutFilterBinding binding = ItemLayoutFilterBinding.inflate(inflater, parent, false);
+            convertView = binding.getRoot();
+            convertView.setTag(binding);
+
+            binding.setLibrary(LibrarySelectionFragment.mViewModel);
+            binding.setFilter(mData.get(position));
+
+            Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(mData.get(position));
+            if (backgroundResource != null) {
+                binding.setFilterIcon(ContextCompat.getDrawable(mContext, backgroundResource));
             } else {
-                // Inflate layout for normal items
-                ItemLayoutFilterBinding binding = ItemLayoutFilterBinding.inflate(inflater, parent, false);
-                convertView = binding.getRoot();
-                convertView.setTag(binding);
-
-                binding.setLibrary(LibrarySelectionFragment.mViewModel);
-                binding.setFilter(mData.get(position));
-
-                Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(mData.get(position));
-                if (backgroundResource != null) {
-                    binding.setFilterIcon(ContextCompat.getDrawable(mContext, backgroundResource));
-                } else {
-                    binding.setFilterIcon(ContextCompat.getDrawable(mContext, R.drawable.filter_icon_design_tech));
-                }
-
-                binding.setLifecycleOwner(mLifecycleOwner);
+                binding.setFilterIcon(ContextCompat.getDrawable(mContext, R.drawable.filter_icon_design_tech));
             }
+
+            binding.setLifecycleOwner(mLifecycleOwner);
         }
 
         return convertView;
