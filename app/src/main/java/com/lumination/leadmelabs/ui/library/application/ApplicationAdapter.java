@@ -9,22 +9,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.CardExperienceBinding;
+import com.lumination.leadmelabs.databinding.CardApplicationBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
-import com.lumination.leadmelabs.models.applications.information.TagAdapter;
-import com.lumination.leadmelabs.models.applications.information.TagConstants;
+import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
@@ -46,11 +44,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
-//TODO implement filterable for easy searching
 public class ApplicationAdapter extends BaseAdapter implements Filterable {
     public ArrayList<Application> applicationList = new ArrayList<>();
-    private ArrayList<Application> filteredList = new ArrayList<>();
 
     private final LayoutInflater mInflater;
     private final Context context;
@@ -72,7 +69,6 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      */
     public void setApplications(ArrayList<Application> applications) {
         applicationList = applications;
-        filteredList = applications;
     }
 
     @Override
@@ -90,26 +86,17 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         return 0;
     }
 
-    //TODO make this more efficient
     @Override
     public Filter getFilter() {
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 String searchTerm = constraint.toString().toLowerCase(Locale.ROOT);
-                filteredList.clear();
 
-                final ArrayList<Application> originalList = ApplicationLibraryFragment.installedApplicationList;
-
-                for (Application application : originalList) {
-                    // Apply search filter
-                    if (application.name.toLowerCase(Locale.ROOT).contains(searchTerm)) {
-                        // Apply tag filter
-                        if (shouldInclude(application)) {
-                            filteredList.add(application);
-                        }
-                    }
-                }
+                List<Application> filteredList = ApplicationLibraryFragment.installedApplicationList.stream()
+                        .filter(application ->
+                                application.name.toLowerCase(Locale.ROOT).contains(searchTerm) && shouldInclude(application))
+                        .collect(Collectors.toList());
 
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredList;
@@ -119,22 +106,43 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                ArrayList<Application> filteredResults = (ArrayList<Application>) results.values;
-                if (filteredResults != null) {
-                    applicationList = filteredResults; // Update applicationList with filtered results
+                if (results != null && results.values instanceof ArrayList<?>) {
+                    applicationList = ((ArrayList<?>) results.values)
+                            .stream()
+                            .filter(obj -> obj instanceof Application)
+                            .map(obj -> (Application) obj)
+                            .collect(Collectors.toCollection(ArrayList::new));
                     notifyDataSetChanged(); // Notify adapter about the data change
                 }
             }
         };
     }
 
+    /**
+     * Determines whether the given application should be included based on the current subject filters.
+     * If subject filters are set, the application is included if all of its tags match the filters.
+     * If no subject filters are set, the application is included by default.
+     *
+     * @param application The application to check for inclusion.
+     * @return True if the application should be included, false otherwise.
+     */
     private boolean shouldInclude(Application application) {
-        ArrayList<String> subjectFilters = LibrarySelectionFragment.mViewModel.getSubjectFilters().getValue();
+        List<String> subjectFilters = LibrarySelectionFragment.mViewModel.getSubjectFilters().getValue();
         if (subjectFilters != null && !subjectFilters.isEmpty()) {
-            return application.getInformation().getTags().stream()
-                    .anyMatch(subjectFilters::contains);
+            return application.getInformation().getTags().containsAll(subjectFilters);
         }
         return true; // Include if no subject filters are set
+    }
+
+    /**
+     * ViewHolder class to hold the binding object for each item view.
+     */
+    private static class ViewHolder {
+        final CardApplicationBinding binding;
+
+        ViewHolder(CardApplicationBinding binding) {
+            this.binding = binding;
+        }
     }
 
     /**
@@ -149,7 +157,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            CardExperienceBinding binding = CardExperienceBinding.inflate(mInflater, parent, false);
+            CardApplicationBinding binding = CardApplicationBinding.inflate(mInflater, parent, false);
             convertView = binding.getRoot();
             viewHolder = new ViewHolder(binding);
             convertView.setTag(viewHolder);
@@ -169,14 +177,18 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
-     * ViewHolder class to hold the binding object for each item view.
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param viewHolder         The ViewHolder object containing the binding for the item view.
+     * @param currentApplication The application object containing information to be displayed.
      */
-    private static class ViewHolder {
-        final CardExperienceBinding binding;
+    private void loadAdditionalInformation(ViewHolder viewHolder, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, viewHolder.binding.getRoot());
 
-        ViewHolder(CardExperienceBinding binding) {
-            this.binding = binding;
-        }
+        // Set up tags
+        LinearLayout tagsContainer = viewHolder.binding.getRoot().findViewById(R.id.tagsContainer);
+        TextView subtagsTextView = viewHolder.binding.getRoot().findViewById(R.id.subTags);
+        TagUtils.setupTags(context, tagsContainer, subtagsTextView, currentApplication);
     }
 
     /**
@@ -210,40 +222,6 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                     false);
         } else {
             completeSelectApplicationAction(currentApplication);
-        }
-    }
-
-    /**
-     * Loads additional information for the given application and updates the UI.
-     *
-     * @param viewHolder         The ViewHolder object containing the binding for the item view.
-     * @param currentApplication The application object containing information to be displayed.
-     */
-    private void loadAdditionalInformation(ViewHolder viewHolder, Application currentApplication) {
-        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, viewHolder.binding.getRoot());
-
-        //Setup the tags
-        RecyclerView recyclerView = viewHolder.binding.getRoot().findViewById(R.id.recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        // Add a default tag if none exist
-        List<String> tags = new ArrayList<>(currentApplication.getInformation().getTags());
-        if (tags.isEmpty()) {
-            tags.add(TagConstants.DEFAULT);
-        }
-        TagAdapter adapter = new TagAdapter(tags);
-        recyclerView.setAdapter(adapter);
-
-        //Setup the sub tags
-        TextView textView = viewHolder.binding.getRoot().findViewById(R.id.subTags);
-        String subTags = String.join(", ", currentApplication.getInformation().getSubTags());
-
-        if (Helpers.isNullOrEmpty(subTags)) {
-            textView.setVisibility(View.GONE);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(subTags);
         }
     }
 

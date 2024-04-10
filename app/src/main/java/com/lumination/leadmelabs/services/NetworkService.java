@@ -413,6 +413,7 @@ public class NetworkService extends Service {
         String[] name = fileName.split("_");
         ImageManager.requestedImages.remove(name[0]);
 
+        //TODO refresh the Station list to trigger the observe function instead of using static variables?
         try {
             //Notify the ApplicationAdapter that the data has changed
             if (ApplicationLibraryFragment.installedApplicationAdapter != null) {

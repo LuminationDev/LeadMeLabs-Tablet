@@ -65,6 +65,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
+
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr).size()) {
@@ -132,7 +133,6 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         view.setAdapter(installedApplicationAdapter);
     }
 
-    //TODO make this more efficient
     public void performSearch(String searchTerm) {
         installedApplicationAdapter.getFilter().filter(searchTerm);
     }

@@ -14,15 +14,12 @@
     app:alignItems="center"
     tools:ignore="RtlSymmetry">
 
-    <!--Tag Recycler-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <!--Tag Container-->
+    <LinearLayout
+        android:id="@+id/tagsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_tag"/>
+        android:orientation="horizontal" />
 
     <TextView
         android:id="@+id/subTags"

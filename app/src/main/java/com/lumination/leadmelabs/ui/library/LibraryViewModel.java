@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class LibraryViewModel extends ViewModel {
@@ -92,7 +93,13 @@ public class LibraryViewModel extends ViewModel {
         setSubjectFilters(filters);
     }
 
+    /**
+     * Reset the filters list only if it is not already empty
+     */
     public void resetFilter() {
-        setSubjectFilters(new ArrayList<>());
+        List<String> currentFilters = this.subjectFilters.getValue();
+        if (currentFilters != null && !currentFilters.isEmpty()) {
+            setSubjectFilters(new ArrayList<>());
+        }
     }
 }

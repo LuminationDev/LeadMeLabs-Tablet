@@ -102,7 +102,7 @@
 
                         <!--Filter Dropdown-->
                         <FrameLayout
-                            android:layout_width="300dp"
+                            android:layout_width="250dp"
                             android:layout_height="50dp">
 
                             <Spinner
@@ -112,7 +112,7 @@
                                 android:layout_height="wrap_content"
                                 android:dropDownHorizontalOffset="-5dp"
                                 android:dropDownVerticalOffset="50dp"
-                                android:dropDownWidth="300dp"
+                                android:dropDownWidth="250dp"
                                 android:popupBackground="@drawable/bg_white_curved"/>
 
                             <!-- Include the custom spinner layout -->
