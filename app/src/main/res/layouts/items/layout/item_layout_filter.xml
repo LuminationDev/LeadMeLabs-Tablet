@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:text="@{filter}"
                 android:textColor="@color/black"
                 app:layout_flexGrow="1"/>

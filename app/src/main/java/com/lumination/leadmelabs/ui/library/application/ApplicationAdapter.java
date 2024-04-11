@@ -169,6 +169,9 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         Application currentApplication = getItem(position);
         loadAdditionalInformation(viewHolder, currentApplication);
 
+        TextView applicationName = (TextView) convertView.findViewById(R.id.application_name);
+        applicationName.setText(currentApplication.getName());
+
         viewHolder.binding.setApplication(currentApplication);
 
         convertView.setOnClickListener(v -> selectGame(v, currentApplication));

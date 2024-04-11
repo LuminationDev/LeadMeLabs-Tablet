@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +25,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
@@ -69,7 +72,7 @@ public class ApplicationShareCodeFragment extends Fragment {
         Application selectedApplication = mViewModel.getSelectedApplication().getValue();
         binding.setSelectedApplication(selectedApplication);
         if (selectedApplication != null) {
-            Helpers.setExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            loadAdditionalInformation(view, selectedApplication);
         }
         SetupEditText(view);
 
@@ -89,6 +92,21 @@ public class ApplicationShareCodeFragment extends Fragment {
                 confirmLaunchGame(selectedApplication);
             }
         });
+    }
+
+    /**
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param view               The parent view where the information will be displayed.
+     * @param currentApplication The application object containing information to be displayed.
+     */
+    private void loadAdditionalInformation(View view, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+
+        // Set up tags
+        LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
+        TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, currentApplication);
     }
 
     public void confirmLaunchGame(Application selectedApplication) {

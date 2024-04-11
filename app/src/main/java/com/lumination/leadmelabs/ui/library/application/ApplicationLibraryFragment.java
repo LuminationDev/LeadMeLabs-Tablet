@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class ApplicationLibraryFragment extends Fragment implements ILibraryInterface {
 
     public static StationsViewModel mViewModel;
-    public static ApplicationAdapter installedApplicationAdapter;
+    public ApplicationAdapter installedApplicationAdapter;
     public static ArrayList<Application> installedApplicationList;
     private FragmentLibraryApplicationBinding binding;
     public static FragmentManager childManager;

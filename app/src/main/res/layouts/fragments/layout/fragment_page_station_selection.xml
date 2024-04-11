@@ -33,6 +33,36 @@
             android:layout_marginTop="78dp"
             android:layout_marginEnd="30dp">
 
+            <!--Identify Button-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/identify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/light_gray_ripple"
+                android:clickable="true"
+                android:focusable="true"
+                app:alignItems="center">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/identify_ripple_grey_small"
+                    app:flexDirection="row"
+                    app:justifyContent="center"
+                    app:alignItems="center"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Identify"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="13sp" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--Help Button-->
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/help_button"
                 android:layout_width="wrap_content"
@@ -289,41 +319,11 @@
             android:id="@+id/rooms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true">
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/identify_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="60dp"
-                android:layout_marginBottom="50dp"
-                android:focusable="true"
-                android:clickable="true"
-                android:background="@drawable/identify_ripple_grey"
-                app:flexDirection="row"
-                app:justifyContent="center"
-                app:alignItems="center"
-                android:visibility="visible">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:clickable="true"
-                    android:src="@drawable/session_identify_small"
-                    android:textAllCaps="false"
-                    android:contentDescription="identify_icon" />
-            </com.google.android.flexbox.FlexboxLayout>
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/system_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
     </RelativeLayout>
 </layout>

@@ -27,6 +27,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/experience_preview"
                 android:background="@drawable/image_background"
+                android:scaleType="fitXY"
                 android:clipToOutline="true" />
 
             <LinearLayout
@@ -51,12 +52,12 @@
             app:flexDirection="column">
 
             <TextView
+                android:id="@+id/application_name"
                 android:layout_width="285dp"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="10dp"
                 android:textSize="17sp"
-                android:textColor="@color/black"
-                android:text="@{application.name, default=Google}"/>
+                android:textColor="@color/black"/>
 
             <include layout="@layout/section_experience_tags"/>
         </com.google.android.flexbox.FlexboxLayout>

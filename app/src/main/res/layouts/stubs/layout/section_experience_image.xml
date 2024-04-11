@@ -26,6 +26,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/experience_preview"
                 android:background="@drawable/image_background"
+                android:scaleType="fitXY"
                 android:clipToOutline="true" />
 
             <LinearLayout

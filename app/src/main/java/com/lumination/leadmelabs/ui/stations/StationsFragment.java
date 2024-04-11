@@ -20,8 +20,6 @@ import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +57,14 @@ public class StationsFragment extends Fragment {
         mViewModel.getStations().observe(getViewLifecycleOwner(), this::reloadData);
 
         instance = this;
+    }
+
+    /**
+     * Trigger any observers watching the Stations MutableLive data.
+     */
+    public static void refreshStationsInplace() {
+        List<Station> currentStations = StationsFragment.mViewModel.getStations().getValue();
+        StationsFragment.mViewModel.setStations(currentStations);
     }
 
     /**

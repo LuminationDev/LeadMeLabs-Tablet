@@ -110,7 +110,7 @@ public class LibrarySelectionFragment extends Fragment {
 
     private void setupFilter(View view) {
         // Setup the filter dropdown
-        Spinner customSpinner = (Spinner)view.findViewById(R.id.subject_filter_spinner);
+        Spinner customSpinner = view.findViewById(R.id.subject_filter_spinner);
         List<String> data = new ArrayList<>(TagConstants.ALL_FILTERS);
         LibrarySubjectFilterAdapter adapter = new LibrarySubjectFilterAdapter(getContext(), data, getViewLifecycleOwner());
         customSpinner.setAdapter(adapter);
@@ -180,7 +180,7 @@ public class LibrarySelectionFragment extends Fragment {
         });
 
         // Check if there are any experiences running or if the selected Station has an experience running
-        Button refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
+        FlexboxLayout refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
         refresh_btn.setOnClickListener(v -> libraryInterface.refreshList());
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
@@ -219,18 +219,18 @@ public class LibrarySelectionFragment extends Fragment {
             case "vr_experiences":
                 // Set up the Bundle for VR experiences
                 bundle.putBoolean("isVr", true);
-                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationLibraryFragment(), bundle, transaction);
+                setupLibrary("VR Library", new ApplicationLibraryFragment(), bundle, transaction);
                 break;
 
             case "applications":
                 // Set up the Bundle for applications
                 bundle.putBoolean("isVr", false);
-                setupLibrary("App Library", "Application Library", "Pick an application to load", new ApplicationLibraryFragment(), bundle, transaction);
+                setupLibrary("Application Library", new ApplicationLibraryFragment(), bundle, transaction);
                 break;
 
             case "videos":
                 // Set up the Video Library
-                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoLibraryFragment(), null, transaction);
+                setupLibrary("Video Library", new VideoLibraryFragment(), null, transaction);
                 break;
         }
 
@@ -246,17 +246,13 @@ public class LibrarySelectionFragment extends Fragment {
      * fragment, and transaction. Updates ViewModel properties and sets the interface
      * if the fragment implements the ILibraryInterface interface.
      *
-     * @param pageTitle    The title of the page.
      * @param libraryTitle The title of the library.
-     * @param subTitle     The subtitle of the library.
      * @param fragment     The fragment representing the library.
      * @param bundle       A argument bundle to be passed to the fragment.
      * @param transaction  The FragmentTransaction used for the transaction.
      */
-    private void setupLibrary(String pageTitle, String libraryTitle, String subTitle, Fragment fragment, Bundle bundle, FragmentTransaction transaction) {
-        mViewModel.setPageTitle(pageTitle);
+    private void setupLibrary(String libraryTitle, Fragment fragment, Bundle bundle, FragmentTransaction transaction) {
         mViewModel.setLibraryTitle(libraryTitle);
-        mViewModel.setSubTitle(subTitle);
 
         // Set arguments if bundle is provided
         if (bundle != null) {

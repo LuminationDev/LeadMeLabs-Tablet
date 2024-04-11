@@ -8,23 +8,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class LibraryViewModel extends ViewModel {
-    private MutableLiveData<String> pageTitle = new MutableLiveData<>("VR Library");
     private MutableLiveData<String> libraryTitle = new MutableLiveData<>("VR Library");
-    private MutableLiveData<String> subTitle = new MutableLiveData<>("Pick an experience to play in VR");
     private MutableLiveData<String> currentSearch = new MutableLiveData<>("");
     private MutableLiveData<String> libraryType = new MutableLiveData<>("vr_experiences");
     private MutableLiveData<ArrayList<String>> subjectFilters = new MutableLiveData<>(new ArrayList<>());
-
-    public MutableLiveData<String> getPageTitle() {
-        if (pageTitle == null) {
-            pageTitle = new MutableLiveData<>("VR Library");
-        }
-        return pageTitle;
-    }
-
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle.setValue(pageTitle);
-    }
 
     public MutableLiveData<String> getLibraryTitle() {
         if (libraryTitle == null) {
@@ -35,17 +22,6 @@ public class LibraryViewModel extends ViewModel {
 
     public void setLibraryTitle(String libraryTitle) {
         this.libraryTitle.setValue(libraryTitle);
-    }
-
-    public MutableLiveData<String> getSubTitle() {
-        if (subTitle == null) {
-            subTitle = new MutableLiveData<>("Pick an experience to play in VR");
-        }
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle.setValue(subTitle);
     }
 
     public MutableLiveData<String> getCurrentSearch() {

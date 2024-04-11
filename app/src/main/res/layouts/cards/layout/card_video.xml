@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="17sp"
-                android:text="@{video.name, default=Google}"/>
+                android:text="@{video.name, default=``}"/>
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_height="wrap_content"

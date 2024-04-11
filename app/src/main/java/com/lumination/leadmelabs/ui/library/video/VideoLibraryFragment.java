@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class VideoLibraryFragment extends Fragment implements ILibraryInterface {
     public static StationsViewModel mViewModel;
-    public static VideoAdapter localVideoAdapter;
+    public VideoAdapter localVideoAdapter;
     public static ArrayList<Video> localVideoList;
     private FragmentLibraryVideoBinding binding;
     public static FragmentManager childManager;

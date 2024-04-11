@@ -9,38 +9,54 @@
             type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
     </data>
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="8dp"
-        android:background="@drawable/ripple_white_rounded_border_thin"
-        app:alignItems="center"
-        app:justifyContent="space_between">
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="50dp">
 
-        <!-- TextView for displaying selected item -->
-        <TextView
-            android:id="@+id/spinner_text"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:visibility="invisible"
+            android:id="@+id/subject_filter_spinner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="@{library.subjectFilters.size() == 0 ? `All Subjects` : Helpers.concatArray(library.subjectFilters), default=`All Subjects`}"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:gravity="center_vertical"/>
+            android:dropDownHorizontalOffset="-5dp"
+            android:dropDownVerticalOffset="50dp"
+            android:dropDownWidth="250dp"
+            android:popupBackground="@drawable/bg_white_curved"/>
 
-        <!-- ImageView for dropdown arrow -->
-        <ImageView
-            android:id="@+id/spinner_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/filter_icon_arrow"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="down arrow"
-            app:layout_flexShrink="0"/>
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/subject_filter_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="8dp"
+            android:background="@drawable/ripple_white_rounded_border_thin"
+            app:alignItems="center"
+            app:justifyContent="space_between">
 
-    </com.google.android.flexbox.FlexboxLayout>
+            <!-- TextView for displaying selected item -->
+            <TextView
+                android:id="@+id/spinner_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="@{library.subjectFilters.size() == 0 ? `All Subjects` : Helpers.concatArray(library.subjectFilters), default=`All Subjects`}"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
+                android:gravity="center_vertical"/>
+
+            <!-- ImageView for dropdown arrow -->
+            <ImageView
+                android:id="@+id/spinner_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/filter_icon_arrow"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="down arrow"
+                app:layout_flexShrink="0"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </FrameLayout>
 </layout>

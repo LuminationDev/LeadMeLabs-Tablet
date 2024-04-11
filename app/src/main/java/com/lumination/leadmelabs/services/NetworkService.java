@@ -22,9 +22,8 @@ import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
-import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
-import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 import androidx.core.app.NotificationCompat;
 
@@ -413,16 +412,9 @@ public class NetworkService extends Service {
         String[] name = fileName.split("_");
         ImageManager.requestedImages.remove(name[0]);
 
-        //TODO refresh the Station list to trigger the observe function instead of using static variables?
         try {
-            //Notify the ApplicationAdapter that the data has changed
-            if (ApplicationLibraryFragment.installedApplicationAdapter != null) {
-                MainActivity.runOnUI(() -> ApplicationLibraryFragment.installedApplicationAdapter.notifyDataSetChanged());
-            }
-
-            if (VideoLibraryFragment.localVideoAdapter != null) {
-                MainActivity.runOnUI(() -> VideoLibraryFragment.localVideoAdapter.notifyDataSetChanged());
-            }
+            // Trigger an inplace refresh of the Stations data - this in turn triggers any observer patterns
+            StationsFragment.refreshStationsInplace();
         }
         catch (Exception e) {
             Log.e(TAG, "Thumbnail refresh exception: " + e);
