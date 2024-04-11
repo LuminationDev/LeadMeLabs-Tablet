@@ -7,52 +7,61 @@ import java.util.ArrayList;
  * description, associated tags and the year levels it is applicable to.
  */
 public class Information {
-    private String description;
-    private ArrayList<String> tags;
-    private ArrayList<String> subTags;
-    private ArrayList<String> ages;
+    private final String description;
+    private final ArrayList<String> tags;
+    private final ArrayList<String> subTags;
+    private final ArrayList<Integer> ages;
 
-    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<String> ages) {
+    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<Integer> ages) {
         this.description = description;
         this.tags = tags;
         this.subTags = subTags;
         this.ages = ages;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
-    }
-
     public ArrayList<String> getTags() {
         return this.tags;
-    }
-
-    public void setSubTags(ArrayList<String> subTags) {
-        this.subTags = subTags;
     }
 
     public ArrayList<String> getSubTags() {
         return this.subTags;
     }
 
-    public void setAges(ArrayList<String> ages) {
-        this.ages = ages;
+    /**
+     * Transform the ages into a readable year level string i.e. 'All', '5-10', '8' or 'N/A' if the
+     * age range is not applicable
+     * @return A String of a readable year level(s)
+     */
+    public String getYearLevels(String version) {
+        if (version.equals("australia")) {
+            return getAustralianYearLevels();
+        }
+
+        return "N/A";
     }
 
     /**
-     * Transform the ages into a readable year level string i.e. 'All', '5-10', '8'
-     * @return A String of a readable year level(s)
+     * AUSTRALIAN VERSION
      */
-    public String getAges() {
-        //TODO finish this transformation into year levels
-        return "";
+    private String getAustralianYearLevels() {
+        int minAge = ages.stream().min(Integer::compare).orElse(0);
+        int maxAge = ages.stream().max(Integer::compare).orElse(0);
+
+        if (minAge <= 5 || maxAge >= 18) {
+            return "N/A";
+        }
+
+        int minYearLevel = Math.max(1, minAge - 5);
+        int maxYearLevel = Math.min(12, maxAge - 5);
+
+        if (minYearLevel == 1 && maxYearLevel == 12) {
+            return "All";
+        }
+
+        return minYearLevel + "-" + maxYearLevel;
     }
 }

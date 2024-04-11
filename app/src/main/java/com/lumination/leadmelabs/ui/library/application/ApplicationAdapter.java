@@ -169,9 +169,8 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         Application currentApplication = getItem(position);
         loadAdditionalInformation(viewHolder, currentApplication);
 
-        TextView applicationName = (TextView) convertView.findViewById(R.id.application_name);
+        TextView applicationName = convertView.findViewById(R.id.application_name);
         applicationName.setText(currentApplication.getName());
-
         viewHolder.binding.setApplication(currentApplication);
 
         convertView.setOnClickListener(v -> selectGame(v, currentApplication));
@@ -191,7 +190,8 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         // Set up tags
         LinearLayout tagsContainer = viewHolder.binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = viewHolder.binding.getRoot().findViewById(R.id.subTags);
-        TagUtils.setupTags(context, tagsContainer, subtagsTextView, currentApplication);
+        TextView yearLevelTextView = viewHolder.binding.getRoot().findViewById(R.id.yearLevel);
+        TagUtils.setupTags(context, tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
     }
 
     /**

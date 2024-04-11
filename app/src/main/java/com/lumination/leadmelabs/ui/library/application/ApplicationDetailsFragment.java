@@ -101,7 +101,8 @@ public class ApplicationDetailsFragment extends Fragment {
         // Set up tags
         LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
-        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, currentApplication);
+        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
     }
 
     public void confirmLaunchGame(Application selectedApplication) {

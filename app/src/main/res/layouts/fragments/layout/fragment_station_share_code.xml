@@ -111,8 +111,8 @@
                         app:flexDirection="column">
 
                         <include
-                            layout="@layout/section_experience_image"
-                            app:selectedApplication="@{selectedApplication}"/>
+                            layout="@layout/card_application"
+                            app:application="@{selectedApplication}"/>
 
                     </com.google.android.flexbox.FlexboxLayout>
 

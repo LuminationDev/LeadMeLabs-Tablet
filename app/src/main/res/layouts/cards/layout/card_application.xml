@@ -53,12 +53,16 @@
 
             <TextView
                 android:id="@+id/application_name"
-                android:layout_width="285dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:paddingHorizontal="10dp"
+                android:text="@{application.name}"
                 android:textSize="17sp"
                 android:textColor="@color/black"/>
 
+            <!--Tags & Year levels-->
             <include layout="@layout/section_experience_tags"/>
         </com.google.android.flexbox.FlexboxLayout>
 

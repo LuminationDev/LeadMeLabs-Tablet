@@ -39,16 +39,19 @@ public class TagUtils {
      *
      * @param context               The context of the application.
      * @param tagsContainer         The LinearLayout container to which main tags will be added.
-     * @param subtagsTextView       The TextView to display sub-tags.
+     * @param subTagsTextView       The TextView to display sub-tags.
      * @param currentApplication    The Application object containing tag information.
      */
-    public static void setupTags(Context context, LinearLayout tagsContainer, TextView subtagsTextView, Application currentApplication) {
+    public static void setupTags(Context context, LinearLayout tagsContainer, TextView subTagsTextView, TextView yearLevelTextView, Application currentApplication) {
 
         // Setup main tags
         setupMainTags(context, tagsContainer, currentApplication.getInformation().getTags());
 
         // Setup sub-tags
-        setupSubTags(subtagsTextView, currentApplication.getInformation().getSubTags());
+        setupSubTags(subTagsTextView, currentApplication.getInformation().getSubTags());
+
+        // Setup year level
+        setupYearLevels(yearLevelTextView, currentApplication.getInformation().getYearLevels("australia"));
     }
 
     /**
@@ -91,14 +94,27 @@ public class TagUtils {
         }
     }
 
-    // New method for setting up sub-tags
-    private static void setupSubTags(TextView subtagsTextView, List<String> subTags) {
+    /**
+     *
+     * @param subTagsTextView
+     * @param subTags
+     */
+    private static void setupSubTags(TextView subTagsTextView, List<String> subTags) {
         String subTagsText = TextUtils.join(", ", subTags);
         if (TextUtils.isEmpty(subTagsText)) {
-            subtagsTextView.setVisibility(View.GONE);
+            subTagsTextView.setVisibility(View.GONE);
         } else {
-            subtagsTextView.setVisibility(View.VISIBLE);
-            subtagsTextView.setText(subTagsText);
+            subTagsTextView.setVisibility(View.VISIBLE);
+            subTagsTextView.setText(subTagsText);
         }
+    }
+
+    /**
+     *
+     * @param yearLevelTextView
+     * @param yearLevels
+     */
+    private static void setupYearLevels(TextView yearLevelTextView, String yearLevels) {
+        yearLevelTextView.setText(yearLevels);
     }
 }
