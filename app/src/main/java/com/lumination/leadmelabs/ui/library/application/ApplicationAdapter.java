@@ -129,7 +129,8 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
     private boolean shouldInclude(Application application) {
         List<String> subjectFilters = LibrarySelectionFragment.mViewModel.getSubjectFilters().getValue();
         if (subjectFilters != null && !subjectFilters.isEmpty()) {
-            return application.getInformation().getTags().containsAll(subjectFilters);
+            List<String> applicationTags = application.getInformation().getTags();
+            return applicationTags.stream().anyMatch(subjectFilters::contains);
         }
         return true; // Include if no subject filters are set
     }
