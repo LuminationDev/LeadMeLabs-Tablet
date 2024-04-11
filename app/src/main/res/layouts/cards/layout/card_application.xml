@@ -18,8 +18,8 @@
         android:elevation="10dp">
 
         <FrameLayout
-            android:layout_width="315dp"
-            android:layout_height="147dp">
+            android:layout_width="325dp"
+            android:layout_height="153dp">
 
             <ImageView
                 android:id="@+id/placeholder_image"
@@ -47,7 +47,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="7dp"
             android:paddingVertical="10dp"
             app:flexDirection="column">
 
@@ -55,10 +55,12 @@
                 android:id="@+id/application_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="5dp"
                 android:text="@{application.name}"
+                android:textFontWeight="600"
                 android:textSize="17sp"
                 android:textColor="@color/black"/>
 

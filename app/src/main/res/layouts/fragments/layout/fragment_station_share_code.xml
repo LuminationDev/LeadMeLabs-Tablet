@@ -39,7 +39,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="75dp"
+                    android:layout_marginStart="70dp"
                     android:paddingHorizontal="30dp"
                     android:paddingVertical="20dp"
                     app:flexDirection="column">
@@ -105,7 +105,7 @@
 
                     <!-- Experience image -->
                     <com.google.android.flexbox.FlexboxLayout
-                        android:layout_width="320dp"
+                        android:layout_width="335dp"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="20dp"
                         app:flexDirection="column">
