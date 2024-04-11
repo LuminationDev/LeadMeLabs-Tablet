@@ -21,6 +21,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -171,6 +172,7 @@ public class SideMenuFragment extends Fragment {
                 .replace(R.id.main, fragmentClass, args)
                 .addToBackStack("menu:" + type)
                 .commit();
+        Segment.trackScreen("menu:" + type);
 
         requireActivity().getSupportFragmentManager().executePendingTransactions();
 
@@ -196,8 +198,10 @@ public class SideMenuFragment extends Fragment {
                 if (StationSingleNestedFragment.primaryStationId != 0) {
                     StationSingleNestedFragment.mViewModel.selectStation(StationSingleNestedFragment.primaryStationId);
                 }
+                Segment.trackScreen(fragmentManager.getBackStackEntryAt(0).getName());
                 fragmentManager.popBackStackImmediate();
             }else {
+                Segment.trackScreen(fragmentManager.getBackStackEntryAt(0).getName());
                 fragmentManager.popBackStackImmediate();
             }
         }

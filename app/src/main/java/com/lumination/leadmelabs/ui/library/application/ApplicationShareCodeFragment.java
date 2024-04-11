@@ -23,6 +23,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -30,6 +32,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +45,8 @@ public class ApplicationShareCodeFragment extends Fragment {
     private FragmentStationShareCodeBinding binding;
 
     private EditText[] editTexts;
+
+    private static final String segmentClassification = "Experience Code";
 
     @Nullable
     @Override
@@ -77,6 +82,13 @@ public class ApplicationShareCodeFragment extends Fragment {
             if (fragmentManager.getBackStackEntryCount() > 1) {
                 fragmentManager.popBackStackImmediate();
             }
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+            segmentProperties.put("name", selectedApplication.getName());
+            segmentProperties.put("id", selectedApplication.getId());
+            segmentProperties.put("type", selectedApplication.getType());
+            Segment.trackEvent(SegmentConstants.Cancel_Share_Code, segmentProperties);
         });
 
         Button playButton = view.findViewById(R.id.launch_experience);
@@ -111,6 +123,14 @@ public class ApplicationShareCodeFragment extends Fragment {
 
             NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", additionalData);
         }
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+        segmentProperties.put("name", selectedApplication.getName());
+        segmentProperties.put("id", selectedApplication.getId());
+        segmentProperties.put("type", selectedApplication.getType());
+        Segment.trackEvent(SegmentConstants.Event_Experience_Launch, segmentProperties);
 
         ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
         DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);

@@ -59,6 +59,7 @@ import com.lumination.leadmelabs.unique.snowHydro.modal.backdrop.BackdropFragmen
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Interlinking;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,6 +87,8 @@ public class StationSingleNestedFragment extends Fragment {
     public static FragmentManager childManager;
 
     private LocalAudioDeviceAdapter audioDeviceAdapter;
+
+    public static final String segmentClassification = "Station Single Nested";
 
     @Nullable
     @Override
@@ -136,6 +139,7 @@ public class StationSingleNestedFragment extends Fragment {
                     .replace(R.id.main, StationSingleFragment.class, null)
                     .addToBackStack("menu:stations:nested")
                     .commit();
+            Segment.trackScreen("menu:stations:nested");
 
             // Delay the change over so the nested xml section does not switch
             new Handler().postDelayed(() -> mViewModel.selectStation(binding.getSelectedNestedStation().id), 200);
@@ -166,6 +170,8 @@ public class StationSingleNestedFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
             StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
+
+            trackStationEvent(SegmentConstants.New_Session_Button);
 
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
@@ -214,20 +220,22 @@ public class StationSingleNestedFragment extends Fragment {
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationApplicationLaunch(Interlinking.collectNestedStations(selectedStation, int[].class), ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()), true);
 
-            // Send data to Segment
-            SegmentExperienceEvent event = new SegmentExperienceEvent(
-                    SegmentConstants.Event_Experience_Restart,
-                    selectedStation.getId(),
-                    selectedStation.applicationController.getExperienceName(),
-                    selectedStation.applicationController.getExperienceId(),
-                    selectedStation.applicationController.getExperienceType()
-            );
-            Segment.trackAction(event);
+            trackExperienceEvent(SegmentConstants.Event_Experience_Restart);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(selectedStation.getId()));
             }};
             FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
+        });
+
+        View currentSessionBox = view.findViewById(R.id.current_session_box);
+        currentSessionBox.setOnClickListener(v -> {
+            trackStationEvent(SegmentConstants.Current_Session_Touch);
+        });
+
+        View stationStatusBox = view.findViewById(R.id.station_status_box);
+        stationStatusBox.setOnClickListener(v -> {
+            trackStationEvent(SegmentConstants.Station_Status_Touch);
         });
 
         Button endGame = view.findViewById(R.id.station_end_session);
@@ -271,9 +279,7 @@ public class StationSingleNestedFragment extends Fragment {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
             DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
 
-            // Send data to Segment
-            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
-            Segment.trackAction(event);
+            trackExperienceEvent(SegmentConstants.Event_Station_VR_Restart);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -302,6 +308,7 @@ public class StationSingleNestedFragment extends Fragment {
                     station.status = "Turning On";
                     mViewModel.updateStationById(id, station);
                 });
+                trackStationEvent(SegmentConstants.Event_Station_Power_On);
 
             } else if(station.status.equals("Turning On")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
@@ -335,9 +342,7 @@ public class StationSingleNestedFragment extends Fragment {
                 } else {
                     shutdownStation(shutdownButton, station);
 
-                    // Send data to Segment
-                    SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Shutdown, binding.getSelectedStation().id);
-                    Segment.trackAction(event);
+                    trackStationEvent(SegmentConstants.Event_Station_Shutdown);
                 }
             }
         });
@@ -366,6 +371,9 @@ public class StationSingleNestedFragment extends Fragment {
                 Station selectedStation = binding.getSelectedStation();
                 selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
                 selectedStation.videoController.setSliderTracking(false);
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("name", "time_slider");
+                trackStationEvent(SegmentConstants.Video_Playback_Control, segmentProperties);
             }
         });
 
@@ -396,6 +404,7 @@ public class StationSingleNestedFragment extends Fragment {
                 //This is only sent to the primary Station as it is assumed that the bound Station does not have sounds required
                 NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
                 System.out.println(slider.getValue());
+                trackStationEvent(SegmentConstants.Station_Volume_Control);
             }
         });
 
@@ -464,6 +473,7 @@ public class StationSingleNestedFragment extends Fragment {
             selectedStation.audioController.setMuted(!currentValue);
             mViewModel.updateStationById(selectedStation.id, selectedStation);
             NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.audioController.getMuted());
+            trackStationEvent(SegmentConstants.Station_Mute);
         });
     }
 
@@ -656,5 +666,37 @@ public class StationSingleNestedFragment extends Fragment {
             }
             shutdownButton.setText(R.string.shut_down_station);
         }
+    }
+
+    private void trackExperienceEvent(String eventConstant) {
+        Station selectedStation = binding.getSelectedStation();
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("stationId", selectedStation.getId());
+        segmentProperties.put("name", selectedStation.applicationController.getExperienceName());
+        segmentProperties.put("id", selectedStation.applicationController.getExperienceId());
+        segmentProperties.put("type", selectedStation.applicationController.getExperienceType());
+
+        Segment.trackEvent(eventConstant, segmentProperties);
+    }
+
+    private void trackStationEvent(String eventConstant) {
+        Station selectedStation = binding.getSelectedStation();
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("stationId", selectedStation.getId());
+
+        Segment.trackEvent(eventConstant, segmentProperties);
+    }
+
+    private void trackStationEvent(String eventConstant, Properties properties) {
+        Station selectedStation = binding.getSelectedStation();
+
+        properties.put("classification", segmentClassification);
+        properties.put("stationId", selectedStation.getId());
+
+        Segment.trackEvent(eventConstant, properties);
     }
 }

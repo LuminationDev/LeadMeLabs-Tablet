@@ -96,6 +96,7 @@ public class ControlPageFragment extends Fragment {
                 .replace(R.id.rooms, RoomFragment.class, null)
                 .addToBackStack("submenu:" + type)
                 .commit();
+        Segment.trackScreen("submenu:" + type);
 
         childManager.executePendingTransactions();
     }

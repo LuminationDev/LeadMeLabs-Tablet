@@ -86,6 +86,15 @@ public class SystemStatusFragment extends Fragment {
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
+
+                /*
+                setTimeout 10 seconds
+                if still lost
+                I have lost internet connection, please try restarting the tablet
+
+                if we regain connection (above), automatically dismiss the popup
+                 */
+
                 if (MainActivity.getInstance() != null) {
                     MainActivity.runOnUI(() -> {
                         ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_network_not_connected, 0, 0);

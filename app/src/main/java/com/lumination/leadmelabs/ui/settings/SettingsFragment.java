@@ -21,7 +21,10 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
+import com.segment.analytics.Properties;
 
 import java.util.HashSet;
 
@@ -33,6 +36,8 @@ public class SettingsFragment extends Fragment {
     private static int ipAddressPresses = 0;
     public static SettingsFragment instance;
     public static SettingsFragment getInstance() { return instance; }
+
+    public static final String segmentClassification = "Settings";
 
     @Nullable
     @Override
@@ -106,7 +111,9 @@ public class SettingsFragment extends Fragment {
                         .commit();
 
                 fragmentManager.executePendingTransactions();
+                Segment.trackScreen("menu:settings");
             }
+            this.trackSettingChanged("Hide Station Controls", String.valueOf(isChecked));
         };
         hideStationControlsToggle.setOnCheckedChangeListener(hideStationControlsToggleListener);
 
@@ -117,9 +124,10 @@ public class SettingsFragment extends Fragment {
         showHiddenStationsLayout.setOnClickListener(v ->
                 showHiddenStationsToggle.setChecked(!showHiddenStationsToggle.isChecked())
         );
-        showHiddenStationsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                mViewModel.setShowHiddenStations(isChecked)
-        );
+        showHiddenStationsToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setShowHiddenStations(isChecked);
+            this.trackSettingChanged("Show Hidden Stations", String.valueOf(isChecked));
+        });
 
         //The toggle for turning analytics on and off
         FlexboxLayout enableAnalyticsLayout = view.findViewById(R.id.enable_analytical_collection);
@@ -128,9 +136,10 @@ public class SettingsFragment extends Fragment {
         enableAnalyticsLayout.setOnClickListener(v ->
                 enableAnalyticsToggle.setChecked(!enableAnalyticsToggle.isChecked())
         );
-        enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                mViewModel.setAnalyticsEnabled(isChecked)
-        );
+        enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setAnalyticsEnabled(isChecked);
+            this.trackSettingChanged("Analytics Enabled", String.valueOf(isChecked));
+        });
 
         //The toggle for turning exit prompts on and off
         FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
@@ -139,9 +148,10 @@ public class SettingsFragment extends Fragment {
         enableExitPromptsLayout.setOnClickListener(v ->
                 enableExitPromptsToggle.setChecked(!enableExitPromptsToggle.isChecked())
         );
-        enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                mViewModel.setAdditionalExitPrompts(isChecked)
-        );
+        enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setAdditionalExitPrompts(isChecked);
+            this.trackSettingChanged("Additional Exit Prompts", String.valueOf(isChecked));
+        });
 
         //Send the user to the play store listing of LeadMe Labs whilst unpinning the application
         FlexboxLayout updateLeadMeButton = view.findViewById(R.id.update_leadme);
@@ -158,6 +168,9 @@ public class SettingsFragment extends Fragment {
                     Log.e("Activity Not found", e.getLocalizedMessage());
                 }
             }
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            Segment.trackEvent(SegmentConstants.Visit_Play_Store, segmentProperties);
         }));
 
         instance = this;
@@ -169,9 +182,10 @@ public class SettingsFragment extends Fragment {
         enableRoomLockLayout.setOnClickListener(v ->
                 enableRoomLockToggle.setChecked(!enableRoomLockToggle.isChecked())
         );
-        enableRoomLockToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                mViewModel.setRoomLockEnabled(isChecked)
-        );
+        enableRoomLockToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setRoomLockEnabled(isChecked);
+            this.trackSettingChanged("Room Lock", String.valueOf(isChecked));
+        });
 
         FlexboxLayout setLockedRoomButton = view.findViewById(R.id.set_locked_room);
         setLockedRoomButton.setOnClickListener(v ->
@@ -230,5 +244,17 @@ public class SettingsFragment extends Fragment {
         if(locked == null) { //need to have a null check
             return true;
         } else return locked.size() == 0 || locked.contains(room);
+    }
+
+    private void trackSettingChanged(String name, String value) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("name", name);
+        segmentProperties.put("newValue", value);
+        Segment.trackEvent(SegmentConstants.Setting_Changed, segmentProperties);
+    }
+
+    private void trackSettingModalOpened(String name) {
+
     }
 }

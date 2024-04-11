@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.segment.analytics.Properties;
 
 import java.util.ArrayList;
 import java.util.List;
