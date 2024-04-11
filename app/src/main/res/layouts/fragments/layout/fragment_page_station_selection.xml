@@ -200,7 +200,7 @@
 
                     <!--Display for video players (same as no-category for now, in the future can select what player to use (Flat vs Regular))-->
                     <include
-                        android:visibility="@{selectedApplication.HasCategory().equals(`video`) ? View.VISIBLE : View.GONE, default=gone }"
+                        android:visibility="@{selectedApplication.HasCategory().equals(`videoPlayer`) ? View.VISIBLE : View.GONE, default=gone }"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         layout="@layout/section_experience_details"
