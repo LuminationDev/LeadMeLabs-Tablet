@@ -138,7 +138,10 @@ public class SettingsFragment extends Fragment {
         );
         enableAnalyticsToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             mViewModel.setAnalyticsEnabled(isChecked);
-            this.trackSettingChanged("Analytics Enabled", String.valueOf(isChecked));
+            if (isChecked) {
+                Segment.initialise();
+                this.trackSettingChanged("Analytics Enabled", String.valueOf(isChecked));
+            }
         });
 
         //The toggle for turning exit prompts on and off
