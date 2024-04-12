@@ -107,20 +107,6 @@
                                 android:textFontWeight="600"
                                 android:textSize="13sp" />
                         </com.google.android.flexbox.FlexboxLayout>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/station_single_menu_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@android:color/transparent"
-                            android:drawableEnd="@drawable/icon_cross"
-                            android:elevation="0dp"
-                            android:stateListAnimator="@null"
-                            android:textAllCaps="false"
-                            android:textColor="@color/blue_darkest"
-                            android:visibility="gone"
-                            app:cornerRadius="2dp"
-                            app:rippleColor="@color/grey" />
                     </com.google.android.flexbox.FlexboxLayout>
 
                     <com.google.android.flexbox.FlexboxLayout
@@ -146,6 +132,7 @@
                                 android:textFontWeight="600" />
 
                             <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/current_session_box"
                                 android:layout_width="400dp"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_white_curved"
@@ -198,6 +185,7 @@
 
                             <!--STATION STATUS SECTION-->
                             <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/station_status_box"
                                 android:layout_width="400dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20dp"

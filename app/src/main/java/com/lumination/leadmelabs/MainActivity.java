@@ -215,11 +215,13 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .replace(R.id.sub_menu, SubMenuFragment.class, null, "sub")
                     .commitNow();
+            Segment.trackScreen("menu:controls");
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.main, DashboardPageFragment.class, null)
                     .addToBackStack("menu:dashboard")
                     .commit();
+            Segment.trackScreen("menu:dashboard");
         }
 
         //Load the side menu as a separate transaction as this is not kept on the back stack.

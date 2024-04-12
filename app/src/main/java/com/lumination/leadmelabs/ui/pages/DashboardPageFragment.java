@@ -38,6 +38,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
 public class DashboardPageFragment extends Fragment {
     public static FragmentManager childManager;
     private static boolean cancelledShutdown = false;
+    public static final String segmentClassification = "Dashboard";
 
     @Nullable
     @Override
@@ -103,8 +105,7 @@ public class DashboardPageFragment extends Fragment {
             searchForSceneTrigger("vr");
             // Send data to Segment
             Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
-            Segment.trackAction(event);
+            trackDashboardEvent(SegmentConstants.Event_Lab_VR_Mode);
         });
 
         //Launch the new session flow
@@ -112,6 +113,7 @@ public class DashboardPageFragment extends Fragment {
         newSession.setOnClickListener(v -> {
             StationsFragment.mViewModel.setSelectedStationId(0);
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", null);
+            trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
 
         //End session on all/selected stations
@@ -120,6 +122,7 @@ public class DashboardPageFragment extends Fragment {
             BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
                 if (confirmationResult) {
                     endAllSessionsConfirmation();
+                    trackDashboardEvent(SegmentConstants.End_Session_On_All);
                 } else {
                     ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
                     List<Station> filteredList = stationsToSelectFrom.stream()
@@ -134,6 +137,7 @@ public class DashboardPageFragment extends Fragment {
                     "End on select",
                     "End on all",
                     true);
+            trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
 
         //Restart all stations
@@ -160,9 +164,7 @@ public class DashboardPageFragment extends Fragment {
                     if (confirmationResult) {
                         restartAllStations(restartHeading, restartContent);
 
-                        // Send data to Segment
-                        SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                        Segment.trackAction(event);
+                        trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
                     }
                 };
 
@@ -176,9 +178,7 @@ public class DashboardPageFragment extends Fragment {
             } else {
                 restartAllStations(restartHeading, restartContent);
 
-                // Send data to Segment
-                SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                Segment.trackAction(event);
+                trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
             }
         });
 
@@ -186,9 +186,7 @@ public class DashboardPageFragment extends Fragment {
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
         classroomMode.setOnClickListener(v -> {
             searchForSceneTrigger("classroom");
-            // Send data to Segment
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
-            Segment.trackAction(event);
+            trackDashboardEvent(SegmentConstants.Event_Lab_Classroom_Mode);
             Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
 
@@ -197,18 +195,12 @@ public class DashboardPageFragment extends Fragment {
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
-            // Send data to Segment
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Identify);
-            Segment.trackAction(event);
         });
       
         //Open the help page
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Dashboard");
-            Segment.trackAction(event);
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
@@ -444,5 +436,11 @@ public class DashboardPageFragment extends Fragment {
             case 3:  return "rd";
             default: return "th";
         }
+    }
+
+    private void trackDashboardEvent(String event) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        Segment.trackEvent(event, segmentProperties);
     }
 }
