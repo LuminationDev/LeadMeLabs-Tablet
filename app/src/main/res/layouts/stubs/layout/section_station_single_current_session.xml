@@ -17,6 +17,7 @@
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/current_session_box"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_white_curved"

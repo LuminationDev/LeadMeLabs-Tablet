@@ -12,7 +12,6 @@ import com.lumination.leadmelabs.models.applications.SteamApplication;
 import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.models.applications.information.Information;
 import com.lumination.leadmelabs.models.applications.information.InformationConstants;
-import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
@@ -20,10 +19,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.sentry.Sentry;
 
@@ -197,5 +196,17 @@ public class ApplicationController {
                 .filter(app -> Objects.equals(app.getName(), name))
                 .findFirst();
         return optionalApp.orElse(null);
+    }
+
+    /**
+     * Retrieves all applications of a certain type.
+     *
+     * @param isVr A boolean representing whether to collect VR applications (true) or regular ones (false)
+     * @return A list of Application objects.
+     */
+    public List<Application> getAllApplicationsByType(boolean isVr) {
+        return applications.stream()
+                .filter(app -> app.isVr == isVr)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

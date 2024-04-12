@@ -3,13 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
         <variable
             name="library"
             type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
         <variable
             name="stations"
             type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+        <variable
+            name="hasVideos"
+            type="Boolean" />
+        <variable
+            name="hasRegularApplications"
+            type="Boolean" />
     </data>
 
     <RelativeLayout
@@ -128,9 +133,10 @@
 
                     <!--LIBRARY TAB SECTION-->
                     <include
-                        android:visibility="@{stations.allVideos.size() > 0 ? View.VISIBLE : View.INVISIBLE, default=invisible}"
                         layout="@layout/section_library_tabs"
-                        app:library="@{library}"/>
+                        app:library="@{library}"
+                        app:hasVideos="@{hasVideos}"
+                        app:hasRegularApplications="@{hasRegularApplications}"/>
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"

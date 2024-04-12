@@ -27,6 +27,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
 import com.lumination.leadmelabs.models.applications.information.TagConstants;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
@@ -84,7 +85,6 @@ public class LibrarySelectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setLibrary(mViewModel);
-        binding.setStations(StationsFragment.mViewModel);
 
         Bundle bundle = getArguments();
         String stationName = bundle != null ? bundle.getString("station") : null;
@@ -104,6 +104,19 @@ public class LibrarySelectionFragment extends Fragment {
         TextView stationTitle = view.findViewById(R.id.selectedStation);
         stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
+
+        //Determine if there are videos or regular applications available
+        if (stationName == null) {
+            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
+            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
+        } else {
+            //Get the current station
+            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
+            if (station != null) {
+                binding.setHasVideos(station.videoController.videos.size() > 0);
+                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
+            }
+        }
 
         setupFilter(view);
         setupButtons(view);

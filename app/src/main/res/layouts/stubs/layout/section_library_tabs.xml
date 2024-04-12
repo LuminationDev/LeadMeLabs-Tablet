@@ -7,11 +7,19 @@
         <variable
             name="library"
             type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
+        <variable
+            name="hasVideos"
+            type="Boolean" />
+        <variable
+            name="hasRegularApplications"
+            type="Boolean" />
     </data>
 
+    <!--If there are no videos or regular applications do not show the tabs-->
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="@{hasVideos || hasRegularApplications ? View.VISIBLE : View.INVISIBLE, default=visible}">
 
         <!--VR or Video switch buttons-->
         <com.google.android.flexbox.FlexboxLayout
@@ -63,6 +71,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="25dp"
+                android:visibility="@{hasRegularApplications ? View.VISIBLE : View.INVISIBLE, default=visible}"
                 app:flexDirection="column">
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -100,6 +109,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:visibility="@{hasVideos ? View.VISIBLE : View.INVISIBLE, default=visible}"
                 app:flexDirection="column">
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -132,6 +142,9 @@
                     android:layout_height="1dp"
                     android:background="@color/blue_darkest"/>
             </com.google.android.flexbox.FlexboxLayout>
+
         </com.google.android.flexbox.FlexboxLayout>
+
     </com.google.android.flexbox.FlexboxLayout>
+
 </layout>
