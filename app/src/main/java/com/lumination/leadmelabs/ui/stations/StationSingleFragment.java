@@ -9,7 +9,6 @@ import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +38,7 @@ import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
-import com.lumination.leadmelabs.segment.classes.SegmentStationEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -52,6 +49,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +71,8 @@ public class StationSingleFragment extends Fragment {
     public static FragmentManager childManager;
 
     private LocalAudioDeviceAdapter audioDeviceAdapter;
+
+    public static final String segmentClassification = "Station Single";
 
     @Nullable
     @Override
@@ -122,6 +122,9 @@ public class StationSingleFragment extends Fragment {
                 Station selectedStation = binding.getSelectedStation();
                 selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
                 selectedStation.videoController.setSliderTracking(false);
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("name", "time_slider");
+                trackStationEvent(SegmentConstants.Video_Playback_Control, segmentProperties);
             }
         });
 
@@ -150,6 +153,7 @@ public class StationSingleFragment extends Fragment {
                 int currentVolume = ((long) selectedStation.audioController.audioDevices.size() == 0) ? selectedStation.audioController.volume : selectedStation.audioController.getVolume();
                 NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
                 System.out.println(slider.getValue());
+                trackStationEvent(SegmentConstants.Station_Volume_Control);
             }
         });
 
@@ -166,9 +170,10 @@ public class StationSingleFragment extends Fragment {
         vrGuideButton.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("VR Library", "Go to the VR library and press refresh. After approximately 1 minute, the experiences should be available in the list. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "VR Library");
-            Segment.trackAction(event);
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("name", "VR Library");
+            Segment.trackEvent(SegmentConstants.Help_Question_Opened, segmentProperties);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -181,9 +186,10 @@ public class StationSingleFragment extends Fragment {
         steamErrorGuideButton.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("SteamVR Errors", "Press ‘Restart VR System’ and wait while it restarts. This can be done on the individual station screen. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your IT department.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Steam VR Errors");
-            Segment.trackAction(event);
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("name", "SteamVR Errors");
+            Segment.trackEvent(SegmentConstants.Help_Question_Opened, segmentProperties);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -208,26 +214,13 @@ public class StationSingleFragment extends Fragment {
                 DialogManager.buildURLDialog(getContext(), binding)
         );
 
-        Button menuButton = view.findViewById(R.id.station_single_menu_button);
-        menuButton.setOnClickListener(v -> {
-            PopupMenu popupMenu = new PopupMenu(getActivity(), menuButton);
-            PopupMenu.OnMenuItemClickListener onMenuItemClickListener = menuItem -> {
-                if (menuItem.getItemId() == R.id.rename) {
-                    DialogManager.buildRenameStationDialog(getContext(), binding);
-                    return true;
-                }
-                return false;
-            };
-            popupMenu.setOnMenuItemClickListener(onMenuItemClickListener);
-            popupMenu.inflate(R.menu.station_single_menu_actions);
-            popupMenu.show();
-        });
-
         MaterialButton newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("station", String.valueOf(binding.getSelectedStation().name));
             StationsFragment.mViewModel.setSelectedStationId(binding.getSelectedStation().id);
+
+            trackStationEvent(SegmentConstants.New_Session_Button);
 
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
@@ -276,15 +269,7 @@ public class StationSingleFragment extends Fragment {
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
             DialogManager.awaitStationApplicationLaunch(new int[] { binding.getSelectedStation().id }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().applicationController.getExperienceId()), true);
 
-            // Send data to Segment
-            SegmentExperienceEvent event = new SegmentExperienceEvent(
-                    SegmentConstants.Event_Experience_Restart,
-                    selectedStation.getId(),
-                    selectedStation.applicationController.getExperienceName(),
-                    selectedStation.applicationController.getExperienceId(),
-                    selectedStation.applicationController.getExperienceType()
-            );
-            Segment.trackAction(event);
+            trackExperienceEvent(SegmentConstants.Event_Experience_Restart);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -316,16 +301,23 @@ public class StationSingleFragment extends Fragment {
             } else {
                 NetworkService.sendMessage("Station," + selectedStation.id, "CommandLine", "StopGame");
             }
+            trackExperienceEvent(SegmentConstants.Event_Experience_Stop);
+        });
+
+        View currentSessionBox = view.findViewById(R.id.current_session_box);
+        currentSessionBox.setOnClickListener(v -> {
+            trackStationEvent(SegmentConstants.Current_Session_Touch);
+        });
+
+        View stationStatusBox = view.findViewById(R.id.station_status_box);
+        stationStatusBox.setOnClickListener(v -> {
+            trackStationEvent(SegmentConstants.Station_Status_Touch);
         });
 
         Button pingStation = view.findViewById(R.id.ping_station);
         pingStation.setOnClickListener(v -> {
             List<Station> stations = Collections.singletonList(binding.getSelectedStation());
             Identifier.identifyStations(stations);
-
-            // Send data to Segment
-            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Identify, binding.getSelectedStation().id);
-            Segment.trackAction(event);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
@@ -335,9 +327,7 @@ public class StationSingleFragment extends Fragment {
             NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "CommandLine", "RestartVR");
             DialogManager.awaitStationRestartVRSystem(new int[] { binding.getSelectedStation().id });
 
-            // Send data to Segment
-            SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_VR_Restart, binding.getSelectedStation().id);
-            Segment.trackAction(event);
+            trackExperienceEvent(SegmentConstants.Event_Station_VR_Restart);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(binding.getSelectedStation().id));
@@ -365,6 +355,7 @@ public class StationSingleFragment extends Fragment {
                     station.status = "Turning On";
                     mViewModel.updateStationById(id, station);
                 });
+                trackStationEvent(SegmentConstants.Event_Station_Power_On);
 
             } else if(station.status.equals("Turning On")) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
@@ -398,9 +389,7 @@ public class StationSingleFragment extends Fragment {
                 } else {
                     shutdownStation(shutdownButton, id);
 
-                    // Send data to Segment
-                    SegmentStationEvent event = new SegmentStationEvent(SegmentConstants.Event_Station_Shutdown, binding.getSelectedStation().id);
-                    Segment.trackAction(event);
+                    trackStationEvent(SegmentConstants.Event_Station_Shutdown);
                 }
             }
         });
@@ -447,6 +436,7 @@ public class StationSingleFragment extends Fragment {
                     "Cancel",
                     "Proceed",
                     false);
+            trackStationEvent(SegmentConstants.Open_Configure_SteamCMD);
         });
 
         MaterialButton headsetVolumeSelect = view.findViewById(R.id.headset_volume_select);
@@ -476,6 +466,11 @@ public class StationSingleFragment extends Fragment {
             mViewModel.getSelectedStation().getValue().audioController.setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("name", selectedValue.getName());
+            segmentProperties.put("element", "Headset Source");
+            trackStationEvent(SegmentConstants.Volume_Source_Select, segmentProperties);
         });
 
         MaterialButton projectorVolumeSelect = view.findViewById(R.id.projector_volume_select);
@@ -505,6 +500,10 @@ public class StationSingleFragment extends Fragment {
             mViewModel.getSelectedStation().getValue().audioController.setActiveAudioDevice(selectedValue.getName());
 
             NetworkService.sendMessage("Station," + mViewModel.getSelectedStation().getValue().id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("name", selectedValue.getName());
+            segmentProperties.put("element", "Projector Source");
+            trackStationEvent(SegmentConstants.Volume_Source_Select, segmentProperties);
         });
         //endregion
 
@@ -524,6 +523,7 @@ public class StationSingleFragment extends Fragment {
             selectedStation.audioController.setMuted(!currentValue);
             mViewModel.updateStationById(selectedStation.id, selectedStation);
             NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:muted:" + selectedStation.audioController.getMuted());
+            trackStationEvent(SegmentConstants.Station_Mute);
         });
     }
 
@@ -578,6 +578,10 @@ public class StationSingleFragment extends Fragment {
                 LocalAudioDevice selectedValue = (LocalAudioDevice) parentView.getItemAtPosition(position);
 
                 NetworkService.sendMessage("Station," + station.id, "Station", "SetValue:activeAudioDevice:" + selectedValue.getName());
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("name", selectedValue.getName());
+                segmentProperties.put("element", "Other Sources");
+                trackStationEvent(SegmentConstants.Volume_Source_Select, segmentProperties);
             }
 
             @Override
@@ -607,6 +611,22 @@ public class StationSingleFragment extends Fragment {
     private void inflateVRDevicesLayout() {
         ViewStub vrDevicesStub = binding.getRoot().findViewById(R.id.vr_devices_section);
         vrDevicesStub.inflate();
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.headset_connection_status), "Headset Connection");
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.left_controller_status), "Left Controller");
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.right_controller_status), "Right Controller");
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.base_station_status), "Base Station");
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.vive_connection_status), "Vive Connection");
+        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.openvr_connection_status), "OpenVR Connection");
+    }
+
+    private void setupVrDeviceClickTracking(View view, String name) {
+        if (view != null) {
+            view.setOnClickListener(v -> {
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("name", name);
+                trackStationEvent(SegmentConstants.VR_Device_Touch, segmentProperties);
+            });
+        }
     }
 
     /**
@@ -727,5 +747,37 @@ public class StationSingleFragment extends Fragment {
             }
             shutdownButton.setText(R.string.shut_down_station);
         }
+    }
+
+    private void trackExperienceEvent(String eventConstant) {
+        Station selectedStation = binding.getSelectedStation();
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("stationId", selectedStation.getId());
+        segmentProperties.put("name", selectedStation.applicationController.getExperienceName());
+        segmentProperties.put("id", selectedStation.applicationController.getExperienceId());
+        segmentProperties.put("type", selectedStation.applicationController.getExperienceType());
+
+        Segment.trackEvent(eventConstant, segmentProperties);
+    }
+
+    private void trackStationEvent(String eventConstant) {
+        Station selectedStation = binding.getSelectedStation();
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("stationId", selectedStation.getId());
+
+        Segment.trackEvent(eventConstant, segmentProperties);
+    }
+
+    private void trackStationEvent(String eventConstant, Properties properties) {
+        Station selectedStation = binding.getSelectedStation();
+
+        properties.put("classification", segmentClassification);
+        properties.put("stationId", selectedStation.getId());
+
+        Segment.trackEvent(eventConstant, properties);
     }
 }

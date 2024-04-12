@@ -21,12 +21,14 @@ import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.segment.analytics.Properties;
 
 import java.util.HashMap;
 
 public class HelpPageFragment extends Fragment {
 
     public static FragmentManager childManager;
+    public static final String segmentClassification = "Troubleshooting";
 
     @Nullable
     @Override
@@ -40,9 +42,7 @@ public class HelpPageFragment extends Fragment {
         roomAutomations.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Room Automations", "The server that connects to the room automations may have lost connection. Contact your local ICT department and ask them to restart it.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Room Automations");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("Room Automations");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -55,9 +55,7 @@ public class HelpPageFragment extends Fragment {
         serverConnection.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Server Connection", "The server that connects the lab may have turned off or lost network connection. Contact your local ICT department and ask them to restart it.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Server Connection");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("Server Connection");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -70,9 +68,7 @@ public class HelpPageFragment extends Fragment {
         vrLibrary.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("VR Library", "Go to the VR library and press refresh. After approximately 1 minute, the experiences should be available in the list. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "VR Library");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("VR Library");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -85,9 +81,7 @@ public class HelpPageFragment extends Fragment {
         headsetConnection.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Headset Connection Issues", "Check that the headset for that station is inside the LED ring and has a charged battery plugged in and turned on. If this doesn’t fix the issue, press ‘Restart VR System’ and wait while it restarts. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your local ICT department.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset Connection");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("Headset Connection Issues");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -100,9 +94,7 @@ public class HelpPageFragment extends Fragment {
         steamVRErrors.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("SteamVR Errors", "Press ‘Restart VR System’ and wait while it restarts. This can be done on the individual station screen. Then try to launch the experience again. If this doesn’t work, try restarting the station by shutting it down and then turning it back on. This can be done on the individual station screen. If this still doesn’t work, contact your IT department.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Steam VR Errors");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("SteamVR Errors");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -115,9 +107,7 @@ public class HelpPageFragment extends Fragment {
         launchingExperience.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Controller connectivity", "For detailed instructions visit: https://help.lumination.com.au/knowledge/vive-controller-troubleshooting-connectivity-issues\n1. Make sure that your device has enough battery charge.\n2. Ensure the controllers are set to never timeout in SteamVR.\n3. Re-pair the controllers in SteamVR.\n4. Ensure that the base stations have adequate line-of-sight to the controllers.\n5. Enable bluetooth connectivity and update the base station firmware.\n");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Controller Issues");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("Controller Issues");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -130,9 +120,7 @@ public class HelpPageFragment extends Fragment {
         headsetIsBlank.setOnClickListener(v -> {
             DialogManager.createTroubleshootingTextDialog("Headset is blank", "Check that the headset battery is charged and try unplugging and plugging it and then waiting 30 seconds. If this does not resolve the issue, try pressing 'restart session'. If this does not resolve the issue, try pressing 'Restart VR system'. If this does not resolve the issue, try restarting the computer.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Headset is Blank");
-            Segment.trackAction(event);
+            this.trackHelpQuestionOpened("Headset Is Blank");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -145,9 +133,7 @@ public class HelpPageFragment extends Fragment {
         quickstartGuide.setOnClickListener(v -> {
             DialogManager.buildWebViewDialog(getContext(), "https://drive.google.com/file/d/14h2zlMhjIK_cZnGobyfysYmOPzjnmkjK/view?usp=drive_link");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Quickstart Guide");
-            Segment.trackAction(event);
+            this.trackHelpGuideOpened("Quickstart Guide");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -160,9 +146,7 @@ public class HelpPageFragment extends Fragment {
         lessonPlans.setOnClickListener(v -> {
             DialogManager.createTextDialog("Lesson Plans", "Visit https://lms.lumination.com.au in a web browser to access lesson plans designed for use in a Lumination Learning Lab");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Lesson Plans");
-            Segment.trackAction(event);
+            this.trackHelpGuideOpened("Lesson Plans");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -175,9 +159,7 @@ public class HelpPageFragment extends Fragment {
         updateDetails.setOnClickListener(v -> {
             DialogManager.createUpdateDetailsDialog();
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Update Details");
-            Segment.trackAction(event);
+            this.trackHelpGuideOpened("Update Details");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -190,9 +172,7 @@ public class HelpPageFragment extends Fragment {
         contactSupportButton.setOnClickListener(v -> {
             DialogManager.createTextDialog("Knowledge Bank", "Visit https://help.lumination.com.au/knowledge/lumination-learning-labs in a web browser to access Lumination's Knowledge Bank.");
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Knowledge Bank");
-            Segment.trackAction(event);
+            this.trackHelpGuideOpened("Knowledge Bank");
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -205,9 +185,10 @@ public class HelpPageFragment extends Fragment {
         submitTicketButton.setOnClickListener(v -> {
             DialogManager.createSubmitTicketDialog();
 
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Troubleshooting, "Submit Ticket");
-            Segment.trackAction(event);
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("name", "Submit Ticket Hero");
+            Segment.trackEvent(SegmentConstants.Submit_Ticket_Opened, segmentProperties);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("content_type", "troubleshooting");
@@ -239,5 +220,19 @@ public class HelpPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void trackHelpQuestionOpened(String name) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("name", name);
+        Segment.trackEvent(SegmentConstants.Help_Question_Opened, segmentProperties);
+    }
+
+    private void trackHelpGuideOpened(String name) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("name", name);
+        Segment.trackEvent(SegmentConstants.Help_Guide_Opened, segmentProperties);
     }
 }

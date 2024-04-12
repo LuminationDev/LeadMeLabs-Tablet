@@ -21,6 +21,7 @@
 
         <!--HEADSET CONNECTION-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/headset_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -43,6 +44,7 @@
 
         <!--LEFT CONTROLLER-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/left_controller_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -69,6 +71,7 @@
 
         <!--RIGHT CONTROLLER-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/right_controller_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -95,6 +98,7 @@
 
         <!--BASE STATIONS-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/base_station_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -119,6 +123,7 @@
 
         <!--VIVE CONNECTION-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/vive_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -143,6 +148,7 @@
 
         <!--OPENVR CONNECTION-->
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/openvr_connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:alignItems="center"

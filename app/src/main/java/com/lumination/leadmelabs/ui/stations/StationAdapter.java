@@ -18,8 +18,12 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import androidx.core.content.ContextCompat;
 
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.segment.analytics.Properties;
 
 import java.util.ArrayList;
 
@@ -74,6 +78,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                             .addToBackStack("menu:dashboard:stationSingle")
                             .commit();
                     SideMenuFragment.currentType = "stationSingle";
+                    Properties segmentProperties = new Properties();
+                    segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                    Segment.trackEvent(SegmentConstants.Open_Station_Details, segmentProperties);
+                    Segment.trackScreen("menu:dashboard:stationSingle");
                 });
             } else {
                 String type = mViewModel.getSelectionType().getValue();

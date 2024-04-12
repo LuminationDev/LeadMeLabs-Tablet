@@ -16,11 +16,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.segment.analytics.Properties;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -186,6 +189,10 @@ public class RoomFragment extends Fragment {
         }
 
         moveHighlight(id);
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", "Room Selection");
+        segmentProperties.put("name", roomName);
+        Segment.trackEvent(SegmentConstants.Room_Selected, segmentProperties);
     }
 
     /**
