@@ -37,6 +37,7 @@ import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Interlinking;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -256,12 +257,20 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);
 
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("name", currentApplication.getName());
+            segmentProperties.put("id", currentApplication.getId());
+            segmentProperties.put("type", currentApplication.getType());
+            Segment.trackEvent(SegmentConstants.Select_Experience, segmentProperties);
+
             Bundle args = new Bundle();
             args.putString("selection", "application");
             sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", args);
             fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
+            Segment.trackScreen("stationSelection");
         }
     }
 
@@ -324,6 +333,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                 .replace(R.id.main, ApplicationShareCodeFragment.class, null)
                 .addToBackStack("menu:dashboard:stationSingle:shareCode")
                 .commit();
+        Segment.trackScreen("menu:dashboard:stationSingle:shareCode");
     }
 
     /**

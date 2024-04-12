@@ -21,10 +21,13 @@ import com.lumination.leadmelabs.interfaces.ILibraryInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -188,6 +191,11 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
                 "Cancel",
                 "Refresh",
                 false);
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+        segmentProperties.put("tab", "vr_experiences");
+        Segment.trackEvent(SegmentConstants.Refresh_Library_Warning, segmentProperties);
     }
 
     /**
@@ -214,5 +222,9 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         else {
             NetworkService.sendMessage("Station," + stationIds, "Experience", "Refresh");
         }
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+        segmentProperties.put("tab", "vr_experiences");
+        Segment.trackEvent(SegmentConstants.Refresh_Library, segmentProperties);
     }
 }

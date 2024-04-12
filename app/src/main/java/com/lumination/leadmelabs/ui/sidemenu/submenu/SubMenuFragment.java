@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSubBinding;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -254,6 +255,7 @@ public class SubMenuFragment extends Fragment {
                 .replace(R.id.subpage, ApplianceFragment.class, args)
                 .addToBackStack("submenu:" + type)
                 .commit();
+        Segment.trackScreen("submenu:" + type);
 
         ControlPageFragment.childManager.executePendingTransactions();
         changeIcon(type);

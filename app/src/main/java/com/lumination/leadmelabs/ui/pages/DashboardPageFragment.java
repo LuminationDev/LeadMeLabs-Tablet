@@ -25,7 +25,6 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
-import com.lumination.leadmelabs.segment.classes.SegmentLabEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -38,6 +37,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
 public class DashboardPageFragment extends Fragment {
     public static FragmentManager childManager;
     private static boolean cancelledShutdown = false;
+    public static final String segmentClassification = "Dashboard";
 
     @Nullable
     @Override
@@ -105,11 +106,8 @@ public class DashboardPageFragment extends Fragment {
         identify.setOnClickListener(v -> {
             List<Station> stations = StationsFragment.getInstance().getRoomStations();
             Identifier.identifyStations(stations);
-            // Send data to Segment
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Identify);
-            Segment.trackAction(event);
         });
-      
+
         //Open the help page
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
@@ -144,8 +142,7 @@ public class DashboardPageFragment extends Fragment {
             searchForSceneTrigger("vr");
             // Send data to Segment
             Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_VR_Mode);
-            Segment.trackAction(event);
+            trackDashboardEvent(SegmentConstants.Event_Lab_VR_Mode);
         });
 
         //Launch the new session flow
@@ -156,6 +153,7 @@ public class DashboardPageFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
+            trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
 
         //End session on all/selected stations
@@ -164,6 +162,7 @@ public class DashboardPageFragment extends Fragment {
             BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
                 if (confirmationResult) {
                     endAllSessionsConfirmation();
+                    trackDashboardEvent(SegmentConstants.End_Session_On_All);
                 } else {
                     ArrayList<Station> stationsToSelectFrom = StationsFragment.getInstance().getRoomStations();
                     if (stationsToSelectFrom == null) return;
@@ -181,6 +180,7 @@ public class DashboardPageFragment extends Fragment {
                     "End on select",
                     "End on all",
                     true);
+            trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
 
         //Restart all stations
@@ -207,9 +207,7 @@ public class DashboardPageFragment extends Fragment {
                     if (confirmationResult) {
                         restartAllStations(restartHeading, restartContent);
 
-                        // Send data to Segment
-                        SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                        Segment.trackAction(event);
+                        trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
                     }
                 };
 
@@ -223,9 +221,7 @@ public class DashboardPageFragment extends Fragment {
             } else {
                 restartAllStations(restartHeading, restartContent);
 
-                // Send data to Segment
-                SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Restart);
-                Segment.trackAction(event);
+                trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
             }
         });
 
@@ -233,9 +229,7 @@ public class DashboardPageFragment extends Fragment {
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
         classroomMode.setOnClickListener(v -> {
             searchForSceneTrigger("classroom");
-            // Send data to Segment
-            SegmentLabEvent event = new SegmentLabEvent(SegmentConstants.Event_Lab_Classroom_Mode);
-            Segment.trackAction(event);
+            trackDashboardEvent(SegmentConstants.Event_Lab_Classroom_Mode);
             Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
     }
@@ -465,5 +459,11 @@ public class DashboardPageFragment extends Fragment {
             case 3:  return "rd";
             default: return "th";
         }
+    }
+
+    private void trackDashboardEvent(String event) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        Segment.trackEvent(event, segmentProperties);
     }
 }

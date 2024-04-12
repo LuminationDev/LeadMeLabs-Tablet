@@ -37,10 +37,15 @@ import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Callback;
+import com.lumination.leadmelabs.utilities.Debouncer;
+import com.segment.analytics.Properties;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.sentry.Sentry;
 
 public class LibrarySelectionFragment extends Fragment {
     private static int currentStationId = 0;
@@ -57,6 +62,8 @@ public class LibrarySelectionFragment extends Fragment {
     public static FragmentManager childManager;
 
     private ILibraryInterface libraryInterface;
+
+    public static final String segmentClassification = "Library";
 
     public void setInterface(ILibraryInterface libraryInterface) {
         this.libraryInterface = libraryInterface;
@@ -126,6 +133,17 @@ public class LibrarySelectionFragment extends Fragment {
      */
     private void setupButtons(View view) {
         EditText searchInput = view.findViewById(R.id.search_input);
+        Properties segmentSearchProperties = new Properties();
+        segmentSearchProperties.put("classification", segmentClassification);
+        segmentSearchProperties.put("tab", mViewModel.getLibraryTitle());
+        class ReportSearch implements Callback {
+            @Override
+            public void call(Object o) {
+                Segment.trackEvent(SegmentConstants.Search_Library, segmentSearchProperties);
+            }
+        }
+        ReportSearch reportSearch = new ReportSearch();
+        Debouncer<ReportSearch> debouncer = new Debouncer<ReportSearch>(reportSearch, 2000);
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
@@ -135,6 +153,13 @@ public class LibrarySelectionFragment extends Fragment {
                 String searchTerm = searchInput.getText().toString();
                 mViewModel.setCurrentSearch(searchTerm);
                 libraryInterface.performSearch(searchTerm);
+
+                try {
+                    segmentSearchProperties.put("search", searchTerm);
+                    debouncer.call(reportSearch);
+                } catch (Exception e) {
+                    Sentry.captureException(e);
+                }
             }
 
             @Override
@@ -165,6 +190,11 @@ public class LibrarySelectionFragment extends Fragment {
         vrButton.setOnClickListener(v -> {
             switchLibrary("vr_experiences");
             searchInput.setText("");
+
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("name", "vr_experiences");
+            Segment.trackEvent(SegmentConstants.Switch_Library_Tab, segmentProperties);
         });
 
         FlexboxLayout applicationsButton = view.findViewById(R.id.view_applications_button);
@@ -177,6 +207,11 @@ public class LibrarySelectionFragment extends Fragment {
         videoButton.setOnClickListener(v -> {
             switchLibrary("videos");
             searchInput.setText("");
+
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("name", "videos");
+            Segment.trackEvent(SegmentConstants.Switch_Library_Tab, segmentProperties);
         });
 
         // Check if there are any experiences running or if the selected Station has an experience running

@@ -44,8 +44,10 @@ import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.Adapters.GlobalAdapter;
 import com.lumination.leadmelabs.ui.library.application.Adapters.LevelAdapter;
+import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -56,6 +58,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
+import com.segment.analytics.Properties;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -144,6 +147,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> {
             basicDialog.dismiss();
             missingEncryptionAlerted = false;
+            trackDialogDismissed("Missing Encryption Key");
         });
 
         missingEncryptionAlerted = true;
@@ -151,6 +155,7 @@ public class DialogManager {
         if (basicDialog.getWindow() != null) {
             basicDialog.getWindow().setLayout(680, 680);
         }
+        trackDialogShown("Missing Encryption Key");
     }
 
     /**
@@ -231,9 +236,9 @@ public class DialogManager {
                         });
                         NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
 
-                        // Send data to Segment
-                        SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, subject);
-                        Segment.trackAction(event);
+                        Properties segmentProperties = new Properties();
+                        segmentProperties.put("classification", HelpPageFragment.segmentClassification);
+                        Segment.trackEvent(SegmentConstants.Ticket_Submitted, segmentProperties);
 
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("content_type", "submit");
@@ -249,9 +254,9 @@ public class DialogManager {
                             errorText.setVisibility(View.VISIBLE);
                         });
 
-                        // Send data to Segment
-                        SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                        Segment.trackAction(event);
+                        Properties segmentProperties = new Properties();
+                        segmentProperties.put("classification", HelpPageFragment.segmentClassification);
+                        Segment.trackEvent(SegmentConstants.Submit_Ticket_Failed, segmentProperties);
                     }
 
                 } catch (IOException e) {
@@ -263,9 +268,9 @@ public class DialogManager {
                         errorText.setVisibility(View.VISIBLE);
                     });
 
-                    // Send data to Segment
-                    SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                    Segment.trackAction(event);
+                    Properties segmentProperties = new Properties();
+                    segmentProperties.put("classification", HelpPageFragment.segmentClassification);
+                    Segment.trackEvent(SegmentConstants.Submit_Ticket_Failed, segmentProperties);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Sentry.captureException(e);
@@ -275,9 +280,9 @@ public class DialogManager {
                         errorText.setVisibility(View.VISIBLE);
                     });
 
-                    // Send data to Segment
-                    SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Ticket_Lodged, "Failed");
-                    Segment.trackAction(event);
+                    Properties segmentProperties = new Properties();
+                    segmentProperties.put("classification", HelpPageFragment.segmentClassification);
+                    Segment.trackEvent(SegmentConstants.Submit_Ticket_Failed, segmentProperties);
                 }
             });
             thread.start();
@@ -302,6 +307,7 @@ public class DialogManager {
         if (dialog.getWindow() != null) {
             dialog.getWindow().setLayout(1000, 850);
         }
+        trackDialogShown("Update Details");
     }
 
     /**
@@ -332,6 +338,10 @@ public class DialogManager {
                     submitText.setOnClickListener(w -> {
                         dialog.dismiss();
                         createSubmitTicketDialog();
+                        Properties segmentProperties = new Properties();
+                        segmentProperties.put("classification", HelpPageFragment.segmentClassification);
+                        segmentProperties.put("name", "Troubleshooting Footer Text");
+                        Segment.trackEvent(SegmentConstants.Submit_Ticket_Opened, segmentProperties);
                     });
                     submitText.setVisibility(View.VISIBLE);
                 } else {
@@ -407,12 +417,14 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> {
             basicDialog.dismiss();
             closeOpenDialog(titleText, stationName);
+            trackDialogDismissed(titleText);
         });
 
         basicDialog.show();
         if (basicDialog.getWindow() != null) {
             basicDialog.getWindow().setLayout(680, 680);
         }
+        trackDialogShown(titleText);
     }
 
     /**
@@ -430,12 +442,16 @@ public class DialogManager {
         contentView.setText(contentText);
 
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
-        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+            trackDialogDismissed("Update");
+        });
 
         basicDialog.show();
         if (basicDialog.getWindow() != null) {
             basicDialog.getWindow().setLayout(680, 680);
         }
+        trackDialogShown("Update");
     }
 
     /**
@@ -484,6 +500,7 @@ public class DialogManager {
         confirmButton.setOnClickListener(w -> {
             booleanCallbackInterface.callback(true);
             confirmationDialog.dismiss();
+            trackDialogDismissed(titleText);
         });
         confirmButton.setText(confirmButtonText);
 
@@ -491,6 +508,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> {
             booleanCallbackInterface.callback(false);
             confirmationDialog.dismiss();
+            trackDialogDismissed(titleText);
         });
         cancelButton.setText(cancelButtonText);
 
@@ -500,6 +518,7 @@ public class DialogManager {
         if (confirmationDialog.getWindow() != null) {
             confirmationDialog.getWindow().setLayout(680, 680);
         }
+        trackDialogShown(titleText);
     }
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
@@ -526,6 +545,9 @@ public class DialogManager {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
                         endSession(stationAdapter.stationList);
+                        Properties segmentProperties = new Properties();
+                        segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                        Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
                     }
                 };
 
@@ -538,6 +560,9 @@ public class DialogManager {
                         false);
             } else {
                 endSession(stationAdapter.stationList);
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
             }
 
             endSessionDialog.dismiss();
@@ -668,7 +693,10 @@ public class DialogManager {
         NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", type);
 
         Button confirmButton = view.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> confirmDialog.dismiss());
+        confirmButton.setOnClickListener(w -> {
+            confirmDialog.dismiss();
+            trackDialogDismissed(type.equals("Shutdown") ? "Shutdown" : "Restart");
+        });
         confirmButton.setText(R.string._continue);
 
         Button cancelButton = view.findViewById(R.id.cancel_button);
@@ -678,6 +706,7 @@ public class DialogManager {
         if (confirmDialog.getWindow() != null) {
             confirmDialog.getWindow().setLayout(1200, 380);
         }
+        trackDialogShown(type.equals("Shutdown") ? "Shutdown" : "Restart");
 
         shutdownTimer = new CountDownTimer(9000, 1000) {
             @Override
@@ -713,6 +742,7 @@ public class DialogManager {
                 put("station_ids", stationIdsString);
             }};
             FirebaseManager.logAnalyticEvent("shutdown_cancelled", analyticsAttributes);
+            trackDialogDismissed(type.equals("Shutdown") ? "Shutdown" : "Restart");
         });
     }
 
@@ -735,12 +765,18 @@ public class DialogManager {
 
         EditText newMacAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_mac_button);
-        setAddress.setOnClickListener(v -> SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString()));
+        setAddress.setOnClickListener(v -> {
+            SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString());
+            trackSettingChanged("NUC MAC Address");
+        });
 
         Button wakeNuc = view.findViewById(R.id.wake_nuc_button);
         wakeNuc.setOnClickListener(v -> {
             if(SettingsFragment.mViewModel.getNucMac().getValue() != null) {
                 WakeOnLan.WakeNUCOnLan();
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", SettingsFragment.segmentClassification);
+                Segment.trackEvent(SegmentConstants.NUC_WOL, segmentProperties);
             } else {
                 Toast.makeText(context, "NUC MAC address needs to be set.", Toast.LENGTH_LONG).show();
             }
@@ -767,6 +803,7 @@ public class DialogManager {
             if (newAddress.getText().toString().trim().length() > 0) {
                 SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
                 nucDialog.dismiss();
+                trackSettingChanged("NUC IP Address");
             } else {
                 Toast.makeText(context, "NUC address cannot be empty.", Toast.LENGTH_LONG).show();
             }
@@ -777,6 +814,9 @@ public class DialogManager {
             if(NetworkService.getNUCAddress() != null) {
                 NetworkService.refreshNUCAddress();
                 nucDialog.dismiss();
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", SettingsFragment.segmentClassification);
+                Segment.trackEvent(SegmentConstants.NUC_Refreshed, segmentProperties);
             } else {
                 Toast.makeText(context, "NUC address needs to be set.", Toast.LENGTH_LONG).show();
             }
@@ -798,6 +838,7 @@ public class DialogManager {
         pinConfirmButton.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setPinCode(newPin.getText().toString());
             pinDialog.dismiss();
+            trackSettingChanged("Pin Code");
         });
 
         pinDialog.setCancelable(false);
@@ -811,6 +852,7 @@ public class DialogManager {
 
         pinDialog.setCancelable(false);
         pinDialog.show();
+        trackDialogShown("Enter PIN Code");
         EditText pinEditText = view.findViewById(R.id.pin_code_input);
         pinEditText.requestFocus();
         view.findViewById(R.id.pin_confirm_button).setOnClickListener(w -> {
@@ -832,6 +874,7 @@ public class DialogManager {
                 if (pinCode.equals(pinInput) || (pinCodeAttempts >= 5 && pinInput.equals(luminationOverridePin))) {
                     sideMenuFragment.navigateToSettingsPage(navigationType);
                     pinDialog.dismiss();
+                    trackDialogDismissed("Enter PIN Code");
                 } else {
                     errorMessage.setVisibility(View.VISIBLE);
                 }
@@ -839,6 +882,7 @@ public class DialogManager {
             else {
                 sideMenuFragment.navigateToSettingsPage(navigationType);
                 pinDialog.dismiss();
+                trackDialogDismissed("Enter PIN Code");
             }
         });
 
@@ -859,6 +903,7 @@ public class DialogManager {
         encryptionKeyConfirmButton.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
             encryptionDialog.dismiss();
+            trackSettingChanged("Encryption Key");
         });
 
         encryptionDialog.show();
@@ -878,6 +923,7 @@ public class DialogManager {
         confirmButton.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setLabLocation(newLabLocation.getText().toString());
             labLocationDialog.dismiss();
+            trackSettingChanged("Lab Location");
         });
 
         labLocationDialog.show();
@@ -897,6 +943,7 @@ public class DialogManager {
         encryptionKeyConfirmButton.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setLicenseKey(newKey.getText().toString());
             licenseDialog.dismiss();
+            trackSettingChanged("License Key");
         });
 
         licenseDialog.show();
@@ -967,9 +1014,11 @@ public class DialogManager {
         roomConfirmButton.setOnClickListener(v -> {
             SettingsFragment.mViewModel.setLockedRooms(preview.getText().toString());
             lockedRoomDialog.dismiss();
+            trackDialogDismissed("Select Locked Rooms");
         });
 
         lockedRoomDialog.show();
+        trackDialogShown("Select Locked Rooms");
     }
 
     /**
@@ -1000,6 +1049,11 @@ public class DialogManager {
         Button reconnectButton = reconnectDialogView.findViewById(R.id.confirm_button);
         reconnectButton.setVisibility(View.VISIBLE);
         reconnectButton.setText(R.string.reconnect);
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", "Reconnect");
+        Segment.trackEvent(SegmentConstants.Reconnect_Dialog_Shown, segmentProperties);
+
         reconnectButton.setOnClickListener(w -> {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
@@ -1028,6 +1082,9 @@ public class DialogManager {
                 put("content_id", "reconnect_button");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+            Properties segmentPropertiesReconnect = new Properties();
+            segmentPropertiesReconnect.put("classification", "Reconnect");
+            Segment.trackEvent(SegmentConstants.Reconnect_Dialog_Reconnect, segmentPropertiesReconnect);
         });
 
         Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
@@ -1041,6 +1098,9 @@ public class DialogManager {
                 put("content_id", "ignore_button");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+            Properties segmentPropertiesIgnore = new Properties();
+            segmentPropertiesIgnore.put("classification", "Reconnect");
+            Segment.trackEvent(SegmentConstants.Reconnect_Dialog_Ignore, segmentPropertiesIgnore);
         });
 
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
@@ -1055,6 +1115,9 @@ public class DialogManager {
                 put("content_id", "close_button");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+            Properties segmentPropertiesDismiss = new Properties();
+            segmentPropertiesDismiss.put("classification", "Reconnect");
+            Segment.trackEvent(SegmentConstants.Reconnect_Dialog_Dismiss, segmentPropertiesDismiss);
         });
 
         reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());
@@ -1095,7 +1158,10 @@ public class DialogManager {
 
         Button confirmButton = gameLaunchDialogView.findViewById(R.id.confirm_button);
         confirmButton.setText(R.string.dismiss);
-        confirmButton.setOnClickListener(w -> gameLaunchDialog.dismiss());
+        confirmButton.setOnClickListener(w -> {
+            gameLaunchDialog.dismiss();
+            trackDialogDismissed("Launching Experience");
+        });
 
         Button cancelButton = gameLaunchDialogView.findViewById(R.id.cancel_button);
         cancelButton.setVisibility(View.GONE);
@@ -1104,6 +1170,7 @@ public class DialogManager {
         if (gameLaunchDialog.getWindow() != null) {
             gameLaunchDialog.getWindow().setLayout(1200, 380);
         }
+        trackDialogShown("Launching Experience");
     }
 
     /**
@@ -1179,7 +1246,10 @@ public class DialogManager {
         }
 
         Button confirmButton = restartSessionDialogView.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(w -> restartVRSystemDialog.dismiss());
+        confirmButton.setOnClickListener(w -> {
+            restartVRSystemDialog.dismiss();
+            trackDialogDismissed("Await Restart VR System");
+        });
         confirmButton.setText(R.string.dismiss);
 
         Button cancelButton = restartSessionDialogView.findViewById(R.id.cancel_button);
@@ -1189,6 +1259,7 @@ public class DialogManager {
         if (restartVRSystemDialog.getWindow() != null) {
             restartVRSystemDialog.getWindow().setLayout(1200, 380);
         }
+        trackDialogShown("Await Restart VR System");
     }
 
     /**
@@ -1256,13 +1327,17 @@ public class DialogManager {
         });
 
         Button cancelButton = view.findViewById(R.id.close_dialog);
-        cancelButton.setOnClickListener(w -> steamGuardEntryDialog.dismiss());
+        cancelButton.setOnClickListener(w -> {
+            steamGuardEntryDialog.dismiss();
+            trackDialogDismissed("Steam Guard Entry");
+        });
 
         steamGuardEntryDialog.setCancelable(false);
         steamGuardEntryDialog.show();
         if (steamGuardEntryDialog.getWindow() != null) {
             steamGuardEntryDialog.getWindow().setLayout(680, 680);
         }
+        trackDialogShown("Steam Guard Entry");
     }
 
     /**
@@ -1298,4 +1373,29 @@ public class DialogManager {
             basicDialog.getWindow().setLayout(1100, 875);
         }
     }
+
+    //region tracking
+    private static final String segmentClassification = "Dialog";
+
+    private static void trackSettingChanged(String name) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", SettingsFragment.segmentClassification);
+        segmentProperties.put("name", name);
+        Segment.trackEvent(SegmentConstants.Setting_Changed, segmentProperties);
+    }
+
+    private static void trackDialogShown(String name) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("name", name);
+        Segment.trackEvent(SegmentConstants.Show_Dialog, segmentProperties);
+    }
+
+    private static void trackDialogDismissed(String name) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("name", name);
+        Segment.trackEvent(SegmentConstants.Dismiss_Dialog, segmentProperties);
+    }
+    //endregion tracking
 }

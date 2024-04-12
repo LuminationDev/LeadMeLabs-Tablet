@@ -8,6 +8,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Analytics;
+import com.segment.analytics.Properties;
 import com.segment.analytics.Traits;
 
 import org.json.JSONException;
@@ -17,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -62,7 +64,9 @@ public class Segment {
         }
 
         if (analytics == null) {
-            analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey).build();
+            analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey)
+                    .trackApplicationLifecycleEvents()
+                    .build();
             Analytics.setSingletonInstance(analytics); // Set the initialized instance as a globally accessible instance.
         }
 
@@ -183,6 +187,30 @@ public class Segment {
         } catch (ParseException e) {
             e.printStackTrace(); // Handle parsing exception
         }
+    }
+
+    public static void trackEvent(String event, Properties properties)
+    {
+        // Check if analytic logging is allowed
+        if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+
+        if (!isIdSet) return;
+
+        Analytics.with(MainActivity.getInstance().getBaseContext()).track(event, properties);
+    }
+
+    public static void trackScreen(String name)
+    {
+        // Check if analytic logging is allowed
+        if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+
+        if (!isIdSet) return;
+
+        Analytics.with(MainActivity.getInstance().getBaseContext()).screen(name);
     }
 
     /**

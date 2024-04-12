@@ -5,8 +5,13 @@ import android.util.Log;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
+import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.segment.analytics.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -360,6 +365,13 @@ public class VideoController {
         else {
             NetworkService.sendMessage("Station," + this.stationId, "Experience", "PassToExperience:" + trigger);
         }
+
+        Properties properties = new Properties();
+        properties.put("classification", StationSingleFragment.segmentClassification);
+        properties.put("stationId", this.stationId);
+        properties.put("name", trigger);
+
+        Segment.trackEvent(SegmentConstants.Video_Playback_Control, properties);
     }
     //endregion
 

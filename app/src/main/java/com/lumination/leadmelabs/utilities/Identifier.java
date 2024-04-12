@@ -6,7 +6,10 @@ import android.widget.Toast;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.segment.analytics.Properties;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,5 +56,8 @@ public class Identifier {
                 identifying = false;
             }
         }.start();
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", "Identify");
+        Segment.trackEvent(SegmentConstants.Event_Lab_Identify, segmentProperties);
     }
 }

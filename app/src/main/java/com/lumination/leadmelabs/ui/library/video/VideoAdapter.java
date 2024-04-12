@@ -19,6 +19,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardVideoBinding;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -27,6 +29,7 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
+import com.segment.analytics.Properties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +136,14 @@ public class VideoAdapter extends BaseAdapter implements Filterable {
             }
             station.checkForVideoPlayer(currentVideo);
 
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("name", currentVideo.getName());
+            segmentProperties.put("id", station.getId());
+            segmentProperties.put("type", currentVideo.getVideoType());
+            segmentProperties.put("length", currentVideo.getLength());
+            Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
+
             //Return to the regular station view or the nested station view
             if (station.nestedStations == null || station.nestedStations.isEmpty()) {
                 sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
@@ -143,12 +154,20 @@ public class VideoAdapter extends BaseAdapter implements Filterable {
         } else {
             mViewModel.setSelectedVideo(currentVideo);
 
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("name", currentVideo.getName());
+            segmentProperties.put("type", currentVideo.getVideoType());
+            segmentProperties.put("length", currentVideo.getLength());
+            Segment.trackEvent(SegmentConstants.Select_Video, segmentProperties);
+
             Bundle args = new Bundle();
             args.putString("selection", "video");
             sideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu", args);
             fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
                     .commitNow();
+            Segment.trackScreen("stationSelection");
         }
     }
 }

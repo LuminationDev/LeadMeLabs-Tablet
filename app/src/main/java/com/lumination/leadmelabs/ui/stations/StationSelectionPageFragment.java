@@ -44,6 +44,7 @@ import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.lumination.leadmelabs.utilities.Interlinking;
+import com.segment.analytics.Properties;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +64,8 @@ public class StationSelectionPageFragment extends Fragment {
     public static StationSelectionPageFragment instance;
     public static StationSelectionPageFragment getInstance() { return instance; }
     private EditText[] editTexts;
+
+    public static final String segmentClassification = "Select Station";
 
     @Nullable
     @Override
@@ -137,6 +140,9 @@ public class StationSelectionPageFragment extends Fragment {
                     mViewModel.updateStationById(station.id, station);
                 }
             }
+            Properties properties = new Properties();
+            properties.put("tab", "vr_experiences");
+            trackStationSelectionEvent(SegmentConstants.Select_All_Stations, properties);
         });
     }
 
@@ -173,6 +179,9 @@ public class StationSelectionPageFragment extends Fragment {
                     mViewModel.updateStationById(station.id, station);
                 }
             }
+            Properties properties = new Properties();
+            properties.put("tab", "videos");
+            trackStationSelectionEvent(SegmentConstants.Select_All_Stations, properties);
         });
     }
 
@@ -195,6 +204,7 @@ public class StationSelectionPageFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
+            trackStationSelectionEvent(SegmentConstants.Cancel_Select_Station);
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
@@ -269,13 +279,13 @@ public class StationSelectionPageFragment extends Fragment {
 
         // Send data to Segment - track the launch for each Station
         for (int station: resultIds) {
-            SegmentExperienceEvent event = new SegmentExperienceEvent(
-                    SegmentConstants.Event_Experience_Launch,
-                    station,
-                    selectedApplication.getName(),
-                    selectedApplication.getId(),
-                    selectedApplication.getType());
-            Segment.trackAction(event);
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", segmentClassification);
+            segmentProperties.put("stationId", station);
+            segmentProperties.put("name", selectedApplication.getName());
+            segmentProperties.put("id", selectedApplication.getId());
+            segmentProperties.put("type", selectedApplication.getType());
+            trackStationSelectionEvent(SegmentConstants.Event_Experience_Launch, segmentProperties);
         }
 
         SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
@@ -346,6 +356,14 @@ public class StationSelectionPageFragment extends Fragment {
         int[] selectedIdsArray = new int[modifiedSelectedIds.size()];
         for (int i = 0; i < modifiedSelectedIds.size(); i++) {
             selectedIdsArray[i] = modifiedSelectedIds.get(i);
+
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("id", selectedIdsArray[i]);
+            segmentProperties.put("name", selectedVideo.getName());
+            segmentProperties.put("type", selectedVideo.getVideoType());
+            segmentProperties.put("length", selectedVideo.getLength());
+            Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
         }
         DialogManager.awaitStationApplicationLaunch(selectedIdsArray, mViewModel.getSelectedApplicationByName(Constants.VideoPlayerName), false);
     }
@@ -468,5 +486,16 @@ public class StationSelectionPageFragment extends Fragment {
         childManager.beginTransaction()
                 .replace(R.id.station_selection_list_container, StationSelectionFragment.class, null)
                 .commitNow();
+    }
+
+    private void trackStationSelectionEvent(String event) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        Segment.trackEvent(event, segmentProperties);
+    }
+
+    private void trackStationSelectionEvent(String eventConstant, Properties properties) {
+        properties.put("classification", segmentClassification);
+        Segment.trackEvent(eventConstant, properties);
     }
 }
