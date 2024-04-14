@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -114,7 +116,13 @@ public class StationSelectionPageFragment extends Fragment {
                 break;
         }
 
+        view.setOnClickListener(v -> dismissKeyboard());
         instance = this;
+    }
+
+    private void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     //region Setup

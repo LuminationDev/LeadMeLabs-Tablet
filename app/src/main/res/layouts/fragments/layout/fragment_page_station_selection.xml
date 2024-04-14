@@ -22,10 +22,6 @@
         android:layout_width="match_parent"
         android:background="@color/grey">
 
-        <TextView
-            style="@style/PageTitle"
-            android:text="@string/select_stations_title"/>
-
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +42,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/identify_ripple_grey_small"
                     app:flexDirection="row"
                     app:justifyContent="center"
@@ -101,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="30dp"
-                android:paddingVertical="20dp"
+                android:paddingVertical="10dp"
                 app:flexDirection="column">
 
                 <TextView
@@ -127,18 +123,18 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{stations.selectionType.equals(`application`) ? View.VISIBLE : View.GONE, default=visible}"
                         android:text="@{selectedApplication.name, default=`Google Earth VR`}"
                         android:textColor="@color/blue"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="@{stations.selectionType.equals(`application`) ? View.VISIBLE : View.GONE, default=visible}" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{stations.selectionType.equals(`video`) ? View.VISIBLE : View.GONE, default=gone}"
                         android:text="@{selectedVideo.name, default=`Sample Video`}"
                         android:textColor="@color/blue"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="@{stations.selectionType.equals(`video`) ? View.VISIBLE : View.GONE, default=gone}" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -149,12 +145,12 @@
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
 
-
             <!-- Experience Section -->
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="255dp"
                 android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="5dp"
                 app:flexDirection="row">
 
                 <!--Experience image-->
@@ -168,7 +164,7 @@
 
                     <include
                         layout="@layout/card_application"
-                        app:application="@{selectedApplication}"/>
+                        app:application="@{selectedApplication}" />
 
                 </com.google.android.flexbox.FlexboxLayout>
 
@@ -182,30 +178,30 @@
 
                     <!--Display for regular non-share code experiences-->
                     <include
-                        android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"
+                        layout="@layout/section_experience_details"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        layout="@layout/section_experience_details"
-                        app:selectedApplication="@{selectedApplication}"
-                        app:layout_flexGrow="1"/>
+                        android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"
+                        app:layout_flexGrow="1"
+                        app:selectedApplication="@{selectedApplication}" />
 
                     <!--Display for code sharing applications-->
                     <include
-                        android:visibility="@{selectedApplication.HasCategory().equals(`shareCode`) ? View.VISIBLE : View.GONE, default=gone }"
+                        layout="@layout/section_experience_share_code"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        layout="@layout/section_experience_share_code"
-                        app:selectedApplication="@{selectedApplication}"
-                        app:layout_flexGrow="1"/>
+                        android:visibility="@{selectedApplication.HasCategory().equals(`shareCode`) ? View.VISIBLE : View.GONE, default=gone }"
+                        app:layout_flexGrow="1"
+                        app:selectedApplication="@{selectedApplication}" />
 
                     <!--Display for video players (same as no-category for now, in the future can select what player to use (Flat vs Regular))-->
                     <include
-                        android:visibility="@{selectedApplication.HasCategory().equals(`videoPlayer`) ? View.VISIBLE : View.GONE, default=gone }"
+                        layout="@layout/section_experience_details"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        layout="@layout/section_experience_details"
-                        app:selectedApplication="@{selectedApplication}"
-                        app:layout_flexGrow="1"/>
+                        android:visibility="@{selectedApplication.HasCategory().equals(`videoPlayer`) ? View.VISIBLE : View.GONE, default=gone }"
+                        app:layout_flexGrow="1"
+                        app:selectedApplication="@{selectedApplication}" />
 
                     <!--Action buttons-->
                     <com.google.android.flexbox.FlexboxLayout
@@ -240,7 +236,7 @@
                                 android:text="Cancel"
                                 android:textAllCaps="false"
                                 android:textColor="@color/black"
-                                android:textSize="16sp"/>
+                                android:textSize="16sp" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/select_stations"
@@ -265,13 +261,12 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/not_installed_alert"
                 android:layout_width="wrap_content"
-                android:layout_height="65dp"
+                android:layout_height="45dp"
                 android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_red_lightest_rounded"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-
                 android:visibility="visible"
                 app:alignItems="center"
                 app:justifyContent="center">
@@ -280,17 +275,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
+                    android:contentDescription="alert icon"
                     android:src="@drawable/icon_alert_grey" />
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:flexDirection="column">
+                    app:flexDirection="row">
 
                     <TextView
                         android:id="@+id/not_installed_alert_top_line"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
                         android:text="@{stations.selectionType.equals(`application`) ? @string/not_installed_on_stations : `This video does not exist on some stations!`, default=@string/not_installed_on_stations"
                         android:textColor="@color/black" />
 
@@ -326,4 +323,5 @@
             android:layout_height="wrap_content"/>
 
     </RelativeLayout>
+
 </layout>

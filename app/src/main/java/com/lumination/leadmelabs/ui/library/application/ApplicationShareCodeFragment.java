@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.library.application;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -104,6 +106,13 @@ public class ApplicationShareCodeFragment extends Fragment {
                 confirmLaunchGame(selectedApplication);
             }
         });
+
+        view.setOnClickListener(v -> dismissKeyboard());
+    }
+
+    private void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     /**

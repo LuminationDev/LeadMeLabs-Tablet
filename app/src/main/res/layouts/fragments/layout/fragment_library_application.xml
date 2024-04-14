@@ -57,7 +57,8 @@
                     android:clipToPadding="false"
                     android:columnWidth="330dp"
                     android:fadeScrollbars="false"
-                    android:horizontalSpacing="20dp"
+                    android:horizontalSpacing="10dp"
+                    android:verticalSpacing="20dp"
                     android:numColumns="auto_fit"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="20dp"
@@ -65,9 +66,12 @@
                     android:scrollbarThumbVertical="@color/blue"
                     android:scrollbarTrackVertical="@color/grey_medium"
                     android:smoothScrollbar="true"
-                    android:verticalSpacing="30dp"
                     tools:listitem="@layout/card_application" />
+
             </com.google.android.flexbox.FlexboxLayout>
+
         </com.google.android.flexbox.FlexboxLayout>
+
     </RelativeLayout>
+
 </layout>
