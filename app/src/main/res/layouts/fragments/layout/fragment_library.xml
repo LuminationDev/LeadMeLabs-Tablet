@@ -15,6 +15,9 @@
         <variable
             name="hasRegularApplications"
             type="Boolean" />
+        <variable
+            name="hasVrApplications"
+            type="Boolean" />
     </data>
 
     <RelativeLayout
@@ -136,7 +139,8 @@
                         layout="@layout/section_library_tabs"
                         app:library="@{library}"
                         app:hasVideos="@{hasVideos}"
-                        app:hasRegularApplications="@{hasRegularApplications}"/>
+                        app:hasRegularApplications="@{hasRegularApplications}"
+                        app:hasVrApplications="@{hasVrApplications}"/>
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:layout_width="wrap_content"

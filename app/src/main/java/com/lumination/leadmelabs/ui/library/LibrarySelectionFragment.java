@@ -93,6 +93,9 @@ public class LibrarySelectionFragment extends Fragment {
             onLoadType = "vr_experiences";
         }
 
+        // Check for available content
+        onLoadType = checkLibraryContent(stationName, onLoadType);
+
         if (savedInstanceState == null) {
             switchLibrary(onLoadType);
 
@@ -105,18 +108,8 @@ public class LibrarySelectionFragment extends Fragment {
         stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
 
-        //Determine if there are videos or regular applications available
-        if (stationName == null) {
-            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
-            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
-        } else {
-            //Get the current station
-            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
-            if (station != null) {
-                binding.setHasVideos(station.videoController.videos.size() > 0);
-                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
-            }
-        }
+        // Determine if there are videos or regular applications available
+        setupLibraryTags(stationName);
 
         setupFilter(view);
         setupButtons(view);
@@ -125,6 +118,90 @@ public class LibrarySelectionFragment extends Fragment {
             String currentSearch = mViewModel.getCurrentSearch().getValue();
             libraryInterface.performSearch(currentSearch);
         });
+
+        StationsFragment.mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
+            setupLibraryTags(stationName);
+        });
+    }
+
+    /**
+     * Check that the library to load has content available, if not switch to the next available
+     * library.
+     * @param stationName A String of the selected Station if applicable.
+     * @param onLoadType A String of the library type to load.
+     * @return A String of the library that has content or the default VR library.
+     */
+    private String checkLibraryContent(String stationName, String onLoadType) {
+        if (stationName == null) {
+            switch (onLoadType) {
+                case "vr_experiences":
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(true).isEmpty()) {
+                        onLoadType = "applications";
+                    }
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty()) {
+                        onLoadType = "videos";
+                    }
+                    if (StationsFragment.mViewModel.getAllVideos().isEmpty()) {
+                        onLoadType = "vr_experiences";
+                    }
+                    break;
+                case "applications":
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty()) {
+                        onLoadType = "videos";
+                    }
+                    if (StationsFragment.mViewModel.getAllVideos().isEmpty()) {
+                        onLoadType = "vr_experiences";
+                    }
+                    break;
+            }
+        } else {
+            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
+            if (station != null) {
+                switch (onLoadType) {
+                    case "vr_experiences":
+                        if (station.applicationController.getAllApplicationsByType(true).isEmpty()) {
+                            onLoadType = "applications";
+                        }
+                        if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
+                            onLoadType = "videos";
+                        }
+                        if (station.videoController.videos.isEmpty()) {
+                            onLoadType = "vr_experiences";
+                        }
+                        break;
+                    case "applications":
+                        if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
+                            onLoadType = "videos";
+                        }
+                        if (station.videoController.videos.isEmpty()) {
+                            onLoadType = "vr_experiences";
+                        }
+                        break;
+                }
+            }
+        }
+
+        return onLoadType;
+    }
+
+    /**
+     * Depending on the contents for each library category show the associated library tabs.
+     * @param stationName A String of the selected Station if applicable.
+     */
+    private void setupLibraryTags(String stationName) {
+        if (stationName == null) {
+            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
+            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
+            binding.setHasVrApplications(StationsFragment.mViewModel.getAllApplicationsByType(true).size() > 0);
+        } else {
+            //Get the current station
+            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
+            if (station != null) {
+                binding.setHasVideos(station.videoController.videos.size() > 0);
+                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
+                binding.setHasVrApplications(station.applicationController.getAllApplicationsByType(true).size() > 0);
+            }
+        }
     }
 
     private void setupFilter(View view) {
