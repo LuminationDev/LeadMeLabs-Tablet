@@ -25,7 +25,6 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
-import com.lumination.leadmelabs.segment.classes.SegmentLabEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -99,6 +98,44 @@ public class DashboardPageFragment extends Fragment {
         TextView dateMessageView = view.findViewById(R.id.date_message);
         dateMessageView.setText(dateMessage);
 
+        // Setup the Dashboard action buttons
+        setupStandardDashboardButtons(view);
+
+        //Run the identify flow
+        FlexboxLayout identify = view.findViewById(R.id.identify_button);
+        identify.setOnClickListener(v -> {
+            List<Station> stations = StationsFragment.getInstance().getRoomStations();
+            Identifier.identifyStations(stations);
+        });
+
+        //Open the help page
+        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
+        helpButton.setOnClickListener(v -> {
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
+
+            // Send data to Segment
+            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Dashboard");
+            Segment.trackAction(event);
+        });
+
+        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
+        settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
+            View stationControls = view.findViewById(R.id.station_controls);
+            stationControls.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
+            View stations = view.findViewById(R.id.stations);
+            stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
+        });
+    }
+
+    /**
+     * Setup the standard dashboard buttons, in the future there may be configurations that will
+     * switch out the buttons depending on the location or NUC config.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupStandardDashboardButtons(View view) {
         //Switch to VR mode
         FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
         vrMode.setOnClickListener(v -> {
@@ -112,7 +149,10 @@ public class DashboardPageFragment extends Fragment {
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             StationsFragment.mViewModel.setSelectedStationId(0);
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(LibrarySelectionFragment.class, "session", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
             trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
 
@@ -124,7 +164,10 @@ public class DashboardPageFragment extends Fragment {
                     endAllSessionsConfirmation();
                     trackDashboardEvent(SegmentConstants.End_Session_On_All);
                 } else {
-                    ArrayList<Station> stationsToSelectFrom = (ArrayList<Station>) StationsFragment.getInstance().getRoomStations().clone();
+                    ArrayList<Station> stationsToSelectFrom = StationsFragment.getInstance().getRoomStations();
+                    if (stationsToSelectFrom == null) return;
+
+                    stationsToSelectFrom = new ArrayList<>(stationsToSelectFrom);
                     List<Station> filteredList = stationsToSelectFrom.stream()
                             .filter(station -> !station.getIsHidden())
                             .collect(Collectors.toList());
@@ -189,28 +232,8 @@ public class DashboardPageFragment extends Fragment {
             trackDashboardEvent(SegmentConstants.Event_Lab_Classroom_Mode);
             Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
-
-        //Run the identify flow
-        FlexboxLayout identify = view.findViewById(R.id.identify_button);
-        identify.setOnClickListener(v -> {
-            List<Station> stations = StationsFragment.getInstance().getRoomStations();
-            Identifier.identifyStations(stations);
-        });
-      
-        //Open the help page
-        FlexboxLayout helpButton = view.findViewById(R.id.help_button);
-        helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
-        });
-
-        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
-        settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
-            View stationControls = view.findViewById(R.id.station_controls);
-            stationControls.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
-            View stations = view.findViewById(R.id.stations);
-            stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
-        });
     }
+
 
     /**
      * Search the appliances list looking for a scene whose name contains the supplied sceneName. Only

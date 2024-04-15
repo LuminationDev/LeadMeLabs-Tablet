@@ -26,7 +26,6 @@ import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.segment.analytics.Properties;
 
@@ -35,16 +34,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ApplicationLibraryFragment extends Fragment implements ILibraryInterface {
 
     public static StationsViewModel mViewModel;
-    public static ApplicationAdapter installedApplicationAdapter;
-    private static ArrayList<Application> installedApplicationList;
+    public ApplicationAdapter installedApplicationAdapter;
+    public static ArrayList<Application> installedApplicationList;
     private FragmentLibraryApplicationBinding binding;
     public static FragmentManager childManager;
+
+    public static boolean isVr;
 
     @Nullable
     @Override
@@ -62,16 +62,20 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+        isVr = bundle == null || bundle.getBoolean("isVr");
+
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
+
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr).size()) {
                     updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             } else {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplicationsByType(isVr).size()) {
                     updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
                 }
             }
@@ -84,18 +88,18 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      */
     public void UpdateCurrentStationId() {
         int stationId = 0;
-        if(StationsFragment.mViewModel.getSelectedStationId().getValue() != null) {
-            stationId = StationsFragment.mViewModel.getSelectedStationId().getValue();
+        if(mViewModel.getSelectedStationId().getValue() != null) {
+            stationId = mViewModel.getSelectedStationId().getValue();
         }
 
         LibrarySelectionFragment.setStationId(stationId);
         if (LibrarySelectionFragment.getStationId() > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId());
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
         if (installedApplicationAdapter != null) {
-            installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
+            installedApplicationAdapter.setApplications(new ArrayList<>(installedApplicationList));
             binding.setApplicationList(installedApplicationAdapter.applicationList);
             installedApplicationAdapter.notifyDataSetChanged();
         }
@@ -113,19 +117,19 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      * @param onCreate A boolean representing if the fragment has just been created.
      */
     private void updateApplicationList(int stationId, GridView view, boolean onCreate) {
-        ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+        ArrayList<Application> newApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         if (!onCreate && newApplicationList.equals(installedApplicationList)) {
             return;
         }
 
         if (stationId > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId);
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId, isVr);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
-        installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
+        installedApplicationAdapter.setApplications(new ArrayList<>(installedApplicationList));
         binding.setApplicationList(installedApplicationAdapter.applicationList);
-        binding.setApplicationsLoaded(mViewModel.getAllApplications().size() > 0);
+        binding.setApplicationsLoaded(mViewModel.getAllApplicationsByType(isVr).size() > 0);
 
         //The list has been updated, perform the search again
         performSearch(LibrarySelectionFragment.mViewModel.getCurrentSearch().getValue());
@@ -133,11 +137,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
     }
 
     public void performSearch(String searchTerm) {
-        ArrayList<Application> filteredApplicationList = (ArrayList<Application>) installedApplicationList.clone();
-        filteredApplicationList.removeIf(currentApplication -> !currentApplication.name.toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
-        installedApplicationAdapter.applicationList = filteredApplicationList;
-        binding.setApplicationList(installedApplicationAdapter.applicationList);
-        installedApplicationAdapter.notifyDataSetChanged();
+        installedApplicationAdapter.getFilter().filter(searchTerm);
     }
 
     /**

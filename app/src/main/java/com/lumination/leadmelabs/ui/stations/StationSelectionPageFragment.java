@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,9 +8,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +28,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -38,6 +43,7 @@ import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.lumination.leadmelabs.utilities.Interlinking;
 import com.segment.analytics.Properties;
@@ -73,7 +79,9 @@ public class StationSelectionPageFragment extends Fragment {
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
+        if (stations == null) return view;
+
+        stations = new ArrayList<>(stations);
         for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);
@@ -108,7 +116,13 @@ public class StationSelectionPageFragment extends Fragment {
                 break;
         }
 
+        view.setOnClickListener(v -> dismissKeyboard());
         instance = this;
+    }
+
+    private void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     //region Setup
@@ -118,16 +132,16 @@ public class StationSelectionPageFragment extends Fragment {
         binding.setSelectedApplication(selectedApplication);
 
         if (selectedApplication != null) {
-            //TODO uncomment when application experiences have descriptions
-            //Helpers.SetExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            loadAdditionalInformation(view, selectedApplication);
         }
-        //TODO uncomment when application experiences have descriptions
-        //SetupEditText(view);
+        SetupEditText(view);
 
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<Station>) stations.clone();
+            if (stations == null) return;
+
+            stations = new ArrayList<>(stations);
             for (Station station:stations) {
                 if (!station.status.equals("Off") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
@@ -140,6 +154,22 @@ public class StationSelectionPageFragment extends Fragment {
         });
     }
 
+    /**
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param view               The parent view where the information will be displayed.
+     * @param currentApplication The application object containing information to be displayed.
+     */
+    private void loadAdditionalInformation(View view, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+
+        // Set up tags
+        LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
+        TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
+        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+    }
+
     private void setupVideoSelection(View view) {
         //Specifically set the selected video
         Video selectedVideo = mViewModel.getSelectedVideo().getValue();
@@ -148,7 +178,9 @@ public class StationSelectionPageFragment extends Fragment {
         CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
         selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            stations = (ArrayList<Station>) stations.clone();
+            if (stations == null) return;
+
+            stations = new ArrayList<>(stations);
             for (Station station:stations) {
                 if (!station.status.equals("Off") && station.videoController.hasLocalVideo(selectedVideo)) {
                     station.selected = checked;
@@ -449,7 +481,9 @@ public class StationSelectionPageFragment extends Fragment {
         super.onDestroyView();
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
+        if (stations == null) return;
+
+        stations = new ArrayList<>(stations);
         for (Station station:stations) {
             station.selected = false;
             mViewModel.updateStationById(station.id, station);

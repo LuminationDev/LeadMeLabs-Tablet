@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+    </data>
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="3">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/new_session_button"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
+            android:drawableTop="@drawable/session_new"
+            android:text="@string/new_session_lower"
+            android:enabled="@{selectedStation.status.equals(`On`)}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_restart_session"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
+            android:drawableTop="@drawable/session_restart"
+            android:text="@string/restart_session_lower"
+            android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+            app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_end_session"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) || selectedStation.applicationController.experienceName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
+            android:drawableTop="@drawable/session_end"
+            android:text="@string/end_session_lower"
+            android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+            app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ping_station"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
+            android:drawableTop="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @drawable/session_identify_off : @drawable/session_identify}"
+            android:text="@string/identify_station_lower"
+            android:enabled="@{selectedStation.status.equals(`On`)}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_restart_vr"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
+            android:drawableTop="@drawable/session_vr_restart"
+            android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
+            android:enabled="@{selectedStation.status.equals(`On`)}"
+            app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shutdown_station"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : (selectedStation.status.equals(`On`) ? @color/red : @color/orange)}"
+            android:drawableTop="@drawable/session_shutdown"
+            android:text="@{selectedStation.status.equals(`Off`) ? `Power On Station` : (selectedStation.status.equals(`On`) ? `Shut Down Station` : `Turning On`)}"
+            android:visibility="visible"
+            app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/enter_url"
+            style="@style/StationSingleButton"
+            android:visibility="gone"
+            android:drawableTop="@drawable/ic_launch_website"
+            android:text="@string/launch_website_lower" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/configure_steamcmd"
+            style="@style/StationSingleButton"
+            android:visibility="@{selectedStation.requiresSteamGuard ? View.VISIBLE : View.GONE}"
+            android:drawableTop="@drawable/session_restart"
+            android:backgroundTint="@color/red"
+            android:text="Configure SteamCMD"
+            app:rippleColor="@color/grey_card" />
+    </GridLayout>
+</layout>

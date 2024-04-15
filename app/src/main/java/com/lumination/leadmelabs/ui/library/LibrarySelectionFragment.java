@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +26,8 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
@@ -40,6 +42,8 @@ import com.lumination.leadmelabs.utilities.Debouncer;
 import com.segment.analytics.Properties;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.sentry.Sentry;
 
@@ -81,7 +85,6 @@ public class LibrarySelectionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setLibrary(mViewModel);
-        binding.setStations(StationsFragment.mViewModel);
 
         Bundle bundle = getArguments();
         String stationName = bundle != null ? bundle.getString("station") : null;
@@ -89,6 +92,9 @@ public class LibrarySelectionFragment extends Fragment {
         if(onLoadType == null){
             onLoadType = "vr_experiences";
         }
+
+        // Check for available content
+        onLoadType = checkLibraryContent(stationName, onLoadType);
 
         if (savedInstanceState == null) {
             switchLibrary(onLoadType);
@@ -102,7 +108,112 @@ public class LibrarySelectionFragment extends Fragment {
         stationTitle.setVisibility(stationName != null ? View.VISIBLE : View.GONE);
         stationTitle.setText(stationName != null ? MessageFormat.format(" - {0}", stationName) : "");
 
+        // Determine if there are videos or regular applications available
+        setupLibraryTags(stationName);
+
+        setupFilter(view);
         setupButtons(view);
+
+        mViewModel.getSubjectFilters().observe(getViewLifecycleOwner(), filters -> {
+            String currentSearch = mViewModel.getCurrentSearch().getValue();
+            libraryInterface.performSearch(currentSearch);
+        });
+
+        StationsFragment.mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
+            setupLibraryTags(stationName);
+        });
+    }
+
+    /**
+     * Check that the library to load has content available, if not switch to the next available
+     * library.
+     * @param stationName A String of the selected Station if applicable.
+     * @param onLoadType A String of the library type to load.
+     * @return A String of the library that has content or the default VR library.
+     */
+    private String checkLibraryContent(String stationName, String onLoadType) {
+        if (stationName == null) {
+            switch (onLoadType) {
+                case "vr_experiences":
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(true).isEmpty()) {
+                        onLoadType = "applications";
+                    }
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty()) {
+                        onLoadType = "videos";
+                    }
+                    if (StationsFragment.mViewModel.getAllVideos().isEmpty()) {
+                        onLoadType = "vr_experiences";
+                    }
+                    break;
+                case "applications":
+                    if (StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty()) {
+                        onLoadType = "videos";
+                    }
+                    if (StationsFragment.mViewModel.getAllVideos().isEmpty()) {
+                        onLoadType = "vr_experiences";
+                    }
+                    break;
+            }
+        } else {
+            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
+            if (station != null) {
+                switch (onLoadType) {
+                    case "vr_experiences":
+                        if (station.applicationController.getAllApplicationsByType(true).isEmpty()) {
+                            onLoadType = "applications";
+                        }
+                        if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
+                            onLoadType = "videos";
+                        }
+                        if (station.videoController.videos.isEmpty()) {
+                            onLoadType = "vr_experiences";
+                        }
+                        break;
+                    case "applications":
+                        if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
+                            onLoadType = "videos";
+                        }
+                        if (station.videoController.videos.isEmpty()) {
+                            onLoadType = "vr_experiences";
+                        }
+                        break;
+                }
+            }
+        }
+
+        return onLoadType;
+    }
+
+    /**
+     * Depending on the contents for each library category show the associated library tabs.
+     * @param stationName A String of the selected Station if applicable.
+     */
+    private void setupLibraryTags(String stationName) {
+        if (stationName == null) {
+            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
+            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
+            binding.setHasVrApplications(StationsFragment.mViewModel.getAllApplicationsByType(true).size() > 0);
+        } else {
+            //Get the current station
+            Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
+            if (station != null) {
+                binding.setHasVideos(station.videoController.videos.size() > 0);
+                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
+                binding.setHasVrApplications(station.applicationController.getAllApplicationsByType(true).size() > 0);
+            }
+        }
+    }
+
+    private void setupFilter(View view) {
+        // Setup the filter dropdown
+        Spinner customSpinner = view.findViewById(R.id.subject_filter_spinner);
+        List<String> data = new ArrayList<>(TagConstants.ALL_FILTERS);
+        LibrarySubjectFilterAdapter adapter = new LibrarySubjectFilterAdapter(getContext(), data, getViewLifecycleOwner());
+        customSpinner.setAdapter(adapter);
+
+        // Setup the filter container
+        FlexboxLayout container = view.findViewById(R.id.subject_filter_placeholder);
+        container.setOnClickListener(v -> customSpinner.performClick());
     }
 
     /**
@@ -175,6 +286,12 @@ public class LibrarySelectionFragment extends Fragment {
             Segment.trackEvent(SegmentConstants.Switch_Library_Tab, segmentProperties);
         });
 
+        FlexboxLayout applicationsButton = view.findViewById(R.id.view_applications_button);
+        applicationsButton.setOnClickListener(v -> {
+            switchLibrary("applications");
+            searchInput.setText("");
+        });
+
         FlexboxLayout videoButton = view.findViewById(R.id.view_video_button);
         videoButton.setOnClickListener(v -> {
             switchLibrary("videos");
@@ -187,12 +304,15 @@ public class LibrarySelectionFragment extends Fragment {
         });
 
         // Check if there are any experiences running or if the selected Station has an experience running
-        Button refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
+        FlexboxLayout refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
         refresh_btn.setOnClickListener(v -> libraryInterface.refreshList());
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
-            ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(HelpPageFragment.class, "help", null);
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(HelpPageFragment.class, "help", null);
             // Send data to Segment
             SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Library");
             Segment.trackAction(event);
@@ -209,25 +329,39 @@ public class LibrarySelectionFragment extends Fragment {
     private void switchLibrary(String library) {
         // Refresh the search
         mViewModel.setCurrentSearch("");
+
+        // Begin a fragment transaction with fade animations
         FragmentTransaction transaction = childManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in,
                         android.R.anim.fade_out,
                         android.R.anim.fade_in,
                         android.R.anim.fade_out);
 
+        // Create a Bundle to pass data to the fragment
+        Bundle bundle = new Bundle();
         switch (library) {
             case "vr_experiences":
-                setupLibrary("VR Library", "VR Library", "Pick an experience to play in VR", new ApplicationLibraryFragment(), transaction);
+                // Set up the Bundle for VR experiences
+                bundle.putBoolean("isVr", true);
+                setupLibrary("VR Library", new ApplicationLibraryFragment(), bundle, transaction);
+                break;
+
+            case "applications":
+                // Set up the Bundle for applications
+                bundle.putBoolean("isVr", false);
+                setupLibrary("Application Library", new ApplicationLibraryFragment(), bundle, transaction);
                 break;
 
             case "videos":
-                setupLibrary("Video Library", "Video Library", "Pick a video to watch", new VideoLibraryFragment(), transaction);
+                // Set up the Video Library
+                setupLibrary("Video Library", new VideoLibraryFragment(), null, transaction);
                 break;
         }
 
-        // Update the library type
+        // Update the library type in the ViewModel
         mViewModel.setLibraryType(library);
 
+        // Commit the transaction immediately
         transaction.commitNow();
     }
 
@@ -236,16 +370,18 @@ public class LibrarySelectionFragment extends Fragment {
      * fragment, and transaction. Updates ViewModel properties and sets the interface
      * if the fragment implements the ILibraryInterface interface.
      *
-     * @param pageTitle    The title of the page.
      * @param libraryTitle The title of the library.
-     * @param subTitle     The subtitle of the library.
      * @param fragment     The fragment representing the library.
+     * @param bundle       A argument bundle to be passed to the fragment.
      * @param transaction  The FragmentTransaction used for the transaction.
      */
-    private void setupLibrary(String pageTitle, String libraryTitle, String subTitle, Fragment fragment, FragmentTransaction transaction) {
-        mViewModel.setPageTitle(pageTitle);
+    private void setupLibrary(String libraryTitle, Fragment fragment, Bundle bundle, FragmentTransaction transaction) {
         mViewModel.setLibraryTitle(libraryTitle);
-        mViewModel.setSubTitle(subTitle);
+
+        // Set arguments if bundle is provided
+        if (bundle != null) {
+            fragment.setArguments(bundle);
+        }
 
         if (fragment instanceof ILibraryInterface) {
             setInterface((ILibraryInterface) fragment);
@@ -255,7 +391,10 @@ public class LibrarySelectionFragment extends Fragment {
     }
 
     private void dismissKeyboard(View searchInput) {
-        InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        Context context = getContext();
+        if (context == null) return;
+
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchInput.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

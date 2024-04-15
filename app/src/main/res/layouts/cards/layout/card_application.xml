@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="application"
+            type="com.lumination.leadmelabs.models.applications.Application" />
+    </data>
+
+    <LinearLayout
+        android:background="@drawable/ripple_white_rounded_border"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:clickable="true"
+        android:elevation="10dp">
+
+        <FrameLayout
+            android:layout_width="325dp"
+            android:layout_height="153dp">
+
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/experience_preview"
+                android:background="@drawable/image_background"
+                android:scaleType="fitXY"
+                android:clipToOutline="true" />
+
+            <LinearLayout
+                android:id="@+id/progress_spinner_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progress_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="7dp"
+            android:paddingVertical="10dp"
+            app:flexDirection="column">
+
+            <TextView
+                android:id="@+id/application_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:paddingHorizontal="5dp"
+                android:text="@{application.name}"
+                android:textFontWeight="600"
+                android:textSize="17sp"
+                android:textColor="@color/black"/>
+
+            <!--Tags & Year levels-->
+            <include layout="@layout/section_experience_tags"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </LinearLayout>
+
+</layout>

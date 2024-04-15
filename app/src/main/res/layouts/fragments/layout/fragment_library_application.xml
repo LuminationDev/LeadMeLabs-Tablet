@@ -26,7 +26,7 @@
             android:clickable="true"
             android:focusableInTouchMode="true"
             app:flexDirection="column"
-            tools:context=".ui.library.application.ApplicationLibraryFragment">
+            tools:context=".ui.library.application.vrApplication.VRApplicationLibraryFragment">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
@@ -55,9 +55,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
-                    android:columnWidth="290dp"
+                    android:columnWidth="330dp"
                     android:fadeScrollbars="false"
-                    android:horizontalSpacing="20dp"
+                    android:horizontalSpacing="10dp"
+                    android:verticalSpacing="20dp"
                     android:numColumns="auto_fit"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="20dp"
@@ -65,9 +66,12 @@
                     android:scrollbarThumbVertical="@color/blue"
                     android:scrollbarTrackVertical="@color/grey_medium"
                     android:smoothScrollbar="true"
-                    android:verticalSpacing="30dp"
-                    tools:listitem="@layout/card_experience" />
+                    tools:listitem="@layout/card_application" />
+
             </com.google.android.flexbox.FlexboxLayout>
+
         </com.google.android.flexbox.FlexboxLayout>
+
     </RelativeLayout>
+
 </layout>

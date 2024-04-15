@@ -87,6 +87,14 @@ public class Station implements Cloneable {
         return id;
     }
 
+    /**
+     * Get the name of the Station
+     * @return A String of the Station's name
+     */
+    public String getName() {
+        return name;
+    }
+
     public void setName(String newName)
     {
         name = newName;
@@ -113,6 +121,7 @@ public class Station implements Cloneable {
             e.printStackTrace();
         }
 
+        assert clonedStation != null;
         return clonedStation;
     }
 

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="selectedApplication"
+            type="com.lumination.leadmelabs.models.applications.Application" />
+
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/grey">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:flexDirection="row"
+            app:justifyContent="center">
+
+            <!-- Container -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/share_code_container"
+                android:layout_width="1050dp"
+                android:layout_height="match_parent"
+                android:paddingBottom="125dp"
+                app:justifyContent="center"
+                app:flexDirection="column">
+
+                <!-- Title Section -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
+                    android:paddingHorizontal="30dp"
+                    android:paddingVertical="20dp"
+                    app:flexDirection="column">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Launch experience"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="32sp" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This will launch "
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/station_selection_game_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{selectedApplication.name, default=`Google Earth VR`}"
+                            android:textColor="@color/blue"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" on "
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{selectedStation.name, default=`Station 1`}"
+                            android:textColor="@color/blue"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=", ending the current session."
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!-- Experience Section -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginHorizontal="30dp"
+                    app:flexDirection="row"
+                    app:justifyContent="center">
+
+                    <!-- Experience image -->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="335dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        app:flexDirection="column">
+
+                        <include
+                            layout="@layout/card_application"
+                            app:application="@{selectedApplication}"/>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <!-- Experience details -->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="500dp"
+                        android:layout_height="match_parent"
+                        app:flexDirection="column">
+
+                        <!--Display for regular non-share code experiences-->
+                        <include
+                            android:visibility="@{selectedApplication.HasCategory().equals(`none`) ? View.VISIBLE : View.GONE, default=visible }"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            layout="@layout/section_experience_details"
+                            app:selectedApplication="@{selectedApplication}"
+                            app:layout_flexGrow="1"/>
+
+                        <!-- Action buttons -->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            app:flexDirection="row"
+                            app:justifyContent="flex_end">
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <Button
+                                    android:id="@+id/cancel_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:backgroundTint="@color/white"
+                                    android:letterSpacing="0.02"
+                                    android:paddingHorizontal="40dp"
+                                    android:paddingVertical="10dp"
+                                    android:text="Cancel"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"/>
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/launch_experience"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/blue"
+                                    android:letterSpacing="0.02"
+                                    android:paddingHorizontal="50dp"
+                                    android:paddingVertical="10dp"
+                                    android:text="Launch"
+                                    android:textAllCaps="false"
+                                    android:textSize="16sp" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
+</layout>

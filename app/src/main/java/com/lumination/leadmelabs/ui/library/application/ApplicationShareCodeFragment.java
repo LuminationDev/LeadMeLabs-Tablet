@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.ui.library.application;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,8 +8,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,12 +27,15 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.information.TagUtils;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
@@ -64,13 +71,15 @@ public class ApplicationShareCodeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
-        binding.setStations(mViewModel);
+
+        Station station = StationsFragment.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        binding.setSelectedStation(station);
 
         //Specifically set the selected application
         Application selectedApplication = mViewModel.getSelectedApplication().getValue();
         binding.setSelectedApplication(selectedApplication);
         if (selectedApplication != null) {
-            Helpers.setExperienceImage(selectedApplication.type, selectedApplication.name, selectedApplication.id, view);
+            loadAdditionalInformation(view, selectedApplication);
         }
         SetupEditText(view);
 
@@ -97,6 +106,29 @@ public class ApplicationShareCodeFragment extends Fragment {
                 confirmLaunchGame(selectedApplication);
             }
         });
+
+        view.setOnClickListener(v -> dismissKeyboard());
+    }
+
+    private void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+    }
+
+    /**
+     * Loads additional information for the given application and updates the UI.
+     *
+     * @param view               The parent view where the information will be displayed.
+     * @param currentApplication The application object containing information to be displayed.
+     */
+    private void loadAdditionalInformation(View view, Application currentApplication) {
+        Helpers.setExperienceImage(currentApplication.type, currentApplication.name, currentApplication.id, view);
+
+        // Set up tags
+        LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
+        TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
+        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
     }
 
     public void confirmLaunchGame(Application selectedApplication) {
@@ -132,8 +164,11 @@ public class ApplicationShareCodeFragment extends Fragment {
         segmentProperties.put("type", selectedApplication.getType());
         Segment.trackEvent(SegmentConstants.Event_Experience_Launch, segmentProperties);
 
-        ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu)).loadFragment(DashboardPageFragment.class, "dashboard", null);
-        DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        if (fragment != null) {
+            fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
+        }
+        DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, StationsFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**

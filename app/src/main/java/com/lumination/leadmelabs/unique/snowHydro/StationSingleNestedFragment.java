@@ -218,7 +218,10 @@ public class StationSingleNestedFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
-            DialogManager.awaitStationApplicationLaunch(Interlinking.collectNestedStations(selectedStation, int[].class), ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()), true);
+            DialogManager.awaitStationApplicationLaunch(
+                    Interlinking.collectNestedStations(selectedStation, int[].class),
+                    ApplicationLibraryFragment.mViewModel.getSelectedApplicationName(selectedStation.applicationController.getExperienceId()),
+                    true);
 
             trackExperienceEvent(SegmentConstants.Event_Experience_Restart);
 

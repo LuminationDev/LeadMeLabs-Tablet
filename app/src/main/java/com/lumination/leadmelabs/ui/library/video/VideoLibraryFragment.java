@@ -14,7 +14,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryVideoBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
@@ -24,12 +23,11 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class VideoLibraryFragment extends Fragment implements ILibraryInterface {
     public static StationsViewModel mViewModel;
-    public static VideoAdapter localVideoAdapter;
-    private static ArrayList<Video> localVideoList;
+    public VideoAdapter localVideoAdapter;
+    public static ArrayList<Video> localVideoList;
     private FragmentLibraryVideoBinding binding;
     public static FragmentManager childManager;
 
@@ -48,16 +46,16 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        GridView videoGridView = view.findViewById(R.id.video_list);
-        localVideoAdapter = new VideoAdapter(getContext(), getActivity().getSupportFragmentManager(), (SideMenuFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+        GridView videoGridView = view.findViewById(R.id.video_grid);
+        localVideoAdapter = new VideoAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
         updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (LibrarySelectionFragment.getStationId() > 0) {
-                if (localVideoAdapter.videoList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId()).size()) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getStationVideos(LibrarySelectionFragment.getStationId()).size()) {
                     updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             } else {
-                if (localVideoAdapter.videoList.size() != mViewModel.getAllApplications().size()) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getAllVideos().size()) {
                     updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
                 }
             }
@@ -87,7 +85,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
             localVideoList = (ArrayList<Video>) mViewModel.getAllVideos();
         }
 
-        localVideoAdapter.videoList = (ArrayList<Video>) localVideoList.clone();
+        localVideoAdapter.videoList = new ArrayList<>(localVideoList);
         binding.setVideoList(localVideoAdapter.videoList);
         binding.setVideosLoaded(mViewModel.getAllApplications().size() > 0);
 
@@ -97,11 +95,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
     }
 
     public void performSearch(String searchTerm) {
-        ArrayList<Video> filteredVideoList = (ArrayList<Video>) localVideoList.clone();
-        filteredVideoList.removeIf(currentVideo -> !currentVideo.getName().toLowerCase(Locale.ROOT).contains(searchTerm.trim()));
-        localVideoAdapter.videoList = filteredVideoList;
-        binding.setVideoList(localVideoAdapter.videoList);
-        localVideoAdapter.notifyDataSetChanged();
+        localVideoAdapter.getFilter().filter(searchTerm);
     }
 
     public void refreshList() {

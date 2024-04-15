@@ -48,8 +48,10 @@ public class StationsViewModel extends ViewModel {
 
     public List<String> getStationNames(int[] stationIds) {
         ArrayList<Station> stations = (ArrayList<Station>) this.getStations().getValue();
-        stations = (ArrayList<Station>) stations.clone();
-        List<Integer> stationIdsList =  new ArrayList<Integer>(stationIds.length);
+        if (stations == null) return new ArrayList<>();
+
+        stations = new ArrayList<>(stations);
+        List<Integer> stationIdsList =  new ArrayList<>(stationIds.length);
         for (int i : stationIds)
         {
             stationIdsList.add(i);
@@ -81,7 +83,9 @@ public class StationsViewModel extends ViewModel {
 
     public ArrayList<Station> getSelectedStations() {
         ArrayList<Station> selectedStations = (ArrayList<Station>) stations.getValue();
-        selectedStations = (ArrayList<Station>) selectedStations.clone();
+        if (selectedStations == null) return new ArrayList<>();
+
+        selectedStations = new ArrayList<>(selectedStations);
         selectedStations.removeIf(station -> !station.selected);
         return selectedStations;
     }
@@ -159,12 +163,38 @@ public class StationsViewModel extends ViewModel {
     }
 
     /**
-     * Retrieves applications associated with a specific station, subject to any room locks.
+     * Retrieves all applications across all stations, ensuring each application's ID is unique.
      * Applications are sorted alphabetically by name.
-     * @param stationId The ID of the station to retrieve applications from.
+     *
+     * @param isVr A boolean representing whether to collect VR applications (true) or regular ones (false)
      * @return A list of Application objects.
      */
-    public List<Application> getStationApplications(int stationId) {
+    public List<Application> getAllApplicationsByType(boolean isVr) {
+        HashSet<String> idSet = new HashSet<>();
+
+        if(stations.getValue() == null) {
+            return new ArrayList<>();
+        }
+
+        //Only add applications with a unique id
+        return stations.getValue().stream()
+                .flatMap(station -> station.applicationController.applications.stream())
+                .filter(app -> idSet.add(app.id))
+                .filter(app -> app.isVr == isVr)
+                .distinct()
+                .sorted((application, application2) -> application.name.compareToIgnoreCase(application2.name))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Retrieves applications associated with a specific station, subject to any room locks.
+     * Applications are sorted alphabetically by name.
+     *
+     * @param stationId The ID of the station to retrieve applications from.
+     * @param isVr A boolean representing whether to collect VR applications (true) or regular ones (false)
+     * @return A list of Application objects.
+     */
+    public List<Application> getStationApplications(int stationId, boolean isVr) {
         ArrayList<Application> list = new ArrayList<>();
         if(stations.getValue() == null) {
             return list;
@@ -172,7 +202,12 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
-                    list = new ArrayList<>(station.applicationController.applications);
+                    // Iterate through applications and add only those with isVr = true
+                    for (Application application : station.applicationController.applications) {
+                        if (application.isVr == isVr) {
+                            list.add(application);
+                        }
+                    }
                     list.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
                 }
             }
