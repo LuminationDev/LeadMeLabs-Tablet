@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.stations;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -29,12 +30,12 @@ import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.information.TagUtils;
+import com.lumination.leadmelabs.models.stations.StatusManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
@@ -122,7 +123,14 @@ public class StationSelectionPageFragment extends Fragment {
 
     private void dismissKeyboard() {
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+
+        View window = requireActivity().getCurrentFocus();
+        if (window == null) return;
+
+        IBinder token = window.getWindowToken();
+        if (token == null) return;
+
+        imm.hideSoftInputFromWindow(token, 0);
     }
 
     //region Setup
