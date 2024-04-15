@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.library.application;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -112,7 +113,14 @@ public class ApplicationShareCodeFragment extends Fragment {
 
     private void dismissKeyboard() {
         InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+
+        View window = requireActivity().getCurrentFocus();
+        if (window == null) return;
+
+        IBinder token = window.getWindowToken();
+        if (token == null) return;
+
+        imm.hideSoftInputFromWindow(token, 0);
     }
 
     /**
