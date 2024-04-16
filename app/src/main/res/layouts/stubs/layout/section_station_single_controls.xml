@@ -50,7 +50,6 @@
             android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
             app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
 
-        <!--TODO fix this up, change the icon and allow IDLE mode as a status-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/idle_mode"
             style="@style/StationSingleButton"

@@ -340,6 +340,15 @@ public class UIUpdateManager {
                     )
             );
         }
+        if (additionalData.startsWith("AlreadyExitingIdleMode")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Waking up Station",
+                            station.name + " is currently exiting idle mode, please wait."
+                    )
+            );
+        }
         if (additionalData.startsWith("SteamError")) {
             MainActivity.runOnUI(() ->
                     DialogManager.createBasicDialog(

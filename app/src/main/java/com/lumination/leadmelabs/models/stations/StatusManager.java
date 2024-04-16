@@ -43,7 +43,7 @@ public class StatusManager {
         int colorResId;
         switch (status) {
             case StatusManager.IDLE:
-                colorResId = R.color.orange;
+                colorResId = R.color.grey_dark;
                 break;
 
             case StatusManager.ON:
