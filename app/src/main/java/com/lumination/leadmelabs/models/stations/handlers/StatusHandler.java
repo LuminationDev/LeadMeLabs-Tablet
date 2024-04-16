@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.models.stations;
+package com.lumination.leadmelabs.models.stations.handlers;
 
 import android.content.Context;
 import android.os.CountDownTimer;
@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
+import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -31,11 +32,11 @@ public class StatusHandler {
     private CountDownTimer shutdownTimer;
     private String status;
 
-    protected String getStatus() {
+    public String getStatus() {
         return this.status;
     }
 
-    protected void setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
