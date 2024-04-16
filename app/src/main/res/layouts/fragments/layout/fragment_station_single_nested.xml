@@ -265,7 +265,7 @@
                                     android:contentDescription="@string/alert_area"
                                     android:src="@drawable/icon_alert"
                                     android:textColor="@color/black"
-                                    android:visibility="@{selectedStation.state.equals(`Not Responding`) ? View.VISIBLE : View.GONE}"
+                                    android:visibility="@{selectedStation.stateHandler.isNotResponding() ? View.VISIBLE : View.GONE}"
                                     app:layout_flexShrink="0" />
 
                                 <TextView
@@ -279,14 +279,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:visibility="@{selectedStation.state == null || selectedStation.state.length == 0 ? View.VISIBLE : View.GONE}"
+                                    android:visibility="@{!selectedStation.stateHandler.hasState() ? View.VISIBLE : View.GONE}"
                                     android:text="@{selectedStation.status}"
                                     android:textFontWeight="600" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:visibility="@{selectedStation.state != null &amp;&amp; selectedStation.state.length > 0 ? View.GONE : View.VISIBLE}"
+                                    android:visibility="@{selectedStation.stateHandler.hasState() ? View.GONE : View.VISIBLE}"
                                     app:stationState="@{selectedStation}"
                                     android:textFontWeight="600" />
                             </com.google.android.flexbox.FlexboxLayout>

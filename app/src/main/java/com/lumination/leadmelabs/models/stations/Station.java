@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
+import com.lumination.leadmelabs.models.stations.handlers.StateHandler;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
@@ -35,7 +36,6 @@ import java.util.TimerTask;
 public class Station implements Cloneable {
     public String name;
     public int id;
-    public String state; //Describes the state of the LeadMe software
     public String room;
     public String macAddress;
     private final boolean isHiddenStation; //If the Station should be shown and sent messages normally
@@ -48,6 +48,10 @@ public class Station implements Cloneable {
     //Handle a Station's status
     //Describes the computer status (Off, On, Turning On, Restarting, Idle)
     public StatusHandler statusHandler = new StatusHandler();
+
+    //Handle a Station's state
+    //Describes the state of the LeadMe software
+    public StateHandler stateHandler = new StateHandler();
 
     //Handle video management
     public VideoController videoController;
@@ -69,7 +73,7 @@ public class Station implements Cloneable {
         this.name = name;
         this.id = id;
         this.setStatus(status);
-        this.state = state;
+        this.setState(state);
         this.room = room;
         this.macAddress = macAddress;
         this.isHiddenStation = isHiddenStation;
@@ -109,13 +113,20 @@ public class Station implements Cloneable {
     public String getStatus() {
         return statusHandler.getStatus();
     }
-
     public void setStatus(String status) {
         this.statusHandler.setStatus(status);
     }
-
     public boolean isOff() { return this.statusHandler.isStationOff(); }
     public boolean isOn() { return this.statusHandler.isStationOn(); }
+    //endregion
+
+    //region State Shortcuts
+    public String getState() {
+        return stateHandler.getState();
+    }
+    public void setState(String state) {
+        this.stateHandler.setState(state);
+    }
     //endregion
 
     /**
@@ -152,7 +163,7 @@ public class Station implements Cloneable {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
 
         //Station is On and has either a State or a Game running
@@ -172,23 +183,23 @@ public class Station implements Cloneable {
 
         //Set the visibility value
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
         //Stop the dot animation if it is anything besides Awaiting headset connection
-        if(selectedStation.state == null || !selectedStation.state.equals("Awaiting headset connection...")) {
+        if(selectedStation.getState() == null || !selectedStation.stateHandler.isAwaitingHeadset()) {
             selectedStation.stopAnimateDots();
         }
 
         //Set the text value ('Not set' - backwards compatibility, default state when it is not sent across)
-        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame) && !selectedStation.state.equals("Not set")) {
+        if(selectedStation.stateHandler.isAvailable() || !hasGame) {
             //Show the state if the state is anything but Ready to go
-            textView.setText(selectedStation.state);
+            textView.setText(selectedStation.getState());
 
             //Start the dot animation if awaiting connection and animator is not already running
-            if(selectedStation.state.equals("Awaiting headset connection...")) {
+            if(selectedStation.stateHandler.isAwaitingHeadset()) {
                 selectedStation.startAnimateDots(textView);
             }
         } else {
@@ -222,7 +233,7 @@ public class Station implements Cloneable {
                     VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
-                    if(station.state.equals("Awaiting headset connection...")) {
+                    if(station.stateHandler.isAwaitingHeadset()) {
                         textView.setText(animatedText.toString());
                         dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
                     } else {

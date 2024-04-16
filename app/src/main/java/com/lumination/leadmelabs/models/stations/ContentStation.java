@@ -22,7 +22,7 @@ public class ContentStation extends Station {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
 
         //Station is On and has either a State or a Game running
@@ -42,15 +42,15 @@ public class ContentStation extends Station {
 
         //Set the visibility value
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
         //Set the text value ('Not set' - backwards compatibility, default state when it is not sent across)
-        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame) && !selectedStation.state.equals("Not set")) {
+        if(selectedStation.stateHandler.isAvailable() || !hasGame) {
             //Show the state if the state is anything but Ready to go
-            textView.setText(selectedStation.state);
+            textView.setText(selectedStation.getState());
         } else {
             textView.setText(selectedStation.applicationController.getExperienceName());
         }
