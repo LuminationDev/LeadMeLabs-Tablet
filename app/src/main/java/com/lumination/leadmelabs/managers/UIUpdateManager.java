@@ -11,7 +11,7 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.StatusManager;
+import com.lumination.leadmelabs.models.stations.StatusHandler;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
@@ -609,8 +609,8 @@ public class UIUpdateManager {
 
                 case "status":
                     station.setStatus(value);
-                    if(value.equals(StatusManager.ON)) { station.statusManager.cancelStatusCheck(); }
-                    if(value.equals(StatusManager.OFF)) {
+                    if(value.equals(StatusHandler.ON)) { station.statusHandler.cancelStatusCheck(); }
+                    if(value.equals(StatusHandler.OFF)) {
                         if (station instanceof VrStation) {
                             VrStation vrStation = (VrStation) station; //safe cast
                             vrStation.initiateVRDevices();

@@ -46,7 +46,7 @@ public class Station implements Cloneable {
 
     //Handle a Station's status
     //Describes the computer status (Off, On, Turning On, Restarting, Idle)
-    public StatusManager statusManager = new StatusManager();
+    public StatusHandler statusHandler = new StatusHandler();
 
     //Handle video management
     public VideoController videoController;
@@ -106,15 +106,15 @@ public class Station implements Cloneable {
 
     //region Status Shortcuts
     public String getStatus() {
-        return statusManager.getStatus();
+        return statusHandler.getStatus();
     }
 
     public void setStatus(String status) {
-        this.statusManager.setStatus(status);
+        this.statusHandler.setStatus(status);
     }
 
-    public boolean isOff() { return this.statusManager.isStationOff(); }
-    public boolean isOn() { return this.statusManager.isStationOn(); }
+    public boolean isOff() { return this.statusHandler.isStationOff(); }
+    public boolean isOn() { return this.statusHandler.isStationOn(); }
     //endregion
 
     /**
@@ -150,7 +150,7 @@ public class Station implements Cloneable {
     public static void setStationStateBackground(FlexboxLayout flexbox, Station selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
 
@@ -170,7 +170,7 @@ public class Station implements Cloneable {
         if (selectedStation == null) return;
 
         //Set the visibility value
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;

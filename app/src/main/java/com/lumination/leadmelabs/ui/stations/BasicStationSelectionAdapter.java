@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.StatusManager;
 
 import java.util.ArrayList;
 

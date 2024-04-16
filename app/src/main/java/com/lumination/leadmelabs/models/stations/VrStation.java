@@ -143,8 +143,8 @@ public class VrStation extends Station {
         if (selectedStation == null) return;
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
-        boolean isIdle = selectedStation.statusManager.isStationIdle();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        boolean isIdle = selectedStation.statusHandler.isStationIdle();
         boolean trackingOff = selectedStation.openVRHeadsetTracking.equals("Off") && selectedStation.thirdPartyHeadsetTracking.equals("Off");
         int visibility = isStatusOff || isIdle || trackingOff ? View.INVISIBLE : View.VISIBLE;
         imageView.setVisibility(visibility);
@@ -164,7 +164,7 @@ public class VrStation extends Station {
     @BindingAdapter("headset")
     public static void setHeadsetImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
 
         if (isStatusOff) {
             //Station is off - no headset expected
@@ -176,7 +176,7 @@ public class VrStation extends Station {
 
         boolean isOff = selectedStation.openVRHeadsetTracking.equals("Off") && selectedStation.thirdPartyHeadsetTracking.equals("Off");
 
-        if (selectedStation.statusManager.isStationIdle()) {
+        if (selectedStation.statusHandler.isStationIdle()) {
             //Station is on - in Idle mode
             imageView.setImageResource(R.drawable.vr_headset_idle);
 
@@ -210,7 +210,7 @@ public class VrStation extends Station {
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
         //Station is off
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off")) || (headsetTracking.equals("Connected") && connectedController.equals("Lost"));
         //Controller is connected
@@ -252,7 +252,7 @@ public class VrStation extends Station {
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
         //Station is off
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off")) || (headsetTracking.equals("Connected") && connectedController.equals("Lost"));
         //Controller is connected
@@ -289,7 +289,7 @@ public class VrStation extends Station {
     public static void setControllerImage(ImageView imageView, VrStation selectedStation, String controllerType) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
         if (isStatusOff) {
             //Station is off - no controller set to default
             imageView.setImageResource(R.drawable.vr_controller_gray);
@@ -306,7 +306,7 @@ public class VrStation extends Station {
             // Headset is tracking, controller is not - Controller is Off
             imageView.setImageResource(R.drawable.vr_controller_gray);
 
-        } else if (selectedStation.statusManager.isStationIdle()) {
+        } else if (selectedStation.statusHandler.isStationIdle()) {
             //Station is on - in Idle mode
             imageView.setImageResource(R.drawable.vr_controller_idle);
 
@@ -334,8 +334,8 @@ public class VrStation extends Station {
 
         String headsetTracking = selectedStation.openVRHeadsetTracking;
 
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
-        boolean isIdle = selectedStation.statusManager.isStationIdle();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        boolean isIdle = selectedStation.statusHandler.isStationIdle();
         boolean lessThanOne = selectedStation.baseStationsActive == 0;
         //Headset is not tracking or has not been initiated
         boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off"));
@@ -369,7 +369,7 @@ public class VrStation extends Station {
     public static void setBaseStationImage(ImageView imageView, VrStation selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
         if (isStatusOff) {
             //Station is off - no base stations expected
             imageView.setImageResource(R.drawable.vr_base_station_gray);
@@ -381,7 +381,7 @@ public class VrStation extends Station {
             //Station is on - software has not started yet
             imageView.setImageResource(R.drawable.vr_base_station_gray);
 
-        } else if (selectedStation.statusManager.isStationIdle()) {
+        } else if (selectedStation.statusHandler.isStationIdle()) {
             //Station is on - in Idle mode
             imageView.setImageResource(R.drawable.vr_base_station_idle);
 
@@ -408,8 +408,8 @@ public class VrStation extends Station {
     public static void setSoftwareImage(ImageView imageView, VrStation selectedStation, String headsetManagerType) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
-        boolean isIdle = selectedStation.statusManager.isStationIdle();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        boolean isIdle = selectedStation.statusHandler.isStationIdle();
         if (isStatusOff) {
             //Station is off - no connection expected
             imageView.setImageResource(headsetManagerType.equals("OpenVR") ? R.drawable.vr_steam_connection_gray : R.drawable.vr_vive_connection_gray);
@@ -447,8 +447,8 @@ public class VrStation extends Station {
     public static void setSoftwareStatusImage(ImageView imageView, VrStation selectedStation, String headsetManagerIssue) {
         if (selectedStation == null) return;
 
-        boolean isStatusOff = selectedStation.statusManager.isStationOffOrChanging();
-        boolean isIdle = selectedStation.statusManager.isStationIdle();
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        boolean isIdle = selectedStation.statusHandler.isStationIdle();
         boolean trackingOff = headsetManagerIssue.equals("OpenVR") ? selectedStation.openVRHeadsetTracking.equals("Off") : selectedStation.thirdPartyHeadsetTracking.equals("Off");
         int visibility = isStatusOff || isIdle || trackingOff ? View.INVISIBLE : View.VISIBLE;
         imageView.setVisibility(visibility);
@@ -478,7 +478,7 @@ public class VrStation extends Station {
     public static void setStationStateBackground(FlexboxLayout flexbox, VrStation selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
 
@@ -498,7 +498,7 @@ public class VrStation extends Station {
         if (selectedStation == null) return;
 
         //Set the visibility value
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;

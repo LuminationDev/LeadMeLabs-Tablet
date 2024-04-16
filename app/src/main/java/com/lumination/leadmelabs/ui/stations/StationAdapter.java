@@ -15,7 +15,6 @@ import com.lumination.leadmelabs.databinding.CardStationContentBinding;
 import com.lumination.leadmelabs.databinding.CardStationVrBinding;
 import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.StatusManager;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import androidx.core.content.ContextCompat;
 

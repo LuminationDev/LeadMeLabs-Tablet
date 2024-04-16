@@ -16,7 +16,7 @@ import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import java.util.Arrays;
 import java.util.List;
 
-public class StatusManager {
+public class StatusHandler {
     //region Statuses
     public static final String ON = "On";
     public static final String TURNING_ON = "Turning On";
@@ -24,8 +24,8 @@ public class StatusManager {
     public static final String IDLE = "Idle";
     public static final String OFF = "Off";
 
-    private static final List<String> OFF_STATUSES = Arrays.asList(StatusManager.OFF, StatusManager.TURNING_ON, StatusManager.RESTARTING);
-    private static final List<String> ON_STATUSES = Arrays.asList(StatusManager.ON, StatusManager.IDLE);
+    private static final List<String> OFF_STATUSES = Arrays.asList(StatusHandler.OFF, StatusHandler.TURNING_ON, StatusHandler.RESTARTING);
+    private static final List<String> ON_STATUSES = Arrays.asList(StatusHandler.ON, StatusHandler.IDLE);
     //endregion
 
     private CountDownTimer shutdownTimer;
@@ -42,17 +42,17 @@ public class StatusManager {
     public int getStatusTextColor(Context context) {
         int colorResId;
         switch (status) {
-            case StatusManager.IDLE:
+            case StatusHandler.IDLE:
                 colorResId = R.color.grey_dark;
                 break;
 
-            case StatusManager.ON:
-            case StatusManager.TURNING_ON:
-            case StatusManager.RESTARTING:
+            case StatusHandler.ON:
+            case StatusHandler.TURNING_ON:
+            case StatusHandler.RESTARTING:
                 colorResId = R.color.blue;
                 break;
 
-            case StatusManager.OFF:
+            case StatusHandler.OFF:
             default:
                 colorResId = R.color.text;
                 break;
@@ -64,17 +64,17 @@ public class StatusManager {
     public int getIdleModeColour(Context context) {
         int colorResId;
         switch (status) {
-            case StatusManager.IDLE:
+            case StatusHandler.IDLE:
                 colorResId = R.color.purple_500;
                 break;
 
-            case StatusManager.ON:
+            case StatusHandler.ON:
                 colorResId = R.color.blue_darkest;
                 break;
 
-            case StatusManager.TURNING_ON:
-            case StatusManager.RESTARTING:
-            case StatusManager.OFF:
+            case StatusHandler.TURNING_ON:
+            case StatusHandler.RESTARTING:
+            case StatusHandler.OFF:
             default:
                 colorResId = R.color.grey_card;
                 break;
@@ -146,8 +146,8 @@ public class StatusManager {
                 }
                 DialogManager.createBasicDialog("Station error", station.getName() + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
                 MainActivity.runOnUI(() -> {
-                    station.setStatus(StatusManager.OFF);
-                    NetworkService.sendMessage("NUC", "UpdateStation", station.getId() + ":SetValue:status:" + StatusManager.OFF);
+                    station.setStatus(StatusHandler.OFF);
+                    NetworkService.sendMessage("NUC", "UpdateStation", station.getId() + ":SetValue:status:" + StatusHandler.OFF);
                     ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(station.getId(), station);
                 });
             }

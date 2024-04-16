@@ -33,7 +33,7 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.StatusManager;
+import com.lumination.leadmelabs.models.stations.StatusHandler;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
@@ -328,7 +328,7 @@ public class StationSingleFragment extends Fragment {
         Button idleMode = view.findViewById(R.id.idle_mode);
         idleMode.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            String value = selectedStation.statusManager.isStationIdle() ? "normal" : "idle";
+            String value = selectedStation.statusHandler.isStationIdle() ? "normal" : "idle";
 
             NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:idleMode:" + value);
         });
@@ -354,7 +354,7 @@ public class StationSingleFragment extends Fragment {
             Station station = mViewModel.getStationById(id);
 
             if (station.isOff()) {
-                station.statusManager.powerStatusCheck(station.getId(),3 * 1000 * 60);
+                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
@@ -365,12 +365,12 @@ public class StationSingleFragment extends Fragment {
                                 + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
-                    station.setStatus(StatusManager.TURNING_ON);
+                    station.setStatus(StatusHandler.TURNING_ON);
                     mViewModel.updateStationById(id, station);
                 });
                 trackStationEvent(SegmentConstants.Event_Station_Power_On);
 
-            } else if(station.getStatus().equals(StatusManager.TURNING_ON)) {
+            } else if(station.getStatus().equals(StatusHandler.TURNING_ON)) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
                 //Send the WOL command again, in case a user shutdown and started up to quickly

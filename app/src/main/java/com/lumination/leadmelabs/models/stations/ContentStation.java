@@ -21,7 +21,7 @@ public class ContentStation extends Station {
     public static void setStationStateBackground(FlexboxLayout flexbox, ContentStation selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
 
@@ -41,7 +41,7 @@ public class ContentStation extends Station {
         if (selectedStation == null) return;
 
         //Set the visibility value
-        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
