@@ -33,7 +33,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
                 return;
             }
 
-            if (station.status.equals("Off")) {
+            if (station.isOff()) {
                 finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
             } else {
                 finalResult.setOnClickListener(v -> {

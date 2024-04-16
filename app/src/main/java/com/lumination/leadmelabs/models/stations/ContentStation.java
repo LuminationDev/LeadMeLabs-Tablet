@@ -21,9 +21,9 @@ public class ContentStation extends Station {
     public static void setStationStateBackground(FlexboxLayout flexbox, ContentStation selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
+        boolean hasGame = selectedStation.applicationController.hasGame();
 
         //Station is On and has either a State or a Game running
         if(isStatusOn && (hasState || hasGame)) {
@@ -41,9 +41,9 @@ public class ContentStation extends Station {
         if (selectedStation == null) return;
 
         //Set the visibility value
-        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
+        boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
+        boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 

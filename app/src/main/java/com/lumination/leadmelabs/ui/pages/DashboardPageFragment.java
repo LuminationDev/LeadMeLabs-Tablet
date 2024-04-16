@@ -22,6 +22,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
@@ -273,11 +274,11 @@ public class DashboardPageFragment extends Fragment {
                 try {
                     int id = Integer.parseInt(stationObject.getString("id"));
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
-                    if (station.status.equals("On")) continue; //Do not do anything if the Station is already on
+                    if (station.isOn()) continue; //Do not do anything if the Station is already on
 
-                    station.status = "Turning On";
-                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Turning On");
-                    station.powerStatusCheck(3 * 60 * 1000);
+                    station.setStatus(StatusHandler.TURNING_ON);
+                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:" + StatusHandler.TURNING_ON);
+                    station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
                     ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
                 } catch (JSONException e) {
                     Log.e("JSON OBJECT", "Cannot extract ID from: " + stationObject);

@@ -37,11 +37,10 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
-import com.lumination.leadmelabs.segment.classes.SegmentStationEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
@@ -296,8 +295,8 @@ public class StationSingleNestedFragment extends Fragment {
             Station station = mViewModel.getStationById(id);
             String joinedStations = Interlinking.collectNestedStations(station, String.class);
 
-            if (station.status.equals("Off")) {
-                station.powerStatusCheck(3 * 1000 * 60);
+            if (station.isOff()) {
+                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
@@ -308,12 +307,12 @@ public class StationSingleNestedFragment extends Fragment {
                                 + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
-                    station.status = "Turning On";
+                    station.setStatus(StatusHandler.TURNING_ON);
                     mViewModel.updateStationById(id, station);
                 });
                 trackStationEvent(SegmentConstants.Event_Station_Power_On);
 
-            } else if(station.status.equals("Turning On")) {
+            } else if(station.getStatus().equals(StatusHandler.TURNING_ON)) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
                 //Send the WOL command again, in case a user shutdown and started up to quickly

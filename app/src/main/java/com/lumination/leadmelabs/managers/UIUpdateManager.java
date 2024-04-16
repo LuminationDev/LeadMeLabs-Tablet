@@ -11,6 +11,7 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
@@ -228,8 +229,6 @@ public class UIUpdateManager {
      */
     private static void handleStationUpdate(String additionalData, String source) throws JSONException {
         if (additionalData.startsWith("SetValue")) {
-            Log.e("Apps", additionalData);
-
             String[] keyValue = additionalData.split(":", 3);
             String key = keyValue[1];
             String value = keyValue[2];
@@ -338,6 +337,15 @@ public class UIUpdateManager {
                     DialogManager.createBasicDialog(
                             "Cannot launch experience",
                             "Unable to launch experience on " + station.name + " as it is already attempting to launch an experience. You must wait until an experience has launched before launching another one. If this issue persists, try restarting the VR system."
+                    )
+            );
+        }
+        if (additionalData.startsWith("AlreadyExitingIdleMode")) {
+            DialogManager.gameLaunchedOnStation(station.id);
+            MainActivity.runOnUI(() ->
+                    DialogManager.createBasicDialog(
+                            "Waking up Station",
+                            station.name + " is currently exiting idle mode, please wait."
                     )
             );
         }
@@ -512,7 +520,7 @@ public class UIUpdateManager {
                     station.state = value;
                     break;
                 case "status":
-                    station.status = value;
+                    station.setStatus(value);
                     break;
                 case "gameName":
                     station.applicationController.setExperienceName(value);
@@ -600,9 +608,9 @@ public class UIUpdateManager {
                     break;
 
                 case "status":
-                    station.status = value;
-                    if(value.equals("On")) { station.cancelStatusCheck(); }
-                    if(value.equals("Off")) {
+                    station.setStatus(value);
+                    if(value.equals(StatusHandler.ON)) { station.statusHandler.cancelStatusCheck(); }
+                    if(value.equals(StatusHandler.OFF)) {
                         if (station instanceof VrStation) {
                             VrStation vrStation = (VrStation) station; //safe cast
                             vrStation.initiateVRDevices();

@@ -97,7 +97,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                     });
                 } else {
                     finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
-                    if (!station.status.equals("Off")) {
+                    if (!station.isOff()) {
                         StationSelectionPageFragment fragment = (StationSelectionPageFragment) fragmentManager.findFragmentById(R.id.main);
                         View notInstalledAlert = fragment.getView().findViewById(R.id.not_installed_alert);
                         notInstalledAlert.setVisibility(View.VISIBLE);
@@ -171,7 +171,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      */
     public boolean areAllStationsOff() {
         for (Station station : stationList) {
-            if(!station.status.equals("Off")){
+            if(!station.isOff()){
                 return false;
             };
         }

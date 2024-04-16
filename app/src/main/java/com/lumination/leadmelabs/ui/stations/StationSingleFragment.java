@@ -33,6 +33,7 @@ import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
@@ -209,6 +210,13 @@ public class StationSingleFragment extends Fragment {
             Segment.trackAction(event);
         });
 
+        //Run the identify flow
+        FlexboxLayout identify = view.findViewById(R.id.identify_button);
+        identify.setOnClickListener(v -> {
+            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+            Identifier.identifyStations(stations);
+        });
+
         Button button = view.findViewById(R.id.enter_url);
         button.setOnClickListener(v ->
                 DialogManager.buildURLDialog(getContext(), binding)
@@ -317,10 +325,12 @@ public class StationSingleFragment extends Fragment {
             trackStationEvent(SegmentConstants.Station_Status_Touch);
         });
 
-        Button pingStation = view.findViewById(R.id.ping_station);
-        pingStation.setOnClickListener(v -> {
-            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
-            Identifier.identifyStations(stations);
+        Button idleMode = view.findViewById(R.id.idle_mode);
+        idleMode.setOnClickListener(v -> {
+            Station selectedStation = binding.getSelectedStation();
+            String value = selectedStation.statusHandler.isStationIdle() ? "normal" : "idle";
+
+            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:idleMode:" + value);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
@@ -343,8 +353,8 @@ public class StationSingleFragment extends Fragment {
             int id = binding.getSelectedStation().id;
             Station station = mViewModel.getStationById(id);
 
-            if (station.status.equals("Off")) {
-                station.powerStatusCheck(3 * 1000 * 60);
+            if (station.isOff()) {
+                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
@@ -355,12 +365,12 @@ public class StationSingleFragment extends Fragment {
                                 + NetworkService.getIPAddress());
 
                 MainActivity.runOnUI(() -> {
-                    station.status = "Turning On";
+                    station.setStatus(StatusHandler.TURNING_ON);
                     mViewModel.updateStationById(id, station);
                 });
                 trackStationEvent(SegmentConstants.Event_Station_Power_On);
 
-            } else if(station.status.equals("Turning On")) {
+            } else if(station.getStatus().equals(StatusHandler.TURNING_ON)) {
                 Toast.makeText(getContext(), "Computer is starting", Toast.LENGTH_SHORT).show();
 
                 //Send the WOL command again, in case a user shutdown and started up to quickly

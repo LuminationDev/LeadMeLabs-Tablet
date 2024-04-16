@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="30dp"
-                android:paddingVertical="10dp"
+                android:layout_marginBottom="10dp"
                 app:flexDirection="column">
 
                 <TextView
@@ -106,7 +106,7 @@
                     android:text="Select Stations"
                     android:textColor="@color/black"
                     android:textFontWeight="600"
-                    android:textSize="40sp" />
+                    android:textSize="32sp" />
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:layout_width="wrap_content"
@@ -118,14 +118,14 @@
                         android:layout_height="wrap_content"
                         android:text="Choose the stations you would like to launch "
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{selectedApplication.name, default=`Google Earth VR`}"
                         android:textColor="@color/blue"
-                        android:textSize="20sp"
+                        android:textSize="13sp"
                         android:visibility="@{stations.selectionType.equals(`application`) ? View.VISIBLE : View.GONE, default=visible}" />
 
                     <TextView
@@ -133,7 +133,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{selectedVideo.name, default=`Sample Video`}"
                         android:textColor="@color/blue"
-                        android:textSize="20sp"
+                        android:textSize="13sp"
                         android:visibility="@{stations.selectionType.equals(`video`) ? View.VISIBLE : View.GONE, default=gone}" />
 
                     <TextView
@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:text=" on."
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="13sp" />
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
 

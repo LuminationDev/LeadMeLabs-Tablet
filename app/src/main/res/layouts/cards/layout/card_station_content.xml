@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     app:layout_alignSelf="center"
                     android:text="@{station.status, default=`Off`}"
-                    android:textColor="@{station.status.equals(`Off`) ? @color/text : @color/blue, default=`@color/text`}"
+                    android:textColor="@{station.statusHandler.getStatusTextColor(context)}"
                     android:textAllCaps="true"
                     android:textSize="12sp"/>
             </com.google.android.flexbox.FlexboxLayout>

@@ -31,6 +31,7 @@
     <color name="grey_light">#F7F8FA</color>
     <color name="grey">#ECE9E9</color>
     <color name="grey_medium">#AFB7CB</color>
+    <color name="grey_dark">#667085</color>
     <color name="grey_card">#8B919B</color>
     <color name="grey_hint">#C4C4C4</color>
     <color name="grey_titles">#3A3A3A</color>

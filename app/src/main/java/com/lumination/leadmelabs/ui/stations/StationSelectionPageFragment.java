@@ -30,7 +30,6 @@ import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.information.TagUtils;
-import com.lumination.leadmelabs.models.stations.StatusManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -151,7 +150,7 @@ public class StationSelectionPageFragment extends Fragment {
 
             stations = new ArrayList<>(stations);
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
+                if (!station.isOff() && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
@@ -190,7 +189,7 @@ public class StationSelectionPageFragment extends Fragment {
 
             stations = new ArrayList<>(stations);
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.videoController.hasLocalVideo(selectedVideo)) {
+                if (!station.isOff() && station.videoController.hasLocalVideo(selectedVideo)) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
