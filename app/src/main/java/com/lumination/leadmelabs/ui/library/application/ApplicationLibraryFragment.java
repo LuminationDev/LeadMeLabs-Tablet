@@ -158,13 +158,13 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
             if (stations != null) {
-                ArrayList<Integer> stationIds = stations.stream()
-                        .filter(station -> !station.applicationController.getExperienceId().isEmpty())
+                ArrayList<Integer> stationsRunningExperiencesIds = stations.stream()
+                        .filter(station -> (station.applicationController.getExperienceId() != null && !station.applicationController.getExperienceId().isEmpty()))
                         .map(Station::getId)
                         .collect(Collectors.toCollection(ArrayList::new));
 
-                if (!stationIds.isEmpty()) {
-                    String joinedString = stationIds.stream()
+                if (!stationsRunningExperiencesIds.isEmpty()) {
+                    String joinedString = stationsRunningExperiencesIds.stream()
                             .map(Object::toString)
                             .collect(Collectors.joining(","));
 
