@@ -479,7 +479,7 @@ public class VrStation extends Station {
         if (selectedStation == null) return;
 
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
 
         //Station is On and has either a State or a Game running
@@ -499,23 +499,23 @@ public class VrStation extends Station {
 
         //Set the visibility value
         boolean isStatusOn = selectedStation.statusHandler.isStationOnOrIdle();
-        boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
+        boolean hasState = selectedStation.stateHandler.hasState();
         boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
         //Stop the dot animation if it is anything besides Awaiting headset connection
-        if(selectedStation.state == null || !selectedStation.state.equals("Awaiting headset connection...")) {
+        if(selectedStation.getState() == null || !selectedStation.stateHandler.isAwaitingHeadset()) {
             selectedStation.stopAnimateDots();
         }
 
         //Set the text value ('Not set' - backwards compatibility, default state when it is not sent across)
-        if(selectedStation.state != null && (!selectedStation.state.equals("Ready to go") || !hasGame) && !selectedStation.state.equals("Not set")) {
+        if(selectedStation.stateHandler.isAvailable() || !hasGame) {
             //Show the state if the state is anything but Ready to go
-            textView.setText(selectedStation.state);
+            textView.setText(selectedStation.getState());
 
             //Start the dot animation if awaiting connection and animator is not already running
-            if(selectedStation.state.equals("Awaiting headset connection...")) {
+            if(selectedStation.stateHandler.isAwaitingHeadset()) {
                 selectedStation.startAnimateDots(textView);
             }
         } else {
@@ -549,7 +549,7 @@ public class VrStation extends Station {
                     VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
                     //Make sure the state is the same before updating the dots
-                    if(station.state.equals("Awaiting headset connection...")) {
+                    if(station.stateHandler.isAwaitingHeadset()) {
                         textView.setText(animatedText.toString());
                         dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
                     } else {

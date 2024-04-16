@@ -517,7 +517,7 @@ public class UIUpdateManager {
 
             switch (field) {
                 case "state":
-                    station.state = value;
+                    station.setState(value);
                     break;
                 case "status":
                     station.setStatus(value);
@@ -615,12 +615,12 @@ public class UIUpdateManager {
                             VrStation vrStation = (VrStation) station; //safe cast
                             vrStation.initiateVRDevices();
                         }
-                        station.state = "";
+                        station.setState("");
                     }
                     break;
 
                 case "state":
-                    station.state = value;
+                    station.setState(value);
                     break;
 
                 case "name":

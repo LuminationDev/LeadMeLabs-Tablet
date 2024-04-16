@@ -92,14 +92,14 @@
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:visibility="@{selectedNestedStation.state == null || selectedNestedStation.state.length == 0 ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{!selectedNestedStation.stateHandler.hasState() ? View.VISIBLE : View.GONE}"
                         android:text="@{selectedNestedStation != null ? selectedNestedStation.state : `N/A`, default=`Control individually`}"
                         android:textSize="11sp" />
 
                     <TextView
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:visibility="@{selectedNestedStation.state != null &amp;&amp; selectedNestedStation.state.length > 0 ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{selectedNestedStation.stateHandler.hasState() ? View.GONE : View.VISIBLE}"
                         app:stationState="@{selectedNestedStation}"
                         android:textSize="11sp" />
                 </com.google.android.flexbox.FlexboxLayout>
