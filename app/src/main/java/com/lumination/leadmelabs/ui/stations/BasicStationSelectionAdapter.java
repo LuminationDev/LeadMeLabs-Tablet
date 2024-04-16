@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.StatusManager;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
                 return;
             }
 
-            if (station.status.equals("Off")) {
+            if (station.isOff()) {
                 finalResult.setForeground(ContextCompat.getDrawable(finalResult.getContext(), R.drawable.bg_disabled));
             } else {
                 finalResult.setOnClickListener(v -> {

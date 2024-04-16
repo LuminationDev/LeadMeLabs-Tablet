@@ -8,6 +8,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.StatusManager;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.models.applications.details.Actions;
 import com.lumination.leadmelabs.models.applications.details.Details;
@@ -303,19 +304,19 @@ public class StationsViewModel extends ViewModel {
 
         //If the station is on and the message is restarting then the status should be restarting
         //else the station is off and the message is restarting then the status should be turning on
-        if(station.status.equals("Off")) {
-            status = "Turning On";
+        if(station.isOff()) {
+            status = StatusManager.TURNING_ON;
         }
 
         //Nothing to update or the station is already on and is not restarting.
-        if(station.status.equals(status) || (station.status.equals("On") && !Objects.equals(status, "Restarting"))) {
+        if(station.getStatus().equals(status) || (station.isOn() && !Objects.equals(status, StatusManager.RESTARTING))) {
             return;
         }
 
         String finalStatus = status;
         MainActivity.runOnUI(() -> {
-            station.powerStatusCheck(3 * 1000 * 60);
-            station.status = finalStatus;
+            station.statusManager.powerStatusCheck(station.getId(),3 * 1000 * 60);
+            station.setStatus(finalStatus);
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
         });
     }

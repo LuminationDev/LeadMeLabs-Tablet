@@ -11,6 +11,7 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.models.stations.StatusManager;
 import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
@@ -228,8 +229,6 @@ public class UIUpdateManager {
      */
     private static void handleStationUpdate(String additionalData, String source) throws JSONException {
         if (additionalData.startsWith("SetValue")) {
-            Log.e("Apps", additionalData);
-
             String[] keyValue = additionalData.split(":", 3);
             String key = keyValue[1];
             String value = keyValue[2];
@@ -512,7 +511,7 @@ public class UIUpdateManager {
                     station.state = value;
                     break;
                 case "status":
-                    station.status = value;
+                    station.setStatus(value);
                     break;
                 case "gameName":
                     station.applicationController.setExperienceName(value);
@@ -600,9 +599,9 @@ public class UIUpdateManager {
                     break;
 
                 case "status":
-                    station.status = value;
-                    if(value.equals("On")) { station.cancelStatusCheck(); }
-                    if(value.equals("Off")) {
+                    station.setStatus(value);
+                    if(value.equals(StatusManager.ON)) { station.statusManager.cancelStatusCheck(); }
+                    if(value.equals(StatusManager.OFF)) {
                         if (station instanceof VrStation) {
                             VrStation vrStation = (VrStation) station; //safe cast
                             vrStation.initiateVRDevices();

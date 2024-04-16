@@ -209,4 +209,12 @@ public class ApplicationController {
                 .filter(app -> app.isVr == isVr)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+    /**
+     * Checks if the Station has an active experience.
+     * @return True if the Station has an experience, false otherwise.
+     */
+    public boolean hasGame() {
+        return this.gameName != null && !this.gameName.isEmpty() && !this.gameName.equals("null");
+    }
 }

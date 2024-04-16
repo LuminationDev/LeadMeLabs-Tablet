@@ -26,10 +26,10 @@
             android:id="@+id/new_session_button"
             style="@style/StationSingleButton"
             android:layout_marginEnd="30dp"
-            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
+            android:backgroundTint="@{selectedStation.statusManager.stationOffOrChanging ? @color/grey_card : @color/blue_darkest}"
             android:drawableTop="@drawable/session_new"
             android:text="@string/new_session_lower"
-            android:enabled="@{selectedStation.status.equals(`On`)}"/>
+            android:enabled="@{selectedStation.statusManager.stationOnOrIdle}"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/station_restart_session"
@@ -50,31 +50,32 @@
             android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
             app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
 
+        <!--TODO fix this up, change the icon and allow IDLE mode as a status-->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/ping_station"
+            android:id="@+id/idle_mode"
             style="@style/StationSingleButton"
-            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
-            android:drawableTop="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @drawable/session_identify_off : @drawable/session_identify}"
-            android:text="@string/identify_station_lower"
-            android:enabled="@{selectedStation.status.equals(`On`)}"/>
+            android:backgroundTint="@{selectedStation.statusManager.getIdleModeColour(context)}"
+            android:drawableTop="@{selectedStation.statusManager.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"
+            android:text="@{selectedStation.statusManager.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"
+            android:enabled="@{selectedStation.statusManager.stationOnOrIdle}"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/station_restart_vr"
             style="@style/StationSingleButton"
-            android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
+            android:backgroundTint="@{selectedStation.isOn ? @color/orange : @color/grey_card}"
             android:drawableTop="@drawable/session_vr_restart"
             android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
-            android:enabled="@{selectedStation.status.equals(`On`)}"
-            app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
+            android:enabled="@{selectedStation.isOn}"
+            app:rippleColor="@{selectedStation.isOn ? @color/orange_light : @color/grey_card}" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/shutdown_station"
             style="@style/StationSingleButton"
-            android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : (selectedStation.status.equals(`On`) ? @color/red : @color/orange)}"
+            android:backgroundTint="@{selectedStation.isOff ? @color/green : (selectedStation.statusManager.stationOnOrIdle ? @color/red : @color/orange)}"
             android:drawableTop="@drawable/session_shutdown"
-            android:text="@{selectedStation.status.equals(`Off`) ? `Power On Station` : (selectedStation.status.equals(`On`) ? `Shut Down Station` : `Turning On`)}"
+            android:text="@{selectedStation.isOff ? `Power On Station` : (selectedStation.statusManager.stationOnOrIdle ? `Shut Down Station` : `Turning On`)}"
             android:visibility="visible"
-            app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
+            app:rippleColor="@{selectedStation.isOff ? @color/green_light : (selectedStation.isOn ? @color/red_light : @color/orange_light)}" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/enter_url"
@@ -91,5 +92,7 @@
             android:backgroundTint="@color/red"
             android:text="Configure SteamCMD"
             app:rippleColor="@color/grey_card" />
+
     </GridLayout>
+
 </layout>

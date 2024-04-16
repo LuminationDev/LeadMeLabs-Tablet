@@ -18,7 +18,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/card_white_border_gray"
+        android:background="@drawable/card_gray"
         app:layout_flexGrow="1">
 
         <!--No description-->

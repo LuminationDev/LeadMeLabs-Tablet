@@ -1,6 +1,5 @@
 package com.lumination.leadmelabs.models.stations;
 
-import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.stations.controllers.ApplicationController;
@@ -36,7 +34,6 @@ import java.util.TimerTask;
 public class Station implements Cloneable {
     public String name;
     public int id;
-    public String status; //Describes the computer status (Off, On, Turning On)
     public String state; //Describes the state of the LeadMe software
     public String room;
     public String macAddress;
@@ -44,9 +41,12 @@ public class Station implements Cloneable {
     public ArrayList<Integer> nestedStations;
 
     public boolean selected = false;
-    private CountDownTimer shutdownTimer;
 
     public Boolean requiresSteamGuard = false;
+
+    //Handle a Station's status
+    //Describes the computer status (Off, On, Turning On, Restarting, Idle)
+    public StatusManager statusManager = new StatusManager();
 
     //Handle video management
     public VideoController videoController;
@@ -67,7 +67,7 @@ public class Station implements Cloneable {
     public Station(String name, Object applications, int id, String status, String state, String room, String macAddress, boolean isHiddenStation) {
         this.name = name;
         this.id = id;
-        this.status = status;
+        this.setStatus(status);
         this.state = state;
         this.room = room;
         this.macAddress = macAddress;
@@ -100,6 +100,23 @@ public class Station implements Cloneable {
         name = newName;
     }
 
+    public String getRoom() {
+        return room;
+    }
+
+    //region Status Shortcuts
+    public String getStatus() {
+        return statusManager.getStatus();
+    }
+
+    public void setStatus(String status) {
+        this.statusManager.setStatus(status);
+    }
+
+    public boolean isOff() { return this.statusManager.isStationOff(); }
+    public boolean isOn() { return this.statusManager.isStationOn(); }
+    //endregion
+
     /**
      * If the Station is hidden, it does not receive commands or is shown like normal Stations. They
      * are controlled either through the SingleBoundFragment or if you turn on ShowHiddenStations in
@@ -125,46 +142,6 @@ public class Station implements Cloneable {
         return clonedStation;
     }
 
-    //region Power Control
-    /**
-     * Start a countdown to check the station status, if the station has not contacted the NUC
-     * within the time limit (3mins) then something has gone wrong and alert the user.
-     */
-    public void powerStatusCheck(long delay) {
-        //Cancel any previous power checks before starting a new one
-        cancelStatusCheck();
-
-        shutdownTimer = new CountDownTimer(delay, 1000) {
-            @Override
-            public void onTick(long l) {
-            }
-
-            @Override
-            public void onFinish() {
-                if(!SettingsFragment.checkLockedRooms(room)) {
-                    return;
-                }
-                DialogManager.createBasicDialog("Station error", name + " has not powered on correctly. Try starting again, and if this does not work please contact your IT department for help");
-                MainActivity.runOnUI(() -> {
-                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
-                    station.status = "Off";
-                    NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:Off");
-                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(id, station);
-                });
-            }
-        }.start();
-    }
-
-    /**
-     * The station has turned on so cancel the automatic station check.
-     */
-    public void cancelStatusCheck() {
-        if(shutdownTimer != null) {
-            shutdownTimer.cancel();
-        }
-    }
-    //endregion
-
     //region Data Binding
     /**
      * Data binding to update the Station content flexbox background.
@@ -173,9 +150,9 @@ public class Station implements Cloneable {
     public static void setStationStateBackground(FlexboxLayout flexbox, Station selectedStation) {
         if (selectedStation == null) return;
 
-        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
+        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
+        boolean hasGame = selectedStation.applicationController.hasGame();
 
         //Station is On and has either a State or a Game running
         if(isStatusOn && (hasState || hasGame)) {
@@ -193,9 +170,9 @@ public class Station implements Cloneable {
         if (selectedStation == null) return;
 
         //Set the visibility value
-        boolean isStatusOn = selectedStation.status != null && (!selectedStation.status.equals("Off") && !selectedStation.status.equals("Turning On") && !selectedStation.status.equals("Restarting"));
+        boolean isStatusOn = selectedStation.statusManager.isStationOnOrIdle();
         boolean hasState = selectedStation.state != null && selectedStation.state.length() != 0;
-        boolean hasGame = selectedStation.applicationController.getExperienceName() != null && selectedStation.applicationController.getExperienceName().length() != 0 && !selectedStation.applicationController.getExperienceName().equals("null");
+        boolean hasGame = selectedStation.applicationController.hasGame();
         int visibility = isStatusOn && (hasState || hasGame) ? View.VISIBLE : View.INVISIBLE;
         textView.setVisibility(visibility);
 
