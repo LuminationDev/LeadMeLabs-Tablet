@@ -16,13 +16,13 @@ import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.segment.analytics.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -308,14 +308,14 @@ public class UIUpdateManager {
                 return;
             }
 
-            //Send data to Segment
-            SegmentExperienceEvent event = new SegmentExperienceEvent(
-                    SegmentConstants.Event_Experience_Failed,
-                    station.id,
-                    experienceName,
-                    application.getId(),
-                    application.getType());
-            Segment.trackAction(event);
+            Properties segmentProperties = new Properties();
+            segmentProperties.put("classification", "General");
+            segmentProperties.put("stationId", station.id);
+            segmentProperties.put("name", experienceName);
+            segmentProperties.put("id", application.getId());
+            segmentProperties.put("type", application.getType());
+
+            Segment.trackEvent(SegmentConstants.Event_Experience_Failed, segmentProperties);
 
             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                 put("station_id", String.valueOf(station.id));

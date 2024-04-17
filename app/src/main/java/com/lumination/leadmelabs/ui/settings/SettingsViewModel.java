@@ -11,12 +11,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.services.NetworkService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 
 /**
@@ -35,6 +38,8 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> showHiddenStations;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
+    private MutableLiveData<Boolean> supportMode;
+    private MutableLiveData<Date> supportModeEnabledTime;
     private MutableLiveData<Boolean> additionalExitPrompts;
     private MutableLiveData<Boolean> internalTraffic;
     private MutableLiveData<Boolean> developerTraffic;
@@ -195,6 +200,47 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("enable_analytics_collection", value);
         editor.apply();
+    }
+
+    /**
+     * Check to see if the user has disabled analytics. This value represents if the user has opted
+     * out of all analytic collection.
+     */
+    public LiveData<Boolean> getSupportMode() {
+        if (supportMode == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("support_mode", Context.MODE_PRIVATE);
+            supportMode = new MutableLiveData<>(sharedPreferences.getBoolean("support_mode", false));
+            supportModeEnabledTime = new MutableLiveData<>(new Date());
+        }
+        return supportMode;
+    }
+
+    /**
+     * Set whether analytics can be collected or not.
+     */
+    public void setSupportMode(Boolean value) {
+        supportMode.setValue(value);
+        Segment.setSupportMode(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("support_mode", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("support_mode", value);
+        editor.apply();
+    }
+
+    public void resetSupportModeIfRequired() {
+        if (supportModeEnabledTime.getValue() == null) {
+            return;
+        }
+        Calendar c1 = Calendar.getInstance(); // today
+        c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(supportModeEnabledTime.getValue());
+
+        if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.DAY_OF_YEAR) != c2.get(Calendar.DAY_OF_YEAR)) {
+            setSupportMode(false);
+        }
     }
 
     /**

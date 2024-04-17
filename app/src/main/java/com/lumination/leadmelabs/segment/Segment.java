@@ -32,6 +32,7 @@ public class Segment {
     private static Date sessionStart;
 
     private static Analytics analytics;
+    private static boolean supportMode = false;
 
     /**
      * The unique identifier to distinguish the users on the database. The location of the lab is
@@ -62,6 +63,7 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
+        supportMode = Boolean.TRUE.equals(SettingsFragment.mViewModel.getSupportMode().getValue());
 
         if (analytics == null) {
             analytics = new Analytics.Builder(MainActivity.getInstance().getBaseContext(), writeKey)
@@ -195,6 +197,9 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
+        if (supportMode) {
+            return;
+        }
 
         if (!isIdSet) return;
 
@@ -205,6 +210,9 @@ public class Segment {
     {
         // Check if analytic logging is allowed
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
+            return;
+        }
+        if (supportMode) {
             return;
         }
 
@@ -223,10 +231,17 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
+        if (supportMode) {
+            return;
+        }
 
         if (!isIdSet) return;
 
         Analytics.with(MainActivity.getInstance().getBaseContext())
                 .track(details.getEvent(), details.toProperties());
+    }
+
+    public static void setSupportMode(boolean newValue) {
+        supportMode = newValue;
     }
 }

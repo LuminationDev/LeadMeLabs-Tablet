@@ -39,7 +39,6 @@ import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -205,9 +204,6 @@ public class StationSingleFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(HelpPageFragment.class, "help", null);
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Single Page");
-            Segment.trackAction(event);
         });
 
         //Run the identify flow
@@ -624,20 +620,21 @@ public class StationSingleFragment extends Fragment {
     private void inflateVRDevicesLayout() {
         ViewStub vrDevicesStub = binding.getRoot().findViewById(R.id.vr_devices_section);
         vrDevicesStub.inflate();
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.headset_connection_status), "Headset Connection");
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.left_controller_status), "Left Controller");
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.right_controller_status), "Right Controller");
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.base_station_status), "Base Station");
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.vive_connection_status), "Vive Connection");
-        this.setupVrDeviceClickTracking(vrDevicesStub.findViewById(R.id.openvr_connection_status), "OpenVR Connection");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.headset_connection_status), "Headset Connection");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.left_controller_status), "Left Controller");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.right_controller_status), "Right Controller");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.base_station_status), "Base Station");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.vive_connection_status), "Vive Connection");
+        this.setupVrDeviceClickTracking(binding.getRoot().findViewById(R.id.openvr_connection_status), "OpenVR Connection");
     }
 
     private void setupVrDeviceClickTracking(View view, String name) {
         if (view != null) {
-            view.setOnClickListener(v -> {
+            view.setOnTouchListener((v, x) -> {
                 Properties segmentProperties = new Properties();
                 segmentProperties.put("name", name);
                 trackStationEvent(SegmentConstants.VR_Device_Touch, segmentProperties);
+                return false;
             });
         }
     }

@@ -15,8 +15,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentTabletEvent;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.segment.analytics.Properties;
 
 import java.util.Locale;
 
@@ -81,8 +81,9 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
                 if (eventToTrack != null) {
                     boolean hideStationControls = Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance())
                             .get(SettingsViewModel.class).getHideStationControls().getValue());
-                    SegmentTabletEvent event = new SegmentTabletEvent(eventToTrack, hideStationControls);
-                    Segment.trackAction(event);
+                    Properties segmentProperties = new Properties();
+                    segmentProperties.put("wallMode", hideStationControls);
+                    Segment.trackEvent(eventToTrack, segmentProperties);
                 }
             }
         }

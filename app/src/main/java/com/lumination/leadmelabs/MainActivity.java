@@ -398,5 +398,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             ApplianceFragment.mViewModel.getActiveAppliances();
         }
+        SettingsFragment.mViewModel.resetSupportModeIfRequired();
     }
 }

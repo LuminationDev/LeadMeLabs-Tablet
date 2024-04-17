@@ -144,6 +144,16 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        FlexboxLayout supportModeLayout = view.findViewById(R.id.support_mode);
+        SwitchCompat supportModeToggle = view.findViewById(R.id.support_mode_toggle);
+        supportModeToggle.setChecked(Boolean.TRUE.equals(mViewModel.getSupportMode().getValue()));
+        supportModeLayout.setOnClickListener(v ->
+                supportModeToggle.setChecked(!supportModeToggle.isChecked())
+        );
+        supportModeToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setSupportMode(isChecked);
+        });
+
         //The toggle for turning exit prompts on and off
         FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
         SwitchCompat enableExitPromptsToggle = view.findViewById(R.id.exit_prompt_controls_toggle);
