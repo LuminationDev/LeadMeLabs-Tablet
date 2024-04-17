@@ -175,7 +175,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         applicationName.setText(currentApplication.getName());
         viewHolder.binding.setApplication(currentApplication);
 
-        convertView.setOnClickListener(v -> selectGame(v, currentApplication));
+        convertView.setOnClickListener(v -> selectApplication(v, currentApplication));
 
         return convertView;
     }
@@ -202,7 +202,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      * @param view                The View that triggered the selection action.
      * @param currentApplication  The Application object representing the selected game/application.
      */
-    private void selectGame(View view, Application currentApplication) {
+    private void selectApplication(View view, Application currentApplication) {
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         // confirm if it is one of the dodgy apps
@@ -243,16 +243,20 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                 mViewModel.setSelectedApplication(currentApplication);
                 loadSingleShareCodeFragment();
             }
-            //Check if application is of a video type and continue as normal
-            else if (currentApplication.HasCategory().equals(Constants.VideoPlayer)) {
-                loadApplication(station, currentApplication);
-            }
-            //load the application details fragment instead
-            else {
-                mViewModel.selectSelectedApplication(currentApplication.id);
-                mViewModel.setSelectedApplication(currentApplication);
-                loadSingleApplicationFragment();
-            }
+
+            loadApplication(station, currentApplication);
+
+            //TODO - Disabled until 'More Info' UI is completed
+//            //Check if application is of a video type and continue as normal
+//            else if (currentApplication.HasCategory().equals(Constants.VideoPlayer)) {
+//                loadApplication(station, currentApplication);
+//            }
+//            //load the application details fragment instead
+//            else {
+//                mViewModel.selectSelectedApplication(currentApplication.id);
+//                mViewModel.setSelectedApplication(currentApplication);
+//                loadSingleApplicationFragment();
+//            }
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);

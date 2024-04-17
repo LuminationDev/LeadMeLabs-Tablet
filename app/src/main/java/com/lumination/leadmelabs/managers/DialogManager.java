@@ -42,7 +42,6 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.Adapters.GlobalAdapter;

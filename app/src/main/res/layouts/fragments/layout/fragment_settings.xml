@@ -28,7 +28,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="900dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             app:flexDirection="row">
 
             <com.google.android.flexbox.FlexboxLayout
@@ -131,6 +131,10 @@
                 android:layout_marginStart="30dp"
                 app:flexDirection="column">
 
+                <include
+                    layout="@layout/spinner_layout_schemes"
+                    app:settings="@{settings}"/>
+
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/hide_station_controls"
                     android:layout_width="match_parent"
@@ -186,7 +190,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/enable_analytical_collection"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="55dp"
                     android:clickable="true"
                     android:background="@drawable/card_ripple_white_rounded"
                     app:alignItems="center"
@@ -240,7 +244,7 @@
                     android:id="@+id/internal_traffic"
                     android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="55dp"
                     android:clickable="true"
                     android:background="@drawable/card_ripple_white_rounded"
                     app:alignItems="center"
@@ -268,7 +272,7 @@
                     android:id="@+id/developer_traffic"
                     android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="55dp"
                     android:clickable="true"
                     android:background="@drawable/card_ripple_white_rounded"
                     app:alignItems="center"
@@ -295,7 +299,7 @@
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/enable_room_lock"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="55dp"
                     android:clickable="true"
                     android:background="@drawable/card_ripple_white_rounded"
                     app:alignItems="center"

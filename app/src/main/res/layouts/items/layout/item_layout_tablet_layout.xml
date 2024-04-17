@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
+        <variable
+            name="layout"
+            type="java.lang.String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="@{() -> settings.setTabletLayoutScheme(layout)}"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="5dp"
+            android:paddingEnd="-5dp"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@{settings.tabletLayoutScheme.equals(layout) ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_white_rounded}"
+            app:alignItems="center"
+            app:flexDirection="row">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:textSize="15sp"
+                android:text="@{layout}"
+                android:textColor="@color/black"
+                app:layout_flexGrow="1"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:checked="@{settings.tabletLayoutScheme.equals(layout)}"
+                android:background="@null"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </LinearLayout>
+</layout>
