@@ -10,6 +10,7 @@
 
     <!-- VR DEVICES layout content -->
     <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/vr_devices_section"
         android:layout_width="510dp"
         android:layout_height="100dp"
         android:background="@drawable/bg_white_curved"

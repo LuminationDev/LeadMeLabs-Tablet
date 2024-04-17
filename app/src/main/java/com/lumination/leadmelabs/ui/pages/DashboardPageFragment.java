@@ -25,7 +25,6 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
@@ -116,10 +115,6 @@ public class DashboardPageFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(HelpPageFragment.class, "help", null);
-
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Dashboard");
-            Segment.trackAction(event);
         });
 
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);

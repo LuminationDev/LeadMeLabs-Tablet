@@ -85,4 +85,5 @@ public class SegmentConstants {
     public static String Show_Dialog = "Show Dialog";
     public static String Dismiss_Dialog = "Dismiss Dialog";
     public static String Room_Selected = "Room Selected";
+    public static String Appliance_Triggered = "Appliance Triggered";
 }

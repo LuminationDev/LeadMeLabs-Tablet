@@ -26,7 +26,6 @@ import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentExperienceEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -301,14 +300,14 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
             NetworkService.sendMessage("Station," + joinedStations, "Experience", "Launch:" + currentApplication.id);
         }
 
-        // Send data to Segment
-        SegmentExperienceEvent event = new SegmentExperienceEvent(
-                SegmentConstants.Event_Experience_Launch,
-                LibrarySelectionFragment.getStationId(),
-                currentApplication.getName(),
-                currentApplication.getId(),
-                currentApplication.getType());
-        Segment.trackAction(event);
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", "General");
+        segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+        segmentProperties.put("name", currentApplication.getName());
+        segmentProperties.put("id", currentApplication.getId());
+        segmentProperties.put("type", currentApplication.getType());
+
+        Segment.trackEvent(SegmentConstants.Event_Experience_Launch, segmentProperties);
 
         sideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
 

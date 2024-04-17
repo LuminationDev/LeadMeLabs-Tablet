@@ -35,7 +35,6 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.segment.classes.SegmentHelpEvent;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFragment;
@@ -207,9 +206,6 @@ public class StationSelectionPageFragment extends Fragment {
             if (fragment == null) return;
 
             fragment.loadFragment(HelpPageFragment.class, "help", null);
-            // Send data to Segment
-            SegmentHelpEvent event = new SegmentHelpEvent(SegmentConstants.Event_Help_Page_Accessed, "Station Selection Page");
-            Segment.trackAction(event);
         });
 
         Button backButton = view.findViewById(R.id.cancel_button);
