@@ -10,12 +10,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.databinding.PageDashboardBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.R;
@@ -31,11 +33,13 @@ import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsConstants;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.unique.snowHydro.SnowyHydroConstants;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.segment.analytics.Properties;
 
@@ -54,6 +58,7 @@ import java.util.stream.Collectors;
 public class DashboardPageFragment extends Fragment {
     public static FragmentManager childManager;
     private static boolean cancelledShutdown = false;
+    private PageDashboardBinding binding;
     public static final String segmentClassification = "Dashboard";
 
     @Nullable
@@ -62,44 +67,23 @@ public class DashboardPageFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_dashboard, container, false);
         childManager = getChildFragmentManager();
+        binding = DataBindingUtil.bind(view);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
+        binding.setSettings(settingsViewModel);
 
         if (savedInstanceState == null) {
             loadFragments();
         }
 
-        int currentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        String message = "Welcome!";
-        if (currentDate < 12) {
-            message = "Good Morning!";
-        } else if (currentDate < 17) {
-            message = "Good Afternoon!";
-        } else {
-            message = "Good Evening!";
-        }
-        TextView welcomeMessage = view.findViewById(R.id.welcome_message);
-        welcomeMessage.setText(message);
-
-        LocalDate now = LocalDate.now();
-        String dateMessage = "";
-        String dayName = now.getDayOfWeek().name();
-        dayName = dayName.charAt(0) + dayName.substring(1).toLowerCase(Locale.ROOT);
-        dateMessage += (dayName + " ");
-        dateMessage += (now.getDayOfMonth() + getDayOfMonthSuffix(now.getDayOfMonth()) +" ");
-        String monthName = now.getMonth().name();
-        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase(Locale.ROOT);
-        dateMessage += (monthName + " ");
-        dateMessage += (now.getYear() + " ");
-        TextView dateMessageView = view.findViewById(R.id.date_message);
-        dateMessageView.setText(dateMessage);
-
-        // Setup the Dashboard action buttons
-        setupStandardDashboardButtons(view);
+        // Setup the Dashboard action buttons depending on the set layout
+        setupDashboardLayout(view);
 
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
@@ -116,23 +100,100 @@ public class DashboardPageFragment extends Fragment {
 
             fragment.loadFragment(HelpPageFragment.class, "help", null);
         });
-
-        SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
-        settingsViewModel.getHideStationControls().observe(getViewLifecycleOwner(), hideStationControls -> {
-            View stationControls = view.findViewById(R.id.station_controls);
-            stationControls.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
-            View stations = view.findViewById(R.id.stations);
-            stations.setVisibility(hideStationControls ? View.GONE : View.VISIBLE);
-        });
     }
 
     /**
-     * Setup the standard dashboard buttons, in the future there may be configurations that will
-     * switch out the buttons depending on the location or NUC config.
+     * Load in the initial fragments for the main view.
+     */
+    private void loadFragments() {
+        childManager.beginTransaction()
+                .replace(R.id.stations, StationsFragment.class, null)
+                .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.rooms, RoomFragment.class, null)
+                .commitNow();
+    }
+
+    private void trackDashboardEvent(String event) {
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        Segment.trackEvent(event, segmentProperties);
+    }
+
+    //region Dashboard Layout
+    /**
+     * Check what layout version is currently set and setup up the action buttons accordingly.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupDashboardLayout(View view) {
+        String layout = SettingsFragment.mViewModel.getTabletLayoutScheme().getValue();
+
+        //This happens regardless of the layout type
+        setupTimeDateDisplay(view);
+
+        if (layout == null) {
+            setupWelcomeTitle(view);
+            setupStandardDashboardButtons(view);
+            return;
+        }
+
+        switch (layout) {
+            case SettingsConstants.SNOWY_HYDRO_LAYOUT:
+                setupSnowyTitle(view);
+                setupSnowHydroDashboardButtons(view);
+                break;
+
+            case SettingsConstants.DEFAULT_LAYOUT:
+            default:
+                setupWelcomeTitle(view);
+                setupStandardDashboardButtons(view);
+                break;
+        }
+    }
+
+    /**
+     * Setup the snowy hydro dashboard buttons.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupSnowHydroDashboardButtons(View view) {
+        //Switch to VR mode
+        setupVrModeButton(view);
+
+        //Switch to Presentation mode
+        setupPresentationModeButton(view);
+
+        //End session on all/selected stations
+        setupEndSessionButton(view);
+
+        //Restart all stations
+        setupRestartAllButton(view);
+
+        //Shutdown the lab
+        setupShutdownButton(view);
+    }
+
+    /**
+     * Setup the standard dashboard buttons.
      * @param view The parent view where the information will be displayed.
      */
     private void setupStandardDashboardButtons(View view) {
         //Switch to VR mode
+        setupVrModeButton(view);
+
+        //Launch the new session flow
+        setupNewSessionButton(view);
+
+        //End session on all/selected stations
+        setupEndSessionButton(view);
+
+        //Restart all stations
+        setupRestartAllButton(view);
+
+        //Switch to classroom mode
+        setupClassModeButton(view);
+    }
+
+    //region Common Dashboard Buttons
+    private void setupVrModeButton(View view) {
         FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
         vrMode.setOnClickListener(v -> {
             searchForSceneTrigger("vr");
@@ -140,8 +201,9 @@ public class DashboardPageFragment extends Fragment {
             Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
             trackDashboardEvent(SegmentConstants.Event_Lab_VR_Mode);
         });
+    }
 
-        //Launch the new session flow
+    private void setupNewSessionButton(View view) {
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             StationsFragment.mViewModel.setSelectedStationId(0);
@@ -151,8 +213,18 @@ public class DashboardPageFragment extends Fragment {
             fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
             trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
+    }
 
-        //End session on all/selected stations
+    private void setupPresentationModeButton(View view) {
+        FlexboxLayout presentationMode = view.findViewById(R.id.presentation_mode_button);
+        presentationMode.setOnClickListener(v -> {
+            searchForSceneTrigger("presentation");
+            // Send data to Segment
+            trackDashboardEvent(SegmentConstants.Event_Lab_Presentation_Mode);
+        });
+    }
+
+    private void setupEndSessionButton(View view) {
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
             BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
@@ -178,8 +250,9 @@ public class DashboardPageFragment extends Fragment {
                     true);
             trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
+    }
 
-        //Restart all stations
+    private void setupRestartAllButton(View view) {
         FlexboxLayout restart = view.findViewById(R.id.restart_button);
         TextView restartHeading = view.findViewById(R.id.restart_heading);
         TextView restartContent = view.findViewById(R.id.restart_content);
@@ -201,7 +274,7 @@ public class DashboardPageFragment extends Fragment {
             if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
-                        restartAllStations(restartHeading, restartContent);
+                        restartOrShutdownAllStations(restartHeading, restartContent, false);
 
                         trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
                     }
@@ -215,13 +288,57 @@ public class DashboardPageFragment extends Fragment {
                         "Confirm",
                         false);
             } else {
-                restartAllStations(restartHeading, restartContent);
+                restartOrShutdownAllStations(restartHeading, restartContent, false);
 
                 trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
             }
         });
+    }
 
-        //Switch to classroom mode
+    private void setupShutdownButton(View view) {
+        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
+        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
+        TextView shutdownContent = view.findViewById(R.id.shutdown_content);
+        shutdown.setOnClickListener(v -> {
+            ArrayList<Integer> active = new ArrayList<>();
+
+            //Check what stations are still running an experience
+            ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
+            for(Station station: stations) {
+                if(station.applicationController.getExperienceName() == null) {
+                    continue;
+                }
+                if(station.applicationController.getExperienceName().length() == 0 || station.applicationController.getExperienceName().equals("null")) {
+                    continue;
+                }
+                active.add(station.id);
+            }
+
+            if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
+                BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
+                    if (confirmationResult) {
+                        restartOrShutdownAllStations(shutdownHeading, shutdownContent, true);
+
+                        trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
+                    }
+                };
+
+                DialogManager.createConfirmationDialog(
+                        "Confirm shutdown",
+                        "Are you sure you want to restart? Experiences are still running on " + (active.size() > 1 ? "stations " : "station ") + TextUtils.join(", ", active) + ". Please confirm this action.",
+                        confirmAppExitCallback,
+                        "Cancel",
+                        "Confirm",
+                        false);
+            } else {
+                restartOrShutdownAllStations(shutdownHeading, shutdownContent, true);
+
+                trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
+            }
+        });
+    }
+
+    private void setupClassModeButton(View view) {
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
         classroomMode.setOnClickListener(v -> {
             searchForSceneTrigger("classroom");
@@ -229,8 +346,9 @@ public class DashboardPageFragment extends Fragment {
             Segment.resetSession(); //After the Segment track as to record the last sessionId
         });
     }
+    //endregion
 
-
+    //region Common Dashboard Actions
     /**
      * Search the appliances list looking for a scene whose name contains the supplied sceneName. Only
      * appliances with type 'scenes' will be looked at. If found send a message to the NUC to trigger
@@ -405,41 +523,86 @@ public class DashboardPageFragment extends Fragment {
         }
     }
 
-    private void restartAllStations(TextView restartHeading, TextView restartContent) {
+    /**
+     * Send a command to shutdown or restart all Stations within the lab. If a command has already
+     * been sent or is in the process, it will instead cancel the initial shutdown or restart.
+     * @param heading A Textview of the heading text to set.
+     * @param content A Textview of the content text to set.
+     * @param shutdown A boolean if the function should shutdown (true) or restart (false).
+     */
+    private void restartOrShutdownAllStations(TextView heading, TextView content, boolean shutdown) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
-                restartHeading.setText(R.string.restart_space);
-                restartContent.setText(R.string.restart_stations);
+                heading.setText(shutdown ? R.string.restart_space : R.string.shut_down_space);
+                content.setText(shutdown ? R.string.restart_stations : R.string.shut_down_stations);
             } else {
                 if (!cancelledShutdown) {
-                    restartHeading.setText(MessageFormat.format("Cancel ({0})", seconds));
-                    restartContent.setText(R.string.cancel_reboot);
+                    heading.setText(MessageFormat.format("Cancel ({0})", seconds));
+                    content.setText(shutdown ? R.string.cancel_reboot : R.string.cancel_shutdown);
                 }
             }
         };
 
         int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
-        if (restartHeading.getText().toString().startsWith("Restart")) {
+        if (heading.getText().toString().startsWith(shutdown ? "Shutdown" : "Restart")) {
             cancelledShutdown = false;
-            DialogManager.buildShutdownOrRestartDialog(getContext(), "Restart", stationIds, shutdownCountDownCallback);
+            DialogManager.buildShutdownOrRestartDialog(getContext(), shutdown ? "Shutdown" : "Restart", stationIds, shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-            restartHeading.setText(R.string.restart_space);
-            restartContent.setText(R.string.restart_stations);
+            heading.setText(shutdown ? R.string.restart_space : R.string.shut_down_space);
+            content.setText(shutdown ? R.string.restart_stations : R.string.shut_down_stations);
         }
+    }
+    //endregion
+
+    //region Welcome Text
+    /**
+     * Setup the welcome text based on the welcome constant saved in the Snowy Hydro folder.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupSnowyTitle(View view) {
+        TextView welcomeMessage = view.findViewById(R.id.welcome_message);
+        welcomeMessage.setText(SnowyHydroConstants.WELCOME);
     }
 
     /**
-     * Load in the initial fragments for the main view.
+     * Setup the welcome text for the user that changes depending on the time of day.
+     * selected tablet layout.
+     * @param view The parent view where the information will be displayed.
      */
-    private void loadFragments() {
-        childManager.beginTransaction()
-                .replace(R.id.stations, StationsFragment.class, null)
-                .replace(R.id.logo, LogoFragment.class, null)
-                .replace(R.id.rooms, RoomFragment.class, null)
-                .commitNow();
+    private void setupWelcomeTitle(View view) {
+        int currentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        String message = "Welcome!";
+        if (currentDate < 12) {
+            message = "Good Morning!";
+        } else if (currentDate < 17) {
+            message = "Good Afternoon!";
+        } else {
+            message = "Good Evening!";
+        }
+        TextView welcomeMessage = view.findViewById(R.id.welcome_message);
+        welcomeMessage.setText(message);
+    }
+
+    /**
+     * Setup the time and date display that appears under the welcome text.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupTimeDateDisplay(View view) {
+        LocalDate now = LocalDate.now();
+        String dateMessage = "";
+        String dayName = now.getDayOfWeek().name();
+        dayName = dayName.charAt(0) + dayName.substring(1).toLowerCase(Locale.ROOT);
+        dateMessage += (dayName + " ");
+        dateMessage += (now.getDayOfMonth() + getDayOfMonthSuffix(now.getDayOfMonth()) +" ");
+        String monthName = now.getMonth().name();
+        monthName = monthName.charAt(0) + monthName.substring(1).toLowerCase(Locale.ROOT);
+        dateMessage += (monthName + " ");
+        dateMessage += (now.getYear() + " ");
+        TextView dateMessageView = view.findViewById(R.id.date_message);
+        dateMessageView.setText(dateMessage);
     }
 
     String getDayOfMonthSuffix(final int n) {
@@ -456,10 +619,6 @@ public class DashboardPageFragment extends Fragment {
             default: return "th";
         }
     }
-
-    private void trackDashboardEvent(String event) {
-        Properties segmentProperties = new Properties();
-        segmentProperties.put("classification", segmentClassification);
-        Segment.trackEvent(event, segmentProperties);
-    }
+    //endregion
+    //endregion
 }

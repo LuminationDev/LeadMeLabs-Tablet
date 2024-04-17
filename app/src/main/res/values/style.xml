@@ -62,6 +62,18 @@
         <item name="android:layout_marginVertical">10dp</item>
     </style>
 
+    <style name="WhiteActionCard">
+        <item name="android:layout_width">230dp</item>
+        <item name="android:layout_height">88dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/ripple_white_rounded_border_thin</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+
     <style name="StationCard">
         <item name="android:layout_height">138dp</item>
         <item name="android:layout_width">203dp</item>
@@ -233,7 +245,7 @@
 
     <style name="SettingsItemContainer">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">55dp</item>
         <item name="android:clickable">true</item>
         <item name="android:padding">15dp</item>
         <item name="android:layout_marginBottom">15dp</item>

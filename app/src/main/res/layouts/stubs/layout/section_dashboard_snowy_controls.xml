@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.ui.settings.SettingsConstants"/>
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:visibility="@{settings.tabletLayoutScheme.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT) ? View.VISIBLE : View.GONE, default=gone}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:flexDirection="column">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="@string/quick_actions"
+                android:textColor="@color/grey_titles" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="row">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/vr_mode_button"
+                    style="@style/WhiteActionCard"
+                    android:layout_marginStart="30dp"
+                    app:flexDirection="row"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="10dp"
+                        android:contentDescription="vr_mode_icon"
+                        android:src="@drawable/dashboard_vr_mode" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VR Mode"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Launch stations"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/presentation_mode_button"
+                    style="@style/WhiteActionCard"
+                    android:layout_marginStart="10dp"
+                    app:flexDirection="row"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="10dp"
+                        android:contentDescription="start_icon"
+                        android:src="@drawable/dashboard_presentation_mode" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Presentation"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Turn off stations"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/end_session_button"
+                    style="@style/WhiteActionCard"
+                    android:layout_marginStart="10dp"
+                    app:flexDirection="row"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="10dp"
+                        android:contentDescription="stop_icon"
+                        android:src="@drawable/dashboard_end_session" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="End Session"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Close experience"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/restart_button"
+                    style="@style/WhiteActionCard"
+                    android:layout_marginStart="10dp"
+                    android:visibility="visible"
+                    app:flexDirection="row"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="10dp"
+                        android:contentDescription="restart_icon"
+                        android:src="@drawable/dashboard_restart" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:id="@+id/restart_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Restart Lab"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/restart_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reboot stations"
+                            android:textSize="11sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/shutdown_button"
+                    style="@style/WhiteActionCard"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="visible"
+                    app:flexDirection="row"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="10dp"
+                        android:contentDescription="shutdown_icon"
+                        android:src="@drawable/dashboard_shutdown" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:flexDirection="column"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:id="@+id/shutdown_heading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shut Down"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/shutdown_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Turn off lab"
+                            android:textSize="11sp" />
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </RelativeLayout>
+
+</layout>

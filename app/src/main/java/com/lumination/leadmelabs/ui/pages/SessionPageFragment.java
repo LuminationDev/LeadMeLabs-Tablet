@@ -16,14 +16,13 @@ import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 
 public class SessionPageFragment extends Fragment {
-    private View view;
     private FragmentManager childManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_session, container, false);
+        View view = inflater.inflate(R.layout.page_session, container, false);
 
         childManager = getChildFragmentManager();
         return view;

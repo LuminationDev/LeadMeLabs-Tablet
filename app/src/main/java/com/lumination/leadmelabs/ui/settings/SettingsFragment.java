@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +27,9 @@ import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.segment.analytics.Properties;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class SettingsFragment extends Fragment {
 
@@ -237,6 +240,25 @@ public class SettingsFragment extends Fragment {
                 developerTrafficLayout.setVisibility(View.GONE);
             }
         });
+
+        setupTabletLayouts(view);
+    }
+
+    /**
+     * Setup the dropdown adapter for changing the layout of the tablet application.
+     * @param view The parent view where the information will be displayed.
+     */
+    private void setupTabletLayouts(View view) {
+        // Setup the layout dropdown
+        Spinner customSpinner = view.findViewById(R.id.layout_schemes_spinner);
+        List<String> data = new ArrayList<>(SettingsConstants.ALL_LAYOUTS);
+
+        SettingsLayoutSchemeAdapter adapter = new SettingsLayoutSchemeAdapter(getContext(), data, getViewLifecycleOwner());
+        customSpinner.setAdapter(adapter);
+
+        // Setup the layout container
+        FlexboxLayout container = view.findViewById(R.id.layout_schemes_placeholder);
+        container.setOnClickListener(v -> customSpinner.performClick());
     }
 
     /**

@@ -45,6 +45,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> developerTraffic;
     private MutableLiveData<Boolean> enableRoomLock;
     private MutableLiveData<HashSet<String>> lockedRooms;
+    private MutableLiveData<String> tabletLayoutScheme;
     private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
 
     public SettingsViewModel(@NonNull Application application) {
@@ -519,5 +520,29 @@ public class SettingsViewModel extends AndroidViewModel {
                 .replace("]", "")
                 .replace(", ", ",")
                 .split(",")));
+    }
+
+    /**
+     * Get the tablet layout scheme
+     */
+    public LiveData<String> getTabletLayoutScheme() {
+        if (tabletLayoutScheme == null) {
+            tabletLayoutScheme = new MutableLiveData<>();
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("layout_scheme", Context.MODE_PRIVATE);
+            tabletLayoutScheme.setValue(sharedPreferences.getString("layout_scheme", SettingsConstants.DEFAULT_LAYOUT));
+        }
+        return tabletLayoutScheme;
+    }
+
+    /**
+     * Set the tablet layout scheme
+     */
+    public void setTabletLayoutScheme(String value) {
+        getTabletLayoutScheme(); // to initialize if not already done
+        tabletLayoutScheme.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("layout_scheme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("layout_scheme", value);
+        editor.apply();
     }
 }
