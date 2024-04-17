@@ -30,7 +30,6 @@ import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsConstants;
@@ -210,7 +209,7 @@ public class DashboardPageFragment extends Fragment {
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
             if (fragment == null) return;
 
-            fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
+            fragment.loadFragment(LibraryPageFragment.class, "session", null);
             trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
     }

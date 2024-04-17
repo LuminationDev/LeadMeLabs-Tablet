@@ -18,7 +18,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentLibraryVideoBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
 import com.lumination.leadmelabs.models.Video;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
@@ -48,15 +48,15 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
 
         GridView videoGridView = view.findViewById(R.id.video_grid);
         localVideoAdapter = new VideoAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, true);
+        updateVideoList(LibraryPageFragment.getStationId(), videoGridView, true);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            if (LibrarySelectionFragment.getStationId() > 0) {
-                if (localVideoAdapter.videoList.size() != mViewModel.getStationVideos(LibrarySelectionFragment.getStationId()).size()) {
-                    updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
+            if (LibraryPageFragment.getStationId() > 0) {
+                if (localVideoAdapter.videoList.size() != mViewModel.getStationVideos(LibraryPageFragment.getStationId()).size()) {
+                    updateVideoList(LibraryPageFragment.getStationId(), videoGridView, false);
                 }
             } else {
                 if (localVideoAdapter.videoList.size() != mViewModel.getAllVideos().size()) {
-                    updateVideoList(LibrarySelectionFragment.getStationId(), videoGridView, false);
+                    updateVideoList(LibraryPageFragment.getStationId(), videoGridView, false);
                 }
             }
         });
@@ -90,7 +90,7 @@ public class VideoLibraryFragment extends Fragment implements ILibraryInterface 
         binding.setVideosLoaded(mViewModel.getAllApplications().size() > 0);
 
         //The list has been updated, perform the search again
-        performSearch(LibrarySelectionFragment.mViewModel.getCurrentSearch().getValue());
+        performSearch(LibraryPageFragment.mViewModel.getCurrentSearch().getValue());
         view.setAdapter(localVideoAdapter);
     }
 

@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.ItemLayoutFilterAllBinding;
 import com.lumination.leadmelabs.databinding.ItemLayoutFilterBinding;
 import com.lumination.leadmelabs.models.applications.information.TagConstants;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ public class LibrarySubjectFilterAdapter extends BaseAdapter {
         if (position == 0) {
             // Inflate layout for special item
             ItemLayoutFilterAllBinding specialBinding = ItemLayoutFilterAllBinding.inflate(inflater, parent, false);
-            specialBinding.setLibrary(LibrarySelectionFragment.mViewModel);
+            specialBinding.setLibrary(LibraryPageFragment.mViewModel);
             specialBinding.setLifecycleOwner(mLifecycleOwner);
             convertView = specialBinding.getRoot();
         } else {
@@ -73,7 +74,7 @@ public class LibrarySubjectFilterAdapter extends BaseAdapter {
             convertView = binding.getRoot();
             convertView.setTag(binding);
 
-            binding.setLibrary(LibrarySelectionFragment.mViewModel);
+            binding.setLibrary(LibraryPageFragment.mViewModel);
             binding.setFilter(mData.get(position));
 
             Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(mData.get(position));

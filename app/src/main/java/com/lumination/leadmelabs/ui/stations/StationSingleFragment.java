@@ -40,7 +40,7 @@ import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -235,7 +235,7 @@ public class StationSingleFragment extends Fragment {
                     SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
                     if (fragment == null) return;
 
-                    fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                    fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
                 }
                 return;
             }
@@ -243,7 +243,7 @@ public class StationSingleFragment extends Fragment {
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
             if (fragment == null) return;
 
-            fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
+            fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
         });
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
@@ -669,7 +669,7 @@ public class StationSingleFragment extends Fragment {
                 SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
                 if (fragment == null) return;
 
-                fragment.loadFragment(LibrarySelectionFragment.class, "session", bundle);
+                fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
             });
         }
     }

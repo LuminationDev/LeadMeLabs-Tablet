@@ -21,7 +21,7 @@ import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
@@ -129,15 +129,15 @@ public class VideoAdapter extends BaseAdapter implements Filterable {
     }
 
     private void completeSelectVideoAction(Video currentVideo) {
-        if (LibrarySelectionFragment.getStationId() > 0) {
-            Station station = mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        if (LibraryPageFragment.getStationId() > 0) {
+            Station station = mViewModel.getStationById(LibraryPageFragment.getStationId());
             if (station == null) {
                 return;
             }
             station.checkForVideoPlayer(currentVideo);
 
             Properties segmentProperties = new Properties();
-            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
             segmentProperties.put("name", currentVideo.getName());
             segmentProperties.put("id", station.getId());
             segmentProperties.put("type", currentVideo.getVideoType());
@@ -155,7 +155,7 @@ public class VideoAdapter extends BaseAdapter implements Filterable {
             mViewModel.setSelectedVideo(currentVideo);
 
             Properties segmentProperties = new Properties();
-            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
             segmentProperties.put("name", currentVideo.getName());
             segmentProperties.put("type", currentVideo.getVideoType());
             segmentProperties.put("length", currentVideo.getLength());

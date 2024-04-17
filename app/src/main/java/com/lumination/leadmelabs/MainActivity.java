@@ -27,7 +27,7 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.LibraryViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleNestedFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         ModalDialogFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
-        LibrarySelectionFragment.mViewModel = ViewModelProviders.of(this).get(LibraryViewModel.class);
+        LibraryPageFragment.mViewModel = ViewModelProviders.of(this).get(LibraryViewModel.class);
         ApplicationLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         VideoLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);

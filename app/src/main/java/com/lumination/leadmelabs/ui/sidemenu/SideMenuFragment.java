@@ -22,7 +22,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentMenuSideBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.segment.Segment;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
@@ -102,7 +102,7 @@ public class SideMenuFragment extends Fragment {
         sessionBtn.setOnClickListener(v -> {
             removeSubMenu();
             StationsFragment.mViewModel.setSelectedStationId(0);
-            loadFragment(LibrarySelectionFragment.class, "session", null);
+            loadFragment(LibraryPageFragment.class, "session", null);
         });
 
         View controlsBtn = view.findViewById(R.id.controls_button);
