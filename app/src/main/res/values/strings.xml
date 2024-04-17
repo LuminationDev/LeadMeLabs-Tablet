@@ -52,7 +52,7 @@
     <string name="done">Done</string>
     <string name="search">Search</string>
     <string name="pick_an_experience">Pick an experience to play in VR</string>
-    <string name="not_installed_on_stations">This application is not installed on some stations!</string>
+    <string name="not_installed_on_stations">This application is not installed on some stations.</string>
     <string name="contact_it_department">Please contact your IT department for install instructions.</string>
     <string name="alert_icon">Alert Icon</string>
     <string name="vr_status_icon">vr status icon</string>

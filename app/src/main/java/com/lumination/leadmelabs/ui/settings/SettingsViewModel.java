@@ -229,7 +229,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     public void resetSupportModeIfRequired() {
-        if (supportModeEnabledTime.getValue() == null) {
+        if (supportModeEnabledTime == null || supportModeEnabledTime.getValue() == null) {
             return;
         }
         Calendar c1 = Calendar.getInstance(); // today
@@ -482,6 +482,7 @@ public class SettingsViewModel extends AndroidViewModel {
      * @return An empty hashset if the toggle is off and the hashset of rooms if the toggle is on.
      */
     public LiveData<HashSet<String>> getLockedIfEnabled() {
+        //Early exit if the toggle is off
         //Early exit if the toggle is off
         if(Boolean.FALSE.equals(getRoomLockEnabled().getValue())) {
             return new MutableLiveData<>(new HashSet<>());
