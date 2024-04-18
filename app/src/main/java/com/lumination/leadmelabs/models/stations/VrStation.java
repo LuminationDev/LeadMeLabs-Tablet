@@ -10,6 +10,7 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
@@ -524,12 +525,37 @@ public class VrStation extends Station {
         }
     }
 
-    /// <summary>
-    /// Starts an animation that updates a TextView with a sequence of dots, creating a loading effect.
-    /// The animation displays the text "Awaiting headset connection" followed by 1, 2, 3 dots in a loop,
-    /// with each dot appearing at one-second intervals. The sequence restarts after reaching three dots.
-    /// </summary>
-    /// <param name="textView">The TextView to animate.</param>
+    /**
+     * Only enable the Idle Mode button if the Station is On and SteamVR has been opened, otherwise
+     * there is internal processing occurring that should not be interrupted.
+     */
+    @BindingAdapter("stationIdleMode")
+    public static void setStationIdleModeVisuals(MaterialButton materialButton, Station selectedStation) {
+        if (!(selectedStation instanceof VrStation)) return;
+
+        //Check if it should be enabled
+        VrStation vrStation = (VrStation) selectedStation;
+        boolean isOnOrIdle = vrStation.statusHandler.isStationOnOrIdle();
+        boolean isProcessing = vrStation.openVRHeadsetTracking.equals("Lost") || vrStation.openVRHeadsetTracking.equals("Connected");
+
+        //Get the correct background colour - override if it is not enabled
+        int colour;
+        if (isOnOrIdle && isProcessing) {
+            colour = vrStation.statusHandler.getIdleModeColour(materialButton.getContext());
+        } else {
+            colour = ContextCompat.getColor(materialButton.getContext(), R.color.grey_card);
+        }
+
+        materialButton.setBackgroundColor(colour);
+        materialButton.setEnabled(isOnOrIdle && isProcessing);
+    }
+
+    /**
+     * Starts an animation that updates a TextView with a sequence of dots, creating a loading effect.
+     * The animation displays the text "Awaiting headset connection" followed by 1, 2, 3 dots in a loop,
+     * with each dot appearing at one-second intervals. The sequence restarts after reaching three dots.
+     * @param textView The TextView to animate.
+     */
     private void startAnimateDots(final TextView textView) {
         if (timer != null) {
             timer.cancel();
