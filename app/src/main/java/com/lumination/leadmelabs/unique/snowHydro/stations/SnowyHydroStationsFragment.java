@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-//TODO Investigate handling Station updates better
 public class SnowyHydroStationsFragment extends Fragment {
     public static StationsViewModel mViewModel;
     private SnowyHydroStationsParentAdapter stationParentAdapter;
@@ -56,6 +55,7 @@ public class SnowyHydroStationsFragment extends Fragment {
             RecyclerView parentRecyclerView = view.findViewById(R.id.multi_recyclerView);
             parentRecyclerView.setVisibility(View.VISIBLE);
             parentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            parentRecyclerView.setItemAnimator(null);
 
             // Sort the available Stations into rooms - only collect rooms with Stations
             rooms = loadData();
