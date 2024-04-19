@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.databinding.CardStationBinding;
+import com.lumination.leadmelabs.databinding.CardStationContentBinding;
+import com.lumination.leadmelabs.databinding.CardStationVrBinding;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Video;
@@ -152,6 +155,33 @@ public class Station implements Cloneable {
 
         assert clonedStation != null;
         return clonedStation;
+    }
+
+    /**
+     * Determines the type of the given station (VirtualStation or ContentStation) and binds the corresponding
+     * data to the associated layout. It sets the visibility of the relevant layout to VISIBLE and returns
+     * the root view of the card associated with the station type.
+     *
+     * @param binding The data binding object for the card station layout.
+     * @param station The station for which the type needs to be determined and data bound.
+     * @return The root view of the card associated with the station type, or null if the station type is unknown.
+     */
+    public static View determineStationType(CardStationBinding binding, Station station) {
+        if (station instanceof VrStation) {
+            CardStationVrBinding vrBinding = binding.cardStationVr;
+            vrBinding.setStation((VrStation) station);
+            vrBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationVr.getRoot().findViewById(R.id.station_card);
+
+        } else if (station instanceof ContentStation) {
+            CardStationContentBinding classicBinding = binding.cardStationContent;
+            classicBinding.setStation((ContentStation) station);
+            classicBinding.getRoot().setVisibility(View.VISIBLE);
+            return binding.cardStationContent.getRoot().findViewById(R.id.station_card);
+
+        } else {
+            return null;
+        }
     }
 
     //region Data Binding

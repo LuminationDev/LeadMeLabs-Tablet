@@ -60,14 +60,6 @@ public class StationsFragment extends Fragment {
     }
 
     /**
-     * Trigger any observers watching the Stations MutableLive data.
-     */
-    public static void refreshStationsInplace() {
-        List<Station> currentStations = StationsFragment.mViewModel.getStations().getValue();
-        StationsFragment.mViewModel.setStations(currentStations);
-    }
-
-    /**
      * Reload the current appliance list when a room is changed.
      */
     public void notifyDataChange() {
@@ -105,27 +97,5 @@ public class StationsFragment extends Fragment {
         stationAdapter.notifyDataSetChanged();
         binding.setStationList(stationAdapter.stationList);
         binding.setStationsLoaded(true);
-    }
-
-    /**
-     * Collect the current stations from the current room. Double check that the room is within the
-     * locked rooms in case 'All' is selected.
-     * @return An arraylist of station objects.
-     */
-    public ArrayList<Station> getRoomStations()
-    {
-        ArrayList<Station> checkList = new ArrayList<>();
-
-        List<Station> allStations = mViewModel.getStations().getValue();
-        if (allStations == null) return checkList;
-        
-        //Limit to the locked rooms
-        for(Station station: allStations) {
-            if(SettingsFragment.checkLockedRooms(station.room)) {
-                checkList.add(station);
-            }
-        }
-
-        return checkList;
     }
 }

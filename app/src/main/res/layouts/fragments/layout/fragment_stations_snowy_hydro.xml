@@ -6,8 +6,8 @@
         <import type="com.lumination.leadmelabs.models.stations.Station" />
         <import type="android.view.View"/>
         <variable
-            name="stationList"
-            type="java.util.ArrayList&lt;Station&gt;" />
+            name="stationsAvailable"
+            type="java.lang.Boolean" />
         <variable
             name="stationsLoaded"
             type="java.lang.Boolean" />
@@ -21,14 +21,16 @@
         app:flexDirection="column">
 
         <TextView
+            android:visibility="@{stationsAvailable ? View.GONE : View.VISIBLE, default=visible}"
             android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/grey_titles"
             android:text="Station Control"/>
 
         <com.google.android.flexbox.FlexboxLayout
-            android:visibility="@{stationList.size() > 0 ? View.GONE : View.VISIBLE}"
+            android:visibility="@{stationsAvailable ? View.GONE : View.VISIBLE, default=visible}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:alignItems="center"
@@ -41,19 +43,18 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:visibility="@{stationList.size() > 0 ? View.VISIBLE : View.GONE}"
-            android:id="@+id/stations_list"
-            android:orientation="horizontal"
+            android:visibility="@{stationsAvailable ? View.VISIBLE : View.GONE, default=gone}"
+            android:id="@+id/multi_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
-            android:paddingBottom="10dp"
             android:layout_marginStart="10dp"
+            android:paddingHorizontal="10dp"
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@color/blue"
+            android:fadeScrollbars="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/card_station_vr" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </com.google.android.flexbox.FlexboxLayout>
-
 </layout>

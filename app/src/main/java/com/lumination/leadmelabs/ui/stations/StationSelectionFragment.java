@@ -144,7 +144,7 @@ public class StationSelectionFragment extends Fragment {
             playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_medium));
 
         } else { //Application not installed on some Station
-            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_red_lightest_rounded));
+            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_warning_yellow_rounded));
             top.setText(R.string.not_installed_on_stations);
             playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
         }

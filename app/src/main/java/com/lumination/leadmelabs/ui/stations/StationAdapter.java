@@ -22,7 +22,7 @@ import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.segment.analytics.Properties;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         public void bind(Station station) {
-            View finalResult = StationAdapter.determineStationType(binding, station);
+            View finalResult = Station.determineStationType(binding, station);
 
             if (finalResult == null) {
                 return;
@@ -177,32 +177,5 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         return true;
-    }
-
-    /**
-     * Determines the type of the given station (VirtualStation or ContentStation) and binds the corresponding
-     * data to the associated layout. It sets the visibility of the relevant layout to VISIBLE and returns
-     * the root view of the card associated with the station type.
-     *
-     * @param binding The data binding object for the card station layout.
-     * @param station The station for which the type needs to be determined and data bound.
-     * @return The root view of the card associated with the station type, or null if the station type is unknown.
-     */
-    public static View determineStationType(CardStationBinding binding, Station station) {
-        if (station instanceof VrStation) {
-            CardStationVrBinding vrBinding = binding.cardStationVr;
-            vrBinding.setStation((VrStation) station);
-            vrBinding.getRoot().setVisibility(View.VISIBLE);
-            return binding.cardStationVr.getRoot().findViewById(R.id.station_card);
-
-        } else if (station instanceof ContentStation) {
-            CardStationContentBinding classicBinding = binding.cardStationContent;
-            classicBinding.setStation((ContentStation) station);
-            classicBinding.getRoot().setVisibility(View.VISIBLE);
-            return binding.cardStationContent.getRoot().findViewById(R.id.station_card);
-
-        } else {
-            return null;
-        }
     }
 }

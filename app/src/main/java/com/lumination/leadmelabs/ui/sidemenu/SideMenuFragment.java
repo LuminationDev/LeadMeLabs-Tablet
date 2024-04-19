@@ -30,7 +30,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 
 import java.util.Objects;
 

@@ -27,7 +27,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
 

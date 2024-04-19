@@ -50,7 +50,8 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.systemStatus.SystemStatusFragment;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.SnowyHydroStationsFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
@@ -232,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //TODO APPLIANCES DO NOT UPDATE IF A USER HAS NOT CLICKED ON ROOM CONTROLS TO START WITH
+    //TODO clean this up
     /**
      * Populate all static ViewModels so that the information is available as soon as the
      * fragment is loaded.
@@ -240,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         RoomFragment.mViewModel = ViewModelProviders.of(this).get(RoomViewModel.class);
         SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
+        SnowyHydroStationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSingleNestedFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
