@@ -119,7 +119,8 @@ public class SystemStatusFragment extends Fragment {
 
         if (MainActivity.getInstance() != null) {
             MainActivity.runOnUI(() -> {
-                ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, connected ? R.drawable.ic_network_connected : R.drawable.ic_network_not_connected, 0, 0);
+                int drawable = connected ? R.drawable.ic_network_connected : R.drawable.ic_network_not_connected;
+                ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, drawable, 0, 0);
             });
         }
     }

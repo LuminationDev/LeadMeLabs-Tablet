@@ -27,7 +27,7 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
         }
 
         public void bind(Station station, BasicStationSelectionAdapter basicStationSelectionAdapter) {
-            View finalResult = StationAdapter.determineStationType(binding, station);
+            View finalResult = Station.determineStationType(binding, station);
 
             if (finalResult == null) {
                 return;

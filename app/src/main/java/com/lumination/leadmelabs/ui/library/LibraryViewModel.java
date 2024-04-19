@@ -3,6 +3,10 @@ package com.lumination.leadmelabs.ui.library;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.segment.analytics.Properties;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,10 +64,16 @@ public class LibraryViewModel extends ViewModel {
     public void toggleFilter(String filter) {
         ArrayList<String> filters = this.subjectFilters.getValue();
 
+        Properties properties = new Properties();
+        properties.put("classification", "Filter");
+        properties.put("filterType", filter);
+
         if (Objects.requireNonNull(filters).contains(filter)) {
             filters.remove(filter);
+            Segment.trackEvent(SegmentConstants.Filter_Removed, properties);
         } else {
             filters.add(filter);
+            Segment.trackEvent(SegmentConstants.Filter_Added, properties);
         }
 
         setSubjectFilters(filters);
@@ -73,6 +83,10 @@ public class LibraryViewModel extends ViewModel {
      * Reset the filters list only if it is not already empty
      */
     public void resetFilter() {
+        Properties properties = new Properties();
+        properties.put("classification", "Filter");
+        Segment.trackEvent(SegmentConstants.Filters_Reset, properties);
+
         List<String> currentFilters = this.subjectFilters.getValue();
         if (currentFilters != null && !currentFilters.isEmpty()) {
             setSubjectFilters(new ArrayList<>());

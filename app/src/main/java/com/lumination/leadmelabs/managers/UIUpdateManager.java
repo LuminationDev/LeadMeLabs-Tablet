@@ -108,7 +108,7 @@ public class UIUpdateManager {
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 
@@ -251,7 +251,7 @@ public class UIUpdateManager {
 
         //Check if the computer is in the locked room
         if(rooms != null) {
-            if(rooms.size() != 0 && !rooms.contains(station.room)) {
+            if(!rooms.isEmpty() && !rooms.contains(station.room)) {
                 return;
             }
         }
@@ -498,7 +498,7 @@ public class UIUpdateManager {
                 MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), vrStation));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 
@@ -563,21 +563,20 @@ public class UIUpdateManager {
         }
     }
 
-
     //Simplify the functions below to a generic one
     private static void updateStations(String jsonString) throws JSONException {
         JSONArray json = new JSONArray(jsonString);
 
-        MainActivity.runOnUI(() -> {
+        MainActivity.UIHandler.postDelayed(() -> {
             try {
                 ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStations(json);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.toString());
             }
-        });
+        }, 500);
     }
 
-    private static void updateStation(String stationId, String attribute, String value) throws JSONException {
+    private static void updateStation(String stationId, String attribute, String value) {
         MainActivity.runOnUI(() -> {
             Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(Integer.parseInt(stationId));
             if (station == null) {
@@ -707,7 +706,7 @@ public class UIUpdateManager {
                         try {
                             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(new JSONObject(value));
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e(TAG, e.toString());
                         }
                     });
                     break;
@@ -854,7 +853,7 @@ public class UIUpdateManager {
             try {
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setAppliances(json);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.toString());
             }
         });
     }

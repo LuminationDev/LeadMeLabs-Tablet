@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import androidx.core.app.NotificationCompat;
 
@@ -414,7 +415,7 @@ public class NetworkService extends Service {
 
         try {
             // Trigger an inplace refresh of the Stations data - this in turn triggers any observer patterns
-            StationsFragment.refreshStationsInplace();
+            Helpers.refreshStationsInplace();
         }
         catch (Exception e) {
             Log.e(TAG, "Thumbnail refresh exception: " + e);

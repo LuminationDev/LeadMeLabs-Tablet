@@ -19,9 +19,12 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsConstants;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationSelectionFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.SnowyHydroStationsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
 
@@ -181,7 +184,12 @@ public class RoomFragment extends Fragment {
         currentType.setValue(roomName);
 
         if(SideMenuFragment.currentType.equals("dashboard")) {
-            StationsFragment.getInstance().notifyDataChange();
+            String layout = SettingsFragment.mViewModel.getTabletLayoutScheme().getValue();
+            if (layout == null || layout.equals(SettingsConstants.DEFAULT_LAYOUT)) {
+                StationsFragment.getInstance().notifyDataChange();
+            } else {
+                SnowyHydroStationsFragment.getInstance().notifyDataChange();
+            }
         } else if (SideMenuFragment.currentType.equals("controls")) {
             ApplianceFragment.getInstance().notifyDataChange();
         } else {

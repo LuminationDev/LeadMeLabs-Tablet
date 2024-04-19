@@ -32,7 +32,6 @@ public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
     private MutableLiveData<Station> selectedStation = new MutableLiveData<>();
     private MutableLiveData<Integer> selectedStationId = new MutableLiveData<>();
-
     private MutableLiveData<String> selectionType = new MutableLiveData<>("application");
     private MutableLiveData<Application> selectedApplication = new MutableLiveData<>();
     private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
@@ -125,7 +124,7 @@ public class StationsViewModel extends ViewModel {
             Levels level = new Levels(temp.getString("name"), temp.getString("trigger"));
 
             //Add the level trigger as it's first action
-            if(!level.trigger.equals("")) {
+            if(!level.trigger.isEmpty()) {
                 level.addAction(new Actions("Set", level.trigger));
             }
 
@@ -470,14 +469,14 @@ public class StationsViewModel extends ViewModel {
     public String getSelectedApplicationName(String applicationId) {
         List<Application> allApps = getAllApplications();
         allApps.removeIf(application -> !Objects.equals(application.id, applicationId));
-        if(allApps.size() == 0) return "experience";
+        if(allApps.isEmpty()) return "experience";
         return allApps.get(0).name;
     }
 
     public String getSelectedApplicationByName(String name) {
         List<Application> allApps = getAllApplications();
         allApps.removeIf(application -> !Objects.equals(application.getName(), name));
-        if(allApps.size() == 0) return "experience";
+        if(allApps.isEmpty()) return "experience";
         return allApps.get(0).name;
     }
 

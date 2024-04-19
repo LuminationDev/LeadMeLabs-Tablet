@@ -50,7 +50,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
     @NonNull
     @Override
     public ParentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.multi_recycler_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.multi_recycler_layout_appliance, parent, false);
         return new ParentViewHolder(view);
     }
 
@@ -60,7 +60,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
     }
 
     @Override
-    public void onBindViewHolder(ParentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ParentViewHolder holder, int position) {
         if (parentModelArrayList.size() <= position) {
             holder.warningMessage.setText(MessageFormat.format("There are no {0} in this room.", ApplianceFragment.type.getValue()));
             holder.warningMessage.setVisibility(View.VISIBLE);
@@ -68,7 +68,7 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
         }
         String currentItem = parentModelArrayList.keyAt(position);
         holder.category.setText(currentItem);
-        if(parentModelArrayList.valueAt(position).size() == 0) {
+        if(parentModelArrayList.valueAt(position).isEmpty()) {
             holder.warningMessage.setText(MessageFormat.format("There are no {0} in {1}.", ApplianceFragment.type.getValue(), currentItem));
             holder.warningMessage.setVisibility(View.VISIBLE);
             return;
