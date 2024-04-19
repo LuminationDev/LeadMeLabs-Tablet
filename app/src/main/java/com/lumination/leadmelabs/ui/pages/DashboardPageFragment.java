@@ -30,7 +30,6 @@ import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsConstants;
@@ -40,6 +39,8 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.unique.snowHydro.SnowyHydroConstants;
+import com.lumination.leadmelabs.unique.snowHydro.stations.SnowyHydroStationsFragment;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
 import com.segment.analytics.Properties;
 
@@ -78,9 +79,10 @@ public class DashboardPageFragment extends Fragment {
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         binding.setSettings(settingsViewModel);
 
-        if (savedInstanceState == null) {
-            loadFragments();
-        }
+        //TODO can we put the setup in here? or just the load fragments stuff?
+        //if (savedInstanceState == null) {
+            //loadStandardFragments();
+        //}
 
         // Setup the Dashboard action buttons depending on the set layout
         setupDashboardLayout(view);
@@ -88,7 +90,7 @@ public class DashboardPageFragment extends Fragment {
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
-            List<Station> stations = StationsFragment.getInstance().getRoomStations();
+            List<Station> stations = Helpers.getRoomStations();
             Identifier.identifyStations(stations);
         });
 
@@ -100,17 +102,6 @@ public class DashboardPageFragment extends Fragment {
 
             fragment.loadFragment(HelpPageFragment.class, "help", null);
         });
-    }
-
-    /**
-     * Load in the initial fragments for the main view.
-     */
-    private void loadFragments() {
-        childManager.beginTransaction()
-                .replace(R.id.stations, StationsFragment.class, null)
-                .replace(R.id.logo, LogoFragment.class, null)
-                .replace(R.id.rooms, RoomFragment.class, null)
-                .commitNow();
     }
 
     private void trackDashboardEvent(String event) {
@@ -131,6 +122,7 @@ public class DashboardPageFragment extends Fragment {
         setupTimeDateDisplay(view);
 
         if (layout == null) {
+            loadStandardFragments();
             setupWelcomeTitle(view);
             setupStandardDashboardButtons(view);
             return;
@@ -138,16 +130,40 @@ public class DashboardPageFragment extends Fragment {
 
         switch (layout) {
             case SettingsConstants.SNOWY_HYDRO_LAYOUT:
+                loadSnowyHydroFragments();
                 setupSnowyTitle(view);
                 setupSnowHydroDashboardButtons(view);
                 break;
 
             case SettingsConstants.DEFAULT_LAYOUT:
             default:
+                loadStandardFragments();
                 setupWelcomeTitle(view);
                 setupStandardDashboardButtons(view);
                 break;
         }
+    }
+
+    /**
+     * Load in the standard initial fragments for the main view.
+     */
+    private void loadStandardFragments() {
+        childManager.beginTransaction()
+                .replace(R.id.stations, StationsFragment.class, null)
+                .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.rooms, RoomFragment.class, null)
+                .commitNow();
+    }
+
+    /**
+     * Load in the snowy hydro initial fragments for the main view.
+     */
+    private void loadSnowyHydroFragments() {
+        childManager.beginTransaction()
+                .replace(R.id.stations, SnowyHydroStationsFragment.class, null)
+                .replace(R.id.logo, LogoFragment.class, null)
+                .replace(R.id.rooms, RoomFragment.class, null)
+                .commitNow();
     }
 
     /**
@@ -210,7 +226,7 @@ public class DashboardPageFragment extends Fragment {
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
             if (fragment == null) return;
 
-            fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
+            fragment.loadFragment(LibraryPageFragment.class, "session", null);
             trackDashboardEvent(SegmentConstants.New_Session_Button);
         });
     }
@@ -232,7 +248,7 @@ public class DashboardPageFragment extends Fragment {
                     endAllSessionsConfirmation();
                     trackDashboardEvent(SegmentConstants.End_Session_On_All);
                 } else {
-                    ArrayList<Station> stationsToSelectFrom = StationsFragment.getInstance().getRoomStations();
+                    ArrayList<Station> stationsToSelectFrom = Helpers.getRoomStations();
                     if (stationsToSelectFrom == null) return;
 
                     stationsToSelectFrom = new ArrayList<>(stationsToSelectFrom);
@@ -260,18 +276,18 @@ public class DashboardPageFragment extends Fragment {
             ArrayList<Integer> active = new ArrayList<>();
 
             //Check what stations are still running an experience
-            ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
+            ArrayList<Station> stations = Helpers.getRoomStations();
             for(Station station: stations) {
                 if(station.applicationController.getExperienceName() == null) {
                     continue;
                 }
-                if(station.applicationController.getExperienceName().length() == 0 || station.applicationController.getExperienceName().equals("null")) {
+                if(station.applicationController.getExperienceName().isEmpty() || station.applicationController.getExperienceName().equals("null")) {
                     continue;
                 }
                 active.add(station.id);
             }
 
-            if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
+            if(!active.isEmpty() && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
                         restartOrShutdownAllStations(restartHeading, restartContent, false);
@@ -303,18 +319,18 @@ public class DashboardPageFragment extends Fragment {
             ArrayList<Integer> active = new ArrayList<>();
 
             //Check what stations are still running an experience
-            ArrayList<Station> stations = StationsFragment.getInstance().getRoomStations();
+            ArrayList<Station> stations = Helpers.getRoomStations();
             for(Station station: stations) {
                 if(station.applicationController.getExperienceName() == null) {
                     continue;
                 }
-                if(station.applicationController.getExperienceName().length() == 0 || station.applicationController.getExperienceName().equals("null")) {
+                if(station.applicationController.getExperienceName().isEmpty() || station.applicationController.getExperienceName().equals("null")) {
                     continue;
                 }
                 active.add(station.id);
             }
 
-            if(active.size() > 0 && SettingsFragment.checkAdditionalExitPrompts()) {
+            if(!active.isEmpty() && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
                         restartOrShutdownAllStations(shutdownHeading, shutdownContent, true);
@@ -501,7 +517,7 @@ public class DashboardPageFragment extends Fragment {
         if(SettingsFragment.checkAdditionalExitPrompts()) {
             BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                 if (confirmationResult) {
-                    int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+                    int[] selectedIds = Helpers.getRoomStations().stream().mapToInt(station -> station.id).toArray();
                     String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
                     NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
@@ -516,7 +532,7 @@ public class DashboardPageFragment extends Fragment {
                     "Confirm",
                     false);
         } else {
-            int[] selectedIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+            int[] selectedIds = Helpers.getRoomStations().stream().mapToInt(station -> station.id).toArray();
             String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
 
             NetworkService.sendMessage("Station," + stationIds, "CommandLine", "StopGame");
@@ -543,7 +559,7 @@ public class DashboardPageFragment extends Fragment {
             }
         };
 
-        int[] stationIds = StationsFragment.getInstance().getRoomStations().stream().mapToInt(station -> station.id).toArray();
+        int[] stationIds = Helpers.getRoomStations().stream().mapToInt(station -> station.id).toArray();
         if (heading.getText().toString().startsWith(shutdown ? "Shutdown" : "Restart")) {
             cancelledShutdown = false;
             DialogManager.buildShutdownOrRestartDialog(getContext(), shutdown ? "Shutdown" : "Restart", stationIds, shutdownCountDownCallback);

@@ -24,7 +24,7 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.segment.analytics.Properties;
@@ -67,16 +67,16 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
 
         GridView steamGridView = view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext(), requireActivity().getSupportFragmentManager(), (SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-        updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, true);
+        updateApplicationList(LibraryPageFragment.getStationId(), steamGridView, true);
 
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
-            if (LibrarySelectionFragment.getStationId() > 0) {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr).size()) {
-                    updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
+            if (LibraryPageFragment.getStationId() > 0) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(LibraryPageFragment.getStationId(), isVr).size()) {
+                    updateApplicationList(LibraryPageFragment.getStationId(), steamGridView, false);
                 }
             } else {
                 if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplicationsByType(isVr).size()) {
-                    updateApplicationList(LibrarySelectionFragment.getStationId(), steamGridView, false);
+                    updateApplicationList(LibraryPageFragment.getStationId(), steamGridView, false);
                 }
             }
         });
@@ -92,9 +92,9 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
             stationId = mViewModel.getSelectedStationId().getValue();
         }
 
-        LibrarySelectionFragment.setStationId(stationId);
-        if (LibrarySelectionFragment.getStationId() > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibrarySelectionFragment.getStationId(), isVr);
+        LibraryPageFragment.setStationId(stationId);
+        if (LibraryPageFragment.getStationId() > 0) {
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(LibraryPageFragment.getStationId(), isVr);
         } else {
             installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplicationsByType(isVr);
         }
@@ -132,7 +132,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         binding.setApplicationsLoaded(mViewModel.getAllApplicationsByType(isVr).size() > 0);
 
         //The list has been updated, perform the search again
-        performSearch(LibrarySelectionFragment.mViewModel.getCurrentSearch().getValue());
+        performSearch(LibraryPageFragment.mViewModel.getCurrentSearch().getValue());
         view.setAdapter(installedApplicationAdapter);
     }
 
@@ -149,11 +149,11 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
         boolean showPrompt = false;
         String message = "";
 
-        if (LibrarySelectionFragment.getStationId() > 0) {
-            Station station = mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        if (LibraryPageFragment.getStationId() > 0) {
+            Station station = mViewModel.getStationById(LibraryPageFragment.getStationId());
             if(station.applicationController.getExperienceId() != null && !station.applicationController.getExperienceId().isEmpty()) {
                 showPrompt = true;
-                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getExperienceName() + ", running on Station " + LibrarySelectionFragment.getStationId();
+                message = "Refreshing this experience list will stop the experience: " + station.applicationController.getExperienceName() + ", running on Station " + LibraryPageFragment.getStationId();
             }
         } else {
             ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
@@ -193,7 +193,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
                 false);
 
         Properties segmentProperties = new Properties();
-        segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+        segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
         segmentProperties.put("tab", "vr_experiences");
         Segment.trackEvent(SegmentConstants.Refresh_Library_Warning, segmentProperties);
     }
@@ -203,8 +203,8 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
      */
     private void refreshExperienceList() {
         String stationIds;
-        if(LibrarySelectionFragment.getStationId() > 0) {
-            stationIds = String.valueOf(LibrarySelectionFragment.getStationId());
+        if(LibraryPageFragment.getStationId() > 0) {
+            stationIds = String.valueOf(LibraryPageFragment.getStationId());
         } else {
             stationIds = String.join(", ", Arrays.stream(mViewModel.getAllStationIds()).mapToObj(String::valueOf).toArray(String[]::new));
         }
@@ -223,7 +223,7 @@ public class ApplicationLibraryFragment extends Fragment implements ILibraryInte
             NetworkService.sendMessage("Station," + stationIds, "Experience", "Refresh");
         }
         Properties segmentProperties = new Properties();
-        segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+        segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
         segmentProperties.put("tab", "vr_experiences");
         Segment.trackEvent(SegmentConstants.Refresh_Library, segmentProperties);
     }

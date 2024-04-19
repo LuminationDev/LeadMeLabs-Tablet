@@ -25,7 +25,7 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -61,7 +61,7 @@ public class ApplicationDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        Station station = StationsFragment.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        Station station = StationsFragment.mViewModel.getStationById(LibraryPageFragment.getStationId());
         binding.setSelectedStation(station);
 
         //Specifically set the selected application
@@ -106,12 +106,12 @@ public class ApplicationDetailsFragment extends Fragment {
     }
 
     public void confirmLaunchGame(Application selectedApplication) {
-        Station station = StationsFragment.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        Station station = StationsFragment.mViewModel.getStationById(LibraryPageFragment.getStationId());
         if (station == null) {
             return;
         }
 
-        String joinedStations = Interlinking.joinStations(station, LibrarySelectionFragment.getStationId(), selectedApplication.getName());
+        String joinedStations = Interlinking.joinStations(station, LibraryPageFragment.getStationId(), selectedApplication.getName());
         //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
         if (MainActivity.isNucJsonEnabled) {
             JSONObject message = new JSONObject();
@@ -129,7 +129,7 @@ public class ApplicationDetailsFragment extends Fragment {
 
         Properties segmentProperties = new Properties();
         segmentProperties.put("classification", "General");
-        segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+        segmentProperties.put("stationId", LibraryPageFragment.getStationId());
         segmentProperties.put("name", selectedApplication.getName());
         segmentProperties.put("id", selectedApplication.getId());
         segmentProperties.put("type", selectedApplication.getType());

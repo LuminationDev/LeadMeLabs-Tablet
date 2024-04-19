@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.library;
+package com.lumination.leadmelabs.ui.pages;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,13 +24,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.FragmentLibraryBinding;
+import com.lumination.leadmelabs.databinding.PageLibraryBinding;
 import com.lumination.leadmelabs.interfaces.ILibraryInterface;
 import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
+import com.lumination.leadmelabs.ui.library.LibrarySubjectFilterAdapter;
+import com.lumination.leadmelabs.ui.library.LibraryViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -46,7 +48,7 @@ import java.util.List;
 
 import io.sentry.Sentry;
 
-public class LibrarySelectionFragment extends Fragment {
+public class LibraryPageFragment extends Fragment {
     private static int currentStationId = 0;
     public static int getStationId() {
         return currentStationId;
@@ -57,7 +59,7 @@ public class LibrarySelectionFragment extends Fragment {
 
     public static LibraryViewModel mViewModel;
 
-    private FragmentLibraryBinding binding;
+    private PageLibraryBinding binding;
     public static FragmentManager childManager;
 
     private ILibraryInterface libraryInterface;
@@ -72,7 +74,7 @@ public class LibrarySelectionFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_library, container, false);
+        View view = inflater.inflate(R.layout.page_library, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
         return view;

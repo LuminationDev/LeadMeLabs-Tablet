@@ -27,7 +27,7 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -127,7 +127,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      * @return True if the application should be included, false otherwise.
      */
     private boolean shouldInclude(Application application) {
-        List<String> subjectFilters = LibrarySelectionFragment.mViewModel.getSubjectFilters().getValue();
+        List<String> subjectFilters = LibraryPageFragment.mViewModel.getSubjectFilters().getValue();
         if (subjectFilters != null && !subjectFilters.isEmpty()) {
             List<String> applicationTags = application.getInformation().getTags();
             return applicationTags.stream().anyMatch(subjectFilters::contains);
@@ -230,8 +230,8 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
     }
 
     private void completeSelectApplicationAction(Application currentApplication) {
-        if (LibrarySelectionFragment.getStationId() > 0) {
-            Station station = ApplicationAdapter.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        if (LibraryPageFragment.getStationId() > 0) {
+            Station station = ApplicationAdapter.mViewModel.getStationById(LibraryPageFragment.getStationId());
             if (station == null) {
                 return;
             }
@@ -261,7 +261,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
             mViewModel.setSelectedApplication(currentApplication);
 
             Properties segmentProperties = new Properties();
-            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
             segmentProperties.put("name", currentApplication.getName());
             segmentProperties.put("id", currentApplication.getId());
             segmentProperties.put("type", currentApplication.getType());
@@ -288,7 +288,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      * @param currentApplication The application to be loaded.
      */
     private void loadApplication(Station station, Application currentApplication) {
-        String joinedStations = Interlinking.joinStations(station, LibrarySelectionFragment.getStationId(), currentApplication.getName());
+        String joinedStations = Interlinking.joinStations(station, LibraryPageFragment.getStationId(), currentApplication.getName());
         //BACKWARDS COMPATIBILITY - JSON Messaging system with fallback
         if (MainActivity.isNucJsonEnabled) {
             JSONObject message = new JSONObject();
@@ -306,7 +306,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
 
         Properties segmentProperties = new Properties();
         segmentProperties.put("classification", "General");
-        segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+        segmentProperties.put("stationId", LibraryPageFragment.getStationId());
         segmentProperties.put("name", currentApplication.getName());
         segmentProperties.put("id", currentApplication.getId());
         segmentProperties.put("type", currentApplication.getType());

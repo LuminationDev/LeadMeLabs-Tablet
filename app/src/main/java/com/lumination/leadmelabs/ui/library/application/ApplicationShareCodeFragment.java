@@ -33,7 +33,7 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -73,7 +73,7 @@ public class ApplicationShareCodeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        Station station = StationsFragment.mViewModel.getStationById(LibrarySelectionFragment.getStationId());
+        Station station = StationsFragment.mViewModel.getStationById(LibraryPageFragment.getStationId());
         binding.setSelectedStation(station);
 
         //Specifically set the selected application
@@ -94,7 +94,7 @@ public class ApplicationShareCodeFragment extends Fragment {
             }
             Properties segmentProperties = new Properties();
             segmentProperties.put("classification", segmentClassification);
-            segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+            segmentProperties.put("stationId", LibraryPageFragment.getStationId());
             segmentProperties.put("name", selectedApplication.getName());
             segmentProperties.put("id", selectedApplication.getId());
             segmentProperties.put("type", selectedApplication.getType());
@@ -155,18 +155,18 @@ public class ApplicationShareCodeFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", message.toString());
+            NetworkService.sendMessage("Station," + LibraryPageFragment.getStationId(), "Experience", message.toString());
         }
         else {
             String additionalData = "Launch:" + selectedApplication.id;
             additionalData += ":Parameters:" + parameters;
 
-            NetworkService.sendMessage("Station," + LibrarySelectionFragment.getStationId(), "Experience", additionalData);
+            NetworkService.sendMessage("Station," + LibraryPageFragment.getStationId(), "Experience", additionalData);
         }
 
         Properties segmentProperties = new Properties();
         segmentProperties.put("classification", segmentClassification);
-        segmentProperties.put("stationId", LibrarySelectionFragment.getStationId());
+        segmentProperties.put("stationId", LibraryPageFragment.getStationId());
         segmentProperties.put("name", selectedApplication.getName());
         segmentProperties.put("id", selectedApplication.getId());
         segmentProperties.put("type", selectedApplication.getType());
@@ -176,7 +176,7 @@ public class ApplicationShareCodeFragment extends Fragment {
         if (fragment != null) {
             fragment.loadFragment(DashboardPageFragment.class, "dashboard", null);
         }
-        DialogManager.awaitStationApplicationLaunch(new int[] { LibrarySelectionFragment.getStationId() }, StationsFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
+        DialogManager.awaitStationApplicationLaunch(new int[] { LibraryPageFragment.getStationId() }, StationsFragment.mViewModel.getSelectedApplicationName(selectedApplication.id), false);
     }
 
     /**

@@ -50,12 +50,23 @@
             android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
             app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
 
+        <!--TODO not for current release-->
+        <!--Only visible for VrStation instances-->
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/idle_mode"-->
+<!--            style="@style/StationSingleButton"-->
+<!--            android:visibility="@{(selectedStation instanceof VrStation) ? View.VISIBLE : View.GONE}"-->
+<!--            android:drawableTop="@{selectedStation.statusHandler.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"-->
+<!--            android:text="@{selectedStation.statusHandler.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"-->
+<!--            app:stationIdleMode="@{selectedStation}"/>-->
+
+        <!--TODO only for current release-->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/idle_mode"
+            android:id="@+id/identify_button"
             style="@style/StationSingleButton"
-            android:backgroundTint="@{selectedStation.statusHandler.getIdleModeColour(context)}"
-            android:drawableTop="@{selectedStation.statusHandler.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"
-            android:text="@{selectedStation.statusHandler.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"
+            android:backgroundTint="@{selectedStation.statusHandler.stationOffOrChanging ? @color/grey_card : @color/blue_darkest}"
+            android:drawableTop="@{selectedStation.statusHandler.stationOffOrChanging ? @drawable/session_identify_off : @drawable/session_identify}"
+            android:text="@string/identify_station_lower"
             android:enabled="@{selectedStation.statusHandler.stationOnOrIdle}"/>
 
         <com.google.android.material.button.MaterialButton

@@ -36,7 +36,7 @@ import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.library.LibrarySelectionFragment;
+import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationShareCodeFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
@@ -214,7 +214,7 @@ public class StationSelectionPageFragment extends Fragment {
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
             if (fragment == null) return;
 
-            fragment.loadFragment(LibrarySelectionFragment.class, "session", null);
+            fragment.loadFragment(LibraryPageFragment.class, "session", null);
             trackStationSelectionEvent(SegmentConstants.Cancel_Select_Station);
         });
 
@@ -369,7 +369,7 @@ public class StationSelectionPageFragment extends Fragment {
             selectedIdsArray[i] = modifiedSelectedIds.get(i);
 
             Properties segmentProperties = new Properties();
-            segmentProperties.put("classification", LibrarySelectionFragment.segmentClassification);
+            segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
             segmentProperties.put("id", selectedIdsArray[i]);
             segmentProperties.put("name", selectedVideo.getName());
             segmentProperties.put("type", selectedVideo.getVideoType());

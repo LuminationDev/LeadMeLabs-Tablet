@@ -15,7 +15,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentModalBackdropsBinding;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.unique.snowHydro.StationSingleNestedFragment;
+import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.lumination.leadmelabs.unique.snowHydro.modal.ModalDialogFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 

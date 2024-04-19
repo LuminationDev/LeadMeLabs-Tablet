@@ -13,6 +13,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_maxWidth="250dp"
         android:background="@drawable/tag_outline_curved"
         android:paddingVertical="5dp"
         android:paddingEnd="5dp"
@@ -20,22 +21,31 @@
         app:alignItems="center"
         tools:ignore="RtlSymmetry">
 
-        <!--Tag Container-->
+        <!-- Container for LinearLayout and TextView -->
         <LinearLayout
-            android:id="@+id/tagsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-
-        <TextView
-            android:id="@+id/subTags"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="@color/black"
-            android:textSize="11sp"/>
+            android:orientation="horizontal">
+
+            <!--Tag Container-->
+            <LinearLayout
+                android:id="@+id/tagsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/subTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/black"
+                android:textSize="11sp"/>
+
+        </LinearLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
 

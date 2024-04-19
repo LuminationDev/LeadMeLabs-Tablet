@@ -12,6 +12,7 @@ import com.lumination.leadmelabs.models.applications.Application;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Utility class containing methods for handling tags in Android applications.
@@ -70,28 +71,40 @@ public class TagUtils {
             tags.add(TagConstants.DEFAULT);
         }
 
-        for (String tag : tags) {
-            // Inflate the tag layout
-            View tagLayout = LayoutInflater.from(context).inflate(R.layout.card_tag, tagsContainer, false);
+        // If there are more than 3 tags, just show the first then (+X more)
+        if (tags.size() > 2) {
+            createTag(context, tagsContainer, tags.get(0));
 
-            // Get the TextView from the inflated layout
-            TextView tagTextView = tagLayout.findViewById(R.id.tagText);
-
-            // Set the tag text
-            tagTextView.setText(tag);
-
-            // Set the background resource for the tag
-            Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(tag);
-            if (backgroundResource != null) {
-                tagLayout.setBackgroundResource(backgroundResource);
-            } else {
-                // Set a default background if no specific background is available
-                tagLayout.setBackgroundResource(R.drawable.tag_default_curved);
+            String extraTags = String.format(Locale.ENGLISH, "+ %d more", tags.size() - 1);
+            createTag(context, tagsContainer, extraTags);
+        } else {
+            for (String tag : tags) {
+                createTag(context, tagsContainer, tag);
             }
-
-            // Add the tag layout to the tags container
-            tagsContainer.addView(tagLayout);
         }
+    }
+
+    private static void createTag(Context context, LinearLayout tagsContainer, String tag) {
+        // Inflate the tag layout
+        View tagLayout = LayoutInflater.from(context).inflate(R.layout.card_tag, tagsContainer, false);
+
+        // Get the TextView from the inflated layout
+        TextView tagTextView = tagLayout.findViewById(R.id.tagText);
+
+        // Set the tag text
+        tagTextView.setText(tag);
+
+        // Set the background resource for the tag
+        Integer backgroundResource = DEFAULT_TAG_DRAWABLE_MAP.get(tag);
+        if (backgroundResource != null) {
+            tagLayout.setBackgroundResource(backgroundResource);
+        } else {
+            // Set a default background if no specific background is available
+            tagLayout.setBackgroundResource(R.drawable.tag_default_curved);
+        }
+
+        // Add the tag layout to the tags container
+        tagsContainer.addView(tagLayout);
     }
 
     /**
