@@ -392,6 +392,40 @@ public class DialogManager {
 
     /**
      * Create a basic dialog box with a custom title and content based on the strings that are
+     * passed in. The dialog is tracked against the openDialogs so it can be closed for other parts
+     * of the application.
+     * @param type A string representing what the dialog relates to.
+     * @param titleText A string representing what the title shown to the user will be.
+     * @param contentText A string representing what content is described within the dialog box.
+     */
+    public static void createBasicTrackedDialog(String type, String titleText, String contentText) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_basic_vern, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        trackOpenDialog(type, titleText, basicDialog);
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(titleText);
+
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            basicDialog.dismiss();
+            closeOpenDialog(type, titleText);
+            trackDialogDismissed(titleText);
+        });
+
+        basicDialog.show();
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 680);
+        }
+        trackDialogShown(titleText);
+    }
+
+    /**
+     * Create a basic dialog box with a custom title and content based on the strings that are
      * passed in.
      * @param titleText A string representing what the title shown to the user will be.
      * @param contentText A string representing what content is described within the dialog box.

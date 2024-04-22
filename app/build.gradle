@@ -9,13 +9,13 @@ def keyStoreProperties = new Properties()
 keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.lumination.leadmelabs"
         minSdk 28
-        targetSdk 33
-        versionCode 43
+        targetSdk 34
+        versionCode 42
         versionName "1.30"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -86,7 +86,7 @@ dependencies {
     implementation 'com.google.android.play:core:1.10.3'
 
     //For firebase
-    implementation platform('com.google.firebase:firebase-bom:32.2.3')
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-firestore'
@@ -95,7 +95,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
@@ -117,11 +117,11 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.7.3'
     testImplementation 'org.mockito:mockito-core:3.0.0'
-    testImplementation 'org.apache.httpcomponents:httpcore:4.4.13'
-    testImplementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    testImplementation 'org.apache.httpcomponents:httpcore:4.4.16'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
     testImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    debugImplementation 'androidx.fragment:fragment-testing:1.5.6'
+    debugImplementation 'androidx.fragment:fragment-testing:1.6.2'
 }
