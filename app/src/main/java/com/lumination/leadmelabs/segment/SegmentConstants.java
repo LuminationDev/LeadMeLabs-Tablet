@@ -87,7 +87,12 @@ public class SegmentConstants {
     public static String Dismiss_Dialog = "Dismiss Dialog";
     public static String Room_Selected = "Room Selected";
     public static String Appliance_Triggered = "Appliance Triggered";
+
+    //Segment Filter
     public static String Filter_Removed = "Filter";
     public static String Filter_Added = "Filter Added";
     public static String Filters_Reset = "Filter Reset";
+
+    //Segment Network
+    public static String Network_Outage = "Network Outage";
 }
