@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,12 +14,15 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
+import com.segment.analytics.Properties;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,6 +52,17 @@ public class ControlPageFragment extends Fragment {
         if (savedInstanceState == null) {
             loadScenes();
         }
+
+        view.findViewById(R.id.refresh_appliances_btn).setOnClickListener(v -> {
+            if(NetworkService.getNUCAddress() != null) {
+                NetworkService.sendMessage("NUC", "Appliances", "RefreshList");
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", "Appliance");
+                segmentProperties.put("name", SubMenuFragment.mViewModel.getSelectedPage().getValue());
+                Segment.trackEvent(SegmentConstants.Appliances_Refreshed, segmentProperties);
+                Toast.makeText(getContext(), "Appliances refreshing", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
