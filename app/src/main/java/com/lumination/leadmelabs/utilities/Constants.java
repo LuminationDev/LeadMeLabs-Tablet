@@ -80,6 +80,6 @@ public class Constants {
 
     //Headset types
     public static String  HEADSET_TYPE_VIVE_PRO_1 = "VivePro1";
-    public static String  HEADSET_TYPE_VIVE_PRO_2 = "VivePro1";
+    public static String  HEADSET_TYPE_VIVE_PRO_2 = "VivePro2";
     public static String  HEADSET_TYPE_VIVE_BUSINESS_STREAMING = "ViveBusinessStreaming";
 }
