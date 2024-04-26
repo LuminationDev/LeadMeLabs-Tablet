@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.utilities.Constants"/>
         <variable
             name="selectedStation"
             type="com.lumination.leadmelabs.models.stations.VrStation" />
@@ -17,6 +19,7 @@
         android:paddingVertical="10dp"
         android:paddingHorizontal="20dp"
         app:alignItems="center"
+        app:justifyContent="space_between"
         app:layout_flexGrow="1"
         app:flexDirection="row">
 
@@ -99,6 +102,7 @@
 
         <!--BASE STATIONS-->
         <com.google.android.flexbox.FlexboxLayout
+            android:visibility="@{selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_BUSINESS_STREAMING) || selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_FOCUS_3) ? View.GONE : View.VISIBLE, default=invisible}"
             android:id="@+id/base_station_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

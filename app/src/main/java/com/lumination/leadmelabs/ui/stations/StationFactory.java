@@ -120,8 +120,9 @@ public class StationFactory {
                 stationJson.getString("room"),
                 stationJson.getString("macAddress"),
                 stationJson.optBoolean("isHiddenStation", false),
-                stationJson.getString("ledRingId"));
-
+                stationJson.getString("ledRingId"),
+                stationJson.optString("headsetType", ""));
+        
         setNestedStations(station, stationJson);
         setExperienceDetails(station, stationJson);
         setAudioDetails(station, stationJson);

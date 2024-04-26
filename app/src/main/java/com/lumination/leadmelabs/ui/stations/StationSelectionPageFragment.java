@@ -328,7 +328,7 @@ public class StationSelectionPageFragment extends Fragment {
             for (int id: selectedIds) {
                 Station station = mViewModel.getStationById(id);
                 //Check if the video player is active
-                if (!station.applicationController.getExperienceName().equals(Constants.VideoPlayerName)) {
+                if (!station.applicationController.getExperienceName().equals(Constants.VIDEO_PLAYER_NAME)) {
                     modifiedSelectedIds.add(station.getId());
                 }
             }
@@ -343,7 +343,7 @@ public class StationSelectionPageFragment extends Fragment {
             }
 
             //Start a check and once all the Stations have the video player opened send the source
-            startPeriodicChecks(modifiedSelectedIds, Constants.VideoPlayerName, () -> NetworkService.sendMessage("Station," +stationIds,"Experience", message.toString()));
+            startPeriodicChecks(modifiedSelectedIds, Constants.VIDEO_PLAYER_NAME, () -> NetworkService.sendMessage("Station," +stationIds,"Experience", message.toString()));
         } else {
             for (int id: selectedIds) {
                 Station station = mViewModel.getStationById(id);
@@ -376,7 +376,7 @@ public class StationSelectionPageFragment extends Fragment {
             segmentProperties.put("length", selectedVideo.getLength());
             Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
         }
-        DialogManager.awaitStationApplicationLaunch(selectedIdsArray, mViewModel.getSelectedApplicationByName(Constants.VideoPlayerName), false);
+        DialogManager.awaitStationApplicationLaunch(selectedIdsArray, mViewModel.getSelectedApplicationByName(Constants.VIDEO_PLAYER_NAME), false);
     }
 
     /**

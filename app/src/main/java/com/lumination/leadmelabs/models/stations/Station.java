@@ -296,7 +296,7 @@ public class Station implements Cloneable {
         // Add an on click listener to the image if the video player is active
         Application current = applicationController.findCurrentApplication();
         if (!(current instanceof EmbeddedApplication)) { // Video player is not open
-            openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getName()));
+            openApplicationAndSendMessage(Constants.VIDEO_PLAYER_NAME, () -> videoController.loadTrigger(currentVideo.getName()));
             return false;
         }
         else {
@@ -305,7 +305,7 @@ public class Station implements Cloneable {
                 videoController.loadTrigger(currentVideo.getName());
                 return true;
             } else { //Video player is not open
-                openApplicationAndSendMessage(Constants.VideoPlayerName, () -> videoController.loadTrigger(currentVideo.getName()));
+                openApplicationAndSendMessage(Constants.VIDEO_PLAYER_NAME, () -> videoController.loadTrigger(currentVideo.getName()));
                 return false;
             }
         }

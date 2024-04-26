@@ -622,6 +622,13 @@ public class UIUpdateManager {
                     station.setState(value);
                     break;
 
+                case "headsetType":
+                    if (station instanceof VrStation) {
+                        VrStation vrStation = (VrStation) station; //safe cast
+                        vrStation.setHeadsetType(value);
+                    }
+                    break;
+
                 case "name":
                     station.setName(value);
                     break;
