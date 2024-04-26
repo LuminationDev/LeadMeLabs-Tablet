@@ -73,8 +73,13 @@ public class Constants {
 
 
     //Embedded Application Constants
-    public static String VideoPlayerName = "Video Player";
-    public static String VideoTypeNormal = "Normal";
-    public static String VideoTypeVr = "Vr";
-    public static String VideoTypeBackdrop = "Backdrop";
+    public static String VIDEO_PLAYER_NAME = "Video Player";
+    public static String VIDEO_TYPE_NORMAL = "Normal";
+    public static String VIDEO_TYPE_VR = "Vr";
+    public static String VIDEO_TYPE_BACKDROP = "Backdrop";
+
+    //Headset types
+    public static String  HEADSET_TYPE_VIVE_PRO_1 = "VivePro1";
+    public static String  HEADSET_TYPE_VIVE_PRO_2 = "VivePro1";
+    public static String  HEADSET_TYPE_VIVE_BUSINESS_STREAMING = "ViveBusinessStreaming";
 }

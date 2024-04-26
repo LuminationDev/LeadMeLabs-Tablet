@@ -50,7 +50,7 @@ public class BackdropFragment extends Fragment {
         binding.setSelectedNestedStation(nestedStation);
         GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
         localBackdropAdapter = new BackdropAdapter(getContext(), false);
-        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
         backdropGridView.setAdapter(localBackdropAdapter);
 
 
@@ -67,7 +67,7 @@ public class BackdropFragment extends Fragment {
                 if (nestedStation.getId() == station.getId()) {
                     binding.setSelectedNestedStation(nestedStation);
                     if (localBackdropAdapter != null) {
-                        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VideoTypeBackdrop);
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         localBackdropAdapter.notifyDataSetChanged();
                     }
                 }

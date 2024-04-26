@@ -249,7 +249,7 @@ public class StationSingleFragment extends Fragment {
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().isEmpty()) {
                 return;
             }
 
@@ -287,7 +287,7 @@ public class StationSingleFragment extends Fragment {
         Button endGame = view.findViewById(R.id.station_end_session);
         endGame.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
-            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().equals("")) {
+            if(selectedStation.applicationController.getExperienceName() == null || selectedStation.applicationController.getExperienceName().isEmpty()) {
                 return;
             }
 
@@ -377,7 +377,7 @@ public class StationSingleFragment extends Fragment {
             } else {
                 if(SettingsFragment.checkAdditionalExitPrompts() && station.applicationController.getExperienceName() != null) {
                     //No game is present, shutdown is okay to continue
-                    if(station.applicationController.getExperienceName().length() == 0) {
+                    if(station.applicationController.getExperienceName().isEmpty()) {
                         shutdownStation(shutdownButton, id);
                         return;
                     }

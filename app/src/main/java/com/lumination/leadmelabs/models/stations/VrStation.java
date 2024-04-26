@@ -24,6 +24,7 @@ public class VrStation extends Station {
     public String ledRingId;
 
     //VR Devices
+    public String headsetType;
     public CountDownTimer flashTimer;
     public Boolean animationFlag = false; //Determines if the VR UI is flashing
     public String thirdPartyHeadsetTracking; //Currently on Vive but may change in the future
@@ -39,12 +40,21 @@ public class VrStation extends Station {
     private Timer timer;
     int dotsCount = 0;
 
-    public VrStation(String name, Object applications, int id, String status, String state, String room, String macAddress, boolean isHiddenStation, String ledRingId) {
+    public VrStation(String name, Object applications, int id, String status, String state, String room, String macAddress, boolean isHiddenStation, String ledRingId, String headsetType) {
         super(name, applications, id, status, state, room, macAddress, isHiddenStation);
 
         this.ledRingId = ledRingId;
+        this.headsetType = headsetType;
 
         initiateVRDevices();
+    }
+
+    /**
+     * Set the type of headset the Station is using.
+     * @param headsetType A string describing the headset.
+     */
+    public void setHeadsetType(String headsetType) {
+        this.headsetType = headsetType;
     }
 
     /**
