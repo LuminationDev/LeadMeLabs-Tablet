@@ -102,7 +102,7 @@
 
         <!--BASE STATIONS-->
         <com.google.android.flexbox.FlexboxLayout
-            android:visibility="@{selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_BUSINESS_STREAMING) ? View.GONE : View.VISIBLE, default=invisible}"
+            android:visibility="@{selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_BUSINESS_STREAMING) || selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_FOCUS_3) ? View.GONE : View.VISIBLE, default=invisible}"
             android:id="@+id/base_station_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
