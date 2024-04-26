@@ -71,6 +71,8 @@ public class StationSingleFragment extends Fragment {
     public static FragmentManager childManager;
 
     private LocalAudioDeviceAdapter audioDeviceAdapter;
+    //Control how often idle mode can be clicked
+    private boolean recentlyIdled = false;
 
     public static final String segmentClassification = "Station Single";
 
@@ -206,7 +208,7 @@ public class StationSingleFragment extends Fragment {
             fragment.loadFragment(HelpPageFragment.class, "help", null);
         });
 
-//        Run the identify flow
+        //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);
         identify.setOnClickListener(v -> {
             List<Station> stations = Collections.singletonList(binding.getSelectedStation());
@@ -324,6 +326,26 @@ public class StationSingleFragment extends Fragment {
         Button idleMode = view.findViewById(R.id.idle_mode);
         idleMode.setOnClickListener(v -> {
             Station selectedStation = binding.getSelectedStation();
+
+            //Disable the button for 5 seconds if going from normal to idle
+            if (recentlyIdled) {
+                DialogManager.createBasicDialog("Warning", "Please wait 5 seconds before attempting to exit Idle mode after initialising it.");
+                return;
+            }
+
+            if (selectedStation.statusHandler.isStationOn()) {
+                recentlyIdled = true;
+                new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                recentlyIdled = false;
+                            }
+                        },
+                        5000
+                );
+            }
+
             String value = selectedStation.statusHandler.isStationIdle() ? "normal" : "idle";
 
             NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:idleMode:" + value);
