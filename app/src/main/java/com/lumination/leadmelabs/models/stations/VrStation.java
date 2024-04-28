@@ -546,18 +546,19 @@ public class VrStation extends Station {
         //Check if it should be enabled
         VrStation vrStation = (VrStation) selectedStation;
         boolean isOnOrIdle = vrStation.statusHandler.isStationOnOrIdle();
-        boolean isProcessing = vrStation.openVRHeadsetTracking.equals("Lost") || vrStation.openVRHeadsetTracking.equals("Connected");
+        boolean isAwaitingOrReady = vrStation.stateHandler.isAwaitingHeadsetOrReady();
+        boolean isProcessing = vrStation.thirdPartyHeadsetTracking.equals("Lost") || vrStation.thirdPartyHeadsetTracking.equals("Connected");
 
         //Get the correct background colour - override if it is not enabled
         int colour;
-        if (isOnOrIdle && isProcessing) {
+        if (isOnOrIdle && isAwaitingOrReady && isProcessing) {
             colour = vrStation.statusHandler.getIdleModeColour(materialButton.getContext());
         } else {
             colour = ContextCompat.getColor(materialButton.getContext(), R.color.grey_card);
         }
 
         materialButton.setBackgroundColor(colour);
-        materialButton.setEnabled(isOnOrIdle && isProcessing);
+        materialButton.setEnabled(isOnOrIdle && isAwaitingOrReady && isProcessing);
     }
 
     /**
