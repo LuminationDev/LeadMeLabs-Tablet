@@ -316,7 +316,7 @@ public class InformationSteam {
 
         // Solar System VR
         Information solarSystemVr = new Information(
-                "",
+                "Embark on an immersive virtual reality adventure through the cosmos! As the pioneer space tourist, you'll have the chance to explore the planets and moons of our Solar System like never before. Experience a voyage to the moon, traverse the red landscapes of Mars, and even visit Enceladus, Saturn's icy moon.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ASTRONOMY, TagConstants.PLANETS)),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
