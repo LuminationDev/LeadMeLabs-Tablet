@@ -89,7 +89,7 @@ public class SegmentConstants {
     public static String Appliance_Triggered = "Appliance Triggered";
 
     //Segment Filter
-    public static String Filter_Removed = "Filter";
+    public static String Filter_Removed = "Filter Removed";
     public static String Filter_Added = "Filter Added";
     public static String Filters_Reset = "Filter Reset";
 
