@@ -208,12 +208,13 @@ public class StationSingleFragment extends Fragment {
             fragment.loadFragment(HelpPageFragment.class, "help", null);
         });
 
+        //TODO not for current release
         //Run the identify flow
-        FlexboxLayout identify = view.findViewById(R.id.identify_button);
-        identify.setOnClickListener(v -> {
-            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
-            Identifier.identifyStations(stations);
-        });
+//        FlexboxLayout identify = view.findViewById(R.id.identify_button);
+//        identify.setOnClickListener(v -> {
+//            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+//            Identifier.identifyStations(stations);
+//        });
 
         Button button = view.findViewById(R.id.enter_url);
         button.setOnClickListener(v ->
@@ -323,32 +324,40 @@ public class StationSingleFragment extends Fragment {
             trackStationEvent(SegmentConstants.Station_Status_Touch);
         });
 
-        Button idleMode = view.findViewById(R.id.idle_mode);
-        idleMode.setOnClickListener(v -> {
-            Station selectedStation = binding.getSelectedStation();
+        //TODO not for current release
+//        Button idleMode = view.findViewById(R.id.idle_mode);
+//        idleMode.setOnClickListener(v -> {
+//            Station selectedStation = binding.getSelectedStation();
+//
+//            //Disable the button for 5 seconds if going from normal to idle
+//            if (recentlyIdled) {
+//                DialogManager.createBasicDialog("Warning", "Please wait 5 seconds before attempting to exit Idle mode after initialising it.");
+//                return;
+//            }
+//
+//            if (selectedStation.statusHandler.isStationOn()) {
+//                recentlyIdled = true;
+//                new java.util.Timer().schedule(
+//                        new java.util.TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                recentlyIdled = false;
+//                            }
+//                        },
+//                        5000
+//                );
+//            }
+//
+//            String value = selectedStation.statusHandler.isStationIdle() ? "normal" : "idle";
+//
+//            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:idleMode:" + value);
+//        });
 
-            //Disable the button for 5 seconds if going from normal to idle
-            if (recentlyIdled) {
-                DialogManager.createBasicDialog("Warning", "Please wait 5 seconds before attempting to exit Idle mode after initialising it.");
-                return;
-            }
-
-            if (selectedStation.statusHandler.isStationOn()) {
-                recentlyIdled = true;
-                new java.util.Timer().schedule(
-                        new java.util.TimerTask() {
-                            @Override
-                            public void run() {
-                                recentlyIdled = false;
-                            }
-                        },
-                        5000
-                );
-            }
-
-            String value = selectedStation.statusHandler.isStationIdle() ? "normal" : "idle";
-
-            NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:idleMode:" + value);
+        //TODO only for current release
+        Button identify = view.findViewById(R.id.identify_button);
+        identify.setOnClickListener(v -> {
+            List<Station> stations = Collections.singletonList(binding.getSelectedStation());
+            Identifier.identifyStations(stations);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
