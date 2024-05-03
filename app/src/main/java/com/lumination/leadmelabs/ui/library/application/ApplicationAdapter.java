@@ -207,9 +207,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         // confirm if it is one of the dodgy apps
         ArrayList<String> gamesWithAdditionalStepsRequired = new ArrayList<>();
 
-        gamesWithAdditionalStepsRequired.add("513490"); // 1943 Berlin Blitz
-        gamesWithAdditionalStepsRequired.add("408340"); // Gravity Lab
-        gamesWithAdditionalStepsRequired.add("1053760"); // Arkio
+        gamesWithAdditionalStepsRequired.add("1165850"); // Il Divino - this requires in app steps
 
         if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
             BooleanCallbackInterface booleanCallbackInterface = result -> {
