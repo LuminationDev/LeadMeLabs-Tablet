@@ -39,6 +39,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         this.launchSingleOnTouch = launchSingleOnTouch;
         this.mViewModel = viewModel;
         this.fragmentManager = fragmentManager;
+        this.setHasStableIds(true);
     }
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
