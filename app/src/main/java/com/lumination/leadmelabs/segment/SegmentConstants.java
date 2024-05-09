@@ -26,7 +26,7 @@ public class SegmentConstants {
     public static String Video_Playback_Control = "Video Playback Control";
     public static String Station_Volume_Control = "Station Volume Control";
     public static String Station_Mute = "Station Mute";
-    public static String Open_Configure_SteamCMD = "Open_Configure SteamCMD";
+    public static String Open_Configure_SteamCMD = "Open Configure SteamCMD";
     public static String Volume_Source_Select = "Volume Source Select";
     public static String Current_Session_Touch = "Current Session Touch";
     public static String Station_Status_Touch = "Station Status Touch";
@@ -34,16 +34,16 @@ public class SegmentConstants {
     public static String Switch_Library_Tab = "Switch Library Tab";
 
     //Segment Experience Events
-    public static String Event_Experience_Launch = "Launch";
+    public static String Event_Experience_Launch = "Experience Launch";
     public static String Select_Experience = "Select Experience";
     public static String Launch_Video = "Launch Video";
     public static String Select_Video = "Select Video";
     public static String Select_Station = "Select Station";
     public static String Select_All_Stations = "Select All Stations";
     public static String Event_Experience_Restart = "Restart Session";
-    public static String Event_Experience_Stop = "Stop";
+    public static String Event_Experience_Stop = "End Session";
     public static String Event_Experience_Failed = "Launch Failed";
-    public static String Refresh_Library = "Refresh_Library";
+    public static String Refresh_Library = "Refresh Library";
     public static String Refresh_Library_Warning = "Refresh Library Warning";
     public static String Cancel_Select_Station = "Cancel Select Station";
     public static String Cancel_Share_Code = "Cancel Share Code";
@@ -51,7 +51,6 @@ public class SegmentConstants {
     //Segment Help Events
     public static String Event_Help_Ticket_Lodged = "Ticket Lodged";
     public static String Event_Help_Page_Accessed = "Help Page";
-    public static String Event_Help_Troubleshooting = "Troubleshooting Accessed";
     public static String Help_Question_Opened = "Help Question Opened";
     public static String Help_Guide_Opened = "Help Guide Opened";
     public static String Submit_Ticket_Opened = "Submit Ticket Opened";

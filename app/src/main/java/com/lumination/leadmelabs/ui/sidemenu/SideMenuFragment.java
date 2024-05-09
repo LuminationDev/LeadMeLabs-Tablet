@@ -172,7 +172,6 @@ public class SideMenuFragment extends Fragment {
                 .replace(R.id.main, fragmentClass, args)
                 .addToBackStack("menu:" + type)
                 .commit();
-        Segment.trackScreen("menu:" + type);
 
         requireActivity().getSupportFragmentManager().executePendingTransactions();
 
