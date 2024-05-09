@@ -239,9 +239,9 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                 mViewModel.selectSelectedApplication(currentApplication.id);
                 mViewModel.setSelectedApplication(currentApplication);
                 loadSingleShareCodeFragment();
+            } else {
+                loadApplication(station, currentApplication);
             }
-
-            loadApplication(station, currentApplication);
 
             //TODO - Disabled until 'More Info' UI is completed
 //            //Check if application is of a video type and continue as normal

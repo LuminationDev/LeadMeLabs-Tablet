@@ -41,7 +41,7 @@
                     android:textColor="#1849A9"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:text="Enter your 6-digit CoSpaces share code here:"/>
+                    android:text="Enter your 6-digit share code here:"/>
 
             </LinearLayout>
 
