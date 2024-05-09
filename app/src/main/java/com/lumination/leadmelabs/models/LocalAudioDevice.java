@@ -42,7 +42,18 @@ public class LocalAudioDevice {
     public static final String[] headsetAudioDeviceNames = new String[] {
             "Speakers (VIVE Pro Multimedia Audio)", // vive pro 2
             "Speakers (VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (1- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (2- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (3- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (4- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (5- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (6- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (7- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (8- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (9- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
+            "Speakers (10- VIVE Pro Mutimedia Audio)", // vive pro 2 typo
             "Speakers (HTC-VIVE)", // vive pro 1
+            "Speakers (VIVE Virtual Audio Device)", // xr elite
             "Headphones (Galaxy Buds2 (AE10) Stereo)" // leaving this here for debugging as I doubt someone is going to put their earbuds onto a station
     };
     public static final String[] projectorAudioDeviceNames = new String[] {
