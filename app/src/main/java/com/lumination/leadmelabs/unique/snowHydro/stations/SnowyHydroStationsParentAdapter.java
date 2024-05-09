@@ -31,6 +31,7 @@ public class SnowyHydroStationsParentAdapter extends RecyclerView.Adapter<SnowyH
     public SnowyHydroStationsParentAdapter(FragmentManager fragmentManager, ArrayMap<String, ArrayList<Station>> parentModelArrayList) {
         this.fragmentManager = fragmentManager;
         this.parentModelArrayList = sortArrayMap(parentModelArrayList);
+        this.setHasStableIds(true);
     }
 
     public void setParentModelArrayList(ArrayMap<String, ArrayList<Station>> parentModelArrayList) {

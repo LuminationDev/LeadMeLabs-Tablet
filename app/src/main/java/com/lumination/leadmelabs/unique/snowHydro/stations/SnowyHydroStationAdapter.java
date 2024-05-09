@@ -30,6 +30,7 @@ public class SnowyHydroStationAdapter extends RecyclerView.Adapter<SnowyHydroSta
 
     public SnowyHydroStationAdapter(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
+        this.setHasStableIds(true);
     }
 
     public void setStationList(ArrayList<Station> stationList) {
