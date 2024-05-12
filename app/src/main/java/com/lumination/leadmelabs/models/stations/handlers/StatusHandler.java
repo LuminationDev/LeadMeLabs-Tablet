@@ -30,7 +30,7 @@ public class StatusHandler {
     //endregion
 
     private CountDownTimer shutdownTimer;
-    private String status;
+    private String status = OFF;
 
     public String getStatus() {
         return this.status;

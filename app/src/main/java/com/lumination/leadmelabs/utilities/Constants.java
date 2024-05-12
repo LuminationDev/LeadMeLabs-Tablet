@@ -83,4 +83,11 @@ public class Constants {
     public static String  HEADSET_TYPE_VIVE_PRO_2 = "VivePro2";
     public static String  HEADSET_TYPE_VIVE_FOCUS_3 = "ViveFocus3";
     public static String  HEADSET_TYPE_VIVE_BUSINESS_STREAMING = "ViveBusinessStreaming";
+
+    //Dashboard Modes
+    public final static String VR_MODE = "vr_mode";
+    public final static String PRESENTATION_MODE = "presentation_mode";
+    public final static String RESTART_MODE = "restart_mode";
+    public final static String SHUTDOWN_MODE = "shutdown_mode";
+    public final static String CLASSROOM_MODE = "classroom_mode";
 }
