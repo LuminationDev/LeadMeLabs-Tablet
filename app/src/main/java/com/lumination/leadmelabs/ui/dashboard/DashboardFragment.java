@@ -182,10 +182,15 @@ public class DashboardFragment extends Fragment {
 
     /**
      * Show a toast to the user if the mode is currently changing and they attempt to select
-     * another mode.
+     * another mode. Lodge a segment event when this happens.
      */
-    private void changingModePrompt() {
+    private void changingModePrompt(String scene) {
         Toast.makeText(getContext(), "A mode is currently being set, please wait...", Toast.LENGTH_LONG).show();
+
+        Properties segmentProperties = new Properties();
+        segmentProperties.put("classification", segmentClassification);
+        segmentProperties.put("scene", scene);
+        Segment.trackEvent(SegmentConstants.Event_Disabled_Scene_Selected, segmentProperties);
     }
 
     //region Common Dashboard Buttons
@@ -193,7 +198,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
         vrMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("VR Mode");
                 return;
             }
 
@@ -209,7 +214,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("New Session");
                 return;
             }
 
@@ -226,7 +231,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout presentationMode = view.findViewById(R.id.presentation_mode_button);
         presentationMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("Presentation Mode");
                 return;
             }
 
@@ -241,7 +246,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("End Session");
                 return;
             }
 
@@ -274,7 +279,7 @@ public class DashboardFragment extends Fragment {
         TextView restartContent = view.findViewById(R.id.restart_content);
         restart.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("Restart");
                 return;
             }
 
@@ -310,7 +315,7 @@ public class DashboardFragment extends Fragment {
         TextView shutdownContent = view.findViewById(R.id.shutdown_content);
         shutdown.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("Shutdown");
                 return;
             }
 
@@ -362,7 +367,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
         classroomMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt();
+                changingModePrompt("Classroom Mode");
                 return;
             }
 

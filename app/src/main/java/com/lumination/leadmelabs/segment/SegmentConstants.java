@@ -70,6 +70,9 @@ public class SegmentConstants {
     public static String Event_Tablet_Low_Battery = "Low Battery";
     public static String Event_Tablet_Flat_Battery = "Flat Battery";
 
+    //Segment Scene Events
+    public static String Event_Disabled_Scene_Selected = "Disabled Scene Selected";
+
     //Segment Crash Events
 
     //Segment Settings Page
@@ -94,6 +97,5 @@ public class SegmentConstants {
 
     //Segment Network
     public static String Network_Outage = "Network Outage";
-
     public static String Appliances_Refreshed = "Appliances Refreshed";
 }
