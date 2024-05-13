@@ -198,7 +198,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
         vrMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("VR Mode");
+                changingModePrompt(SegmentConstants.Event_Lab_VR_Mode);
                 return;
             }
 
@@ -214,7 +214,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout newSession = view.findViewById(R.id.new_session_button);
         newSession.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("New Session");
+                changingModePrompt(SegmentConstants.New_Session_Button);
                 return;
             }
 
@@ -231,7 +231,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout presentationMode = view.findViewById(R.id.presentation_mode_button);
         presentationMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("Presentation Mode");
+                changingModePrompt(SegmentConstants.Event_Lab_Presentation_Mode);
                 return;
             }
 
@@ -246,7 +246,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
         endSession.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("End Session");
+                changingModePrompt(SegmentConstants.End_Session_Modal);
                 return;
             }
 
@@ -269,7 +269,7 @@ public class DashboardFragment extends Fragment {
                     "End on select",
                     "End on all",
                     true);
-            trackDashboardEvent(SegmentConstants.New_Session_Button);
+            trackDashboardEvent(SegmentConstants.End_Session_Modal);
         });
     }
 
@@ -279,7 +279,7 @@ public class DashboardFragment extends Fragment {
         TextView restartContent = view.findViewById(R.id.restart_content);
         restart.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("Restart");
+                changingModePrompt(SegmentConstants.Event_Lab_Restart);
                 return;
             }
 
@@ -315,7 +315,7 @@ public class DashboardFragment extends Fragment {
         TextView shutdownContent = view.findViewById(R.id.shutdown_content);
         shutdown.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("Shutdown");
+                changingModePrompt(SegmentConstants.Event_Lab_Shutdown);
                 return;
             }
 
@@ -326,7 +326,7 @@ public class DashboardFragment extends Fragment {
                     if (confirmationResult) {
                         restartOrShutdownAllStations(shutdownHeading, shutdownContent, true);
 
-                        trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
+                        trackDashboardEvent(SegmentConstants.Event_Lab_Shutdown);
                     }
                 };
 
@@ -340,7 +340,7 @@ public class DashboardFragment extends Fragment {
             } else {
                 restartOrShutdownAllStations(shutdownHeading, shutdownContent, true);
 
-                trackDashboardEvent(SegmentConstants.Event_Lab_Restart);
+                trackDashboardEvent(SegmentConstants.Event_Lab_Shutdown);
             }
         });
     }
@@ -367,7 +367,7 @@ public class DashboardFragment extends Fragment {
         FlexboxLayout classroomMode = view.findViewById(R.id.classroom_mode_button);
         classroomMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt("Classroom Mode");
+                changingModePrompt(SegmentConstants.Event_Lab_Classroom_Mode);
                 return;
             }
 

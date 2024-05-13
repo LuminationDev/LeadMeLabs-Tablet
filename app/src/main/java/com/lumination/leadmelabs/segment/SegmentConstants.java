@@ -15,6 +15,7 @@ public class SegmentConstants {
     public static String Event_Lab_Classroom_Mode = "Classroom Mode";
     public static String Event_Lab_Presentation_Mode = "Presentation Mode";
     public static String Event_Lab_Restart = "Restart";
+    public static String Event_Lab_Shutdown = "Shutdown";
     public static String Event_Lab_Identify = "Identify";
 
     //Segment Station Events

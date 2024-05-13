@@ -65,7 +65,7 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                     return;
                 }
             };
-            if (stationsToTurnOff.size() > 0) {
+            if (!stationsToTurnOff.isEmpty()) {
                 DialogManager.createConfirmationDialog(
                         "Confirm station shutdown", "Station(s) " + stationIdsString + " will shutdown. Please confirm this scene.",
                         confirmShutdownCallback,
