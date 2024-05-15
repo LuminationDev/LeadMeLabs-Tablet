@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -95,7 +96,9 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
 
                 List<Application> filteredList = ApplicationLibraryFragment.installedApplicationList.stream()
                         .filter(application ->
-                                application.name.toLowerCase(Locale.ROOT).contains(searchTerm) && shouldInclude(application))
+                                (application.name.toLowerCase(Locale.ROOT).contains(searchTerm)
+                                    || containsPartialOrFullMatch(application, searchTerm))
+                                && shouldInclude(application))
                         .collect(Collectors.toList());
 
                 FilterResults filterResults = new FilterResults();
@@ -133,6 +136,18 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
             return applicationTags.stream().anyMatch(subjectFilters::contains);
         }
         return true; // Include if no subject filters are set
+    }
+
+    /**
+     * Determines whether the given application should be included in the search results based on
+     * the hidden keywords linked to that application.
+     *
+     * @param application The application to check for inclusion.
+     * @param searchString The string of what is being searched by the user.
+     * @return True if the application should be included, false otherwise.
+     */
+    public static boolean containsPartialOrFullMatch(Application application, String searchString) {
+        return application.getInformation().getHiddenKeywords().stream().anyMatch(item -> item.toLowerCase().contains(searchString));
     }
 
     /**
@@ -174,7 +189,11 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         applicationName.setText(currentApplication.getName());
         viewHolder.binding.setApplication(currentApplication);
 
-        convertView.setOnClickListener(v -> selectApplication(v, currentApplication));
+
+        ImageView info = convertView.findViewById(R.id.application_info);
+        info.setOnClickListener(v -> selectApplication(v, currentApplication, true));
+
+        convertView.setOnClickListener(v -> selectApplication(v, currentApplication, false));
 
         return convertView;
     }
@@ -200,8 +219,10 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      *
      * @param view                The View that triggered the selection action.
      * @param currentApplication  The Application object representing the selected game/application.
+     * @param showInfo            A boolean of whether to load the information fragment of directly
+     *                            launch the application.
      */
-    private void selectApplication(View view, Application currentApplication) {
+    private void selectApplication(View view, Application currentApplication, boolean showInfo) {
         InputMethodManager inputManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         // confirm if it is one of the dodgy apps
@@ -212,7 +233,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         if (gamesWithAdditionalStepsRequired.contains(currentApplication.id)) {
             BooleanCallbackInterface booleanCallbackInterface = result -> {
                 if (result) {
-                    completeSelectApplicationAction(currentApplication);
+                    completeSelectApplicationAction(currentApplication, showInfo);
                 }
             };
             DialogManager.createConfirmationDialog(
@@ -223,11 +244,19 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                     "Continue",
                     false);
         } else {
-            completeSelectApplicationAction(currentApplication);
+            completeSelectApplicationAction(currentApplication, showInfo);
         }
     }
 
-    private void completeSelectApplicationAction(Application currentApplication) {
+    /**
+     * Load the next fragment in the application launch cycle based on what was selected on the
+     * application card layout and the type of application to be launched.
+     *
+     * @param currentApplication  The Application object representing the selected game/application.
+     * @param showInfo            A boolean of whether to load the information fragment of directly
+     *                            launch the application.
+     */
+    private void completeSelectApplicationAction(Application currentApplication, boolean showInfo) {
         if (LibraryPageFragment.getStationId() > 0) {
             Station station = ApplicationAdapter.mViewModel.getStationById(LibraryPageFragment.getStationId());
             if (station == null) {
@@ -239,21 +268,21 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
                 mViewModel.selectSelectedApplication(currentApplication.id);
                 mViewModel.setSelectedApplication(currentApplication);
                 loadSingleShareCodeFragment();
+
+            //Check if application is of a video type and continue as normal (EXPAND IN FUTURE)
+            } else if (currentApplication.HasCategory().equals(Constants.VideoPlayer)) {
+                loadApplication(station, currentApplication);
+
+            //Load the information fragment if the Info button was selected
+            } else if (showInfo) {
+                mViewModel.selectSelectedApplication(currentApplication.id);
+                mViewModel.setSelectedApplication(currentApplication);
+                loadSingleApplicationFragment();
+
+            //Load the application as normal
+            } else {
+                loadApplication(station, currentApplication);
             }
-
-            loadApplication(station, currentApplication);
-
-            //TODO - Disabled until 'More Info' UI is completed
-//            //Check if application is of a video type and continue as normal
-//            else if (currentApplication.HasCategory().equals(Constants.VideoPlayer)) {
-//                loadApplication(station, currentApplication);
-//            }
-//            //load the application details fragment instead
-//            else {
-//                mViewModel.selectSelectedApplication(currentApplication.id);
-//                mViewModel.setSelectedApplication(currentApplication);
-//                loadSingleApplicationFragment();
-//            }
         } else {
             mViewModel.selectSelectedApplication(currentApplication.id);
             mViewModel.setSelectedApplication(currentApplication);
