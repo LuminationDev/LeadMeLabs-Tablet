@@ -22,6 +22,7 @@ public class InformationEmbedded {
                 "Play video files on a Station, with full playback control from the tablet.",
                 new ArrayList<>(Collections.singletonList(TagConstants.DEFAULT)),
                 new ArrayList<>(),
+                new ArrayList<>(Collections.singletonList("video")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("321914152547262211351528", videoPlayer);

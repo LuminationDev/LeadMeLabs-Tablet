@@ -10,12 +10,14 @@ public class Information {
     private final String description;
     private final ArrayList<String> tags;
     private final ArrayList<String> subTags;
+    private final ArrayList<String> hiddenKeywords;
     private final ArrayList<Integer> ages;
 
-    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<Integer> ages) {
+    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<String> hiddenKeywords, ArrayList<Integer> ages) {
         this.description = description;
         this.tags = tags;
         this.subTags = subTags;
+        this.hiddenKeywords = hiddenKeywords;
         this.ages = ages;
     }
 
@@ -25,6 +27,10 @@ public class Information {
 
     public ArrayList<String> getTags() {
         return this.tags;
+    }
+
+    public ArrayList<String> getHiddenKeywords() {
+        return this.hiddenKeywords;
     }
 
     public ArrayList<String> getSubTags() {
