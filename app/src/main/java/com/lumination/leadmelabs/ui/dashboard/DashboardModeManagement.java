@@ -7,6 +7,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.appliance.controllers.SceneController;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
@@ -46,9 +47,9 @@ public class DashboardModeManagement {
         switch (active) {
             //Mode buttons disabled until all computers turn on - backup reset is 3 minutes (same as power status check)
             case Constants.VR_MODE:
-            case Constants.PRESENTATION_MODE:
+            case Constants.SHOWCASE_MODE:
                 backupDelay = 3 * 60 * 1000; //3 minutes
-                waitForStations("Scene", sceneName, "On");
+                waitForStations("Scene", sceneName, "On", active);
                 break;
 
             //Mode buttons disabled until all computers turn on, initial delay of 30 seconds as the Stations turn off - backup reset is 4 minutes
@@ -56,19 +57,26 @@ public class DashboardModeManagement {
                 backupDelay = 4 * 60 * 1000; //4 minutes
 
                 //Wait 30 seconds before starting the check, ensuring the Stations are already 'Off'
-                MainActivity.UIHandler.postDelayed(() -> waitForStations("Room", "","On"), 30000);
+                MainActivity.UIHandler.postDelayed(() -> waitForStations("Room", "","On", active), 30000);
+                SceneController.handeActivatingScene(null, true);
                 break;
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 2 minutes
             case Constants.SHUTDOWN_MODE:
                 backupDelay = 2 * 60 * 1000; //2 minutes
-                waitForStations("Room", "", "Off");
+                waitForStations("Room", "", "Off", active);
+                SceneController.handeActivatingScene(null, true);
                 break;
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 3 minutes
             case Constants.CLASSROOM_MODE:
                 backupDelay = 3 * 60 * 1000; //3 minutes
-                waitForStations("Scene", sceneName,"Off");
+                waitForStations("Scene", sceneName,"Off", active);
+                break;
+
+            //No Station actions, wait for 5 seconds before unlocking scenes
+            case Constants.BASIC_MODE:
+                backupDelay = 5 * 1000;
                 break;
 
             default:
@@ -76,7 +84,7 @@ public class DashboardModeManagement {
         }
 
         //Create a backup timer that cancels all tasks in case something has gone wrong
-        createModeResetTimer(backupDelay, true);
+        createModeResetTimer(backupDelay, active, true);
     }
 
     /**
@@ -86,7 +94,7 @@ public class DashboardModeManagement {
      *                  stations (left empty for room collection).
      * @param targetStatus A string of the status the Station should end on (On or Off).
      */
-    private void waitForStations(String context, String sceneName, String targetStatus) {
+    private void waitForStations(String context, String sceneName, String targetStatus, String mode) {
         periodicChecker = new PeriodicChecker();
         AtomicBoolean isFirst = new AtomicBoolean(true);
 
@@ -97,15 +105,15 @@ public class DashboardModeManagement {
             //If this passed on the first instance then the scene is already set, only have a few seconds cool down in this instance
             if (checkStationStatuses(stations, targetStatus)) {
                 if (isFirst.get()) {
-                    createModeResetTimer(5 * 1000, false);
+                    createModeResetTimer(5 * 1000, mode, false);
                 }
                 else if (targetStatus.equals("Off")) {
                     //Wait an extra 45 seconds to make sure the Stations are off
-                    createModeResetTimer(45 * 1000, false);
+                    createModeResetTimer(45 * 1000, mode, false);
                 }
                 else {
                     //The mode is set, cancel the timers
-                    cancelModeTimers();
+                    cancelModeTimers(mode);
                 }
                 return true;
             }
@@ -125,7 +133,7 @@ public class DashboardModeManagement {
      * @param targetStatus A string of the status the Station should end on (On or Off).
      * @return A list of Station objects or JSONObjects based on the context.
      */
-    private ArrayList<?> collectStations(String context, String sceneName, String targetStatus) {
+    public static ArrayList<?> collectStations(String context, String sceneName, String targetStatus) {
         switch (context) {
             case "Room":
                 ArrayList<Object> stations = new ArrayList<>();
@@ -167,6 +175,10 @@ public class DashboardModeManagement {
 
                     if (matchingAppliances.isEmpty()) {
                         matchingAppliances = DashboardFragment.getInstance().searchForBackupSceneTrigger(appliances, sceneName);
+                    }
+                    else {
+                        //Only the one VR scene could be found
+                        SceneController.handeActivatingScene(matchingAppliances.get(0), true);
                     }
 
                     if (!matchingAppliances.isEmpty()) {
@@ -212,8 +224,10 @@ public class DashboardModeManagement {
                 continue; // Skip this station and proceed with the next one
             }
 
-            if (!station.statusHandler.getStatus().equals(targetStatus)) {
-                allCorrect = false;
+            if (station != null) {
+                if (!station.statusHandler.getStatus().equals(targetStatus)) {
+                    allCorrect = false;
+                }
             }
         }
 
@@ -225,14 +239,15 @@ public class DashboardModeManagement {
      * I.e. Classroom mode has been triggered, all Stations have now gone to 'Off', start a timer so
      * wake on lan cannot be triggered too early.
      * @param delayInMillis A long representing the delay before triggering the mode reset.
+     * @param mode A string of the mode that was initially called.
      * @param isBackupTimer Boolean indicating whether this is a backup timer or not.
      */
-    private static void createModeResetTimer(long delayInMillis, boolean isBackupTimer) {
+    private static void createModeResetTimer(long delayInMillis, String mode, boolean isBackupTimer) {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                cancelModeTimers();
+                cancelModeTimers(mode);
             }
         };
 
@@ -250,8 +265,9 @@ public class DashboardModeManagement {
     /**
      * Cancel the modeTimer, modeBackupTimer and periodicChecker before resetting the mode in
      * the viewModel.
+     * @param mode A string of the mode that was initially called.
      */
-    public static void cancelModeTimers() {
+    public static void cancelModeTimers(String mode) {
         if (modeTimer != null) {
             modeTask.cancel();
             modeTimer.cancel();
@@ -269,6 +285,10 @@ public class DashboardModeManagement {
             periodicChecker = null;
         }
 
-        MainActivity.runOnUI(() -> DashboardFragment.mViewModel.resetMode());
+        //Reset the dashboard buttons and the Scene buttons (Room control page)
+        MainActivity.runOnUI(() -> {
+            SceneController.resetAfterSceneActivation(mode);
+            DashboardFragment.mViewModel.resetMode(mode);
+        });
     }
 }

@@ -1,16 +1,20 @@
-package com.lumination.leadmelabs.ui.appliance;
+package com.lumination.leadmelabs.ui.appliance.controllers;
 
 import android.graphics.drawable.TransitionDrawable;
 import android.view.View;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.databinding.CardApplianceSceneBinding;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.appliance.Strategies.BlindStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.HDMIStrategy;
 import com.lumination.leadmelabs.ui.appliance.Strategies.RadioStrategy;
@@ -25,8 +29,6 @@ import java.util.Objects;
  * Strategies to control the units on the CBUS.
  */
 public class ApplianceController {
-    public static ArrayList<String> latestOn = new ArrayList<>();
-    public static ArrayList<String> latestOff = new ArrayList<>();
     public static int fadeTime = 200; //Fade time transitions in milliseconds;
 
     /**
@@ -35,19 +37,19 @@ public class ApplianceController {
      * @param appliance The model populate with particular details of an appliance.
      * @param cardLayout The view that the binding is attached to.
      */
-    public void strategyType(CardApplianceBinding binding, Appliance appliance, View cardLayout) {
+    public <T extends ViewDataBinding> void strategyType(T binding, Appliance appliance, View cardLayout) {
         AbstractApplianceStrategy strategy;
 
         switch (appliance.type) {
-            case "scenes":
-                strategy = appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE) ? new BlindStrategy(true) :  new SceneStrategy();
+            case Constants.SCENE:
+                strategy = appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE) ? new BlindStrategy(true) : new SceneStrategy();
                 break;
 
-            case "blinds":
+            case Constants.BLIND:
                 strategy = new BlindStrategy(false);
                 break;
 
-            case "sources":
+            case Constants.SOURCE:
                 strategy = new HDMIStrategy(false);
                 break;
 
@@ -57,7 +59,7 @@ public class ApplianceController {
         }
 
         strategy.trigger(binding, appliance, cardLayout);
-        setIcon(binding);
+        setIcon(binding, appliance.type);
     }
 
     /**
@@ -77,7 +79,7 @@ public class ApplianceController {
         String status;
 
         //Determine if the appliance is active
-        if(appliance.type.equals("scenes")) {
+        if(appliance.type.equals(Constants.SCENE)) {
             status = isSceneActive(appliance, cardView);
 
         } else {
@@ -92,7 +94,7 @@ public class ApplianceController {
      * controller as they extend the card instead of having different cards for different options.
      */
     public String isSceneActive(Appliance appliance, View cardView) {
-        String status;
+        String status = null;
         String value = null;
 
         //This is applicable when first starting up the application
@@ -128,8 +130,26 @@ public class ApplianceController {
 
             applianceTransition(status, cardView);
         } else {
-            status = ApplianceViewModel.activeSceneList.containsValue(appliance) ? Constants.ACTIVE : Constants.INACTIVE;
-            sceneTransition(status, appliance.id, cardView);
+            ArrayList<Appliance> currentList = (ArrayList<Appliance>) ApplianceFragment.mViewModel.getAppliances().getValue();
+
+            if (currentList != null) {
+                // Iterate through each Appliance
+                for (Appliance scene : currentList) {
+                    // Check if the roomType is "classroom" and the id doesn't match the supplied id
+                    if (appliance.id.equals(scene.id)) {
+                        status = appliance.status.getValue();
+                        break;
+                    }
+                }
+            } else {
+                status = Constants.INACTIVE;
+            }
+
+            if (status == null) {
+                status = Constants.INACTIVE;
+            }
+
+            SceneController.sceneTransition(status, appliance.id, cardView);
         }
 
         return status;
@@ -147,7 +167,7 @@ public class ApplianceController {
             String currentValue = ApplianceViewModel.activeApplianceList.get(appliance.id);
             if (currentValue == null) {
                 status = Constants.ACTIVE;
-            } else if (appliance.options.size() > 0 && currentValue.equals(appliance.options.get(0).id)) {
+            } else if (!appliance.options.isEmpty() && currentValue.equals(appliance.options.get(0).id)) {
                 status = Constants.ACTIVE;
             } else if (appliance.options.size() > 1 && currentValue.equals(appliance.options.get(1).id)) {
                 status = Constants.INACTIVE;
@@ -193,92 +213,17 @@ public class ApplianceController {
     }
 
     /**
-     * Depending on the status of the scene card, change the background and start a transition.
-     */
-    private void sceneTransition(String status, String id, View finalResult) {
-        // just turned on
-        if (latestOn.contains(id)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
-            TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
-            transition.startTransition(fadeTime);
-            latestOn.remove(id);
-
-            //just turned off
-        } else if (latestOff.contains(id)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_blue_to_grey, null));
-            TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
-            transition.startTransition(fadeTime);
-            latestOff.remove(id);
-
-            //already active
-        } else if(status.equals(Constants.ACTIVE)) {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_blue_to_grey, null));
-            TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
-            transition.resetTransition();
-
-            //not active
-        } else {
-            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
-            TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
-            transition.resetTransition();
-        }
-    }
-
-    /**
      * Depending on an appliances type add an icon.
      * @param binding A SceneCardBinding relating associated with the current scene.
      */
-    public static void setIcon(CardApplianceBinding binding) {
-        if(binding.getAppliance().type.equals("scenes")) {
-            determineSceneType(binding, ApplianceViewModel.activeSceneList.containsValue(binding.getAppliance()) ? Constants.ACTIVE : Constants.INACTIVE);
+    public static <T extends ViewDataBinding> void setIcon(T binding, String type) {
+        if(type.equals("scenes")) {
+            CardApplianceSceneBinding sceneBinding = (CardApplianceSceneBinding) binding;
+            SceneController.determineSceneType(sceneBinding, ApplianceViewModel.activeSceneList.containsValue(sceneBinding.getAppliance()) ? Constants.ACTIVE : Constants.INACTIVE);
         } else {
-            determineApplianceType(binding, ApplianceViewModel.activeApplianceList.containsKey(binding.getAppliance().id) ? Constants.ACTIVE : Constants.INACTIVE);
+            CardApplianceBinding applianceBinding = (CardApplianceBinding) binding;
+            determineApplianceType(applianceBinding, ApplianceViewModel.activeApplianceList.containsKey(applianceBinding.getAppliance().id) ? Constants.ACTIVE : Constants.INACTIVE);
         }
-    }
-
-    /**
-     * Determine what icon a scene needs depending on their name.
-     */
-    private static void determineSceneType(CardApplianceBinding binding, String status) {
-        MutableLiveData<Integer> icon;
-
-        switch (binding.getAppliance().name) {
-            case "Classroom":
-            case "On":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_classroommode_on) :
-                        new MutableLiveData<>(R.drawable.icon_scene_classroommode_off);
-                break;
-            case "VR Mode":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_vrmode_on) :
-                        new MutableLiveData<>(R.drawable.icon_scene_vrmode_off);
-                break;
-            case "Apple TV":
-            case "Theatre":
-            case "Dim":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_theatremode_on) :
-                        new MutableLiveData<>(R.drawable.icon_scene_theatremode_off);
-                break;
-            case "Off":
-            case "All Off":
-                icon = status.equals(Constants.ACTIVE) ? new MutableLiveData<>(R.drawable.icon_scene_power_on) :
-                        new MutableLiveData<>(R.drawable.icon_scene_power_off);
-                break;
-            case "Window Blinds":
-            case "Blind Control":
-                if(status.equals(Constants.ACTIVE)) {
-                    icon = new MutableLiveData<>(R.drawable.icon_appliance_blind_open);
-                } else if(status.equals(Constants.STOPPED)) {
-                    icon = new MutableLiveData<>(R.drawable.icon_settings);
-                } else {
-                    icon = new MutableLiveData<>(R.drawable.icon_appliance_blind_closed);
-                }
-                break;
-            default:
-                icon = new MutableLiveData<>(R.drawable.icon_settings);
-                break;
-        }
-
-        binding.setIcon(icon);
     }
 
     /**

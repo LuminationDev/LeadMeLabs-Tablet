@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.BaseAdapter;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -44,6 +46,10 @@ public class ApplianceViewModel extends ViewModel {
         }
 
         return appliances;
+    }
+
+    public void setAppliances(List<Appliance> appliances) {
+        this.appliances.setValue(appliances);
     }
 
     public LiveData<HashMap<String, String>> getActiveAppliances() {
@@ -103,7 +109,7 @@ public class ApplianceViewModel extends ViewModel {
                 // Set the current source value - bails out internally if not of type sources
                 appliance.setSourceStatus(current.getString("value"));
             }
-            if (appliance.value.equals("0") || appliance.value.equals("")) {
+            if (appliance.value.equals("0") || appliance.value.isEmpty()) {
                 inactiveObjects.put(appliance.id, "0");
             } else {
                 activeObjects.put(appliance.id, appliance.value);

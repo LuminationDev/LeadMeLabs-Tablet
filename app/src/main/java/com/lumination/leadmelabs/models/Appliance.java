@@ -1,7 +1,15 @@
 package com.lumination.leadmelabs.models;
 
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.MutableLiveData;
 
+import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import org.json.JSONArray;
@@ -144,7 +152,7 @@ public class Appliance {
                 break;
 
             case "scenes":
-                this.description = new ArrayList<>(Arrays.asList("ACTIVE", "INACTIVE"));
+                this.description = new ArrayList<>(Arrays.asList("ACTIVE", "INACTIVE", "LOADING", "DISABLED"));
                 break;
 
             default:
@@ -152,4 +160,74 @@ public class Appliance {
                 break;
         }
     }
+
+    //region Data binding
+    @BindingAdapter("textColor")
+    public static void setTextColor(TextView textView, Appliance selectedAppliance) {
+        String status = selectedAppliance.status.getValue();
+        if (status == null) return;
+
+        if (status.equals(Constants.LOADING)) {
+            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.black));
+        }
+        else {
+            textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.appliance_title));
+        }
+    }
+
+    @BindingAdapter("iconVisibility")
+    public static void setImageView(ImageView imageView, Appliance selectedAppliance) {
+        String status = selectedAppliance.status.getValue();
+        if (status == null) return;
+
+        if (status.equals(Constants.LOADING)) {
+            imageView.setVisibility(View.GONE);
+        }
+        else {
+            imageView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @BindingAdapter("progressVisibility")
+    public static void setProgressSpinner(ProgressBar progressBar, Appliance selectedAppliance) {
+        String status = selectedAppliance.status.getValue();
+        if (status == null) return;
+
+        if (status.equals(Constants.LOADING)) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @BindingAdapter("applianceStatus")
+    public static void setApplianceText(TextView textView, Appliance selectedAppliance) {
+        String status = selectedAppliance.status.getValue();
+        if (status == null) return;
+
+        switch (status) {
+            case Constants.SET:
+            case Constants.ACTIVE:
+                textView.setText(selectedAppliance.getLabelForIndex(0));
+                break;
+
+            case Constants.INACTIVE:
+                textView.setText(selectedAppliance.getLabelForIndex(1));
+                break;
+
+            case Constants.LOADING:
+                textView.setText(selectedAppliance.getLabelForIndex(2));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.black));
+                return;
+
+            case Constants.DISABLED:
+                textView.setText(selectedAppliance.getLabelForIndex(3));
+                break;
+        }
+
+        //Every other status has white text
+        textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.white));
+    }
+    //endregion
 }

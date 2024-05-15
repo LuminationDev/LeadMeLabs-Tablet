@@ -2,7 +2,7 @@ package com.lumination.leadmelabs.models;
 
 import static com.lumination.leadmelabs.ui.appliance.ApplianceFragment.checkForEmptyRooms;
 
-import com.lumination.leadmelabs.ui.appliance.ApplianceAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 

@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.appliance;
+package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.TransitionDrawable;
@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -24,6 +25,9 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.controllers.ApplianceController;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
+import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
@@ -31,7 +35,7 @@ import com.segment.analytics.Properties;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class ExtendedApplianceCard extends AbstractApplianceStrategy {
+public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     private View finalResult; //The underlying card view the extended blind xml is attached to.
     private TextView statusTitle; //The textview that the current status is to be displayed on.
     private CardApplianceBinding binding; //The underlying card model the extended blind xml is attached to.
@@ -40,15 +44,17 @@ public class ExtendedApplianceCard extends AbstractApplianceStrategy {
     private FlexboxLayout cardInsert;
     protected boolean isSceneCard;
 
-    public ExtendedApplianceCard(boolean isSceneCard) {
+    public ExtendedApplianceCardStrategy(boolean isSceneCard) {
         this.isSceneCard = isSceneCard;
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+    public <T extends ViewDataBinding> void trigger(T binding, Appliance appliance, View finalResult) {
+        CardApplianceBinding cardBinding = (CardApplianceBinding) binding;
+
         this.finalResult = finalResult;
-        this.binding = binding;
+        this.binding = cardBinding;
         this.appliance = appliance;
 
         //Get the overall main root view

@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.appliance;
+package com.lumination.leadmelabs.ui.appliance.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,10 +6,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+
 import com.lumination.leadmelabs.R;
-import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.databinding.CardApplianceSceneBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.ui.appliance.controllers.ApplianceController;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 
@@ -18,17 +22,16 @@ import java.util.ArrayList;
  * displayed. When 'All' rooms are chosen it acts as a regular class access through references in
  * the parent adapter class.
  */
-public class ApplianceAdapter extends BaseAdapter {
+public class SceneAdapter extends BaseAdapter {
     private final ApplianceController applianceController = new ApplianceController();
 
     public ArrayList<Appliance> applianceList = new ArrayList<>();
 
-
-    public class ApplianceViewHolder extends BaseAdapter.BaseViewHolder {
-        private final CardApplianceBinding binding;
+    public class ApplianceViewHolder extends BaseViewHolder {
+        private final CardApplianceSceneBinding binding;
         private boolean recentlyClicked = false;
 
-        public ApplianceViewHolder(@NonNull CardApplianceBinding binding) {
+        public ApplianceViewHolder(@NonNull CardApplianceSceneBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
@@ -40,20 +43,18 @@ public class ApplianceAdapter extends BaseAdapter {
             //Load what appliance is active or not
             String status = applianceController.determineIfActive(appliance, finalResult);
             binding.setStatus(new MutableLiveData<>(status));
-            ApplianceController.setIcon(binding);
+            ApplianceController.setIcon(binding, Constants.SCENE);
 
             finalResult.setOnClickListener(v -> {
+                String sceneStatus = binding.getStatus().getValue();
+                if(sceneStatus != null && sceneStatus.equals(Constants.DISABLED)) {
+                    DashboardFragment.getInstance().changingModePrompt(binding.getAppliance().name);
+                    return;
+                }
+
                 int timeout = 500;
                 String title = "Warning";
                 String content = "The automation system performs best when appliances are not repeatedly turned on and off. Try waiting half a second before toggling an appliance.";
-                if (appliance.type.equals("projectors")) {
-                    timeout = 10000;
-                    content = "The automation system performs best when appliances are not repeatedly turned on and off. Projectors need up to 10 seconds between turning on and off.";
-                }
-                if (appliance.type.equals("computers")) {
-                    timeout = 20000;
-                    content = "The automation system performs best when appliances are not repeatedly turned on and off. Computers need up to 20 seconds between turning on and off.";
-                }
                 if (recentlyClicked) {
                     DialogManager.createBasicDialog(title, content);
                     return;
@@ -85,7 +86,7 @@ public class ApplianceAdapter extends BaseAdapter {
     @Override
     public ApplianceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        CardApplianceBinding binding = CardApplianceBinding.inflate(layoutInflater, parent, false);
+        CardApplianceSceneBinding binding = CardApplianceSceneBinding.inflate(layoutInflater, parent, false);
         return new ApplianceViewHolder(binding);
     }
 

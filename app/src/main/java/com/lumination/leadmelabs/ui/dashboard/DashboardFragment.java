@@ -147,7 +147,7 @@ public class DashboardFragment extends Fragment {
         setupVrModeButton(view);
 
         //Switch to Presentation mode
-        setupPresentationModeButton(view);
+        setupShowcaseModeButton(view);
 
         //End session on all/selected stations
         setupEndSessionButton(view);
@@ -184,7 +184,7 @@ public class DashboardFragment extends Fragment {
      * Show a toast to the user if the mode is currently changing and they attempt to select
      * another mode. Lodge a segment event when this happens.
      */
-    private void changingModePrompt(String scene) {
+    public void changingModePrompt(String scene) {
         Toast.makeText(getContext(), "A mode is currently being set, please wait...", Toast.LENGTH_LONG).show();
 
         Properties segmentProperties = new Properties();
@@ -227,18 +227,18 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private void setupPresentationModeButton(View view) {
-        FlexboxLayout presentationMode = view.findViewById(R.id.presentation_mode_button);
-        presentationMode.setOnClickListener(v -> {
+    private void setupShowcaseModeButton(View view) {
+        FlexboxLayout showcaseMode = view.findViewById(R.id.showcase_mode_button);
+        showcaseMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
-                changingModePrompt(SegmentConstants.Event_Lab_Presentation_Mode);
+                changingModePrompt(SegmentConstants.Event_Lab_Showcase_Mode);
                 return;
             }
 
-            dashboardModeManagement.changeModeButtonAvailability("presentation", Constants.PRESENTATION_MODE);
-            searchForSceneTrigger("presentation");
+            dashboardModeManagement.changeModeButtonAvailability("showcase", Constants.SHOWCASE_MODE);
+            searchForSceneTrigger("showcase");
             // Send data to Segment
-            trackDashboardEvent(SegmentConstants.Event_Lab_Presentation_Mode);
+            trackDashboardEvent(SegmentConstants.Event_Lab_Showcase_Mode);
         });
     }
 
@@ -417,7 +417,7 @@ public class DashboardFragment extends Fragment {
                 try {
                     int id = Integer.parseInt(stationObject.getString("id"));
                     Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
-                    if (station.isOn()) continue; //Do not do anything if the Station is already on
+                    if (station == null || station.isOn()) continue; //Do not do anything if the Station is already on
 
                     station.setStatus(StatusHandler.TURNING_ON);
                     NetworkService.sendMessage("NUC", "UpdateStation", id + ":SetValue:status:" + StatusHandler.TURNING_ON);
@@ -515,7 +515,7 @@ public class DashboardFragment extends Fragment {
             cancelledShutdown = false;
             DialogManager.buildShutdownOrRestartDialog(getContext(), shutdown ? "Shutdown" : "Restart", stationIds, shutdownCountDownCallback);
         } else {
-            mViewModel.resetMode();
+            mViewModel.resetMode(shutdown ? Constants.SHUTDOWN_MODE : Constants.RESTART_MODE);
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
@@ -581,7 +581,7 @@ public class DashboardFragment extends Fragment {
                         stationsWithActions.add(station);
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("DashboardFragment", e.toString());
                 }
             }
         }
