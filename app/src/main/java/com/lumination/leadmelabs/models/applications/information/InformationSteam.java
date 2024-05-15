@@ -22,7 +22,7 @@ public class InformationSteam {
                 "Explore the world from totally new perspectives in virtual reality. Stroll the streets of Tokyo, soar over the Grand Canyon, or walk around the Eiffel Tower.",
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.MATHS, TagConstants.SCIENCE)),
                 new ArrayList<>(Collections.singletonList(TagConstants.GEOGRAPHY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("exploration", "geography", "countries", "international", "world", "tourism", "satellite", "maps", "travel", "landmarks")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("348250", googleEarth);
@@ -32,7 +32,7 @@ public class InformationSteam {
                 "Unleash your creativity with three-dimensional brush strokes, stars, light, and even fire. Your room is your canvas. Your palette is your imagination. The possibilities are endless.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.PAINTING, TagConstants.DIGITAL_ART)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("drawing", "sketching", "sculpting", "concept", "animation", "modeling", "illustration", "design", "colourful", "artistic", "creativity")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("327140", tiltBrush);
@@ -42,7 +42,7 @@ public class InformationSteam {
                 "There are 11 sports that students can practice in VR using this app.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.SPORTS, TagConstants.GAMES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("baseball", "basketball", "bowling", "boxing", "archery", "tennis", "pool", "golf", "esports", "athletics", "competition", "training", "motion", "team", "fitness", "exercise", "workout", "activity", "movement")),
                 new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15))
         );
         dataMap.put("1514840", allInOneSportsVr);
@@ -52,7 +52,7 @@ public class InformationSteam {
                 "Step inside Nefertari's tomb and immerse yourself in the story of its art, history, construction, and mythology through interactive elements.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.ANCIENT_EGYPT)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("pyramids", "tombs", "mummification", "afterlife", "egyptian", "construction", "mythology", "archaeology", "puzzles", "civilization", "queen")),
                 new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
         );
         dataMap.put("861400", nefertari);
@@ -62,7 +62,7 @@ public class InformationSteam {
                 "An immersive, interactive experience of the legendary tale, ‘Alice in Wonderland’. Students can follow their own personal White Rabbit companion, hunt for missing objects, solve the Caterpillar's mind-bending riddles, visit the Queen of Hearts’ croquet garden, and experience other classic moments.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.LITERATURE, TagConstants.BOOK_STUDIES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("novel", "wonderland", "story", "adventure", "fantasy", "rabbit", "curiosity", "journey", "whimsical", "magical", "surreal")),
                 new ArrayList<>(Arrays.asList(14, 15, 16, 17))
         );
         dataMap.put("1424190", curiousAlice);
@@ -72,7 +72,7 @@ public class InformationSteam {
                 "Practise recycling concepts and use creative and problem solving skills by analysing what needs to be done to meet the objectives of the game (earn money for upgrades by recycling correctly, spend money on upgrades to improve output, tracking CO2 levels, spatial awareness, etc)",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ENVIRONMENT)),
-                new ArrayList<>(Arrays.asList("steam", "recycle")),
+                new ArrayList<>(Arrays.asList("cleanup", "recycling", "waste", "environment", "garbage", "management", "disposal", "sustainability", "eco-friendly", "hygiene")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1029110", trashTime);
@@ -82,7 +82,7 @@ public class InformationSteam {
                 "A VR dance rhythm game where you replicate real dance choreographies with your entire body to play.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.DANCE)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("dance", "music", "breakdance", "rhythm", "movement", "aerobics", "gymnastics", "activity", "exercise", "motion")),
                 new ArrayList<>(Arrays.asList(12, 13))
         );
         dataMap.put("1494670", spaceDanceHarmony);
@@ -92,7 +92,7 @@ public class InformationSteam {
                 "Build prototypes of 3D objects in poly format using an understanding of shapes, colours, and scale/measurement. Also need to practise spatial awareness / 'thinking in 3D'.",
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.BUSINESS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("building", "construction", "creativity", "design", "architecture", "shapes", "imagination", "structure", "puzzle", "play")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("533970", blocks);
@@ -102,7 +102,7 @@ public class InformationSteam {
                 "Empathise with what is like to prepare for an emergency situation and experiene what it is like to be in an earthquake.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.SAFETY, TagConstants.FIRST_AID)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("disaster", "earthquake", "simulation", "emergency", "preparedness", "safety", "tremor", "catastrophe", "quake", "destruction")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
         );
         dataMap.put("607590", earthquakeSimulator);
@@ -112,7 +112,7 @@ public class InformationSteam {
                 "In 1935, Yonezo Okita left his home in Japan and began a new life in Canada. Then war and state-sanctioned racism changed everything—he became the enemy. His grandson leads us on an interactive virtual pilgrimage through an emotional geography of immigration and family to recover what was lost.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.CULTURAL_STUDIES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("story", "journey", "relationship", "connection", "intimacy", "narrative", "culture", "family", "immigration", "racism", "exploration")),
                 new ArrayList<>(Arrays.asList(12, 13, 14, 15))
         );
         dataMap.put("1245640", bookOfDistance);
@@ -122,7 +122,7 @@ public class InformationSteam {
                 "Experience what it's like to build a vertical city that puts sustainable practices into consideration. Students are also able to simulate what it's like to calculate costs of building a thriving smart city.",
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ENVIRONMENT, TagConstants.BUSINESS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("city", "skyline", "skyscraper", "urban", "metropolis", "architecture", "construction", "simulation", "development", "management")),
                 new ArrayList<>(Arrays.asList(12, 13, 14, 15, 16, 17))
         );
         dataMap.put("629040", skytropolis);
@@ -132,7 +132,7 @@ public class InformationSteam {
                 "Create an original world and fill it with buildings, roads, vehicles and more. Give it life with posable characters. Tell a story with custom speech bubbles and in-game photo captures. Then, share with friends!",
                 new ArrayList<>(Arrays.asList(TagConstants.ENVIRONMENT, TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Collections.singletonList(TagConstants.WORLD_BUILDING)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("town", "miniature", "tiny", "simulation", "building", "community", "urban", "city", "village", "infrastructure")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14))
         );
         dataMap.put("653930", tinyTownVr);
@@ -142,7 +142,7 @@ public class InformationSteam {
                 "Build your fluency in 30 languages: English, Spanish, German, French, Italian, Arabic, Russian, Korean, Japanese, Chinese & more.",
                 new ArrayList<>(Collections.singletonList(TagConstants.LANGUAGES)),
                 new ArrayList<>(Arrays.asList(TagConstants.CONVERSATIONAL, TagConstants.VOCABULARY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("communication", "vocabulary", "phrases", "immersion", "conversation", "culture", "English", "Spanish", "German", "French", "Italian", "Arabic", "Russian", "Korean", "Japanese", "Chinese")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
         );
         dataMap.put("1141930", mondly);
@@ -152,7 +152,7 @@ public class InformationSteam {
                 "A physics-based IMVR puzzle game where students can build chain reaction machines to solve fun, intricate puzzles. The machines will use gadgets to launch, bump, twist, and turn—creating chain reactions. This app may be used as an alternative to Thingamajig.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ENGINEERING, TagConstants.PUZZLES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("gadgets", "contraptions", "building", "creativity", "engineering", "invention", "physics", "puzzles", "construction", "design")),
                 new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
         );
         dataMap.put("746560", gadgeteer);
@@ -162,7 +162,7 @@ public class InformationSteam {
                 "Museum of Plastic 2121 is the first museum tour available on Curatours! Built 100 years from now in an imagined future where things have worked out well for the planet and for humanity. Visitors uncover the story of plastic - its history, science, industry, and impact on our environment.",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HISTORY)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.MUSEUM)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("museum", "art", "curator", "gallery", "exhibition", "history", "culture", "curation", "exploration", "storytelling")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
         );
         dataMap.put("1532110", curatours);
@@ -172,7 +172,7 @@ public class InformationSteam {
                 "Place math objects in the VR world, walk around them, and take screenshots from different angles. Millions of people around the world use GeoGebra to learn mathematics and science. This app includes several examples of 3D math objects that you can place in the VR world. Guided activities lead you to discover math in the real world by taking screenshots from different perspectives.",
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOMETRY, TagConstants.PERSPECTIVE)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("mathematics", "geometry", "algebra", "calculus", "education", "learning", "visualization", "problem-solving", "tools", "equations")),
                 new ArrayList<>(Arrays.asList(14, 15, 16, 17))
         );
         dataMap.put("880270", geoGebra);
@@ -182,7 +182,7 @@ public class InformationSteam {
                 "Unleash your creativity by building with SculptrVR’s intuitive and fun creation tools.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.SCULPTING, TagConstants.VISUAL_ARTS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("sculpting", "creativity", "artistic", "modeling", "3d", "design", "virtual", "clay", "sculpture", "creation")),
                 new ArrayList<>(Arrays.asList(12, 13, 14))
         );
         dataMap.put("418520", sculptrVr);
@@ -192,7 +192,7 @@ public class InformationSteam {
                 "Visit The Louvre and have a deep dive learning experience of one of the most famous paintings on earth.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.PAINTING)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("art", "museum", "painting", "leonardo", "davinci", "masterpiece", "portrait", "renaissance", "smile", "enigmatic")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1172310", monaLisa);
@@ -202,7 +202,7 @@ public class InformationSteam {
                 "Simulate the experience of a new astronaut learning the ropes in the International Space Station.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ASTRONOMY, TagConstants.SPACE_STATION)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("space", "astronaut", "exploration", "astronomy", "zero-g", "orbit", "station", "spacewalk", "ISS", "cosmos")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("512270", homeSpacewalk);
@@ -212,7 +212,7 @@ public class InformationSteam {
                 "This experience takes users on a journey to a microscopic world. Explore the surface and interior of a cancer cell, exploring and learning about cellular anatomy and processes.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.HUMAN_ANATOMY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("biology", "cell", "anatomy", "blood", "cells", "heart", "body", "human", "micro", "cellular", "exploration", "molecular")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("1308470", journeyCell);
@@ -222,7 +222,7 @@ public class InformationSteam {
                 "Step onto Michelangelo’s scaffold to learn about how he painted the ceiling, or enter a Vatican conservator’s mobile aerial platform to see the ceiling up close and learn about the controversial cleaning. Over 100 clickable elements about Michelangelo’s work.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("art", "michelangelo", "fresco", "ceiling", "chapel", "renaissance", "masterpiece", "creation", "divine", "religious")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1165850", sistineCeiling);
@@ -232,7 +232,7 @@ public class InformationSteam {
                 "Simulate the experience of running a farm in the traditional way by learning how to till the soil, plant seeds, care for the plants and watch them grow, then sell them to help the farm.",
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.SCIENCE)),
                 new ArrayList<>(Collections.singletonList(TagConstants.FARMING)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("farming", "agriculture", "crops", "rural", "countryside", "harvest", "tractor", "field", "planting", "growth")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
         );
         dataMap.put("612030", harvestSimulator);
@@ -242,7 +242,7 @@ public class InformationSteam {
                 "Simulate the experience of joining a Lancaster bomber crew during a raid over Berlin in World War Two.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.WORLD_WAR_TWO)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("history", "ww2", "world war", "germany", "bombing", "blitz", "war", "air raid", "destruction", "historical")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("513490", berlinBlitz);
@@ -252,7 +252,7 @@ public class InformationSteam {
                 "Pearl VR follows a girl and her dad as they crisscross the country chasing their dreams. It’s a story about the gifts we hand down and their power to carry love. And finding grace in the unlikeliest of places. EMMY AWARD in INTERACTIVE STORYTELLING. OSCAR NOMINEE BEST ANIMATED SHORT.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.INTERACTIVE_STORY, TagConstants.FAMILY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("story", "narrative", "ocean", "love", "journey", "adventure", "animation", "family")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("476540", googleSpotlightPearl);
@@ -262,7 +262,7 @@ public class InformationSteam {
                 "Explore a virtual museum in room-scale VR: see famous sculptures in full, 1:1 scale and see famous paintings without the limitations of glass and security guards.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("art", "museum", "painting", "sculpture", "gallery", "masterpiece", "exhibition", "history", "culture", "virtual")),
                 new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
         );
         dataMap.put("515020", museumOfFineArt);
@@ -272,7 +272,7 @@ public class InformationSteam {
                 "A VR environment that allows you to explore the world of Vincent van Gogh. Explore some of Van Gogh's pieces in 3 dimensions , with the vivid colors straight from his palette.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.VINCENT_VAN_GOGH)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("art", "van gogh", "painting", "cafe", "night", "impressionism", "masterpiece", "surreal", "post-impressionism", "colour")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
         );
         dataMap.put("482390", nightCafe);
@@ -282,7 +282,7 @@ public class InformationSteam {
                 "Experience the Amazon rainforest with this quest-driven activity where students build a fire, take photos of animals and environment while they learn about each one and explore surroundings.",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ENVIRONMENT)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("jungle", "amazon", "rainforest", "exploration", "wildlife", "adventure", "nature", "ecosystem", "conservation", "biodiversity")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("570540", amazonOdyssey);
@@ -292,7 +292,7 @@ public class InformationSteam {
                 "Practise student knowledge and skills in geometry and measurement in an immersive environment.",
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOMETRY, TagConstants.MEASUREMENTS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("puzzle", "logic", "geometry", "shapes", "3d", "design", "spatial", "brain-teaser", "challenge", "construction")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("878620", neotrieVr);
@@ -302,7 +302,7 @@ public class InformationSteam {
                 "Explore Australia's favourite sports and play mini games: AFL, Basketball, Cricket, Football and Rugby.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.TEAM_SPORTS, TagConstants.AUSTRALIA)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("sports", "australia", "rugby", "cricket", "football", "aussie", "athletic", "competition", "AFL", "basketball", "cricket")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("508250", aussieSports);
@@ -312,7 +312,7 @@ public class InformationSteam {
                 "Join Wendy Martin, a national award-winning science teacher, to make Ribbit-ing Discoveries in this virtual reality Frog Dissection. Learn the fundamentals of the female frog anatomy in a fully immersive virtual reality experience.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.ANIMALS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("biology", "dissection", "education", "anatomy", "science", "frog", "learning", "simulation", "lab", "exploration")),
                 new ArrayList<>(Arrays.asList(14, 15, 16, 17))
         );
         dataMap.put("1046910", dissectionFrog);
@@ -322,7 +322,7 @@ public class InformationSteam {
                 "Collaboratively sketch urban plans, buildings and interiors like never before using VR, PCs, phones and tablets. Start fresh or import a 3D model, sketch on top of it then export your design to other 3D design tools, including to Revit as native Revit geometry.",
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ARCHITECTURE)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("architecture", "design", "virtual", "collaboration", "building", "construction", "planning", "visualization", "creativity", "teamwork")),
                 new ArrayList<>(Arrays.asList(14, 15, 16, 17))
         );
         dataMap.put("1053760", arkio);
@@ -332,7 +332,7 @@ public class InformationSteam {
                 "Explore the Chauvet Cave 36,000 years ago, with Daisy Ridley’s voice as your guide. It’s in the Ardèche gorges, in the south of France, that our ancestors drew humanity’s first masterpieces, giving life to their beliefs. Maybe you will also meet the cave bear…",
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.CAVE_PAINTINGS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("prehistoric", "cave", "art", "history", "ancient", "painting", "discovery", "archaeology", "culture", "civilization")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1236560", dawnOfArt);
@@ -342,7 +342,7 @@ public class InformationSteam {
                 "Experience an aquatic safari park in VR. Explore a vivid underwater world full of life including dolphins, sharks, orcas, turtles, sea snakes, rays, manatees, sea lions, whales, and even dinosaurs!",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.MARINE_BIOLOGY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("ocean", "underwater", "marine", "wildlife", "exploration", "diving", "sharks", "coral", "ecosystem", "aquatic")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
         );
         dataMap.put("422760", oceanRift);
@@ -352,7 +352,7 @@ public class InformationSteam {
                 "Embark on an immersive virtual reality adventure through the cosmos! As the pioneer space tourist, you'll have the chance to explore the planets and moons of our Solar System like never before. Experience a voyage to the moon, traverse the red landscapes of Mars, and even visit Enceladus, Saturn's icy moon.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ASTRONOMY, TagConstants.PLANETS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("space", "astronomy", "planets", "exploration", "universe", "celestial", "science", "educational", "galaxy", "orbit")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
         );
         dataMap.put("1379970", solarSystemVr);
@@ -362,7 +362,7 @@ public class InformationSteam {
                 "Manipulate vectors with your hands, explore vector addition and cross product. See and feel a double integral of a sinusoidal graph in 3D, a mobius strip and it's normal, and spherical coordinates! Create your own parametrized function and vector field!",
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.STATISTICS, TagConstants.GEOMETRY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("statistics", "visualisation", "calculus", "geometry", "equations", "physics", "utility", "vector")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("547280", calcflow);
@@ -372,7 +372,7 @@ public class InformationSteam {
                 "Short Circuit VR is an electronics lab simulator in Virtual Reality. You can build your own electronic circuits with the components provided, learn basic electronics by completing challenges and just have fun while experimenting and making awesome projects!",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ELECTRONICS)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("circuit", "electricity", "electronics", "puzzle", "logic", "engineering", "problem-solving", "technology", "wires", "capacitor")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13))
         );
         dataMap.put("970800", shortCircuitVr);
@@ -382,7 +382,7 @@ public class InformationSteam {
                 "Great Paintings from the Great Museums of the World in Virtual Reality. More than 1000 famous paintings to admire and enjoy.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("art", "painting", "museum", "gallery", "masterpiece", "history", "culture", "exploration", "classics")),
                 new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1511090", greatPaintings);
@@ -392,7 +392,7 @@ public class InformationSteam {
                 "An educational lab for VR. Interact with several different educational objects, simulations, animations, environments and games.",
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH, TagConstants.ARTS, TagConstants.HASS)),
                 new ArrayList<>(),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("education", "virtual", "learning", "interactive", "immersive", "classroom", "training", "simulation", "technology", "experience")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
         );
         dataMap.put("542170", edmersiv);
@@ -402,7 +402,7 @@ public class InformationSteam {
                 "This guided tour will take you through its rise and downfall, bring you face to face with gladiators, and allow you to experience the glory of roman architecture like never before.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.ROMAN_EMPIRE)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("history", "rome", "ancient", "colosseum", "arena", "gladiator", "architecture", "spectacle", "roman", "italy")),
                 new ArrayList<>(Arrays.asList(10, 11, 12))
         );
         dataMap.put("1614850", colosseumVr);
@@ -412,7 +412,7 @@ public class InformationSteam {
                 "Interact with molecular models in Virtual Reality. Add planes to create cross section. See electron density isosurfaces and load your own CHGCAR files.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.CHEMISTRY, TagConstants.MOLECULES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("materials", "physics", "chemistry", "properties", "molecules", "atoms", "electrons", "neutrons", "protons", "experiments", "oxygen", "hydrogen", "elements", "periodic table")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("1564310", materialsVr);
@@ -422,7 +422,7 @@ public class InformationSteam {
                 "Step into immersive world-class stadiums with thousands cheering for you and our realistic physics makes it intuitive to learn within 10 mins. Hone your skills, compete in global tournaments & become a vSport star.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.SPORTS, TagConstants.CRICKET)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("cricket", "sports", "game", "bat", "ball", "pitch", "stadium", "competition", "immersive", "training", "Australia", "India", "ashes", "exercise", "activity")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("957070", ibCricket);
@@ -432,7 +432,7 @@ public class InformationSteam {
                 "Gamified solution, curriculum and content for teaching robotics in VR.",
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS, TagConstants.SCIENCE)),
                 new ArrayList<>(),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("robotics", "engineering", "technology", "simulation", "innovation", "programming", "automation")),
                 new ArrayList<>(Arrays.asList(15, 16, 17))
         );
         dataMap.put("1774930", roboticsVr);
@@ -442,7 +442,7 @@ public class InformationSteam {
                 "An educational virtual reality experience that takes the user inside the human body.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.HUMAN_ANATOMY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("biology", "cell", "anatomy", "micro", "cellular", "exploration", "molecular", "human", "blood")),
                 new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
         );
         dataMap.put("451980", insideTheCell);
@@ -452,7 +452,7 @@ public class InformationSteam {
                 "An exciting and challenging multi-room escape environment. Each room will have different themes, centered around the same style and lighthearted tone. Successful escapologists can use the room editor to create and share their own ingenious VR puzzles.",
                 new ArrayList<>(Collections.singletonList(TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Arrays.asList(TagConstants.PUZZLES, TagConstants.PROBLEM_SOLVING)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("escape", "puzzle", "room", "adventure", "challenge", "mystery", "exploration", "logic", "strategy")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("812610", escapeArchitect);
@@ -462,7 +462,7 @@ public class InformationSteam {
                 "A virtual travel experience that takes you to amazing natural locations in full 3D to feel like you're really there.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOGRAPHY, TagConstants.TRAVEL)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("travel", "adventure", "exploration", "journey", "destination", "globe-trotting", "tourism", "experience", "discovery")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("1462520", brinkTraveler);
@@ -472,7 +472,7 @@ public class InformationSteam {
                 "Explore tropical beaches, underwater oceans and even take to the stars. Discover over 60 different animals. Command the weather, take control of the night or create and shape your own world.",
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOGRAPHY, TagConstants.NATURE)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("nature", "hiking", "relaxation", "scenery", "environment", "wildlife", "exploration", "meditation", "peaceful")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("587580", natureTreksVr);
@@ -482,7 +482,7 @@ public class InformationSteam {
                 "Music creation app that offers everyone a fun and unique music-making experience. Make music in 3D and interact with music sequences from entirely new perspectives in virtual reality.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.MUSIC, TagConstants.COMPOSITION)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("music", "rhythm", "dance", "aerobics", "motion", "exercise", "artistic", "performance", "creativity")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
         );
         dataMap.put("572630", lyraVr);
@@ -492,7 +492,7 @@ public class InformationSteam {
                 "Designed to hone your speaking skills by using the game's in-depth analysis to incrementally improve presentations.",
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.PUBLIC_SPEAKING, TagConstants.COMMUNICATION)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("presentation", "training", "communication", "demonstration", "public", "speaking", "cue cards", "speech")),
                 new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15))
         );
         dataMap.put("1282770", virtualPresenter);
@@ -502,7 +502,7 @@ public class InformationSteam {
                 "Grab your safety goggles and set out on a chemical-burning, liquid-stirring, camera-whirring competition in HoloLAB Champions, a virtual reality chemistry game show.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.CHEMISTRY, TagConstants.GAMES)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("chemistry", "science", "lab", "experimentation", "virtual", "competition", "teamwork", "discovery", "game show")),
                 new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
         );
         dataMap.put("696760", holoLabChampions);
@@ -512,7 +512,7 @@ public class InformationSteam {
                 "Land on Earth’s sister planet. Walk the surface of Mars in and interact with full-scale, realistic NASA Landers and Rovers. Learn about the Red Planet, its history, and its geography in this interactive experience.",
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.PLANETS, TagConstants.ASTRONOMY)),
-                new ArrayList<>(Collections.singletonList("steam")),
+                new ArrayList<>(Arrays.asList("space", "mars", "exploration", "planet", "rover", "red planet", "science", "astronomy", "discovery", "mission")),
                 new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
         );
         dataMap.put("465150", marsOdyssey);

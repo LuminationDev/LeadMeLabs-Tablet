@@ -147,7 +147,7 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      * @return True if the application should be included, false otherwise.
      */
     public static boolean containsPartialOrFullMatch(Application application, String searchString) {
-        return application.getInformation().getHiddenKeywords().stream().anyMatch(item -> item.contains(searchString));
+        return application.getInformation().getHiddenKeywords().stream().anyMatch(item -> item.toLowerCase().contains(searchString));
     }
 
     /**
