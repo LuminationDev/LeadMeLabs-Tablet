@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:flexDirection="column">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/ripple_white"
+        android:layout_marginHorizontal="20dp"
+        app:justifyContent="space_between">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:justifyContent="flex_start"
+            app:alignItems="center">
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:flexDirection="column"
+                app:justifyContent="center"
+                app:alignItems="center"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_border_gray">
+                <ImageView
+                    android:src="@drawable/vr_headset_outline_blue"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+            </com.google.android.flexbox.FlexboxLayout>
+            <TextView
+                android:id="@+id/eula_experience_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="testing" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <ImageView
+            android:id="@+id/eula_launch_button"
+            android:src="@drawable/launch_arrow"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </com.google.android.flexbox.FlexboxLayout>
+</com.google.android.flexbox.FlexboxLayout>
