@@ -96,7 +96,9 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
 
                 List<Application> filteredList = ApplicationLibraryFragment.installedApplicationList.stream()
                         .filter(application ->
-                                application.name.toLowerCase(Locale.ROOT).contains(searchTerm) && shouldInclude(application))
+                                (application.name.toLowerCase(Locale.ROOT).contains(searchTerm)
+                                    || containsPartialOrFullMatch(application, searchTerm))
+                                && shouldInclude(application))
                         .collect(Collectors.toList());
 
                 FilterResults filterResults = new FilterResults();
@@ -134,6 +136,18 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
             return applicationTags.stream().anyMatch(subjectFilters::contains);
         }
         return true; // Include if no subject filters are set
+    }
+
+    /**
+     * Determines whether the given application should be included in the search results based on
+     * the hidden keywords linked to that application.
+     *
+     * @param application The application to check for inclusion.
+     * @param searchString The string of what is being searched by the user.
+     * @return True if the application should be included, false otherwise.
+     */
+    public static boolean containsPartialOrFullMatch(Application application, String searchString) {
+        return application.getInformation().getHiddenKeywords().stream().anyMatch(item -> item.toLowerCase().contains(searchString));
     }
 
     /**

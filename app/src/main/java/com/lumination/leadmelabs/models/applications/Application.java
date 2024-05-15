@@ -22,7 +22,7 @@ public class Application {
         this.id = id;
         this.isVr = isVr;
         this.subtype = subtype;
-        this.information = new Information(null, null, null, null);
+        this.information = new Information(null, null, null, null, null);
     }
 
     //region Settings/Getters
