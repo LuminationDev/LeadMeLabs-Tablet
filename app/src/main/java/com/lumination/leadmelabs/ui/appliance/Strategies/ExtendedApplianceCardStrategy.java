@@ -20,6 +20,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
 import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.databinding.CardApplianceSceneBinding;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.segment.Segment;
@@ -35,10 +36,12 @@ import com.segment.analytics.Properties;
 import java.util.HashMap;
 import java.util.Objects;
 
+//TODO need to test with the lab for feedback from the Cbus
 public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     private View finalResult; //The underlying card view the extended blind xml is attached to.
     private TextView statusTitle; //The textview that the current status is to be displayed on.
-    private CardApplianceBinding binding; //The underlying card model the extended blind xml is attached to.
+    private CardApplianceBinding applianceBinding; //The underlying card model the extended blind xml is attached to.
+    private CardApplianceSceneBinding sceneBinding; //The underlying card model the extended blind xml is attached to.
     private Appliance appliance; //The populate appliance model.
     protected View cardView; // The inflated view for controlling the blinds.
     private FlexboxLayout cardInsert;
@@ -51,10 +54,15 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public <T extends ViewDataBinding> void trigger(T binding, Appliance appliance, View finalResult) {
-        CardApplianceBinding cardBinding = (CardApplianceBinding) binding;
+        if (binding instanceof CardApplianceBinding) {
+            this.applianceBinding = (CardApplianceBinding) binding;
+        } else if (binding instanceof CardApplianceSceneBinding) {
+            this.sceneBinding = (CardApplianceSceneBinding) binding;
+        } else {
+            throw new IllegalArgumentException("Unsupported binding type");
+        }
 
         this.finalResult = finalResult;
-        this.binding = cardBinding;
         this.appliance = appliance;
 
         //Get the overall main root view
@@ -116,7 +124,7 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
                 drawableTransition = R.drawable.transition_appliance_none_to_navy;
             }
 
-            interChangeDrawable(binding.getStatus().getValue(), drawableConstant);
+            interChangeDrawable(getStatus(), drawableConstant);
             applianceNetworkCall(appliance, applianceValue);
 
             ApplianceViewModel.activeApplianceList.put(appliance.id, applianceValue);
@@ -133,7 +141,13 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     private ViewGroup createExtendedCard(ViewGroup root) {
         //Get the absolute position of the card within the window
         int[] out = new int[2];
-        binding.getRoot().getLocationInWindow(out);
+
+        if (this.applianceBinding != null) {
+            this.applianceBinding.getRoot().getLocationInWindow(out);
+        }
+        else {
+            this.sceneBinding.getRoot().getLocationInWindow(out);
+        }
 
         //Inflate the expanded card view
         cardView = ApplianceFragment.fragmentInflater.inflate(R.layout.card_appliance_hdmi, root, false);
@@ -163,14 +177,14 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
         String statusContent;
         String status;
 
-        if (Objects.equals(binding.getStatus().getValue(), Constants.ACTIVE)) {
+        if (Objects.equals(getStatus(), Constants.ACTIVE)) {
             if (appliance.options != null) {
                 statusContent = appliance.options.get(0).name;
             } else {
                 statusContent = appliance.description.get(0);
             }
             status = Constants.ACTIVE;
-        } else if (Objects.equals(binding.getStatus().getValue(), Constants.INACTIVE)) {
+        } else if (Objects.equals(getStatus(), Constants.INACTIVE)) {
             if (appliance.options != null) {
                 statusContent = appliance.options.get(1).name;
             } else {
@@ -206,7 +220,7 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     }
 
     private void resetTransition() {
-        switch(binding.getStatus().getValue()) {
+        switch(getStatus()) {
             case Constants.ACTIVE:
                 cardInsert.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_blue_to_none, null));
                 break;
@@ -253,7 +267,11 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
         imageView.setBackgroundResource(iconResource);
     }
 
-    //Switch between the different transitions then set the overall fade as the original.
+    /**
+     * Switch between the different transitions then set the overall fade as the original.
+     * @param oldStatus The current status of the binding.
+     * @param newStatus The status the binding is required to transition to.
+     */
     protected void interChangeDrawable(String oldStatus, String newStatus) {
         if(oldStatus.equals(newStatus)) {
             return;
@@ -299,7 +317,7 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
     protected void coordinateVisuals(int transitionDrawable, String current, String activeStatus) {
         ApplianceController.applianceTransition(finalResult, transitionDrawable);
         statusTitle.setText(current);
-        binding.setStatus(new MutableLiveData<>(activeStatus));
+        setStatus(new MutableLiveData<>(activeStatus));
     }
 
     /**
@@ -333,5 +351,30 @@ public class ExtendedApplianceCardStrategy extends AbstractApplianceStrategy {
         properties.put("applianceActionType", "radio");
 
         Segment.trackEvent(SegmentConstants.Appliance_Triggered, properties);
+    }
+
+    /**
+     * Get the status of the set binding.
+     * @return A String of the binding's status.
+     */
+    private String getStatus() {
+        if (this.applianceBinding != null) {
+            return this.applianceBinding.getStatus().getValue();
+        }
+
+        return this.sceneBinding.getStatus().getValue();
+    }
+
+    /**
+     * Set the binding's mutable live data status.
+     * @param status A MutableLiveData<String> representing the status to set.
+     */
+    private void setStatus(MutableLiveData<String> status) {
+        if (this.applianceBinding != null) {
+            this.applianceBinding.setStatus(status);
+            return;
+        }
+
+        this.sceneBinding.setStatus(status);
     }
 }

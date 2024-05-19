@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SceneController {
@@ -276,7 +275,7 @@ public class SceneController {
 
         List<Appliance> updatedList = currentList.stream()
                 .peek(appliance -> {
-                    if (appliance.type.equals(Constants.SCENE) && !id.equals(appliance.id) && (room.equals("All") || room.equals(appliance.room))) {
+                    if (appliance.type.equals(Constants.SCENE) && !appliance.name.contains(Constants.BLIND_SCENE_SUBTYPE) && !id.equals(appliance.id) && (room.equals("All") || room.equals(appliance.room))) {
                         appliance.status.setValue(updatedStatus);
                         updates.add(appliance.id);
                     }
@@ -303,9 +302,9 @@ public class SceneController {
 
         for (String cards : updates) {
             if (isSceneAdapter) {
-                ((SceneAdapter) adapter).updateIfVisible(cards);
+                adapter.updateIfVisible(cards);
             } else {
-                ((ApplianceAdapter) adapter).updateIfVisible(cards);
+                adapter.updateIfVisible(cards);
             }
         }
 
