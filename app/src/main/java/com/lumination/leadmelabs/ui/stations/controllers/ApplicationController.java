@@ -154,6 +154,7 @@ public class ApplicationController {
             temp.setInformation(new Information(null,
                     new ArrayList<>(),
                     new ArrayList<>(),
+                    new ArrayList<>(),
                     new ArrayList<>()));
         }
 

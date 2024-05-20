@@ -250,7 +250,7 @@ public class Station implements Cloneable {
         }
 
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 textView.post(() -> {
@@ -260,14 +260,19 @@ public class Station implements Cloneable {
                     }
 
                     //Collect the current station state
-                    VrStation station = (VrStation) ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
+                    Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(id);
 
-                    //Make sure the state is the same before updating the dots
-                    if(station.stateHandler.isAwaitingHeadset()) {
-                        textView.setText(animatedText.toString());
-                        dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
-                    } else {
-                        this.cancel();
+                    //Safe cast
+                    if (station instanceof VrStation) {
+                        VrStation vrStation = (VrStation) station; //safe cast
+
+                        //Make sure the state is the same before updating the dots
+                        if(vrStation.stateHandler.isAwaitingHeadset()) {
+                            textView.setText(animatedText.toString());
+                            dotsCount = (dotsCount + 1) % 4; // Change the number of dots as needed
+                        } else {
+                            this.cancel();
+                        }
                     }
                 });
             }
