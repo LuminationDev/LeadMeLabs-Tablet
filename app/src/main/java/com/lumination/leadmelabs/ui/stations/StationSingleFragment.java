@@ -235,11 +235,11 @@ public class StationSingleFragment extends Fragment {
                 String subtype = current.subtype.optString("category", "");
                 if (subtype.equals(Constants.VideoPlayer)) {
                     bundle.putString("library", "videos");
-                    SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-                    if (fragment == null) return;
-
-                    fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
                 }
+                SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                if (fragment == null) return;
+
+                fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
                 return;
             }
 
