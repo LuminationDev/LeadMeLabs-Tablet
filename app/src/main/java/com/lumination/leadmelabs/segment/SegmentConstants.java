@@ -94,6 +94,7 @@ public class SegmentConstants {
 
     //Segment Network
     public static String Network_Outage = "Network Outage";
+    public static String Network_Touch = "Network Touch";
 
     public static String Appliances_Refreshed = "Appliances Refreshed";
 }
