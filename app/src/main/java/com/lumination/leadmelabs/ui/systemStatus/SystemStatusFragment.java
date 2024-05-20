@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.receivers.BatteryLevelReceiver;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.segment.analytics.Properties;
 
 import java.util.Date;
@@ -33,6 +35,7 @@ public class SystemStatusFragment extends Fragment {
     private final Handler handler = new Handler();
     private Runnable runnable;
     private final String preferenceKey = "network_outage";
+    private String currentStatus = Constants.OFFLINE;
 
     @Nullable
     @Override
@@ -85,17 +88,32 @@ public class SystemStatusFragment extends Fragment {
                 .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
                 .build();
 
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //Detect changes in the network
         ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
                 if (MainActivity.getInstance() != null) {
+                    boolean connected = checkInternetAccess(connectivityManager, network);
+
+                    int drawable = connected ? R.drawable.network_connected : R.drawable.network_no_internet;
+                    currentStatus = connected ? Constants.ONLINE : Constants.NO_INTERNET;
+
+                    setWifiIcon(view, drawable);
+
                     MainActivity.runOnUI(() -> {
                         cancelDelayedFunction();
                         MainActivity.getInstance().restartNetworkService();
-                        ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_network_connected, 0, 0);
                     });
                 }
+            }
+
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+                super.onCapabilitiesChanged(network, networkCapabilities);
+                checkNetworkCapabilities(view, connectivityManager);
             }
 
             @Override
@@ -104,16 +122,32 @@ public class SystemStatusFragment extends Fragment {
 
                 startDelayedFunction();
                 if (MainActivity.getInstance() != null) {
-                    MainActivity.runOnUI(() -> {
-                        ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_network_not_connected, 0, 0);
-                    });
+                    currentStatus = Constants.OFFLINE;
+                    setWifiIcon(view, R.drawable.network_not_connected);
                 }
             }
         };
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         connectivityManager.requestNetwork(networkRequest, networkCallback);
+        checkNetworkCapabilities(view, connectivityManager);
+        view.findViewById(R.id.network_connection).setOnClickListener(v -> {
+            displayPrompt();
 
+            Properties properties = new Properties();
+            properties.put("classification", "Network");
+            properties.put("status", currentStatus);
+            Segment.trackEvent(SegmentConstants.Network_Touch, properties);
+        });
+    }
+
+    /**
+     * Attempt to check all the networks the tablet may be connected to determine what the status of
+     * the tablets internet connection status is overall.
+     * @param view The view containing the TextView for displaying network connection status.
+     * @param connectivityManager The tablets ConnectivityManager system component.
+     */
+    private void checkNetworkCapabilities(View view, ConnectivityManager connectivityManager) {
+        //Initial start up check
         NetworkCapabilities networkCapabilities = null;
         Network[] networks = connectivityManager.getAllNetworks();
         for (Network network : networks) {
@@ -123,19 +157,76 @@ public class SystemStatusFragment extends Fragment {
             }
         }
 
-        boolean connected = networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+        boolean hasNetwork = networkCapabilities != null;
+        boolean connected = hasNetwork && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
 
         if (MainActivity.getInstance() != null) {
-            if (connected) {
-                cancelDelayedFunction();
-            } else {
+            int drawable;
+
+            //No network available
+            if (!hasNetwork) {
                 startDelayedFunction();
+                currentStatus = Constants.OFFLINE;
+                drawable = R.drawable.network_not_connected;
             }
-            MainActivity.runOnUI(() -> {
-                int drawable = connected ? R.drawable.ic_network_connected : R.drawable.ic_network_not_connected;
-                ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, drawable, 0, 0);
-            });
+            //Network available but no internet
+            else if (!connected) {
+                //Show a prompt?
+                currentStatus = Constants.NO_INTERNET;
+                drawable = R.drawable.network_no_internet;
+            }
+            //Network and internet available
+            else {
+                cancelDelayedFunction();
+                currentStatus = Constants.ONLINE;
+                drawable = R.drawable.network_connected;
+            }
+
+            setWifiIcon(view, drawable);
         }
+    }
+
+    /**
+     * Verify if the network has internet access.
+     */
+    private boolean checkInternetAccess(ConnectivityManager connectivityManager, Network network) {
+        NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+        return networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+    }
+
+    /**
+     * Set the Wifi icon to the correct status representation.
+     * @param view The view containing the TextView for displaying network connection status.
+     * @param drawable An int of the resource Id for the drawable to set.
+     */
+    private void setWifiIcon(View view, int drawable) {
+        MainActivity.runOnUI(() -> ((TextView) view.findViewById(R.id.network_connection)).setCompoundDrawablesWithIntrinsicBounds(0, drawable, 0, 0));
+    }
+
+    /**
+     * Display a toast prompt to the user that describes the current network status.
+     */
+    private void displayPrompt() {
+        String message;
+
+        switch (currentStatus) {
+            case Constants.ONLINE:
+                message = "Tablet is connected.";
+                break;
+
+            case Constants.NO_INTERNET:
+                message = "Tablet connected to network but cannot reach the internet.";
+                break;
+
+            case Constants.OFFLINE:
+                message = "Tablet is not connected to the network.";
+                break;
+
+            default:
+                return;
+        }
+
+        Toast.makeText(MainActivity.getInstance(), message, Toast.LENGTH_LONG).show();
     }
 
     /**

@@ -83,4 +83,9 @@ public class Constants {
     public static String  HEADSET_TYPE_VIVE_PRO_2 = "VivePro2";
     public static String  HEADSET_TYPE_VIVE_FOCUS_3 = "ViveFocus3";
     public static String  HEADSET_TYPE_VIVE_BUSINESS_STREAMING = "ViveBusinessStreaming";
+
+    //Network Status
+    public static final String OFFLINE = "Offline";
+    public static final String NO_INTERNET = "No internet";
+    public static final String ONLINE = "Online";
 }
