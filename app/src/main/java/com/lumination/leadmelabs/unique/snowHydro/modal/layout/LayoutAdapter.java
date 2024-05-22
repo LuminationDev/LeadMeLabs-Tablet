@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.databinding.CardLayoutBinding;
 import com.lumination.leadmelabs.models.Option;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Interlinking;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class LayoutAdapter extends BaseAdapter {
 
         ViewDataBinding binding = (ViewDataBinding) view.getTag();
         Option currentOption = getItem(position);
-        SetOptionImage(currentOption.getName(), view);
+        Helpers.SetOptionImage(currentOption.getName(), view.findViewById(R.id.placeholder_image), view);
         binding.setVariable(BR.option, currentOption);
 
         view.setOnClickListener(v -> {
@@ -82,34 +83,5 @@ public class LayoutAdapter extends BaseAdapter {
         });
 
         return view;
-    }
-
-    public void SetOptionImage(String name, View view) {
-        ImageView imageView = view.findViewById(R.id.placeholder_image);
-
-        //TODO get Matt to create a default layout image
-        int temp = R.drawable.default_header;
-
-        //TODO change these for Snowy (Working with Thebarton lab currently)
-        switch (name.trim()) {
-            case "PC + SB Dual":
-                temp = R.drawable.snowy_layouts_vr_stations_grid;
-                break;
-
-            case "PC Only":
-                temp = R.drawable.snowy_layouts_vr_stations_vertical;
-                break;
-
-            case "Presentation":
-                temp = R.drawable.snowy_layouts_presentation;
-                break;
-
-            case "Townhall":
-                temp = R.drawable.snowy_layouts_fullscreen;
-                break;
-        }
-
-        //Load the default image for now
-        Glide.with(view).load(temp).into(imageView);
     }
 }

@@ -82,6 +82,42 @@ public class Helpers {
     }
 
     /**
+     * Sets the image for the supplied option name.
+     * @param name A string of the name of the option
+     * @param imageView An imageView where the image is going to be loaded
+     * @param view The parent view containing the imageView.
+     */
+    public static void SetOptionImage(String name, ImageView imageView, View view) {
+        int temp;
+
+        //TODO change these for Snowy (Working with Thebarton lab currently)
+        switch (name.trim()) {
+            case "PC + SB Dual":
+                temp = R.drawable.snowy_layouts_vr_stations_grid;
+                break;
+
+            case "PC Only":
+                temp = R.drawable.snowy_layouts_vr_stations_vertical;
+                break;
+
+            case "Presentation":
+                temp = R.drawable.snowy_layouts_presentation;
+                break;
+
+            case "Townhall":
+                temp = R.drawable.snowy_layouts_fullscreen;
+                break;
+
+            default:
+                temp = R.drawable.default_layout;
+                break;
+        }
+
+        //Load the default image for now
+        Glide.with(view).load(temp).into(imageView);
+    }
+
+    /**
      * Sets the experience image based on the selected application.
      *
      * @param type A string of the experience type.
