@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="quick_actions">Quick Actions</string>
+    <string name="active_novastar_preset">active novastar preset</string>
 </resources>

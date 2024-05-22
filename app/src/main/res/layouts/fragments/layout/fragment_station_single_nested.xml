@@ -173,76 +173,11 @@
                                 android:textColor="@color/text_dark"
                                 android:textFontWeight="600" />
 
-                            <com.google.android.flexbox.FlexboxLayout
-                                android:id="@+id/current_session_box"
-                                android:layout_width="400dp"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/bg_white_curved"
-                                android:padding="20dp"
-                                app:alignItems="center"
-                                app:flexDirection="column">
-
-                                <!--TODO change this to the scene/layout thing-->
-                                <FrameLayout
-                                    android:layout_width="360dp"
-                                    android:layout_height="164dp">
-
-                                    <ImageView
-                                        android:id="@+id/placeholder_image"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_marginVertical="5dp"
-                                        android:contentDescription="@string/experience_preview"
-                                        android:visibility="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? View.VISIBLE : View.GONE, default=gone}" />
-
-                                    <LinearLayout
-                                        android:id="@+id/progress_spinner_container"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:gravity="center"
-                                        android:visibility="gone">
-
-                                        <ProgressBar
-                                            android:id="@+id/progress_spinner"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"/>
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/no_game_layout"
-                                        android:layout_width="360dp"
-                                        android:layout_height="164dp"
-                                        android:layout_marginVertical="5dp"
-                                        android:gravity="center_horizontal"
-                                        android:visibility="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? View.GONE : View.VISIBLE}">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:text="@{(!selectedStation.applicationController.experienceName.equals(`null`) &amp;&amp; selectedStation.applicationController.experienceName != null &amp;&amp; selectedStation.applicationController.experienceName.length() > 0) ? selectedStation.applicationController.experienceName : `No session running`}" />
-                                    </LinearLayout>
-                                </FrameLayout>
-
-                                <!--TODO this is completely hidden until required in the future-->
-                                <com.google.android.flexbox.FlexboxLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:visibility="@{stations.selectedApplication.details == null ? View.GONE : View.GONE, default=gone}"
-                                    app:flexDirection="row"
-                                    app:justifyContent="space_between">
-
-                                    <com.google.android.material.button.MaterialButton
-                                        android:id="@+id/control_experience"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:backgroundTint="@color/blue"
-                                        android:letterSpacing="0.02"
-                                        android:text="@string/control_experience"
-                                        app:icon="@drawable/ic_control_experience"
-                                        app:iconSize="20dp"/>
-                                </com.google.android.flexbox.FlexboxLayout>
-                            </com.google.android.flexbox.FlexboxLayout>
+                            <!--STATION CURRENT SESSION-->
+                            <include
+                                layout="@layout/section_station_single_nested_current_session"
+                                app:selectedStation="@{selectedStation}"
+                                app:stations="@{stations}"/>
 
                             <!--STATION STATUS SECTION-->
                             <com.google.android.flexbox.FlexboxLayout

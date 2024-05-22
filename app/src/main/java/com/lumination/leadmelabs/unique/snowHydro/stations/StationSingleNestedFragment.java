@@ -32,7 +32,9 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.Option;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
@@ -41,6 +43,7 @@ import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -67,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * This class is designed specifically for the Snowy Hydro project. The single page handles a
@@ -552,8 +556,35 @@ public class StationSingleNestedFragment extends Fragment {
      */
     private void updateExperienceImage(View view, Station station) {
         if (Helpers.isNullOrEmpty(station.applicationController.getExperienceType()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceId()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceName())) {
-            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
-            experienceControlImage.setImageDrawable(null);
+            ImageView experienceControlImage = view.findViewById(R.id.novastar_image);
+
+            Appliance ledWall = null;
+
+            List<Appliance> allAppliances = ApplianceFragment.mViewModel.getAppliances().getValue();
+            if (allAppliances == null) return;
+
+            //NOTE: Currently there is only ever 1 instance of a LED wall.
+            for (Appliance appliance : allAppliances) {
+                if (appliance.matchesDisplayCategory(Constants.LED_WALLS)) {
+                    ledWall = appliance;
+                    break;
+                }
+            }
+
+            if (ledWall == null) {
+                experienceControlImage.setImageDrawable(null);
+                return;
+            }
+
+            for (Option option : ledWall.options) {
+                if (Objects.equals(option.id, ledWall.value)) {
+                    Helpers.SetOptionImage(option.getName(), view.findViewById(R.id.novastar_image), view);
+                    return;
+                }
+            }
+
+            //Backup for when options have not loaded yet
+            Helpers.SetOptionImage("", view.findViewById(R.id.novastar_image), view);
         } else {
             Helpers.setExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
         }
