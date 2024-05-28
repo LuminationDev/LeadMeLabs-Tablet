@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.services.jobServices.NotificationJobService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         preloadData();
         Segment.initialise(); //This needs to be after preloading the view models
 
-        FirebaseManager.validateLicenseKey();
+//        FirebaseManager.validateLicenseKey();
         scheduleJobs();
 
         if (savedInstanceState == null) {
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void scheduleJobs() {
 //        LicenseJobService.schedule(this);
+        NotificationJobService.schedule(this);
         UpdateJobService.schedule(this);
     }
 

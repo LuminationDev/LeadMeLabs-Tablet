@@ -66,6 +66,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,7 @@ public class DialogManager {
     private static final HashMap<String, AlertDialog> openDialogs = new HashMap<>();
 
     public static AlertDialog steamGuardEntryDialog;
-    public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
+    public static AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
     public static List<Integer> endSessionStationIds;
@@ -518,7 +520,7 @@ public class DialogManager {
      */
     public static void createConfirmationDialog(String titleText, String contentText, BooleanCallbackInterface booleanCallbackInterface, String cancelButtonText, String confirmButtonText, boolean cancelable) {
         View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_warning_vern, null);
-        AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(confirmationDialogView).create();
+        AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(confirmationDialogView).create();
 
         TextView title = confirmationDialogView.findViewById(R.id.title);
         title.setText(titleText);
@@ -556,7 +558,7 @@ public class DialogManager {
 
     public static void createEndSessionDialog(ArrayList<Station> stations) {
         View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_select_stations, null);
-        AlertDialog endSessionDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
+        AlertDialog endSessionDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(view).create();
 
         TextView title = view.findViewById(R.id.title);
         title.setText(R.string.select_stations);
@@ -629,7 +631,7 @@ public class DialogManager {
      */
     public static void buildURLDialog(Context context, FragmentStationSingleBinding binding) {
         View view = View.inflate(context, R.layout.dialog_enter_url, null);
-        AlertDialog urlDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+        AlertDialog urlDialog = new AlertDialog.Builder(context).setView(view).create();
 
         EditText url = view.findViewById(R.id.url_input);
         url.requestFocus();
@@ -663,7 +665,7 @@ public class DialogManager {
      */
     public static void buildRenameStationDialog(Context context, FragmentStationSingleBinding binding) {
         View view = View.inflate(context, R.layout.dialog_rename_station, null);
-        AlertDialog renameStationDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+        AlertDialog renameStationDialog = new AlertDialog.Builder(context).setView(view).create();
 
         EditText nameInput = view.findViewById(R.id.name_input);
         nameInput.requestFocus();
@@ -708,7 +710,7 @@ public class DialogManager {
      */
     public static void buildShutdownOrRestartDialog(Context context, String type, int[] stationIds, CountdownCallbackInterface countdownCallbackInterface) {
         View view = View.inflate(context, R.layout.dialog_template, null);
-        AlertDialog confirmDialog = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.AlertDialogTheme).setView(view).create();
+        AlertDialog confirmDialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme).setView(view).create();
         confirmDialog.setCancelable(false);
         confirmDialog.setCanceledOnTouchOutside(false);
 
@@ -988,7 +990,7 @@ public class DialogManager {
     @SuppressLint("SetJavaScriptEnabled")
     public static void buildWebViewDialog(Context context, String URL) {
         View webViewDialogView = View.inflate(context, R.layout.dialog_webview, null);
-        Dialog webViewDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(webViewDialogView).create();
+        Dialog webViewDialog = new AlertDialog.Builder(context).setView(webViewDialogView).create();
 
         Button closeButton = webViewDialogView.findViewById(R.id.close_button);
         closeButton.setOnClickListener(w -> webViewDialog.dismiss());
@@ -1064,7 +1066,7 @@ public class DialogManager {
 
         View reconnectDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_lost_server, null);
         if (reconnectDialog == null) {
-            reconnectDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
+            reconnectDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(reconnectDialogView).create();
             reconnectDialog.setCancelable(false);
             reconnectDialog.setCanceledOnTouchOutside(false);
         }
@@ -1096,8 +1098,8 @@ public class DialogManager {
                 NetworkService.refreshNUCAddress();
             }
 
-            new java.util.Timer().schedule( // turn animations back on after the scenes have updated
-                    new java.util.TimerTask() {
+            new Timer().schedule( // turn animations back on after the scenes have updated
+                    new TimerTask() {
                         @Override
                         public void run() {
                             MainActivity.runOnUI(() -> {
@@ -1169,7 +1171,7 @@ public class DialogManager {
     public static void awaitStationApplicationLaunch(int[] stationIds, String gameName, boolean restarting)
     {
         View gameLaunchDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_template, null);
-        gameLaunchDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance()).setView(gameLaunchDialogView).create();
+        gameLaunchDialog = new AlertDialog.Builder(MainActivity.getInstance()).setView(gameLaunchDialogView).create();
 
         TextView title = gameLaunchDialogView.findViewById(R.id.title);
         title.setText(restarting ? "Restarting Experience" : "Launching Experience");
@@ -1317,7 +1319,7 @@ public class DialogManager {
      */
     public static void steamGuardKeyEntry(int stationId) {
         View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_steam_guard_input, null);
-        steamGuardEntryDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(view).create();
+        steamGuardEntryDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(view).create();
 
         //Reset in case of pre-emptive closure
         FlexboxLayout entry = view.findViewById(R.id.steam_guard_entry);
@@ -1407,7 +1409,7 @@ public class DialogManager {
         }
     }
 
-    //region tracking
+    //region Tracking
     private static final String segmentClassification = "Dialog";
 
     private static void trackSettingChanged(String name) {

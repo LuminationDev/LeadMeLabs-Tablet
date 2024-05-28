@@ -300,6 +300,13 @@
         <item name="android:background">@drawable/bg_alertdialog_vern</item>
     </style>
 
+    <style name="AlertNotificationTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_alert_notification_curved</item>
+    </style>
+
     <style name="CurvedDialogTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@drawable/modal_background_curved</item>
         <item name="android:windowNoTitle">true</item>
