@@ -24,7 +24,7 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.GEOGRAPHY)),
                 new ArrayList<>(Arrays.asList("exploration", "geography", "countries", "international", "world", "tourism", "satellite", "maps", "travel", "landmarks")),
                 new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
-                TagConstants.INTERMEDIATE
+                TagConstants.SIMPLE
         );
         dataMap.put("348250", googleEarth);
 
