@@ -30,8 +30,13 @@ import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Helpers {
     public static ArrayList<Station> cloneStationList(List<Station> stationList) {
@@ -79,6 +84,42 @@ public class Helpers {
             Log.e("QaChecks", "Exception", e);
         }
         return false;
+    }
+
+    /**
+     * Sets the image for the supplied option name.
+     * @param name A string of the name of the option
+     * @param imageView An imageView where the image is going to be loaded
+     * @param view The parent view containing the imageView.
+     */
+    public static void SetOptionImage(String name, ImageView imageView, View view) {
+        int temp;
+
+        //TODO change these for Snowy (Working with Thebarton lab currently)
+        switch (name.trim()) {
+            case "PC + SB Dual":
+                temp = R.drawable.snowy_layouts_vr_stations_grid;
+                break;
+
+            case "PC Only":
+                temp = R.drawable.snowy_layouts_vr_stations_vertical;
+                break;
+
+            case "Presentation":
+                temp = R.drawable.snowy_layouts_presentation;
+                break;
+
+            case "Townhall":
+                temp = R.drawable.snowy_layouts_fullscreen;
+                break;
+
+            default:
+                temp = R.drawable.default_layout;
+                break;
+        }
+
+        //Load the default image for now
+        Glide.with(view).load(temp).into(imageView);
     }
 
     /**
@@ -253,5 +294,36 @@ public class Helpers {
         }
 
         return checkList;
+    }
+
+    /**
+     * Check if a supplied time stamp is older than x weeks.
+     * @param timestamp A string of a time in the format 'Thu, 23 May 2024 22:56:30 GMT'
+     * @param weeks An int representing how many weeks to check for.
+     * @return A boolean of it the supplied time stamp is older than the supplied weeks.
+     */
+    public static boolean isOlderThanXWeeks(String timestamp, int weeks) {
+        // Define the format of the input timestamp string
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+
+        try {
+            // Parse the timestamp string into a Date object
+            Date parsedDate = dateFormat.parse(timestamp);
+
+            // Subtract two weeks from the current date
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.WEEK_OF_YEAR, -weeks);
+            Date twoWeeksAgo = calendar.getTime();
+
+            // An error has occurred, bail out
+            if (parsedDate == null) return true;
+
+            // Check if the parsed date is before the date two weeks ago
+            return parsedDate.before(twoWeeksAgo);
+        } catch (ParseException e) {
+            // Handle the exception if the timestamp string is not in the expected format
+            Log.e("Helpers", String.format("Error: %s", e.getMessage()));
+            return false;
+        }
     }
 }

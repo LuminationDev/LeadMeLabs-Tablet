@@ -271,7 +271,7 @@ public class VrStation extends Station {
         int batteryValue = selectedStation.getControllerBattery(controllerType);
 
         if(isStatusOff || isControllerConnected || batteryValue == 0 || tracking) {
-            imageView.setImageResource(R.drawable.battery_unknown);
+            imageView.setImageResource(R.drawable.vr_battery_unknown);
             return;
         }
 
@@ -282,13 +282,13 @@ public class VrStation extends Station {
 
         //Set the battery status image colour (relates to battery value, below 15 is getting low)
         if(batteryValue > 50) {
-            imageView.setImageResource(R.drawable.battery_full);
+            imageView.setImageResource(R.drawable.vr_battery_full);
         } else if (batteryValue > 15)  {
-            imageView.setImageResource(R.drawable.battery_two_bar);
+            imageView.setImageResource(R.drawable.vr_battery_two_bar);
         } else if (batteryValue > 5)  {
-            imageView.setImageResource(R.drawable.battery_one_bar);
+            imageView.setImageResource(R.drawable.vr_battery_one_bar);
         } else if (batteryValue > 0)  {
-            imageView.setImageResource(R.drawable.battery_empty);
+            imageView.setImageResource(R.drawable.vr_battery_empty);
             selectedStation.handleIconAnimation(true, imageView, selectedStation, controllerType + "Battery");
         }
     }

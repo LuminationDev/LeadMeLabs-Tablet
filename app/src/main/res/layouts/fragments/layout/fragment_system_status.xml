@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="-25dp"
             android:layout_marginEnd="10dp"
-            app:drawableTopCompat="@drawable/ic_network_connected"
+            app:drawableTopCompat="@drawable/network_connected"
             />
 
         <RelativeLayout

@@ -96,4 +96,9 @@ public class Constants {
     public static final String BASIC_MODE = "basic_mode"; // No station actions involved
     public static final String BASIC_ON_MODE = "basic_on_mode"; // Some stations turning on
     public static final String BASIC_OFF_MODE = "basic_off_mode"; // Some stations turning off
+
+    //Network Status
+    public static final String OFFLINE = "Offline";
+    public static final String NO_INTERNET = "No internet";
+    public static final String ONLINE = "Online";
 }

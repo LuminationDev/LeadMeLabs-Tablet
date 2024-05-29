@@ -242,7 +242,10 @@ public class ApplicationShareCodeFragment extends Fragment {
                 combinedText.append(editText.getText().toString());
             }
 
-            //TODO put in validation for share code length of Thinglink etc...
+            if (combinedText.length() != 6) {
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Invalid Share Code", Toast.LENGTH_SHORT).show();
+                return Constants.Invalid;
+            }
 
             return combinedText.toString();
         }
