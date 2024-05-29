@@ -44,6 +44,7 @@ import com.segment.analytics.Properties;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.sentry.Sentry;
@@ -115,7 +116,7 @@ public class LibraryPageFragment extends Fragment {
         setupFilter(view);
         setupButtons(view);
 
-        mViewModel.getSubjectFilters().observe(getViewLifecycleOwner(), filters -> {
+        mViewModel.getFilters().observe(getViewLifecycleOwner(), filters -> {
             String currentSearch = mViewModel.getCurrentSearch().getValue();
             libraryInterface.performSearch(currentSearch);
         });
@@ -208,7 +209,7 @@ public class LibraryPageFragment extends Fragment {
     private void setupFilter(View view) {
         // Setup the filter dropdown
         Spinner customSpinner = view.findViewById(R.id.subject_filter_spinner);
-        List<String> data = new ArrayList<>(TagConstants.ALL_FILTERS);
+        HashMap<String, ArrayList<String>> data = new HashMap<>(TagConstants.ALL_FILTERS);
         LibrarySubjectFilterAdapter adapter = new LibrarySubjectFilterAdapter(getContext(), data, getViewLifecycleOwner());
         customSpinner.setAdapter(adapter);
 
