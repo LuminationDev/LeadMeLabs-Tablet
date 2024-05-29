@@ -9,24 +9,36 @@ import java.util.ArrayList;
 public class Information {
     private final String description;
     private final ArrayList<String> tags;
+    private final String complexity;
     private final ArrayList<String> subTags;
     private final ArrayList<String> hiddenKeywords;
     private final ArrayList<Integer> ages;
 
-    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<String> hiddenKeywords, ArrayList<Integer> ages) {
+    public Information(String description, ArrayList<String> tags, ArrayList<String> subTags, ArrayList<String> hiddenKeywords, ArrayList<Integer> ages, String complexity) {
         this.description = description;
         this.tags = tags;
         this.subTags = subTags;
         this.hiddenKeywords = hiddenKeywords;
         this.ages = ages;
+        this.complexity = complexity;
     }
 
     public String getDescription() {
         return this.description;
     }
+    public String getComplexity() {
+        return this.complexity;
+    }
 
     public ArrayList<String> getTags() {
         return this.tags;
+    }
+
+    public ArrayList<String> getFilterables() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.addAll(this.tags);
+        arrayList.add(this.complexity);
+        return arrayList;
     }
 
     public ArrayList<String> getHiddenKeywords() {

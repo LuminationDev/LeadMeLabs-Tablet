@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="@{library.subjectFilters.size() == 0 ? `All Subjects` : Helpers.concatArray(library.subjectFilters), default=`All Subjects`}"
+                android:text="@{library.filters.size() == 0 ? `Filter by` : Helpers.concatArray(library.filters), default=`Filter by`}"
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
                 android:gravity="center_vertical"/>
