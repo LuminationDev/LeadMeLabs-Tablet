@@ -79,11 +79,6 @@ public class DashboardPageFragment extends Fragment {
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         binding.setSettings(settingsViewModel);
 
-        //TODO can we put the setup in here? or just the load fragments stuff?
-        //if (savedInstanceState == null) {
-            //loadStandardFragments();
-        //}
-
         // Setup the Dashboard action buttons depending on the set layout
         setupDashboardLayout(view);
 
@@ -172,16 +167,16 @@ public class DashboardPageFragment extends Fragment {
      */
     private void setupSnowHydroDashboardButtons(View view) {
         //Switch to VR mode
-        setupVrModeButton(view);
+        setupVrModeButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Switch to Presentation mode
-        setupPresentationModeButton(view);
+        setupShowcaseModeButton(view);
 
         //End session on all/selected stations
-        setupEndSessionButton(view);
+        setupEndSessionButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Restart all stations
-        setupRestartAllButton(view);
+        setupRestartAllButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Shutdown the lab
         setupShutdownButton(view);
@@ -193,24 +188,30 @@ public class DashboardPageFragment extends Fragment {
      */
     private void setupStandardDashboardButtons(View view) {
         //Switch to VR mode
-        setupVrModeButton(view);
+        setupVrModeButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Launch the new session flow
         setupNewSessionButton(view);
 
         //End session on all/selected stations
-        setupEndSessionButton(view);
+        setupEndSessionButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Restart all stations
-        setupRestartAllButton(view);
+        setupRestartAllButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Switch to classroom mode
         setupClassModeButton(view);
     }
 
     //region Common Dashboard Buttons
-    private void setupVrModeButton(View view) {
-        FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
+    private void setupVrModeButton(View view, String layout) {
+        FlexboxLayout vrMode;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            vrMode = view.findViewById(R.id.vr_mode_snowy_button);
+        } else {
+            vrMode = view.findViewById(R.id.vr_mode_button);
+        }
+
         vrMode.setOnClickListener(v -> {
             searchForSceneTrigger("vr");
             // Send data to Segment
@@ -231,17 +232,23 @@ public class DashboardPageFragment extends Fragment {
         });
     }
 
-    private void setupPresentationModeButton(View view) {
-        FlexboxLayout presentationMode = view.findViewById(R.id.presentation_mode_button);
+    private void setupShowcaseModeButton(View view) {
+        FlexboxLayout presentationMode = view.findViewById(R.id.showcase_mode_snowy_button);
         presentationMode.setOnClickListener(v -> {
-            searchForSceneTrigger("presentation");
+            searchForSceneTrigger("showcase");
             // Send data to Segment
-            trackDashboardEvent(SegmentConstants.Event_Lab_Presentation_Mode);
+            trackDashboardEvent(SegmentConstants.Event_Lab_Showcase_Mode);
         });
     }
 
-    private void setupEndSessionButton(View view) {
-        FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
+    private void setupEndSessionButton(View view, String layout) {
+        FlexboxLayout endSession;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            endSession = view.findViewById(R.id.end_session_snowy_button);
+        } else {
+            endSession = view.findViewById(R.id.end_session_button);
+        }
+
         endSession.setOnClickListener(v -> {
             BooleanCallbackInterface selectStationsCallback = confirmationResult -> {
                 if (confirmationResult) {
@@ -268,10 +275,21 @@ public class DashboardPageFragment extends Fragment {
         });
     }
 
-    private void setupRestartAllButton(View view) {
-        FlexboxLayout restart = view.findViewById(R.id.restart_button);
-        TextView restartHeading = view.findViewById(R.id.restart_heading);
-        TextView restartContent = view.findViewById(R.id.restart_content);
+    private void setupRestartAllButton(View view, String layout) {
+        FlexboxLayout restart;
+        TextView restartHeading;
+        TextView restartContent;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            restart = view.findViewById(R.id.restart_snowy_button);
+            restartHeading = view.findViewById(R.id.restart_heading_snowy);
+            restartContent = view.findViewById(R.id.restart_content_snowy);
+        } else {
+            restart = view.findViewById(R.id.restart_button);
+            restartHeading = view.findViewById(R.id.restart_heading);
+            restartContent = view.findViewById(R.id.restart_content);
+        }
+
+
         restart.setOnClickListener(v -> {
             ArrayList<Integer> active = new ArrayList<>();
 
@@ -312,9 +330,9 @@ public class DashboardPageFragment extends Fragment {
     }
 
     private void setupShutdownButton(View view) {
-        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
-        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
-        TextView shutdownContent = view.findViewById(R.id.shutdown_content);
+        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_snowy_button);
+        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading_snowy);
+        TextView shutdownContent = view.findViewById(R.id.shutdown_content_snowy);
         shutdown.setOnClickListener(v -> {
             ArrayList<Integer> active = new ArrayList<>();
 
@@ -549,26 +567,26 @@ public class DashboardPageFragment extends Fragment {
     private void restartOrShutdownAllStations(TextView heading, TextView content, boolean shutdown) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
-                heading.setText(shutdown ? R.string.restart_space : R.string.shut_down_space);
-                content.setText(shutdown ? R.string.restart_stations : R.string.shut_down_stations);
+                heading.setText(shutdown ? R.string.shut_down_space : R.string.restart_space);
+                content.setText(shutdown ? R.string.shut_down_stations : R.string.restart_stations);
             } else {
                 if (!cancelledShutdown) {
                     heading.setText(MessageFormat.format("Cancel ({0})", seconds));
-                    content.setText(shutdown ? R.string.cancel_reboot : R.string.cancel_shutdown);
+                    content.setText(shutdown ? R.string.cancel_shutdown : R.string.cancel_reboot);
                 }
             }
         };
 
         int[] stationIds = Helpers.getRoomStations().stream().mapToInt(station -> station.id).toArray();
-        if (heading.getText().toString().startsWith(shutdown ? "Shutdown" : "Restart")) {
+        if (heading.getText().toString().startsWith(shutdown ? "Shut Down" : "Restart")) {
             cancelledShutdown = false;
             DialogManager.buildShutdownOrRestartDialog(getContext(), shutdown ? "Shutdown" : "Restart", stationIds, shutdownCountDownCallback);
         } else {
             cancelledShutdown = true;
             String stationIdsString = String.join(", ", Arrays.stream(stationIds).mapToObj(String::valueOf).toArray(String[]::new));
             NetworkService.sendMessage("Station," + stationIdsString, "CommandLine", "CancelShutdown");
-            heading.setText(shutdown ? R.string.restart_space : R.string.shut_down_space);
-            content.setText(shutdown ? R.string.restart_stations : R.string.shut_down_stations);
+            heading.setText(shutdown ? R.string.shut_down_space : R.string.restart_space);
+            content.setText(shutdown ? R.string.shut_down_stations : R.string.restart_stations);
         }
     }
     //endregion
