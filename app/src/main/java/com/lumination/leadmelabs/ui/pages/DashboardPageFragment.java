@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -79,13 +80,21 @@ public class DashboardPageFragment extends Fragment {
         SettingsViewModel settingsViewModel = ViewModelProviders.of(requireActivity()).get(SettingsViewModel.class);
         binding.setSettings(settingsViewModel);
 
-        //TODO can we put the setup in here? or just the load fragments stuff?
-        //if (savedInstanceState == null) {
-            //loadStandardFragments();
-        //}
-
         // Setup the Dashboard action buttons depending on the set layout
         setupDashboardLayout(view);
+
+        //Refresh the data from the nuc
+        FlexboxLayout refresh = view.findViewById(R.id.refresh_button);
+        refresh.setOnClickListener(v -> {
+            if(NetworkService.getNUCAddress() != null) {
+                NetworkService.refreshNUCAddress();
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", SettingsFragment.segmentClassification);
+                Segment.trackEvent(SegmentConstants.NUC_Refreshed, segmentProperties);
+            } else {
+                Toast.makeText(MainActivity.getInstance(), "NUC address needs to be set.", Toast.LENGTH_LONG).show();
+            }
+        });
 
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);

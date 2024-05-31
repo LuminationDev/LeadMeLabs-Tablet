@@ -52,6 +52,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
+                    <!--Refresh Button-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/refresh_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:background="@drawable/light_gray_ripple"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:alignItems="center">
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/icon_refresh"
+                            app:flexDirection="row"
+                            app:justifyContent="center"
+                            app:alignItems="center"
+                            android:visibility="visible"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Refresh"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+
                     <!--Identify Button-->
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/identify_button"
