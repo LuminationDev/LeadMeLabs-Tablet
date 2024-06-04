@@ -23,7 +23,6 @@ import com.lumination.leadmelabs.managers.UIUpdateManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import androidx.core.app.NotificationCompat;
@@ -90,6 +89,7 @@ public class NetworkService extends Service {
         NUCAddress = ipaddress;
         NetworkService.sendMessage("NUC", "Connect", "Connect");
         NetworkService.sendMessage("NUC", "CanAcknowledge", "");
+        NetworkService.sendMessage("NUC", "Version", Helpers.getAppVersion());
         NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
         NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
 

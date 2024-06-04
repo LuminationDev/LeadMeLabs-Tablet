@@ -9,6 +9,8 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
@@ -22,6 +24,7 @@ import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
 
 import org.json.JSONArray;
@@ -90,6 +93,9 @@ public class UIUpdateManager {
                     break;
                 case Constants.APPLIANCES:
                     handleAppliancesUpdate(additionalData);
+                    break;
+                case Constants.STATION_STATE:
+                    handleStationState(additionalData, source);
                     break;
                 case Constants.STATION:
                     handleStationUpdate(additionalData, source);
@@ -898,5 +904,237 @@ public class UIUpdateManager {
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(id, value, ipAddress);
                 break;
         }
+    }
+
+    //NEW METHOD INSTEAD OF INDIVIDUAL SETVALUE MESSAGES
+    /**
+     * The NUC has sent over the current station state object. Update the local version if necessary.
+     * @param additionalData The additional data associated with the update.
+     * @param source         The source identifier of the station.
+     */
+    private static void handleStationState(String additionalData, String source) throws JSONException {
+
+        int stationId = Integer.parseInt(source.split(",")[1]);
+        MainActivity.runOnUI(() -> {
+            Station station = ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).getStationById(stationId);
+            if (station == null) {
+                return;
+            }
+
+            //Update the internal information
+            try {
+                JSONObject jsonObject = new JSONObject(additionalData);
+
+                // Iterate over the keys
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+
+                    switch (key) {
+                        case "headsetType":
+                            String headsetType = jsonObject.getString("headsetType");
+                            if (station instanceof VrStation) {
+                                if (!((VrStation) station).headsetType.equals(headsetType)) {
+                                    ((VrStation) station).setHeadsetType(headsetType);
+                                }
+                            }
+                            break;
+
+                        case "name":
+                            String name = jsonObject.getString("name");
+                            if (!name.equals(station.getName())) {
+                                station.name = name;
+                            }
+                            break;
+
+                        case "state":
+                            String state = jsonObject.getString("state");
+                            if (!state.equals(station.getState())) {
+                                station.setState(state);
+                            }
+                            break;
+
+                        case "status":
+                            String status = jsonObject.getString("status");
+                            if (!status.equals(station.getStatus())) {
+                                station.setStatus(status);
+                            }
+                            break;
+
+                        case "gameName":
+                            String gameName = jsonObject.getString("gameName");
+                            if (gameName.equals(station.applicationController.getExperienceName())) {
+                                break;
+                            }
+
+                            station.applicationController.setExperienceName(gameName);
+
+                            //Reset the selected application
+                            if  (gameName.isEmpty()) {
+                                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setSelectedApplication(null);
+                            }
+
+                            //Do no notify if the station is in another room
+                            if(!SettingsFragment.checkLockedRooms(station.room)) {
+                                return;
+                            }
+
+                            if (!gameName.isEmpty() && !gameName.equals("No session running")) {
+                                DialogManager.gameLaunchedOnStation(station.id);
+                            }
+                            break;
+
+                        case "gameId":
+                            String gameId = jsonObject.getString("gameId");
+                            if (!gameId.equals(station.applicationController.getExperienceId())) {
+                                station.applicationController.setExperienceId(gameId);
+                            }
+                            break;
+
+                        case "gameType":
+                            String gameType = jsonObject.getString("gameType");
+                            if (!gameType.equals(station.applicationController.getExperienceType())) {
+                                station.applicationController.setExperienceType(gameType);
+                            }
+                            break;
+
+                        case "volume":
+                            String volume = jsonObject.getString("volume");
+                            if (Integer.parseInt(volume) != station.audioController.getVolume()) {
+                                station.audioController.setVolume(Integer.parseInt(volume));
+                            }
+                            break;
+
+                        case "muted":
+                            String muted = jsonObject.getString("muted");
+                            station.audioController.setMuted(Boolean.parseBoolean(muted));
+                            break;
+
+                        case "activeAudioDevice":
+                            String activeAudioDevice = jsonObject.getString("activeAudioDevice");
+                            LocalAudioDevice active = station.audioController.getActiveAudioDevice();
+                            if (!active.getName().equals(activeAudioDevice)) {
+                                station.audioController.setActiveAudioDevice(activeAudioDevice);
+                            }
+                            break;
+
+                        case "activeVideoPlaybackTime":
+                            String activeVideoPlaybackTime = jsonObject.getString("activeVideoPlaybackTime");
+                            station.videoController.updateVideoPlaybackTime(activeVideoPlaybackTime);
+                            break;
+
+                        case "activeVideoFile":
+                            String activeVideoFile = jsonObject.getString("activeVideoFile");
+                            if (Helpers.isNullOrEmpty(activeVideoFile)) {
+                                break;
+                            }
+
+                            Video video = station.videoController.getActiveVideoFile();
+                            if (video == null || !video.getId().equals(activeVideoFile)) {
+                                station.videoController.setActiveVideo(activeVideoFile);
+                            }
+                            break;
+
+                        case "videoPlayerDetails":
+                            String videoPlayerDetails = jsonObject.getString("videoPlayerDetails");
+                            station.videoController.updateVideoPlayerDetails(videoPlayerDetails);
+                            break;
+
+                        //LISTS
+                        case "installedJsonApplications":
+                            String installedJsonApplications = jsonObject.getString("installedJsonApplications");
+                            if (installedJsonApplications.equals(station.applicationController.applicationsRaw)) {
+                                break;
+                            }
+
+                            try {
+                                station.applicationController.applicationsRaw = installedJsonApplications;
+                                JSONArray jsonArray = new JSONArray(installedJsonApplications);
+                                station.applicationController.setApplicationsFromJson(jsonArray);
+                            } catch (JSONException e) {
+                                Sentry.captureException(e);
+                            }
+                            break;
+
+                        case "audioDevices":
+                            String audioDevices = jsonObject.getString("audioDevices");
+                            String currentDevices = station.audioController.getRawAudioDevices();
+                            if (!audioDevices.equals(currentDevices)) {
+                                station.audioController.setAudioDevices(audioDevices);
+                            }
+                            break;
+
+                        case "videoFiles":
+                            String videoFiles = jsonObject.getString("videoFiles");
+                            String videosRaw = station.videoController.getRawVideos();
+                            if (!videoFiles.equals(videosRaw)) {
+                                station.videoController.setVideos(videoFiles);
+                            }
+                            break;
+
+                        //DEVICE STATUSES
+                        case "thirdPartyHeadsetTracking":
+                            if (station instanceof VrStation) {
+                                ((VrStation) station).thirdPartyHeadsetTracking = jsonObject.getString("thirdPartyHeadsetTracking");
+                            }
+                            break;
+
+                        case "openVRHeadsetTracking":
+                            if (station instanceof VrStation) {
+                                ((VrStation) station).openVRHeadsetTracking = jsonObject.getString("openVRHeadsetTracking");
+                            }
+                            break;
+
+                        case "leftControllerTracking":
+                            if (station instanceof VrStation) {
+                                ((VrStation) station).leftControllerTracking = jsonObject.getString("leftControllerTracking");
+                            }
+                            break;
+
+                        case "leftControllerBattery":
+                            if (station instanceof VrStation) {
+                                String leftControllerBattery = jsonObject.getString("leftControllerBattery");
+                                ((VrStation) station).leftControllerBattery = Integer.parseInt(leftControllerBattery);
+                            }
+                            break;
+
+                        case "rightControllerTracking":
+                            if (station instanceof VrStation) {
+                                ((VrStation) station).rightControllerTracking = jsonObject.getString("rightControllerTracking");
+                            }
+                            break;
+
+                        case "rightControllerBattery":
+                            if (station instanceof VrStation) {
+                                String rightControllerBattery = jsonObject.getString("rightControllerBattery");
+                                ((VrStation) station).rightControllerBattery = Integer.parseInt(rightControllerBattery);
+                            }
+                            break;
+
+                        case "baseStationsActive":
+                            if (station instanceof VrStation) {
+                                String baseStationsActive = jsonObject.getString("baseStationsActive");
+                                ((VrStation) station).baseStationsActive = Integer.parseInt(baseStationsActive);
+                            }
+                            break;
+
+                        case "baseStationsTotal":
+                            if (station instanceof VrStation) {
+                                String baseStationsTotal = jsonObject.getString("baseStationsTotal");
+                                ((VrStation) station).baseStationsTotal = Integer.parseInt(baseStationsTotal);
+                            }
+                            break;
+
+                        default:
+                            // Handle unknown key
+                            break;
+                    }
+                }
+            } catch (JSONException e) {
+                Log.e("UIUpdateManager", e.toString());
+            }
+
+            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(stationId, station);
+        });
     }
 }
