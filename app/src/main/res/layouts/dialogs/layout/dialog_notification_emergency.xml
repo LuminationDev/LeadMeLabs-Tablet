@@ -55,6 +55,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 app:alignItems="center"
                 app:justifyContent="center"
                 app:flexDirection="row">
@@ -64,7 +65,6 @@
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="5dp"
                     android:background="@drawable/backdrop_ripple_white_rounded_border_gray"
                     android:clickable="true"
                     android:focusable="true"
@@ -84,7 +84,6 @@
                     android:id="@+id/acknowledge_dialog"
                     android:layout_width="220dp"
                     android:layout_height="50dp"
-                    android:layout_marginBottom="5dp"
                     android:background="@drawable/notification_ripple_blue_rounded"
                     android:clickable="true"
                     android:focusable="true"

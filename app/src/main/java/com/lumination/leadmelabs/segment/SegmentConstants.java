@@ -13,7 +13,7 @@ public class SegmentConstants {
     //Segment Lab Events
     public static String Event_Lab_VR_Mode = "VR Mode";
     public static String Event_Lab_Classroom_Mode = "Classroom Mode";
-    public static String Event_Lab_Presentation_Mode = "Presentation Mode";
+    public static String Event_Lab_Showcase_Mode = "Presentation Mode";
     public static String Event_Lab_Restart = "Restart";
     public static String Event_Lab_Identify = "Identify";
 

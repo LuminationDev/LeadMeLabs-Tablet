@@ -17,12 +17,14 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardApplicationBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.information.TagConstants;
 import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
@@ -43,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -130,10 +133,15 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
      * @return True if the application should be included, false otherwise.
      */
     private boolean shouldInclude(Application application) {
-        List<String> subjectFilters = LibraryPageFragment.mViewModel.getSubjectFilters().getValue();
-        if (subjectFilters != null && !subjectFilters.isEmpty()) {
-            List<String> applicationTags = application.getInformation().getTags();
-            return applicationTags.stream().anyMatch(subjectFilters::contains);
+        List<String> filters = LibraryPageFragment.mViewModel.getFilters().getValue();
+        if (filters != null && !filters.isEmpty()) {
+            List<String> tags = application.getInformation().getTags();
+            String complexity = application.getInformation().getComplexity();
+
+            List<String> complexityFilters = filters.stream().filter(filter -> TagConstants.LEVEL_OF_DIFFICULTY.contains(filter)).collect(Collectors.toList());
+            List<String> subjectFilters = filters.stream().filter(filter -> TagConstants.SUBJECT_FILTERS.contains(filter)).collect(Collectors.toList());
+
+            return (complexityFilters.size() == 0 || complexityFilters.contains(complexity)) && (subjectFilters.size() == 0 || tags.stream().anyMatch(subjectFilters::contains));
         }
         return true; // Include if no subject filters are set
     }
@@ -210,8 +218,8 @@ public class ApplicationAdapter extends BaseAdapter implements Filterable {
         // Set up tags
         LinearLayout tagsContainer = viewHolder.binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = viewHolder.binding.getRoot().findViewById(R.id.subTags);
-        TextView yearLevelTextView = viewHolder.binding.getRoot().findViewById(R.id.yearLevel);
-        TagUtils.setupTags(context, tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+        FlexboxLayout complexityView = viewHolder.binding.getRoot().findViewById(R.id.complexity_container);
+        TagUtils.setupTags(context, tagsContainer, subtagsTextView, complexityView, currentApplication);
     }
 
     /**

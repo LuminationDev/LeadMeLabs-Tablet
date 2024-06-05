@@ -26,6 +26,7 @@ public class AudioController {
     //Track the different audio devices and the active device
     public int volume; //backwards compat - remove after next update
     private String activeAudioDevice;
+    private String audioDeviceRaw; //a string of the raw json information
     public List<LocalAudioDevice> audioDevices = new ArrayList<>();
 
     /**
@@ -126,6 +127,15 @@ public class AudioController {
     }
 
     /**
+     * Get the current audio devices in string form for comparison against incoming data. The audio
+     * devices are only updated if something has changed.
+     * @return A string of the raw audio device json as it was first received
+     */
+    public String getRawAudioDevices() {
+        return audioDeviceRaw;
+    }
+
+    /**
      * Parses JSON data to create a list of LocalAudioDevice objects.
      * The JSON data should contain an array of objects with "Name" and "Id" properties.
      *
@@ -135,6 +145,7 @@ public class AudioController {
         List<LocalAudioDevice> audioDevices = new ArrayList<>();
 
         try {
+            audioDeviceRaw = jsonData;
             JSONArray devices = new JSONArray(jsonData);
 
             for (int i = 0; i < devices.length(); i++) {
@@ -144,12 +155,12 @@ public class AudioController {
                 String id = audioJson.optString("Id", "");
                 String volume = audioJson.optString("Volume", "");
                 String muted = audioJson.optString("Muted", "");
-                if (name.equals("") || id.equals("")) continue;
+                if (name.isEmpty() || id.isEmpty()) continue;
 
                 LocalAudioDevice temp = new LocalAudioDevice(name, id);
                 //Set volume if it is present or default to 0
-                temp.SetVolume(volume.equals("") ? 0 : (int) Double.parseDouble(volume));
-                temp.SetMuted(muted.equals("") ? false : Boolean.parseBoolean(muted));
+                temp.SetVolume(volume.isEmpty() ? 0 : (int) Double.parseDouble(volume));
+                temp.SetMuted(!muted.isEmpty() && Boolean.parseBoolean(muted));
 
                 audioDevices.add(temp);
             }

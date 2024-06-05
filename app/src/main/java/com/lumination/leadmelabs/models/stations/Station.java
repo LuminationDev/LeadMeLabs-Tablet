@@ -315,7 +315,7 @@ public class Station implements Cloneable {
             return false;
         }
         else {
-            String subtype = current.subtype.optString("category", "");
+            String subtype = current.HasCategory();
             if (subtype.equals(Constants.VideoPlayer)) {
                 videoController.loadTrigger(currentVideo.getName());
                 return true;

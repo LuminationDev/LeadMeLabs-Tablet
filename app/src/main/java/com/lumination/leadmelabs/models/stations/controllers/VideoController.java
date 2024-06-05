@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.models.stations.controllers;
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
+import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
@@ -11,10 +12,14 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import io.sentry.Sentry;
 
@@ -42,8 +47,85 @@ public class VideoController {
     private boolean sliderTracking = false;
     private int sliderValue = 0;
 
+    public String videosRaw;  //a string of the raw json information
+
+    public List<Video> videos = new ArrayList<>();
+
     public VideoController(int stationId) {
         this.stationId = stationId;
+    }
+
+    /**
+     * Parses JSON data to create a list of Video objects.
+     * The JSON data should contain an array of objects with "name", "source", "length & "isVR" properties.
+     *
+     * @param jsonData The JSON data to parse.
+     */
+    public void setVideos(String jsonData) {
+        List<Video> videos = new ArrayList<>();
+
+        try {
+            JSONArray devices = new JSONArray(jsonData);
+
+            for (int i = 0; i < devices.length(); i++) {
+                JSONObject videoJson = devices.getJSONObject(i);
+
+                String id = videoJson.optString("id", "");
+                String name = videoJson.optString("name", "");
+                String source = videoJson.optString("source", "");
+                int length = videoJson.optInt("length", 0);
+                boolean hasSubtitles = videoJson.optBoolean("hasSubtitles", false);
+                String videoType = videoJson.optString("videoType", "Normal");
+                if (name.isEmpty() || source.isEmpty()) continue;
+
+                Video temp = new Video(id, name, source, length, hasSubtitles, videoType);
+                videos.add(temp);
+            }
+
+            this.videos = videos;
+
+            //Check for missing thumbnails
+            ImageManager.CheckLocalVideoCache(devices);
+        } catch (JSONException e) {
+            Sentry.captureException(e);
+        }
+    }
+
+    /**
+     * Get the current videos in string form for comparison against incoming data. The videos are
+     * only updated if something has changed.
+     * @return A string of the raw videos json as it was first received
+     */
+    public String getRawVideos() {
+        return videosRaw;
+    }
+
+    /**
+     * Finds a video by its unique identifier.
+     *
+     * @param id The unique identifier of the video to find.
+     * @return The video with the specified ID if found; otherwise, returns null.
+     * @example Video video = findVideoById("123");
+     */
+    public Video findVideoById(String id) {
+        if (videos == null) {
+            return null;
+        }
+
+        return videos.stream()
+                .filter(video -> video.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Collect all the videos that are of a certain type.
+     * @return A List of videos matching the supplied type.
+     */
+    public List<Video> getVideosOfType(String type) {
+        return videos.stream()
+                .filter(video -> video.getVideoType().equals(type))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -129,7 +211,7 @@ public class VideoController {
      */
     public void updateVideoPlaybackTime(String input) {
         if (activeVideoFile == null) return;
-        if (Helpers.isNullOrEmpty(input)) return;
+        if (Helpers.isNullOrEmpty(input) || input.equals("null")) return;
         if (Integer.parseInt(input) > getVideoLength()) return;
 
         try {

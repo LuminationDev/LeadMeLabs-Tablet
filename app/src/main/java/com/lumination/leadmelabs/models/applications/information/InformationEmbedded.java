@@ -23,7 +23,8 @@ public class InformationEmbedded {
                 new ArrayList<>(Collections.singletonList(TagConstants.DEFAULT)),
                 new ArrayList<>(),
                 new ArrayList<>(Collections.singletonList("video")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("321914152547262211351528", videoPlayer);
     }

@@ -3,12 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="library"
             type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
         <variable
             name="filter"
             type="java.lang.String" />
+        <variable
+            name="heading"
+            type="java.lang.String" />
+        <variable
+            name="position"
+            type="Integer" />
         <variable
             name="filterIcon"
             type="android.graphics.drawable.Drawable" />
@@ -19,17 +26,35 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/grey_light"
+            android:paddingVertical="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="10dp"
+            android:visibility="@{heading.length() > 0 &amp;&amp; position > 0 ? View.VISIBLE : View.GONE, default=gone}"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:paddingStart="5dp"
+            android:layout_marginBottom="-2dp"
+            android:layout_marginTop="10dp"
+            android:text="@{heading}"
+            android:visibility="@{heading.length() > 0 ? View.VISIBLE : View.GONE, default=gone}"/>
+
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:onClick="@{() -> library.toggleFilter(filter)}"
             android:clickable="true"
             android:focusable="true"
             android:paddingStart="5dp"
             android:paddingEnd="-5dp"
             android:layout_marginHorizontal="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@{library.subjectFilters.contains(filter) ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_white_rounded}"
+            android:layout_marginTop="2dp"
+            android:background="@{library.filters.contains(filter) ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_white_rounded}"
             app:alignItems="center"
             app:flexDirection="row">
 
@@ -52,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:checked="@{library.subjectFilters.contains(filter)}"
+                android:checked="@{library.filters.contains(filter)}"
                 android:background="@null"/>
 
         </com.google.android.flexbox.FlexboxLayout>
