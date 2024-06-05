@@ -107,6 +107,26 @@ public class SceneController {
     }
 
     /**
+     * Activate a scene which has been found using the searchForSceneTrigger, as we don't know exactly
+     * what it is linked to we cannot activate the dashboard buttons.
+     * @param scene The appliance object that is actively being triggered.
+     */
+    public static void handleBackupScene(Appliance scene) {
+        // Retrieve the current list of appliances
+        ArrayList<Appliance> currentList = getCurrentApplianceList();
+        if (currentList == null) return;
+
+        //Collect information about the scene
+        SceneInfo info = collectSceneInfo(scene, Constants.LOADING);
+
+        //Track which cards to visually update
+        HashSet<String> updates = updateApplianceList(currentList, Constants.DISABLED,  info.getId(), info.getRoom());
+
+        //Check what sort of RecyclerView is active then update the card's appearance if visible
+        updateAdapter(ApplianceAdapter.getInstance(), updates);
+    }
+
+    /**
      * Activate the selected Scene whilst disabling all other scene cards in the same room
      * @param scene The appliance object that is actively being triggered.
      * @param isDashboardTrigger A boolean of if this has been triggered from the dashboard buttons
@@ -126,22 +146,23 @@ public class SceneController {
         updateAdapter(ApplianceAdapter.getInstance(), updates);
 
         if (scene != null) {
-            checkSceneAvailability(scene.name.toLowerCase(), scene.id, isDashboardTrigger);
+            checkSceneAvailability(scene.name.toLowerCase(), scene.room, scene.id, isDashboardTrigger);
         }
     }
 
     /**
      * Checks the scene name and updates the mode button availability accordingly.
      * @param sceneName The name of the scene to be checked.
+     * @param room The room a scene is linked to.
      * @param sceneId The id of the scene to be checked.
      * @param isDashboardTrigger A boolean of if this has been triggered from the dashboard buttons
      */
-    private static void checkSceneAvailability(String sceneName, String sceneId, boolean isDashboardTrigger) {
+    private static void checkSceneAvailability(String sceneName, String room, String sceneId, boolean isDashboardTrigger) {
         // Check regular scenes
         if (sceneName.contains("classroom")) {
             // Update mode button availability for classroom mode
             if (!isDashboardTrigger) {
-                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("classroom", Constants.CLASSROOM_MODE);
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("classroom", room, Constants.CLASSROOM_MODE);
             }
             activatingScenes.put(sceneId, Constants.CLASSROOM_MODE);
             return;
@@ -149,7 +170,7 @@ public class SceneController {
         if (sceneName.contains("showcase")) {
             // Update mode button availability for presentation mode
             if (!isDashboardTrigger) {
-                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("showcase", Constants.SHOWCASE_MODE);
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("showcase", room, Constants.SHOWCASE_MODE);
             }
             activatingScenes.put(sceneId, Constants.SHOWCASE_MODE);
             return;
@@ -157,28 +178,28 @@ public class SceneController {
         if (sceneName.contains("vr")) {
             // Update mode button availability for VR mode
             if (!isDashboardTrigger) {
-                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("vr", Constants.VR_MODE);
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("vr", room, Constants.VR_MODE);
             }
             activatingScenes.put(sceneId, Constants.VR_MODE);
             return;
         }
 
         // Check for alternate scenes with Station actions
-        ArrayList<?> stationsOn = DashboardModeManagement.collectStations("scene", sceneName, "On");
+        ArrayList<?> stationsOn = DashboardModeManagement.collectStations("Scene", sceneName, room, "On");
         if (!stationsOn.isEmpty()) {
             // Update mode button availability for basic_on mode
             if (!isDashboardTrigger) {
-                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic_on", Constants.BASIC_ON_MODE);
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic_on", room, Constants.BASIC_ON_MODE);
             }
             activatingScenes.put(sceneId, Constants.BASIC_ON_MODE);
             return;
         }
 
-        ArrayList<?> stationsOff = DashboardModeManagement.collectStations("scene", sceneName, "Off");
+        ArrayList<?> stationsOff = DashboardModeManagement.collectStations("Scene", sceneName, room, "Off");
         if (!stationsOff.isEmpty()) {
             // Update mode button availability for basic_off mode
             if (!isDashboardTrigger) {
-                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic_off", Constants.BASIC_OFF_MODE);
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic_off", room, Constants.BASIC_OFF_MODE);
             }
             activatingScenes.put(sceneId, Constants.BASIC_OFF_MODE);
             return;
@@ -186,7 +207,7 @@ public class SceneController {
 
         // If scene doesn't match any specific criteria, set mode button availability to basic mode
         if (!isDashboardTrigger) {
-            DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic", Constants.BASIC_MODE);
+            DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability("basic", room, Constants.BASIC_MODE);
         }
         activatingScenes.put(sceneId, Constants.BASIC_MODE);
     }

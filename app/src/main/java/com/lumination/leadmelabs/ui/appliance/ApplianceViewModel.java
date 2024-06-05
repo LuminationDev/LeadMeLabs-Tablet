@@ -10,6 +10,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.adapters.BaseAdapter;
+import com.lumination.leadmelabs.ui.dashboard.DashboardModeManagement;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -70,6 +71,8 @@ public class ApplianceViewModel extends ViewModel {
      */
     @SuppressLint("NotifyDataSetChanged")
     public void setAppliances(JSONArray applianceList) throws JSONException {
+        DashboardModeManagement.forceCancelAllTimers();
+
         HashSet<String> types = new HashSet<>(); // Save the different types for the submenu options
 
         List<Appliance> st = new ArrayList<>();

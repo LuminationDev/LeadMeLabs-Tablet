@@ -758,6 +758,7 @@ public class DialogManager {
                 confirmDialog.dismiss();
                 DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability(
                         "",
+                        "",
                         type.equals("Shutdown") ? Constants.SHUTDOWN_MODE : Constants.RESTART_MODE
                 );
 

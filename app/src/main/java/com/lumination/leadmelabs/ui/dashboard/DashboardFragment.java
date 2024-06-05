@@ -202,7 +202,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
 
-            dashboardModeManagement.changeModeButtonAvailability("vr", Constants.VR_MODE);
+            dashboardModeManagement.changeModeButtonAvailability("vr", "", Constants.VR_MODE);
             searchForSceneTrigger("vr");
             // Send data to Segment
             Segment.generateNewSessionId(); //Before the Segment track in order to set the sessionId
@@ -235,7 +235,7 @@ public class DashboardFragment extends Fragment {
                 return;
             }
 
-            dashboardModeManagement.changeModeButtonAvailability("showcase", Constants.SHOWCASE_MODE);
+            dashboardModeManagement.changeModeButtonAvailability("showcase", "", Constants.SHOWCASE_MODE);
             searchForSceneTrigger("showcase");
             // Send data to Segment
             trackDashboardEvent(SegmentConstants.Event_Lab_Showcase_Mode);
@@ -404,7 +404,7 @@ public class DashboardFragment extends Fragment {
                 .collect(Collectors.toList());
 
         if (matchingAppliances.isEmpty()) {
-            matchingAppliances = searchForBackupSceneTrigger(appliances, sceneName);
+            matchingAppliances = searchForBackupSceneTrigger(appliances, sceneName, null);
         }
 
         //There really is nothing
@@ -439,18 +439,7 @@ public class DashboardFragment extends Fragment {
             return;
         }
 
-        List<Appliance> finalMatchingAppliances = matchingAppliances;
-        BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
-            if (confirmationResult) {
-                dashboardModeManagement.changeModeButtonAvailability("classroom", Constants.CLASSROOM_MODE);
-
-                for (Appliance sceneAppliance: finalMatchingAppliances) {
-                    String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
-                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
-                    NetworkService.sendMessage("NUC", "Automation", message);
-                }
-            }
-        };
+        BooleanCallbackInterface confirmShutdownCallback = getBooleanCallbackInterface(matchingAppliances);
 
         DialogManager.createConfirmationDialog("Confirm station shutdown",
                 "All Station(s) will shutdown. Please confirm this scene.",
@@ -458,6 +447,26 @@ public class DashboardFragment extends Fragment {
                 "Cancel",
                 "Confirm",
                 false);
+    }
+
+    /**
+     * Create the required boolean callback that triggers associated appliances.
+     * @param matchingAppliances A list of appliances that are to be set.
+     * @return A BooleanCallbackInterface
+     */
+    @NonNull
+    private BooleanCallbackInterface getBooleanCallbackInterface(List<Appliance> matchingAppliances) {
+        return confirmationResult -> {
+            if (confirmationResult) {
+                dashboardModeManagement.changeModeButtonAvailability("classroom", "", Constants.CLASSROOM_MODE);
+
+                for (Appliance sceneAppliance: matchingAppliances) {
+                    String automationValue = sceneAppliance.id.substring(sceneAppliance.id.length() - 1);
+                    String message = "Set:" + sceneAppliance.id + ":" + automationValue + ":" + NetworkService.getIPAddress();
+                    NetworkService.sendMessage("NUC", "Automation", message);
+                }
+            }
+        };
     }
 
     /**
@@ -531,12 +540,12 @@ public class DashboardFragment extends Fragment {
      * @param originalSceneName A string of the original scene that was searched for.
      * @return A list of appliances that act the same as the initial search scene, this may be empty.
      */
-    protected List<Appliance> searchForBackupSceneTrigger(List<Appliance> appliances, String originalSceneName) {
+    protected List<Appliance> searchForBackupSceneTrigger(List<Appliance> appliances, String originalSceneName, String desiredAction) {
         List<Appliance> matchingAppliances = new ArrayList<>();
 
         List<Appliance> sceneAppliances = appliances.stream()
                 .filter(appliance -> !appliance.name.toLowerCase().contains("all off")
-                        &&"scenes".equals(appliance.type)
+                        && "scenes".equals(appliance.type)
                         && SettingsFragment.checkLockedRooms(appliance.room))
                 .collect(Collectors.toList());
 
@@ -545,7 +554,10 @@ public class DashboardFragment extends Fragment {
             List<Appliance> singleApplianceList = new ArrayList<>();
             singleApplianceList.add(sceneAppliance);
 
-            String desiredAction = originalSceneName.equals("classroom") ? "Off" : "On";
+            if (desiredAction == null) {
+                desiredAction = originalSceneName.equals("classroom") ? "Off" : "On";
+            }
+
             ArrayList<JSONObject> stationsWithActions = collectStationsWithActions(singleApplianceList, desiredAction);
 
             if (!stationsWithActions.isEmpty()) {

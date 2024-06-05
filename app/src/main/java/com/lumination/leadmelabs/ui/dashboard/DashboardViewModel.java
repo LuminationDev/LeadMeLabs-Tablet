@@ -1,11 +1,14 @@
 package com.lumination.leadmelabs.ui.dashboard;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +77,20 @@ public class DashboardViewModel extends AndroidViewModel {
     }
 
     public void resetMode(String mode) {
-        //TODO this may have to be linked to a room or lab??
-        this.changingMode.setValue(false);
-
-
-
         removeActivatingMode(mode);
+        if (getActivatingMode().getValue() == null) return;
+
+        boolean hasOtherEntries = false;
+        for (String item : getActivatingMode().getValue()) {
+            if (!item.equals(Constants.BASIC_MODE)) {
+                hasOtherEntries = true;
+                break;
+            }
+        }
+
+        //If there are other entries besides BASIC_MODES do not update the dashboard
+        if (!hasOtherEntries) {
+            this.changingMode.setValue(false);
+        }
     }
 }

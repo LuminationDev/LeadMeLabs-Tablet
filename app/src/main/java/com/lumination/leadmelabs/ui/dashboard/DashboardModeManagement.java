@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.dashboard;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
@@ -19,7 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,17 +33,18 @@ import java.util.stream.Collectors;
  * A class dedicated to managing the tracking of the mode that is being set.
  */
 public class DashboardModeManagement {
-    private static Timer modeTimer;
-    private static TimerTask modeTask;
-    private static Timer modeBackupTimer;
-    private static TimerTask modeBackupTask;
     private static PeriodicChecker periodicChecker;
+
+    private static final Map<String, Timer> modeTimers = new HashMap<>();
+    private static final Map<String, TimerTask> modeTasks = new HashMap<>();
+    private static final Map<String, Timer> modeBackupTimers = new HashMap<>();
+    private static final Map<String, TimerTask> modeBackupTasks = new HashMap<>();
 
     /**
      * A mode has been triggered, disable the other dashboard buttons while the mode is being set.
      * @param active A string of the mode that is being set.
      */
-    public void changeModeButtonAvailability(String sceneName, String active) {
+    public void changeModeButtonAvailability(String sceneName, String room, String active) {
         DashboardFragment.mViewModel.setActivatingMode(active);
         DashboardFragment.mViewModel.setChangingMode(true);
 
@@ -49,7 +54,7 @@ public class DashboardModeManagement {
             case Constants.VR_MODE:
             case Constants.SHOWCASE_MODE:
                 backupDelay = 3 * 60 * 1000; //3 minutes
-                waitForStations("Scene", sceneName, "On", active);
+                waitForStations("Scene", sceneName, room, "On", active);
                 break;
 
             //Mode buttons disabled until all computers turn on, initial delay of 30 seconds as the Stations turn off - backup reset is 4 minutes
@@ -57,21 +62,31 @@ public class DashboardModeManagement {
                 backupDelay = 4 * 60 * 1000; //4 minutes
 
                 //Wait 30 seconds before starting the check, ensuring the Stations are already 'Off'
-                MainActivity.UIHandler.postDelayed(() -> waitForStations("Room", "","On", active), 30000);
+                MainActivity.UIHandler.postDelayed(() -> waitForStations("Room", "", "", "On", active), 30000);
                 SceneController.handeActivatingScene(null, true);
                 break;
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 2 minutes
             case Constants.SHUTDOWN_MODE:
                 backupDelay = 2 * 60 * 1000; //2 minutes
-                waitForStations("Room", "", "Off", active);
+                waitForStations("Room", "", room,"Off", active);
                 SceneController.handeActivatingScene(null, true);
                 break;
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 3 minutes
             case Constants.CLASSROOM_MODE:
                 backupDelay = 3 * 60 * 1000; //3 minutes
-                waitForStations("Scene", sceneName,"Off", active);
+                waitForStations("Scene", sceneName,room,"Off", active);
+                break;
+
+            case Constants.BASIC_ON_MODE:
+                backupDelay = 3 * 60 * 1000; //3 minutes
+                waitForStations("Backup", sceneName, room,"On", active);
+                break;
+
+            case Constants.BASIC_OFF_MODE:
+                backupDelay = 3 * 60 * 1000; //3 minutes
+                waitForStations("Backup", sceneName, room,"Off", active);
                 break;
 
             //No Station actions, wait for 5 seconds before unlocking scenes
@@ -84,7 +99,7 @@ public class DashboardModeManagement {
         }
 
         //Create a backup timer that cancels all tasks in case something has gone wrong
-        createModeResetTimer(backupDelay, active, true);
+        createModeResetTimer(backupDelay, active, room, true);
     }
 
     /**
@@ -92,28 +107,29 @@ public class DashboardModeManagement {
      * @param context The context within which stations are to be collected (Room or Scene).
      * @param sceneName A string of the scene that is being triggered as to collect associated
      *                  stations (left empty for room collection).
+     * @param room A string of the room linked to the scene.
      * @param targetStatus A string of the status the Station should end on (On or Off).
      */
-    private void waitForStations(String context, String sceneName, String targetStatus, String mode) {
+    private void waitForStations(String context, String sceneName, String room, String targetStatus, String mode) {
         periodicChecker = new PeriodicChecker();
         AtomicBoolean isFirst = new AtomicBoolean(true);
 
         // Stops the periodic check if the callback is true
-        ArrayList<?> stations = collectStations(context, sceneName, targetStatus);
+        ArrayList<?> stations = collectStations(context, sceneName, room, targetStatus);
 
         periodicChecker.setCallback(() -> {
             //If this passed on the first instance then the scene is already set, only have a few seconds cool down in this instance
             if (checkStationStatuses(stations, targetStatus)) {
                 if (isFirst.get()) {
-                    createModeResetTimer(5 * 1000, mode, false);
+                    createModeResetTimer(5 * 1000, mode, room, false);
                 }
                 else if (targetStatus.equals("Off")) {
                     //Wait an extra 45 seconds to make sure the Stations are off
-                    createModeResetTimer(45 * 1000, mode, false);
+                    createModeResetTimer(45 * 1000, mode, room, false);
                 }
                 else {
                     //The mode is set, cancel the timers
-                    cancelModeTimers(mode);
+                    cancelModeTimers(mode, room);
                 }
                 return true;
             }
@@ -130,10 +146,11 @@ public class DashboardModeManagement {
      * Collect all the Stations based on the given context.
      * @param context The context within which stations are to be collected (Room or Scene).
      * @param sceneName (Optional) The name of the scene to query, applicable only if context is "Scene".
+     * @param room (Optional) The room a scene is linked to.
      * @param targetStatus A string of the status the Station should end on (On or Off).
      * @return A list of Station objects or JSONObjects based on the context.
      */
-    public static ArrayList<?> collectStations(String context, String sceneName, String targetStatus) {
+    public static ArrayList<?> collectStations(String context, String sceneName, String room, String targetStatus) {
         switch (context) {
             case "Room":
                 ArrayList<Object> stations = new ArrayList<>();
@@ -170,21 +187,20 @@ public class DashboardModeManagement {
                     List<Appliance> matchingAppliances = appliances.stream()
                             .filter(appliance -> appliance.name.toLowerCase().contains(sceneName)
                                     && "scenes".equals(appliance.type)
+                                    && appliance.room.equals(room)
                                     && SettingsFragment.checkLockedRooms(appliance.room))
                             .collect(Collectors.toList());
 
                     if (matchingAppliances.isEmpty()) {
-                        matchingAppliances = DashboardFragment.getInstance().searchForBackupSceneTrigger(appliances, sceneName);
-                    }
-                    else {
-                        //Only the one VR scene could be found
-                        SceneController.handeActivatingScene(matchingAppliances.get(0), true);
+                        matchingAppliances = DashboardFragment.getInstance().searchForBackupSceneTrigger(appliances, sceneName, targetStatus);
+                        SceneController.handleBackupScene(matchingAppliances.get(0));
                     }
 
                     if (!matchingAppliances.isEmpty()) {
                         stationObjects = DashboardFragment.getInstance().collectStationsWithActions(matchingAppliances, targetStatus);
                     }
                 }
+
                 return stationObjects;
 
             default:
@@ -240,23 +256,24 @@ public class DashboardModeManagement {
      * wake on lan cannot be triggered too early.
      * @param delayInMillis A long representing the delay before triggering the mode reset.
      * @param mode A string of the mode that was initially called.
+     * @param room A string of the room that the timer is associated with.
      * @param isBackupTimer Boolean indicating whether this is a backup timer or not.
      */
-    private static void createModeResetTimer(long delayInMillis, String mode, boolean isBackupTimer) {
+    private static void createModeResetTimer(long delayInMillis, String mode, String room, boolean isBackupTimer) {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                cancelModeTimers(mode);
+                cancelModeTimers(mode, room);
             }
         };
 
         if (isBackupTimer) {
-            modeBackupTimer = timer;
-            modeBackupTask = task;
+            modeBackupTimers.put(room, timer);
+            modeBackupTasks.put(room, task);
         } else {
-            modeTimer = timer;
-            modeTask = task;
+            modeTimers.put(room, timer);
+            modeTasks.put(room, task);
         }
 
         timer.schedule(task, delayInMillis);
@@ -266,21 +283,38 @@ public class DashboardModeManagement {
      * Cancel the modeTimer, modeBackupTimer and periodicChecker before resetting the mode in
      * the viewModel.
      * @param mode A string of the mode that was initially called.
+     * @param room A string of the room that the timer is associated with.
      */
-    public static void cancelModeTimers(String mode) {
-        if (modeTimer != null) {
-            modeTask.cancel();
-            modeTimer.cancel();
-            modeTimer = null;
+    public static void cancelModeTimers(String mode, String room) {
+        if (modeTimers.get(room) != null) {
+            Timer timer = modeTimers.get(room);
+            if (timer != null) {
+                timer.cancel();
+            }
+            modeTimers.remove(room);
+
+            TimerTask task = modeTasks.get(room);
+            if (task != null) {
+                task.cancel();
+            }
+            modeTasks.remove(room);
         }
 
-        if (modeBackupTimer != null) {
-            modeBackupTask.cancel();
-            modeBackupTimer.cancel();
-            modeBackupTimer = null;
+        if (modeBackupTimers.get(room) != null) {
+            Timer timer = modeBackupTimers.get(room);
+            if (timer != null) {
+                timer.cancel();
+            }
+            modeBackupTimers.remove(room);
+
+            TimerTask task = modeBackupTasks.get(room);
+            if (task != null) {
+                task.cancel();
+            }
+            modeBackupTasks.remove(room);
         }
 
-        if (periodicChecker != null) {
+        if (modeTimers.isEmpty() && modeBackupTimers.isEmpty() && periodicChecker != null) {
             periodicChecker.stop();
             periodicChecker = null;
         }
@@ -290,5 +324,50 @@ public class DashboardModeManagement {
             SceneController.resetAfterSceneActivation(mode);
             DashboardFragment.mViewModel.resetMode(mode);
         });
+    }
+
+    /**
+     * The underlying appliance list has been re-written cancel any timers linked to setting scenes
+     * otherwise they will hang when completing.
+     */
+    public static void forceCancelAllTimers() {
+        Log.e("FORCE CANCEL", "Appliance list is re-written, force cancel any timers");
+
+        //Clear all the timers and timer tasks
+        cancelAll(modeTimers);
+        cancelAll(modeTasks);
+        cancelAll(modeBackupTimers);
+        cancelAll(modeBackupTasks);
+
+        //Reset all the modes
+        List<String> modes = DashboardFragment.mViewModel.getActivatingMode().getValue();
+        if (modes == null) return;
+
+        for (String mode : modes) {
+            MainActivity.runOnUI(() -> {
+                SceneController.resetAfterSceneActivation(mode);
+                DashboardFragment.mViewModel.resetMode(mode);
+            });
+        }
+    }
+
+    /**
+     * Cancels all Timer or TimerTask objects in the provided map.
+     *
+     * <p>This method iterates through the values of the given map and cancels
+     * each value if it is an instance of Timer or TimerTask. It uses the
+     * appropriate cancel method based on the type of the object.</p>
+     *
+     * @param <T> the type of values in the map
+     * @param map the map containing Timer or TimerTask objects to be cancelled
+     */
+    private static <T> void cancelAll(Map<String, T> map) {
+        for (T value : map.values()) {
+            if (value instanceof Timer) {
+                ((Timer) value).cancel();
+            } else if (value instanceof TimerTask) {
+                ((TimerTask) value).cancel();
+            }
+        }
     }
 }
