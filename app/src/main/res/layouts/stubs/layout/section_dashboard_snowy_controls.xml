@@ -38,7 +38,7 @@
                 app:flexDirection="row">
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/vr_mode_button"
+                    android:id="@+id/vr_mode_snowy_button"
                     style="@style/WhiteActionCard"
                     android:background="@{dashboard.changingMode ? (dashboard.activatingMode.contains(Constants.VR_MODE) ? @drawable/card_gray : @drawable/card_disabled) : @drawable/ripple_white_rounded_border_thin}"
                     android:layout_marginStart="30dp"
@@ -82,7 +82,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/showcase_mode_button"
+                    android:id="@+id/showcase_mode_snowy_button"
                     style="@style/WhiteActionCard"
                     android:background="@{dashboard.changingMode ? (dashboard.activatingMode.contains(Constants.SHOWCASE_MODE) ? @drawable/card_gray : @drawable/card_disabled) : @drawable/ripple_white_rounded_border_thin}"
                     android:layout_marginStart="10dp"
@@ -126,7 +126,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/end_session_button"
+                    android:id="@+id/end_session_snowy_button"
                     style="@style/WhiteActionCard"
                     android:background="@{dashboard.changingMode ? @drawable/card_disabled : @drawable/ripple_white_rounded_border_thin}"
                     android:layout_marginStart="10dp"
@@ -164,7 +164,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/restart_button"
+                    android:id="@+id/restart_snowy_button"
                     style="@style/WhiteActionCard"
                     android:background="@{dashboard.changingMode ? (dashboard.activatingMode.contains(Constants.RESTART_MODE) ? @drawable/card_gray : @drawable/card_disabled) : @drawable/ripple_white_rounded_border_thin}"
                     android:layout_marginStart="10dp"
@@ -193,7 +193,7 @@
                         app:justifyContent="center">
 
                         <TextView
-                            android:id="@+id/restart_heading"
+                            android:id="@+id/restart_heading_snowy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Restart Lab"
@@ -202,7 +202,7 @@
                             android:textSize="13sp" />
 
                         <TextView
-                            android:id="@+id/restart_content"
+                            android:id="@+id/restart_content_snowy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Reboot stations"
@@ -211,7 +211,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/shutdown_button"
+                    android:id="@+id/shutdown_snowy_button"
                     style="@style/WhiteActionCard"
                     android:background="@{dashboard.changingMode ? (dashboard.activatingMode.contains(Constants.SHUTDOWN_MODE) ? @drawable/card_gray : @drawable/card_disabled) : @drawable/ripple_white_rounded_border_thin}"
                     android:layout_marginStart="10dp"
@@ -241,7 +241,7 @@
                         app:justifyContent="center">
 
                         <TextView
-                            android:id="@+id/shutdown_heading"
+                            android:id="@+id/shutdown_heading_snowy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shut Down"
@@ -250,7 +250,7 @@
                             android:textSize="13sp" />
 
                         <TextView
-                            android:id="@+id/shutdown_content"
+                            android:id="@+id/shutdown_content_snowy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Turn off lab"

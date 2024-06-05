@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,8 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.segment.Segment;
+import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
@@ -24,6 +29,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.unique.snowHydro.SnowyHydroConstants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
+import com.segment.analytics.Properties;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -45,6 +51,19 @@ public class DashboardPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Refresh the data from the nuc
+        FlexboxLayout refresh = view.findViewById(R.id.refresh_button);
+        refresh.setOnClickListener(v -> {
+            if(NetworkService.getNUCAddress() != null) {
+                NetworkService.refreshNUCAddress();
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("classification", SettingsFragment.segmentClassification);
+                Segment.trackEvent(SegmentConstants.NUC_Refreshed, segmentProperties);
+            } else {
+                Toast.makeText(MainActivity.getInstance(), "NUC address needs to be set.", Toast.LENGTH_LONG).show();
+            }
+        });
 
         //Run the identify flow
         FlexboxLayout identify = view.findViewById(R.id.identify_button);

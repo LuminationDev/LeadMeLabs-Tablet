@@ -172,8 +172,8 @@ public class StationSelectionPageFragment extends Fragment {
         // Set up tags
         LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
-        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
-        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+        FlexboxLayout complexityView = binding.getRoot().findViewById(R.id.complexity_container);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, complexityView, currentApplication);
     }
 
     private void setupVideoSelection(View view) {
