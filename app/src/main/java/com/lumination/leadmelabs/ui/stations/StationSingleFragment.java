@@ -232,9 +232,11 @@ public class StationSingleFragment extends Fragment {
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
-                String subtype = current.subtype.optString("category", "");
-                if (subtype.equals(Constants.VideoPlayer)) {
-                    bundle.putString("library", "videos");
+                if (current.subtype != null) {
+                    String subtype = current.HasCategory();
+                    if (subtype.equals(Constants.VideoPlayer)) {
+                        bundle.putString("library", "videos");
+                    }
                 }
                 SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
                 if (fragment == null) return;
@@ -689,7 +691,7 @@ public class StationSingleFragment extends Fragment {
             resetLayout(view);
             return;
         }
-        String subtype = current.subtype.optString("category", "");
+        String subtype = current.HasCategory();
         if (subtype.equals(Constants.VideoPlayer)) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
@@ -717,8 +719,8 @@ public class StationSingleFragment extends Fragment {
             return;
         }
 
-        String subtype = current.subtype.optString("category", "");
-        if (subtype.isEmpty()) {
+        String subtype = current.HasCategory();
+        if (subtype.isEmpty() || subtype.equals("none")) {
             resetLayout(view);
             return;
         }
