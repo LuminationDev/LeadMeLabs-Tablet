@@ -1013,7 +1013,7 @@ public class UIUpdateManager {
                         case "activeAudioDevice":
                             String activeAudioDevice = jsonObject.getString("activeAudioDevice");
                             LocalAudioDevice active = station.audioController.getActiveAudioDevice();
-                            if (!active.getName().equals(activeAudioDevice)) {
+                            if (active == null || !active.getName().equals(activeAudioDevice)) {
                                 station.audioController.setActiveAudioDevice(activeAudioDevice);
                             }
                             break;
