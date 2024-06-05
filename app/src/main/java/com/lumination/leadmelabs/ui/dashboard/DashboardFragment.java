@@ -144,16 +144,16 @@ public class DashboardFragment extends Fragment {
      */
     private void setupSnowHydroDashboardButtons(View view) {
         //Switch to VR mode
-        setupVrModeButton(view);
+        setupVrModeButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Switch to Presentation mode
         setupShowcaseModeButton(view);
 
         //End session on all/selected stations
-        setupEndSessionButton(view);
+        setupEndSessionButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Restart all stations
-        setupRestartAllButton(view);
+        setupRestartAllButton(view, SettingsConstants.SNOWY_HYDRO_LAYOUT);
 
         //Shutdown the lab
         setupShutdownButton(view);
@@ -165,16 +165,16 @@ public class DashboardFragment extends Fragment {
      */
     private void setupStandardDashboardButtons(View view) {
         //Switch to VR mode
-        setupVrModeButton(view);
+        setupVrModeButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Launch the new session flow
         setupNewSessionButton(view);
 
         //End session on all/selected stations
-        setupEndSessionButton(view);
+        setupEndSessionButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Restart all stations
-        setupRestartAllButton(view);
+        setupRestartAllButton(view, SettingsConstants.DEFAULT_LAYOUT);
 
         //Switch to classroom mode
         setupClassModeButton(view);
@@ -194,8 +194,14 @@ public class DashboardFragment extends Fragment {
     }
 
     //region Common Dashboard Buttons
-    private void setupVrModeButton(View view) {
-        FlexboxLayout vrMode = view.findViewById(R.id.vr_mode_button);
+    private void setupVrModeButton(View view, String layout) {
+        FlexboxLayout vrMode;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            vrMode = view.findViewById(R.id.vr_mode_snowy_button);
+        } else {
+            vrMode = view.findViewById(R.id.vr_mode_button);
+        }
+
         vrMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
                 changingModePrompt(SegmentConstants.Event_Lab_VR_Mode);
@@ -228,7 +234,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupShowcaseModeButton(View view) {
-        FlexboxLayout showcaseMode = view.findViewById(R.id.showcase_mode_button);
+        FlexboxLayout showcaseMode = view.findViewById(R.id.showcase_mode_snowy_button);
         showcaseMode.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
                 changingModePrompt(SegmentConstants.Event_Lab_Showcase_Mode);
@@ -242,8 +248,14 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private void setupEndSessionButton(View view) {
-        FlexboxLayout endSession = view.findViewById(R.id.end_session_button);
+    private void setupEndSessionButton(View view, String layout) {
+        FlexboxLayout endSession;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            endSession = view.findViewById(R.id.end_session_snowy_button);
+        } else {
+            endSession = view.findViewById(R.id.end_session_button);
+        }
+
         endSession.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
                 changingModePrompt(SegmentConstants.End_Session_Modal);
@@ -273,10 +285,20 @@ public class DashboardFragment extends Fragment {
         });
     }
 
-    private void setupRestartAllButton(View view) {
-        FlexboxLayout restart = view.findViewById(R.id.restart_button);
-        TextView restartHeading = view.findViewById(R.id.restart_heading);
-        TextView restartContent = view.findViewById(R.id.restart_content);
+    private void setupRestartAllButton(View view, String layout) {
+        FlexboxLayout restart;
+        TextView restartHeading;
+        TextView restartContent;
+        if (layout.equals(SettingsConstants.SNOWY_HYDRO_LAYOUT)) {
+            restart = view.findViewById(R.id.restart_snowy_button);
+            restartHeading = view.findViewById(R.id.restart_heading_snowy);
+            restartContent = view.findViewById(R.id.restart_content_snowy);
+        } else {
+            restart = view.findViewById(R.id.restart_button);
+            restartHeading = view.findViewById(R.id.restart_heading);
+            restartContent = view.findViewById(R.id.restart_content);
+        }
+
         restart.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
                 changingModePrompt(SegmentConstants.Event_Lab_Restart);
@@ -284,7 +306,6 @@ public class DashboardFragment extends Fragment {
             }
 
             ArrayList<Integer> active = getActive();
-
             if(!active.isEmpty() && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
@@ -310,9 +331,9 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupShutdownButton(View view) {
-        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_button);
-        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading);
-        TextView shutdownContent = view.findViewById(R.id.shutdown_content);
+        FlexboxLayout shutdown = view.findViewById(R.id.shutdown_snowy_button);
+        TextView shutdownHeading = view.findViewById(R.id.shutdown_heading_snowy);
+        TextView shutdownContent = view.findViewById(R.id.shutdown_content_snowy);
         shutdown.setOnClickListener(v -> {
             if (Boolean.TRUE.equals(mViewModel.getChangingMode().getValue())) {
                 changingModePrompt(SegmentConstants.Event_Lab_Shutdown);
@@ -320,7 +341,6 @@ public class DashboardFragment extends Fragment {
             }
 
             ArrayList<Integer> active = getActive();
-
             if(!active.isEmpty() && SettingsFragment.checkAdditionalExitPrompts()) {
                 BooleanCallbackInterface confirmAppExitCallback = confirmationResult -> {
                     if (confirmationResult) {
