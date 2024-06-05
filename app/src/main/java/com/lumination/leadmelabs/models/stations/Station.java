@@ -18,14 +18,16 @@ import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
+import com.lumination.leadmelabs.models.stations.controllers.FileController;
+import com.lumination.leadmelabs.models.stations.controllers.OpenBrushController;
 import com.lumination.leadmelabs.models.stations.handlers.StateHandler;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
-import com.lumination.leadmelabs.ui.stations.controllers.ApplicationController;
-import com.lumination.leadmelabs.ui.stations.controllers.AudioController;
-import com.lumination.leadmelabs.ui.stations.controllers.VideoController;
+import com.lumination.leadmelabs.models.stations.controllers.ApplicationController;
+import com.lumination.leadmelabs.models.stations.controllers.AudioController;
+import com.lumination.leadmelabs.models.stations.controllers.VideoController;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.IconManager;
 
@@ -56,6 +58,9 @@ public class Station implements Cloneable {
     //Describes the state of the LeadMe software
     public StateHandler stateHandler = new StateHandler();
 
+    //Handle file management
+    public FileController fileController;
+
     //Handle video management
     public VideoController videoController;
 
@@ -64,6 +69,9 @@ public class Station implements Cloneable {
 
     //Handle application management
     public ApplicationController applicationController;
+
+    //Handle open brush management
+    public OpenBrushController openBrushController;
 
     //Track animation of icons
     IconManager iconManager = new IconManager();
@@ -82,9 +90,11 @@ public class Station implements Cloneable {
         this.isHiddenStation = isHiddenStation;
 
         //Setup the controllers
+        this.fileController = new FileController();
         this.videoController = new VideoController(id);
         this.audioController = new AudioController();
         this.applicationController = new ApplicationController(applications);
+        this.openBrushController = new OpenBrushController(id);
     }
 
     /**

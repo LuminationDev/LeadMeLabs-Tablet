@@ -89,7 +89,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 type = type != null ? type : "application";
 
                 boolean hasLocalApplication = type.equals("application") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId());
-                boolean hasLocalVideo = type.equals("video") && station.videoController.hasLocalVideo(mViewModel.getSelectedVideo().getValue());
+                boolean hasLocalVideo = type.equals("video") && station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue());
 
                 if (hasLocalApplication || hasLocalVideo) {
                     finalResult.setOnClickListener(v -> {
@@ -158,7 +158,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
      */
     public boolean isVideoOnAll() {
         for (Station station : stationList) {
-            if(!station.videoController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())){
+            if(!station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())){
                 return false;
             };
         }

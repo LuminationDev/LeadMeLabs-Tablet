@@ -166,7 +166,7 @@ public class LibraryPageFragment extends Fragment {
                         if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
                             onLoadType = "videos";
                         }
-                        if (station.videoController.videos.isEmpty()) {
+                        if (station.fileController.videos.isEmpty()) {
                             onLoadType = "vr_experiences";
                         }
                         break;
@@ -174,7 +174,7 @@ public class LibraryPageFragment extends Fragment {
                         if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
                             onLoadType = "videos";
                         }
-                        if (station.videoController.videos.isEmpty()) {
+                        if (station.fileController.videos.isEmpty()) {
                             onLoadType = "vr_experiences";
                         }
                         break;
@@ -191,16 +191,16 @@ public class LibraryPageFragment extends Fragment {
      */
     private void setupLibraryTags(String stationName) {
         if (stationName == null) {
-            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
-            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
-            binding.setHasVrApplications(StationsFragment.mViewModel.getAllApplicationsByType(true).size() > 0);
+            binding.setHasVideos(!StationsFragment.mViewModel.getAllVideos().isEmpty());
+            binding.setHasRegularApplications(!StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty());
+            binding.setHasVrApplications(!StationsFragment.mViewModel.getAllApplicationsByType(true).isEmpty());
         } else {
             //Get the current station
             Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
             if (station != null) {
-                binding.setHasVideos(station.videoController.videos.size() > 0);
-                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
-                binding.setHasVrApplications(station.applicationController.getAllApplicationsByType(true).size() > 0);
+                binding.setHasVideos(!station.fileController.videos.isEmpty());
+                binding.setHasRegularApplications(!station.applicationController.getAllApplicationsByType(false).isEmpty());
+                binding.setHasVrApplications(!station.applicationController.getAllApplicationsByType(true).isEmpty());
             }
         }
     }

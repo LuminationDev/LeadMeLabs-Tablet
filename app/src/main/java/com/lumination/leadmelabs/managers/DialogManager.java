@@ -33,11 +33,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.button.MaterialButton;
+import com.lumination.leadmelabs.adapters.FileAdapter;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.interfaces.MultiStringCallbackInterface;
+import com.lumination.leadmelabs.interfaces.StringCallbackInterface;
+import com.lumination.leadmelabs.models.LocalFile;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
@@ -55,6 +59,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 import com.segment.analytics.Properties;
@@ -68,6 +73,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -1409,7 +1415,7 @@ public class DialogManager {
         }
     }
 
-    //region Tracking
+    //region tracking
     private static final String segmentClassification = "Dialog";
 
     private static void trackSettingChanged(String name) {

@@ -188,7 +188,7 @@ public class StationSelectionPageFragment extends Fragment {
 
             stations = new ArrayList<>(stations);
             for (Station station:stations) {
-                if (!station.isOff() && station.videoController.hasLocalVideo(selectedVideo)) {
+                if (!station.isOff() && station.fileController.hasLocalVideo(selectedVideo)) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }

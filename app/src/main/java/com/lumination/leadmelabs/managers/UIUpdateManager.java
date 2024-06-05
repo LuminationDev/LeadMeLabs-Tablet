@@ -9,6 +9,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
@@ -697,7 +698,8 @@ public class UIUpdateManager {
                     break;
 
                 case "activeVideoFile":
-                    station.videoController.setActiveVideo(value);
+                    Video video = station.fileController.findVideoById(value);
+                    station.videoController.setActiveVideo(video);
                     break;
 
                 case "videoPlayerDetails":
@@ -705,7 +707,11 @@ public class UIUpdateManager {
                     break;
 
                 case "videoFiles":
-                    station.videoController.setVideos(value);
+                    station.fileController.setFiles("Videos", value);
+                    break;
+
+                case "localFiles":
+                    station.fileController.setFiles("LocalFiles", value);
                     break;
 
                 case "details":

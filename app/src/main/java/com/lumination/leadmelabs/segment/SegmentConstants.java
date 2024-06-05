@@ -24,6 +24,7 @@ public class SegmentConstants {
 
     public static String VR_Device_Touch = "VR Device Touch";
     public static String Video_Playback_Control = "Video Playback Control";
+    public static String Open_Brush_Control = "Open Brush Control";
     public static String Station_Volume_Control = "Station Volume Control";
     public static String Station_Mute = "Station Mute";
     public static String Open_Configure_SteamCMD = "Open Configure SteamCMD";

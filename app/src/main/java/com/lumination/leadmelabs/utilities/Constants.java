@@ -67,10 +67,14 @@ public class Constants {
 
 
     //Message constants
-    public static String Invalid = "invalid";
-    public static String ShareCode = "shareCode";
-    public static String VideoPlayer = "videoPlayer";
+    public static final String Invalid = "invalid";
+    public static final String ShareCode = "shareCode";
+    public static final String VideoPlayer = "videoPlayer";
+    public static final String VideoPlayerVr = "videoPlayerVr";
+    public static final String OpenBrush = "openBrush";
 
+    //File Category constants
+    public static final String OPEN_BRUSH_FILE = "OpenBrush";
 
     //Embedded Application Constants
     public static String VIDEO_PLAYER_NAME = "Video Player";

@@ -1,11 +1,9 @@
-package com.lumination.leadmelabs.ui.stations.controllers;
+package com.lumination.leadmelabs.models.stations.controllers;
 
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
-import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -13,15 +11,10 @@ import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import io.sentry.Sentry;
 
@@ -49,74 +42,8 @@ public class VideoController {
     private boolean sliderTracking = false;
     private int sliderValue = 0;
 
-    public List<Video> videos = new ArrayList<>();
-
     public VideoController(int stationId) {
         this.stationId = stationId;
-    }
-
-    /**
-     * Parses JSON data to create a list of Video objects.
-     * The JSON data should contain an array of objects with "name", "source", "length & "isVR" properties.
-     *
-     * @param jsonData The JSON data to parse.
-     */
-    public void setVideos(String jsonData) {
-        List<Video> videos = new ArrayList<>();
-
-        try {
-            JSONArray devices = new JSONArray(jsonData);
-
-            for (int i = 0; i < devices.length(); i++) {
-                JSONObject videoJson = devices.getJSONObject(i);
-
-                String id = videoJson.optString("id", "");
-                String name = videoJson.optString("name", "");
-                String source = videoJson.optString("source", "");
-                int length = videoJson.optInt("length", 0);
-                boolean hasSubtitles = videoJson.optBoolean("hasSubtitles", false);
-                String videoType = videoJson.optString("videoType", "Normal");
-                if (name.equals("") || source.equals("")) continue;
-
-                Video temp = new Video(id, name, source, length, hasSubtitles, videoType);
-                videos.add(temp);
-            }
-
-            this.videos = videos;
-
-            //Check for missing thumbnails
-            ImageManager.CheckLocalVideoCache(devices);
-        } catch (JSONException e) {
-            Sentry.captureException(e);
-        }
-    }
-
-    /**
-     * Finds a video by its unique identifier.
-     *
-     * @param id The unique identifier of the video to find.
-     * @return The video with the specified ID if found; otherwise, returns null.
-     * @example Video video = findVideoById("123");
-     */
-    public Video findVideoById(String id) {
-        if (videos == null) {
-            return null;
-        }
-
-        return videos.stream()
-                .filter(video -> video.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
-     * Collect all the videos that are of a certain type.
-     * @return A List of videos matching the supplied type.
-     */
-    public List<Video> getVideosOfType(String type) {
-        return videos.stream()
-                .filter(video -> video.getVideoType().equals(type))
-                .collect(Collectors.toList());
     }
 
     /**
@@ -188,10 +115,10 @@ public class VideoController {
     /**
      * Sets the currently active video based on its unique identifier.
      *
-     * @param id The unique identifier of the video to set as active.
+     * @param video The video to set as active.
      */
-    public void setActiveVideo(String id) {
-        activeVideoFile = findVideoById(id);
+    public void setActiveVideo(Video video) {
+        activeVideoFile = video;
     }
 
     /**
@@ -266,22 +193,6 @@ public class VideoController {
 
     public Boolean getVideoPlaybackRepeat() {
         return this.playbackRepeat;
-    }
-
-    /**
-     * Detect if a particular station has a video on it
-     * @param checkVideo A Video object to check for.
-     * @return A boolean if the a video exists.
-     */
-    public Boolean hasLocalVideo(Video checkVideo) {
-        if (checkVideo == null) return false;
-
-        for (Video video:this.videos) {
-            if (Objects.equals(video.getId(), checkVideo.getId())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     //region Triggers

@@ -233,7 +233,7 @@ public class StationSingleFragment extends Fragment {
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
                 String subtype = current.subtype.optString("category", "");
-                if (subtype.equals(Constants.VideoPlayer)) {
+                if (subtype.equals(Constants.VideoPlayer) || subtype.equals(Constants.VideoPlayerVr)) {
                     bundle.putString("library", "videos");
                 }
                 SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
@@ -690,7 +690,7 @@ public class StationSingleFragment extends Fragment {
             return;
         }
         String subtype = current.subtype.optString("category", "");
-        if (subtype.equals(Constants.VideoPlayer)) {
+        if (subtype.equals(Constants.VideoPlayer) || subtype.equals(Constants.VideoPlayerVr)) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
@@ -723,20 +723,51 @@ public class StationSingleFragment extends Fragment {
             return;
         }
 
-        if (subtype.equals(Constants.ShareCode)) {
-            Log.e("STATION", "SHARE CODE LAYOUT");
-        }
-        else if (subtype.equals(Constants.VideoPlayer)) {
-            TextView controlTitle = view.findViewById(R.id.custom_controls_title);
-            controlTitle.setText("Playback");
+        TextView controlTitle;
+        FlexboxLayout guides;
+        FlexboxLayout controls;
 
-            FlexboxLayout guides = view.findViewById(R.id.guide_section);
-            guides.setVisibility(View.GONE);
+        switch (subtype) {
+            case Constants.ShareCode:
+                Log.e("STATION", "SHARE CODE LAYOUT");
+                break;
 
-            FlexboxLayout controls = view.findViewById(R.id.video_controls);
-            controls.setVisibility(View.VISIBLE);
-        } else {
-            resetLayout(view);
+            case Constants.VideoPlayer:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText("Playback");
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.video_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            case Constants.VideoPlayerVr:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText("Playback");
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.video_vr_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            case Constants.OpenBrush:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText("Open Brush");
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.open_brush_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            default:
+                resetLayout(view);
+                break;
         }
     }
 
@@ -749,10 +780,18 @@ public class StationSingleFragment extends Fragment {
         controlTitle.setText("Guides");
 
         //Reset the video controls
-        FlexboxLayout controls = view.findViewById(R.id.video_controls);
-        controls.setVisibility(View.GONE);
+        FlexboxLayout videoControls = view.findViewById(R.id.video_controls);
+        videoControls.setVisibility(View.GONE);
+
+        //Reset the video vr controls
+        FlexboxLayout videoVrControls = view.findViewById(R.id.video_vr_controls);
+        videoVrControls.setVisibility(View.GONE);
 
         //Reset the share code controls
+
+        //Reset the open brush controls
+        FlexboxLayout openBrush = view.findViewById(R.id.open_brush_controls);
+        openBrush.setVisibility(View.GONE);
 
         //Reset the guide section
         FlexboxLayout guides = view.findViewById(R.id.guide_section);
