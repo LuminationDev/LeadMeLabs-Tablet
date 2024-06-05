@@ -5,7 +5,6 @@ import android.util.Log;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
-import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -49,6 +48,8 @@ public class VideoController {
     private boolean sliderTracking = false;
     private int sliderValue = 0;
 
+    public String videosRaw;  //a string of the raw json information
+
     public List<Video> videos = new ArrayList<>();
 
     public VideoController(int stationId) {
@@ -76,7 +77,7 @@ public class VideoController {
                 int length = videoJson.optInt("length", 0);
                 boolean hasSubtitles = videoJson.optBoolean("hasSubtitles", false);
                 String videoType = videoJson.optString("videoType", "Normal");
-                if (name.equals("") || source.equals("")) continue;
+                if (name.isEmpty() || source.isEmpty()) continue;
 
                 Video temp = new Video(id, name, source, length, hasSubtitles, videoType);
                 videos.add(temp);
@@ -89,6 +90,15 @@ public class VideoController {
         } catch (JSONException e) {
             Sentry.captureException(e);
         }
+    }
+
+    /**
+     * Get the current videos in string form for comparison against incoming data. The videos are
+     * only updated if something has changed.
+     * @return A string of the raw videos json as it was first received
+     */
+    public String getRawVideos() {
+        return videosRaw;
     }
 
     /**
@@ -202,7 +212,7 @@ public class VideoController {
      */
     public void updateVideoPlaybackTime(String input) {
         if (activeVideoFile == null) return;
-        if (Helpers.isNullOrEmpty(input)) return;
+        if (Helpers.isNullOrEmpty(input) || input.equals("null")) return;
         if (Integer.parseInt(input) > getVideoLength()) return;
 
         try {

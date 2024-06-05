@@ -32,6 +32,8 @@ public class ApplicationController {
     private String gameId;
     private String gameType;
 
+    public String applicationsRaw; //a string of the raw json information
+
     public ArrayList<Application> applications = new ArrayList<>();
 
     public ApplicationController(Object applications) {
@@ -219,5 +221,14 @@ public class ApplicationController {
      */
     public boolean hasGame() {
         return this.gameName != null && !this.gameName.isEmpty() && !this.gameName.equals("null");
+    }
+
+    /**
+     * Get the current installed applications in string form for comparison against incoming data. The
+     * installed applications are only updated if something has changed.
+     * @return A string of the raw installed applications json as it was first received
+     */
+    public String getRawInstalledApplications() {
+        return applicationsRaw;
     }
 }
