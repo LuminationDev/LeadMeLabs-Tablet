@@ -65,6 +65,7 @@ public class VideoController {
         List<Video> videos = new ArrayList<>();
 
         try {
+            videosRaw = jsonData;
             JSONArray devices = new JSONArray(jsonData);
 
             for (int i = 0; i < devices.length(); i++) {

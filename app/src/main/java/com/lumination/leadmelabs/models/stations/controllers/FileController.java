@@ -42,6 +42,17 @@ import java.util.stream.Collectors;
 import io.sentry.Sentry;
 
 public class FileController {
+    private String filesRaw;  //a string of the raw json information
+
+    /**
+     * Get the current files in string form for comparison against incoming data. The files are
+     * only updated if something has changed.
+     * @return A string of the raw files json as it was first received
+     */
+    public String getRawFiles() {
+        return this.filesRaw;
+    }
+
     /**
      * Sets files based on the provided file type and JSON data.
      * This method processes the JSON data according to the specified file type.
@@ -59,6 +70,7 @@ public class FileController {
         }
 
         try {
+            filesRaw = jsonData;
             JSONObject jsonObject = new JSONObject(jsonData);
 
             // Iterate through the keys
