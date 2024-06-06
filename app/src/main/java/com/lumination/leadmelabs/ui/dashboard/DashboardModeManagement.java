@@ -45,6 +45,11 @@ public class DashboardModeManagement {
      * @param active A string of the mode that is being set.
      */
     public void changeModeButtonAvailability(String sceneName, String room, String active) {
+        //Check if scene timers is enable in settings (defaults to 'On')
+        if (Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue())) {
+            return;
+        }
+
         DashboardFragment.mViewModel.setActivatingMode(active);
         DashboardFragment.mViewModel.setChangingMode(true);
 
@@ -178,6 +183,7 @@ public class DashboardModeManagement {
                 }
                 return stations;
 
+            case "Backup":
             case "Scene":
                 ArrayList<JSONObject> stationObjects = new ArrayList<>();
                 ApplianceViewModel applianceViewModel = ApplianceFragment.mViewModel;
@@ -345,7 +351,8 @@ public class DashboardModeManagement {
 
         for (String mode : modes) {
             MainActivity.runOnUI(() -> {
-                SceneController.resetAfterSceneActivation(mode);
+                //SceneController.resetAfterSceneActivation(mode);
+                SceneController.reset();
                 DashboardFragment.mViewModel.resetMode(mode);
             });
         }

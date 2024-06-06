@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.ui.appliance.adapters.BaseAdapter;
 import com.lumination.leadmelabs.ui.appliance.adapters.SceneAdapter;
 import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.dashboard.DashboardModeManagement;
+import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
@@ -41,8 +42,15 @@ public class SceneController {
      * Depending on the status of the scene card, change the background and start a transition.
      */
     public static void sceneTransition(String status, String id, View finalResult) {
-        // just turned on - or is currently being set
-        if (latestOn.contains(id) || status.equals(Constants.LOADING)) {
+        // just turned on - scene timers turned off
+        if (latestOn.contains(id) && Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue())) {
+            finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
+            TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
+            transition.startTransition(fadeTime);
+            latestOn.remove(id);
+
+            // just turned on - or is currently being set
+        } else if ((latestOn.contains(id) || status.equals(Constants.LOADING))) {
             finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_setting, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.startTransition(fadeTime);
@@ -136,16 +144,20 @@ public class SceneController {
         ArrayList<Appliance> currentList = getCurrentApplianceList();
         if (currentList == null) return;
 
+        //Check if the scene timers are on in the settings
+        boolean sceneTimers =  Boolean.TRUE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue());
+
         //Collect information about the scene
-        SceneInfo info = collectSceneInfo(scene, Constants.LOADING);
+        SceneInfo info = collectSceneInfo(scene, sceneTimers ? Constants.LOADING : Constants.ACTIVE);
 
         //Track which cards to visually update
-        HashSet<String> updates = updateApplianceList(currentList, Constants.DISABLED,  info.getId(), info.getRoom());
+        HashSet<String> updates = updateApplianceList(currentList, sceneTimers ? Constants.DISABLED : Constants.INACTIVE,  info.getId(), info.getRoom());
 
         //Check what sort of RecyclerView is active then update the card's appearance if visible
         updateAdapter(ApplianceAdapter.getInstance(), updates);
 
-        if (scene != null) {
+        // Update the dashboard buttons and record the triggering scene
+        if (scene != null && sceneTimers) {
             checkSceneAvailability(scene.name.toLowerCase(), scene.room, scene.id, isDashboardTrigger);
         }
     }
@@ -348,5 +360,11 @@ public class SceneController {
             }
         }
         return null; // Return null if the mode is not found in the map
+    }
+
+    public static void reset() {
+        for (Map.Entry<String, String> entry : activatingScenes.entrySet()) {
+            activatingScenes.remove(entry.getKey());
+        }
     }
 }
