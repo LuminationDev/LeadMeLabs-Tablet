@@ -1,10 +1,9 @@
-package com.lumination.leadmelabs.ui.appliance;
+package com.lumination.leadmelabs.ui.appliance.adapters;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -17,6 +16,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.RadioApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Option;
+import com.lumination.leadmelabs.ui.appliance.controllers.ApplianceController;
 
 import java.util.ArrayList;
 

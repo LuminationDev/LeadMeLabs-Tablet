@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.appliance;
+package com.lumination.leadmelabs.ui.appliance.adapters;
 
 import android.view.View;
 import android.view.ViewGroup;

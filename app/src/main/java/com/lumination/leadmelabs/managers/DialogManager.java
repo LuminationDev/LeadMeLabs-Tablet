@@ -43,10 +43,10 @@ import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.Adapters.GlobalAdapter;
 import com.lumination.leadmelabs.ui.library.application.Adapters.LevelAdapter;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -55,6 +55,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 import com.segment.analytics.Properties;
@@ -581,7 +582,7 @@ public class DialogManager {
                     if (confirmationResult) {
                         endSession(stationAdapter.stationList);
                         Properties segmentProperties = new Properties();
-                        segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                        segmentProperties.put("classification", DashboardFragment.segmentClassification);
                         Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
                     }
                 };
@@ -596,7 +597,7 @@ public class DialogManager {
             } else {
                 endSession(stationAdapter.stationList);
                 Properties segmentProperties = new Properties();
-                segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                segmentProperties.put("classification", DashboardFragment.segmentClassification);
                 Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
             }
 
@@ -755,6 +756,12 @@ public class DialogManager {
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability(
+                        "",
+                        "",
+                        type.equals("Shutdown") ? Constants.SHUTDOWN_MODE : Constants.RESTART_MODE
+                );
+
                 //Start a power check for all stations
                 if (type.equals("Restart")) {
                     WakeById("Restarting", stationIds); //Wake any computers that are already off
@@ -835,7 +842,7 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            if (newAddress.getText().toString().trim().length() > 0) {
+            if (!newAddress.getText().toString().trim().isEmpty()) {
                 SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
                 nucDialog.dismiss();
                 trackSettingChanged("NUC IP Address");
@@ -1018,7 +1025,7 @@ public class DialogManager {
         TextView preview = view.findViewById(R.id.locked_room_preview);
         preview.setText(
                 SettingsFragment.mViewModel.getLockedRooms().getValue() == null ||
-                SettingsFragment.mViewModel.getLockedRooms().getValue().size() == 0 ?
+                        SettingsFragment.mViewModel.getLockedRooms().getValue().isEmpty() ?
                         "None" :
                         String.join(", ", SettingsFragment.mViewModel.getLockedRooms().getValue()));
 
@@ -1214,7 +1221,7 @@ public class DialogManager {
     public static void gameLaunchedOnStation(int stationId) {
         if (gameLaunchStationIds != null) {
             gameLaunchStationIds.removeIf(id -> id == stationId);
-            if (gameLaunchStationIds.size() == 0) {
+            if (gameLaunchStationIds.isEmpty()) {
                 if (gameLaunchDialog != null) {
                     gameLaunchDialog.dismiss();
                 }
@@ -1255,7 +1262,7 @@ public class DialogManager {
     public static void sessionEndedOnStation(int stationId) {
         if (endSessionStationIds != null) {
             endSessionStationIds.removeIf(id -> id == stationId);
-            if (endSessionStationIds.size() == 0) {
+            if (endSessionStationIds.isEmpty()) {
                 if (endSessionDialog != null) {
                     endSessionDialog.dismiss();
                 }
@@ -1305,7 +1312,7 @@ public class DialogManager {
     public static void vrSystemRestartedOnStation(int stationId) {
         if (restartVRSystemStationIds != null) {
             restartVRSystemStationIds.removeIf(id -> id == stationId);
-            if (restartVRSystemStationIds.size() == 0) {
+            if (restartVRSystemStationIds.isEmpty()) {
                 if (restartVRSystemDialog != null) {
                     restartVRSystemDialog.dismiss();
                 }
