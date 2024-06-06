@@ -341,6 +341,7 @@ public class SceneController {
             }
         }
 
+        if (ApplianceParentAdapter.getInstance() == null) return;
         for (String cards : updates) {
             ApplianceParentAdapter.getInstance().updateIfVisible(cards);
         }

@@ -115,8 +115,10 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                 ApplianceAdapter.getInstance().updateIfVisible(cards);
             }
         } else {
-            for (String cards : updates) {
-                ApplianceParentAdapter.getInstance().updateIfVisible(cards);
+            if (ApplianceParentAdapter.getInstance() != null) {
+                for (String cards : updates) {
+                    ApplianceParentAdapter.getInstance().updateIfVisible(cards);
+                }
             }
         }
 
