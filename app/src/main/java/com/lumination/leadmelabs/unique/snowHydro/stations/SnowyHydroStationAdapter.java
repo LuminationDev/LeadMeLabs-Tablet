@@ -14,7 +14,7 @@ import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.segment.analytics.Properties;
@@ -74,7 +74,7 @@ public class SnowyHydroStationAdapter extends RecyclerView.Adapter<SnowyHydroSta
                         .commit();
                 SideMenuFragment.currentType = "stationSingle";
                 Properties segmentProperties = new Properties();
-                segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                segmentProperties.put("classification", DashboardFragment.segmentClassification);
                 Segment.trackEvent(SegmentConstants.Open_Station_Details, segmentProperties);
                 Segment.trackScreen("menu:dashboard:stationSingle");
             });

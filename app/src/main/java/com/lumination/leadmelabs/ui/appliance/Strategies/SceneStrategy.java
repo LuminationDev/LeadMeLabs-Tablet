@@ -1,16 +1,19 @@
 package com.lumination.leadmelabs.ui.appliance.Strategies;
 
+import android.util.Log;
 import android.view.View;
 
+import androidx.databinding.ViewDataBinding;
+
 import com.lumination.leadmelabs.abstractClasses.AbstractApplianceStrategy;
-import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import com.lumination.leadmelabs.databinding.CardApplianceSceneBinding;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.appliance.ApplianceAdapter;
-import com.lumination.leadmelabs.ui.appliance.ApplianceController;
+import com.lumination.leadmelabs.ui.appliance.controllers.SceneController;
+import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceParentAdapter;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
@@ -30,7 +33,8 @@ import java.util.Objects;
  */
 public class SceneStrategy extends AbstractApplianceStrategy {
     @Override
-    public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+    public <T extends ViewDataBinding > void trigger(T binding, Appliance appliance, View finalResult) {
+        CardApplianceSceneBinding cardBinding = (CardApplianceSceneBinding) binding;
 
         ArrayList<JSONObject> stationsToTurnOff = new ArrayList<>();
 
@@ -45,7 +49,7 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                         stationsToTurnOff.add(station);
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("SceneStrategy", e.toString());
                 }
             }
 
@@ -53,19 +57,17 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                 try {
                     return station.getString("id");
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.e("SceneStrategy", e.toString());
                 }
                 return "";
             }).toArray(String[]::new));
 
             BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
                 if (confirmationResult) {
-                    performAction(binding, appliance, finalResult);
-                } else {
-                    return;
+                    performAction(cardBinding, appliance, finalResult);
                 }
             };
-            if (stationsToTurnOff.size() > 0) {
+            if (!stationsToTurnOff.isEmpty()) {
                 DialogManager.createConfirmationDialog(
                         "Confirm station shutdown", "Station(s) " + stationIdsString + " will shutdown. Please confirm this scene.",
                         confirmShutdownCallback,
@@ -75,20 +77,20 @@ public class SceneStrategy extends AbstractApplianceStrategy {
                 return;
             }
         }
-        performAction(binding, appliance, finalResult);
+        performAction(cardBinding, appliance, finalResult);
     }
 
-    private void performAction(CardApplianceBinding binding, Appliance appliance, View finalResult)
-    {
+    private void performAction(CardApplianceSceneBinding binding, Appliance appliance, View finalResult) {
         HashSet<String> updates = new HashSet<>();
         Appliance last = ApplianceViewModel.activeSceneList.get(appliance.room);
 
         if(last != null && last != appliance) {
+            ApplianceViewModel.activeSceneList.remove(appliance.room);
             ApplianceViewModel.activeScenes.getValue().remove(last.id);
-            ApplianceController.latestOff.add(last.id);
+            SceneController.latestOff.add(last.id);
             updates.add(last.id);
         }
-        ApplianceController.latestOn.add(appliance.id);
+        SceneController.latestOn.add(appliance.id);
 
         updates.add(appliance.id);
         ApplianceViewModel.activeScenes.getValue().put(appliance.id, "On");
@@ -98,11 +100,14 @@ public class SceneStrategy extends AbstractApplianceStrategy {
         NetworkService.sendMessage("NUC",
                 "Automation",
                 "Set" + ":"                             //[0] Action
-                        + appliance.id + ":"            //[1] CBUS unit number
-                        + automationValue + ":"                      //[7] CBUS object id/doubles as card id
+                        + appliance.id + ":"                        //[1] CBUS unit number
+                        + automationValue + ":"                     //[7] CBUS object id/doubles as card id
                         + NetworkService.getIPAddress());           //[8] The IP address of the tablet
 
         String roomType = RoomFragment.mViewModel.getSelectedRoom().getValue();
+
+        //Disable all other scenes in the room
+        SceneController.handeActivatingScene(appliance, false);
 
         //Check what sort of RecyclerView is active then update the card's appearance if visible
         if((!Objects.equals(roomType, "All")  || ApplianceFragment.overrideRoom != null) && !ApplianceFragment.checkForEmptyRooms(roomType)) {

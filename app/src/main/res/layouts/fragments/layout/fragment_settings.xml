@@ -196,6 +196,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -206,6 +207,7 @@
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
                         android:text="@string/allow_analytics"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/enable_analytical_collection_toggle"
                         app:thumbTint="@color/blue"
@@ -215,7 +217,7 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/support_mode"
+                    android:id="@+id/scene_limiter_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -223,6 +225,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -232,13 +235,14 @@
                         android:textColor="@color/black"
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
-                        android:text="@string/support_mode"/>
+                        android:text="Scene Timers"/>
+
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/support_mode_toggle"
+                        android:id="@+id/scene_limiter_mode_toggle"
                         app:thumbTint="@color/blue"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:checked="@{settings.supportMode}"/>
+                        android:checked="@{settings.sceneTimer}"/>
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.flexbox.FlexboxLayout
@@ -250,6 +254,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -260,6 +265,7 @@
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
                         android:text="@string/additional_exit_prompts"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/exit_prompt_controls_toggle"
                         app:thumbTint="@color/blue"
@@ -277,6 +283,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -287,6 +294,7 @@
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
                         android:text="@string/internal_traffic"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/internal_traffic_toggle"
                         app:thumbTint="@color/blue"
@@ -305,6 +313,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -315,6 +324,7 @@
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
                         android:text="@string/developer_traffic"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/developer_traffic_toggle"
                         app:thumbTint="@color/blue"
@@ -332,6 +342,7 @@
                     app:alignItems="center"
                     app:justifyContent="space_between"
                     android:layout_marginBottom="15dp">
+
                     <TextView
                         android:padding="15dp"
                         app:layout_flexShrink="0"
@@ -342,6 +353,7 @@
                         android:textAllCaps="false"
                         android:background="@android:color/transparent"
                         android:text="@string/room_lock"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/enable_room_lock_toggle"
                         app:thumbTint="@color/blue"
@@ -446,6 +458,35 @@
                         android:textAlignment="textEnd"
                         android:layout_height="25dp"
                         android:text="@{settings.nucAddress.length == 0 ? `Not set` : settings.nucAddress}"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/support_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/support_mode"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/support_mode_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.supportMode}"/>
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>

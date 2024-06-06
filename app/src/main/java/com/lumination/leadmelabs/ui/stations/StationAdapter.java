@@ -11,16 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
-import com.lumination.leadmelabs.databinding.CardStationContentBinding;
-import com.lumination.leadmelabs.databinding.CardStationVrBinding;
-import com.lumination.leadmelabs.models.stations.ContentStation;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.models.stations.VrStation;
+
 import androidx.core.content.ContextCompat;
 
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.segment.analytics.Properties;
@@ -80,7 +77,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                             .commit();
                     SideMenuFragment.currentType = "stationSingle";
                     Properties segmentProperties = new Properties();
-                    segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                    segmentProperties.put("classification", DashboardFragment.segmentClassification);
                     Segment.trackEvent(SegmentConstants.Open_Station_Details, segmentProperties);
                     Segment.trackScreen("menu:dashboard:stationSingle");
                 });

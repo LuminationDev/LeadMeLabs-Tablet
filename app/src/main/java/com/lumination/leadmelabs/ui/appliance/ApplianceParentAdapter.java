@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.Appliance;
+import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.BaseAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.RadioAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.SceneAdapter;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.text.MessageFormat;
@@ -73,13 +77,32 @@ public class ApplianceParentAdapter extends RecyclerView.Adapter<ApplianceParent
             holder.warningMessage.setVisibility(View.VISIBLE);
             return;
         }
+        BaseAdapter adapter = getBaseAdapter(position);
+        holder.childRecyclerView.setAdapter(adapter);
+
+        adapters.add(adapter);
+    }
+
+    @NonNull
+    private BaseAdapter getBaseAdapter(int position) {
         String type = parentModelArrayList.valueAt(position).get(0).type;
 
-        BaseAdapter applianceAdapter = type.equals(Constants.LED_WALLS) ? new RadioAdapter() : new ApplianceAdapter();
-        applianceAdapter.setApplianceList(parentModelArrayList.valueAt(position));
-        holder.childRecyclerView.setAdapter(applianceAdapter);
+        BaseAdapter applianceAdapter;
+        switch(type) {
+            case Constants.LED_WALLS:
+                applianceAdapter = new RadioAdapter();
+                break;
 
-        adapters.add(applianceAdapter);
+            case Constants.SCENE:
+                applianceAdapter = new SceneAdapter();
+                break;
+
+            default:
+                applianceAdapter = new ApplianceAdapter();
+                break;
+        }
+        applianceAdapter.setApplianceList(parentModelArrayList.valueAt(position));
+        return applianceAdapter;
     }
 
     /**

@@ -1,181 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="horizontal">
 
-    <data>
-        <variable
-            name="settings"
-            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
-    </data>
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey"
-        android:orientation="horizontal">
+        android:layout_marginVertical="58dp"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="58dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            app:flexDirection="row">
 
             <com.google.android.flexbox.FlexboxLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
-                app:justifyContent="space_between"
-                app:alignItems="center"
-                app:flexDirection="row">
-                <com.google.android.flexbox.FlexboxLayout
+                app:flexDirection="column">
+
+                <TextView
+                    style="@style/HeadingTitle"
+                    android:id="@+id/welcome_message"
+                    android:text="Welcome!"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:id="@+id/date_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:flexDirection="column">
+                    android:text="Tuesday 26th April 2022"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!--Refresh Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/refresh_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/icon_refresh"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
 
                     <TextView
-                        style="@style/HeadingTitle"
-                        android:id="@+id/welcome_message"
-                        android:text="Welcome!"
-                        android:textSize="40sp" />
-
-                    <TextView
-                        android:id="@+id/date_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tuesday 26th April 2022"
+                        android:text="Refresh"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
-
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
                 </com.google.android.flexbox.FlexboxLayout>
 
+                <!--Identify Button-->
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/identify_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <!--Refresh Button-->
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
                     <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/refresh_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/identify_ripple_grey_small"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:background="@drawable/light_gray_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:alignItems="center">
-                        <com.google.android.flexbox.FlexboxLayout
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="10dp"
-                            android:background="@drawable/icon_refresh"
-                            app:flexDirection="row"
-                            app:justifyContent="center"
-                            app:alignItems="center"
-                            android:visibility="visible"/>
+                        android:text="Identify"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Refresh"
-                            android:textColor="@color/black"
-                            android:textFontWeight="600"
-                            android:textSize="13sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
+                <!--Help Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/help_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
 
-                    <!--Identify Button-->
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/identify_button"
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="help_icon"
+                        android:src="@drawable/icon_help"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:background="@drawable/light_gray_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:alignItems="center">
-                        <com.google.android.flexbox.FlexboxLayout
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="10dp"
-                            android:background="@drawable/identify_ripple_grey_small"
-                            app:flexDirection="row"
-                            app:justifyContent="center"
-                            app:alignItems="center"
-                            android:visibility="visible"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Identify"
-                            android:textColor="@color/black"
-                            android:textFontWeight="600"
-                            android:textSize="13sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <!--Help Button-->
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/help_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:background="@drawable/light_gray_ripple"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:alignItems="center">
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:contentDescription="help_icon"
-                            android:src="@drawable/icon_help"
-                            android:layout_marginEnd="10dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Help"
-                            android:textColor="@color/black"
-                            android:textFontWeight="600"
-                            android:textSize="13sp" />
-                    </com.google.android.flexbox.FlexboxLayout>
-
+                        android:text="Help"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
                 </com.google.android.flexbox.FlexboxLayout>
 
             </com.google.android.flexbox.FlexboxLayout>
 
-            <!--Switch between the layouts depending on the current settings-->
-            <!--Standard Dashboard Controls-->
-            <include
-                layout="@layout/section_dashboard_standard_controls"
-                app:settings="@{settings}"/>
-
-            <!--Snowy Hydro Dashboard Controls-->
-            <include
-                layout="@layout/section_dashboard_snowy_controls"
-                app:settings="@{settings}"/>
-
-            <RelativeLayout
-                android:id="@+id/stations"
-                android:minHeight="250dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
-        </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <RelativeLayout
-            android:id="@+id/logo"
+            android:id="@+id/dashboard_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/system_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-        <RelativeLayout
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/rooms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:id="@+id/system_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-    </RelativeLayout>
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-</layout>
+</RelativeLayout>
+

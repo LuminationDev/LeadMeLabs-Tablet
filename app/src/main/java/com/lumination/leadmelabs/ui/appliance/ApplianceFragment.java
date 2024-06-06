@@ -24,6 +24,10 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentApplianceBinding;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Filler;
+import com.lumination.leadmelabs.ui.appliance.adapters.ApplianceAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.BaseAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.RadioAdapter;
+import com.lumination.leadmelabs.ui.appliance.adapters.SceneAdapter;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -143,6 +147,8 @@ public class ApplianceFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
         if (roomType.equals(Constants.LED_WALLS)) {
             applianceAdapter = new RadioAdapter();
+        } else if (Objects.equals(type.getValue(), Constants.SCENE)) {
+            applianceAdapter = new SceneAdapter();
         } else {
             applianceAdapter = new ApplianceAdapter();
         }
@@ -180,7 +186,7 @@ public class ApplianceFragment extends Fragment {
         }
 
         //Change the room type selected to the only room that exists
-        if(rooms.size() == 0) {
+        if(rooms.isEmpty()) {
             overrideRoom = "No Items";
             return true;
         }
