@@ -499,6 +499,8 @@ public class UIUpdateManager {
                     vrStation.rightControllerBattery = devices.optInt("rightControllerBattery", vrStation.rightControllerBattery);
                     vrStation.baseStationsActive = devices.optInt("baseStationsActive", vrStation.baseStationsActive);
                     vrStation.baseStationsTotal = devices.optInt("baseStationsTotal", vrStation.baseStationsTotal);
+                    vrStation.trackersActive = devices.optInt("trackersActive", vrStation.trackersActive);
+                    vrStation.trackersTotal = devices.optInt("trackersTotal", vrStation.trackersTotal);
                 }
 
                 MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), vrStation));
@@ -816,6 +818,16 @@ public class UIUpdateManager {
 
                     updateBaseStations(vrStation, values[0], values[1]);
                     break;
+                case "Tracker":
+                    if(validateLength(values.length, 2)) {
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                        + ": Update Tracker, not a valid argument - " + value);
+                        return;
+                    }
+
+                    updateTrackers(vrStation, values[0], values[1]);
+                    break;
             }
 
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), vrStation);
@@ -853,6 +865,11 @@ public class UIUpdateManager {
     private static void updateBaseStations(VrStation station, String active, String total) {
         station.baseStationsActive = Integer.parseInt(active);
         station.baseStationsTotal = Integer.parseInt(total);
+    }
+
+    private static void updateTrackers(VrStation station, String active, String total) {
+        station.trackersActive = Integer.parseInt(active);
+        station.trackersTotal = Integer.parseInt(total);
     }
 
     private static Boolean validateLength(int length, int limit) {
@@ -1122,6 +1139,19 @@ public class UIUpdateManager {
                             if (station instanceof VrStation) {
                                 String baseStationsTotal = jsonObject.getString("baseStationsTotal");
                                 ((VrStation) station).baseStationsTotal = Integer.parseInt(baseStationsTotal);
+                            }
+                            break;
+                        case "trackersActive":
+                            if (station instanceof VrStation) {
+                                String trackersActive = jsonObject.getString("trackersActive");
+                                ((VrStation) station).trackersActive = Integer.parseInt(trackersActive);
+                            }
+                            break;
+
+                        case "trackersTotal":
+                            if (station instanceof VrStation) {
+                                String trackersTotal = jsonObject.getString("trackersTotal");
+                                ((VrStation) station).trackersTotal = Integer.parseInt(trackersTotal);
                             }
                             break;
 
