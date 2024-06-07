@@ -2,4 +2,7 @@
 <resources>
     <string name="quick_actions">Quick Actions</string>
     <string name="active_novastar_preset">active novastar preset</string>
+    <string name="unknown_error_please_save_manually">Unknown error, please save manually</string>
+    <string name="file_must_be_selected">A file must be selected.</string>
+    <string name="unable_to_load_station_details">Unable to load Station details.</string>
 </resources>

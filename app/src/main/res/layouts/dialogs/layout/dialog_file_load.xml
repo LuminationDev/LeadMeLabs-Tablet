@@ -24,8 +24,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
+            android:textSize="16sp"
             android:text="Select a file from the list below">
         </TextView>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <!--Local files associated with the Station-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/local_files"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginVertical="20dp"/>
+
     </com.google.android.flexbox.FlexboxLayout>
 
     <TextView
@@ -34,28 +48,17 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Selected Item: "
-        android:textSize="18sp"/>
+        android:text="Selected Item: None"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--Local files associated with the Station-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/local_files"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"/>
-
-        <TextView
-            android:id="@+id/error_text"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:text="Unknown Error"/>
-    </com.google.android.flexbox.FlexboxLayout>
+    <TextView
+        android:id="@+id/error_text"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:text="Unknown Error"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"

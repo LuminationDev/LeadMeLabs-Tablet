@@ -6,18 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.LocalFile;
 
 import java.util.ArrayList;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
-    private final ArrayList<LocalFile> dataList;
+    private ArrayList<LocalFile> dataList;
     private final LayoutInflater inflater;
     TextView selectedItemTextView;
 
@@ -71,10 +71,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
-                    // Example: Show a toast with the clicked item text
-                    String clickedItem = dataList.get(position).getName();
-                    Toast.makeText(itemView.getContext(), "Clicked: " + clickedItem, Toast.LENGTH_SHORT).show();
-
                     // Toggle selection
                     if (position == selectedPosition) {
                         selectedFileName = null;
@@ -93,5 +89,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 }
             });
         }
+    }
+
+    /**
+     * Update the adapters file list and run the notifyDataSetChanged to update the UI.
+     */
+    public void Update(ArrayList<LocalFile> dataList) {
+        this.dataList = dataList;
+        selectedPosition = RecyclerView.NO_POSITION;
+        MainActivity.runOnUI(() -> notifyDataSetChanged());
     }
 }

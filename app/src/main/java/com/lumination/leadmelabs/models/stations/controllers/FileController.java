@@ -25,11 +25,13 @@ import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,6 +44,9 @@ import java.util.stream.Collectors;
 import io.sentry.Sentry;
 
 public class FileController {
+    private static WeakReference<FileAdapter> fileAdapterRef;
+    private static String currentFileCategory; //track what load dialog is open
+
     private String filesRaw;  //a string of the raw json information
 
     /**
@@ -77,15 +82,20 @@ public class FileController {
             Iterator<String> keys = jsonObject.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
-                Log.e("File controller", "Key: " + key);
-
                 JSONArray jsonArray = jsonObject.getJSONArray(key);
 
+                //Expand later with more file options
                 if (key.equals(Constants.OPEN_BRUSH_FILE)) {
                     setOpenBrushFiles(jsonArray);
+
+                    //Update the file adapter - if open
+                    if (key.equals(currentFileCategory)) {
+                        notifyAdapterDataChanged(this.openBrushFiles);
+                    }
+                } else {
+                    Log.e("File Controller", "Unknown local file key: " + key);
                 }
             }
-
         } catch (JSONException e) {
             Log.e("File Controller", e.toString());
         }
@@ -225,6 +235,29 @@ public class FileController {
     //endregion
 
     //region File saving & loading
+    /**
+     * Sets the FileAdapter instance in a WeakReference.
+     * This method should be called to initialise or update the FileAdapter reference.
+     *
+     * @param fileAdapter The FileAdapter instance to be managed.
+     */
+    private static void setFileAdapter(String fileCategory, FileAdapter fileAdapter) {
+        currentFileCategory = fileCategory;
+        fileAdapterRef = new WeakReference<>(fileAdapter);
+    }
+
+    /**
+     * Notifies the FileAdapter that the data set has changed.
+     * This method should be called whenever the underlying data changes and the adapter needs to
+     * refresh the UI.
+     */
+    private void notifyAdapterDataChanged(ArrayList<LocalFile> localFiles) {
+        FileAdapter fileAdapter = fileAdapterRef != null ? fileAdapterRef.get() : null;
+        if (fileAdapter != null) {
+            fileAdapter.Update(localFiles);
+        }
+    }
+
     private static final Set<Character> INVALID_CHARACTERS = new HashSet<>(Arrays.asList(
             '\\', '/', ':', '*', '?', '"', '<', '>', '|'
     ));
@@ -235,6 +268,10 @@ public class FileController {
      * @return A boolean of if it is valid (true), or not valid (false)
      */
     public static boolean isFileNameValid(String fileName) {
+        if (Helpers.isNullOrEmpty(fileName)) {
+            return false;
+        }
+
         for (char ch : fileName.toCharArray()) {
             if (INVALID_CHARACTERS.contains(ch)) {
                 return false;
@@ -250,7 +287,7 @@ public class FileController {
     public static void buildSaveFileDialog(StringCallbackInterface stringCallbackInterface) {
         Context context = MainActivity.getInstance();
         View view = View.inflate(context, R.layout.dialog_file_save, null);
-        AlertDialog saveDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+        AlertDialog saveDialog = new AlertDialog.Builder(context).setView(view).create();
 
         EditText fileName = view.findViewById(R.id.file_name_input);
         fileName.requestFocus();
@@ -267,7 +304,7 @@ public class FileController {
                     stringCallbackInterface.callback(input);
                     saveDialog.dismiss();
                 } else {
-                    errorText.setText("Unknown error, please save manually");
+                    errorText.setText(R.string.unknown_error_please_save_manually);
                     errorText.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -293,7 +330,7 @@ public class FileController {
     public static void buildLoadFileDialog(int stationId, String fileCategory, MultiStringCallbackInterface multiStringCallbackInterface) {
         Context context = MainActivity.getInstance();
         View view = View.inflate(context, R.layout.dialog_file_load, null);
-        AlertDialog loadDialog = new androidx.appcompat.app.AlertDialog.Builder(context).setView(view).create();
+        AlertDialog loadDialog = new AlertDialog.Builder(context).setView(view).create();
 
         Button cancelButton = view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(v -> loadDialog.dismiss());
@@ -304,7 +341,7 @@ public class FileController {
         //Build the adapter based on the supplied Station Id and file type
         Station station = StationsFragment.mViewModel.getStationById(stationId);
         if (station == null) {
-            errorText.setText("Unable to load Station details.");
+            errorText.setText(R.string.unable_to_load_station_details);
             errorText.setVisibility(View.VISIBLE);
             loadDialog.show();
             return;
@@ -333,24 +370,34 @@ public class FileController {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         FileAdapter fileAdapter = new FileAdapter(context, selectedItemTextView, localFiles);
+        setFileAdapter(fileCategory, fileAdapter); //setup the weak reference
         recyclerView.setAdapter(fileAdapter);
 
         Button load = view.findViewById(R.id.load_button);
         load.setOnClickListener(v -> {
             errorText.setVisibility(View.GONE);
 
-            //Check for invalid characters
-            if(multiStringCallbackInterface != null) {
+            //Check if something is selected
+            if (fileAdapter.getSelectedFileName() == null || fileAdapter.getSelectedFilePath() == null) {
+                errorText.setText(R.string.file_must_be_selected);
+                errorText.setVisibility(View.VISIBLE);
+            } else if(multiStringCallbackInterface != null) {
                 multiStringCallbackInterface.callback(fileAdapter.getSelectedFileName(), fileAdapter.getSelectedFilePath());
                 loadDialog.dismiss();
             } else {
-                errorText.setText("Unknown error, please load manually");
+                errorText.setText(R.string.unknown_error_please_save_manually);
                 errorText.setVisibility(View.VISIBLE);
             }
         });
 
         Button delete = view.findViewById(R.id.delete_button);
         delete.setOnClickListener(v -> {
+            if (fileAdapter.getSelectedFileName() == null || fileAdapter.getSelectedFilePath() == null) {
+                errorText.setText(R.string.file_must_be_selected);
+                errorText.setVisibility(View.VISIBLE);
+                return;
+            }
+
             errorText.setVisibility(View.GONE);
             String selectedFile = fileAdapter.getSelectedFileName();
 
@@ -364,6 +411,8 @@ public class FileController {
             DialogManager.createConfirmationDialog("Are you sure?", "This will permanently delete the file: " + selectedFile, confirmDeleteFileCallback);
         });
 
+        //Remove the weak reference
+        loadDialog.setOnDismissListener(v -> setFileAdapter(null, null));
         loadDialog.show();
     }
     //endregion
