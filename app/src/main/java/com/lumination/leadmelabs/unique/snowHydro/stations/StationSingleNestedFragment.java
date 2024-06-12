@@ -50,7 +50,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.LocalAudioDeviceAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;

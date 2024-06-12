@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardVideoBinding;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.segment.Segment;
@@ -134,23 +135,28 @@ public class VideoAdapter extends BaseAdapter implements Filterable {
             if (station == null) {
                 return;
             }
-            station.checkForVideoPlayer(currentVideo);
 
-            Properties segmentProperties = new Properties();
-            segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
-            segmentProperties.put("name", currentVideo.getName());
-            segmentProperties.put("id", station.getId());
-            segmentProperties.put("type", currentVideo.getVideoType());
-            segmentProperties.put("length", currentVideo.getLength());
-            Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
+            //Trigger if the user has selected a video player or one is already open
+            BooleanCallbackInterface videoLaunched = confirmationResult -> {
+                if (confirmationResult) {
+                    Properties segmentProperties = new Properties();
+                    segmentProperties.put("classification", LibraryPageFragment.segmentClassification);
+                    segmentProperties.put("name", currentVideo.getName());
+                    segmentProperties.put("id", station.getId());
+                    segmentProperties.put("type", currentVideo.getVideoType());
+                    segmentProperties.put("length", currentVideo.getLength());
+                    Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
 
-            //Return to the regular station view or the nested station view
-            if (station.nestedStations == null || station.nestedStations.isEmpty()) {
-                sideMenuFragment.loadFragment(StationSingleFragment.class, "dashboard", null);
-            }
-            else {
-                sideMenuFragment.loadFragment(StationSingleNestedFragment.class, "dashboard", null);
-            }
+                    //Return to the regular station view or the nested station view
+                    if (station.nestedStations == null || station.nestedStations.isEmpty()) {
+                        sideMenuFragment.loadFragment(StationSingleFragment.class, "menu:stations", null);
+                    }
+                    else {
+                        sideMenuFragment.loadFragment(StationSingleNestedFragment.class, "menu:stations:nested", null);
+                    }
+                }
+            };
+            station.checkForVideoPlayer(currentVideo, videoLaunched);
         } else {
             mViewModel.setSelectedVideo(currentVideo);
 

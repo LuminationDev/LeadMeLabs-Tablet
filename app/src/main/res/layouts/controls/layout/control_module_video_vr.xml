@@ -37,21 +37,23 @@
                 app:justifyContent="space_between"
                 app:flexDirection="row">
 
-                <com.google.android.material.button.MaterialButton
+                <!-- Scene selection -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/vr_scene_container"
                     android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:padding="0dp"
-                    android:onClick="@{() -> selectedStation.videoController.stopTrigger()}"
-                    android:enabled="@{selectedStation.videoController.canStop}"
-                    android:backgroundTint="@color/grey_light"
-                    app:strokeColor="#B9C0D4"
-                    app:strokeWidth="2dp"
-                    app:iconTint="@color/black"
-                    app:iconGravity="textStart"
-                    app:cornerRadius="10dp"
-                    app:iconPadding="0dp"
-                    app:iconSize="18dp"
-                    app:icon="@drawable/library_active_vr"/>
+                    android:layout_height="40dp"
+                    app:justifyContent="center"
+                    app:alignItems="center">
+
+                    <Spinner
+                        android:id="@+id/vr_scene_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="25dp"
+                        app:layout_flexShrink="0"
+                        android:background="@drawable/spinner_vr_station_background"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
 
                 <TextView
                     android:id="@+id/textView"
@@ -68,21 +70,23 @@
                     android:focusableInTouchMode="true"
                     android:scrollHorizontally="true"/>
 
-                <com.google.android.material.button.MaterialButton
+                <!-- Projection selection -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/vr_projection_container"
                     android:layout_width="40dp"
-                    android:layout_height="50dp"
-                    android:padding="0dp"
-                    android:onClick="@{() -> selectedStation.videoController.stopTrigger()}"
-                    android:enabled="@{selectedStation.videoController.canStop}"
-                    android:backgroundTint="@color/grey_light"
-                    app:strokeColor="#B9C0D4"
-                    app:strokeWidth="2dp"
-                    app:iconTint="@color/black"
-                    app:iconGravity="textStart"
-                    app:cornerRadius="10dp"
-                    app:iconPadding="0dp"
-                    app:iconSize="20dp"
-                    app:icon="@drawable/small_projector"/>
+                    android:layout_height="40dp"
+                    app:justifyContent="center"
+                    app:alignItems="center">
+
+                    <Spinner
+                        android:id="@+id/vr_projection_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="25dp"
+                        app:layout_flexShrink="0"
+                        android:background="@drawable/spinner_vr_projection_background"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
 
             </com.google.android.flexbox.FlexboxLayout>
 
@@ -188,7 +192,7 @@
             app:flexDirection="row">
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/station_video_slider"
+                android:id="@+id/station_vr_video_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:stepSize="1.0"

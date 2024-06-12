@@ -103,6 +103,9 @@ public class FileController {
 
     /**
      * Send a message to the Station to delete a local file.
+     * @param stationId An Id of the Station to send the refresh message.
+     * @param fileName A string of the file name for deletion confirmation on the station.
+     * @param filePath A string of the absolute file path on the station.
      */
     public void deleteFile(int stationId, String fileName, String filePath) {
         JSONObject message = new JSONObject();
@@ -110,6 +113,20 @@ public class FileController {
             message.put("Action", "delete");
             message.put("fileName", fileName);
             message.put("filePath", filePath);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkService.sendMessage("Station," + stationId, "FileControl", message.toString());
+    }
+
+    /**
+     * Manually refresh the Station's file list.
+     * @param stationId An Id of the Station to send the refresh message.
+     */
+    public void refreshFiles(int stationId) {
+        JSONObject message = new JSONObject();
+        try {
+            message.put("Action", "refresh");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -389,6 +406,9 @@ public class FileController {
                 errorText.setVisibility(View.VISIBLE);
             }
         });
+
+        Button refresh = view.findViewById(R.id.refresh_button);
+        refresh.setOnClickListener(v -> station.fileController.refreshFiles(stationId));
 
         Button delete = view.findViewById(R.id.delete_button);
         delete.setOnClickListener(v -> {

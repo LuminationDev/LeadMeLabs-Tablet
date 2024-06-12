@@ -936,6 +936,7 @@ public class UIUpdateManager {
                     String key = keys.next();
 
                     switch (key) {
+                        //GENERIC DETAILS
                         case "headsetType":
                             String headsetType = jsonObject.getString("headsetType");
                             if (station instanceof VrStation) {
@@ -1015,21 +1016,22 @@ public class UIUpdateManager {
                             station.audioController.setMuted(Boolean.parseBoolean(muted));
                             break;
 
-                        case "activeAudioDevice":
-                            String activeAudioDevice = jsonObject.getString("activeAudioDevice");
+                        case "ActiveAudioDevice":
+                            String activeAudioDevice = jsonObject.getString("ActiveAudioDevice");
                             LocalAudioDevice active = station.audioController.getActiveAudioDevice();
                             if (active == null || !active.getName().equals(activeAudioDevice)) {
                                 station.audioController.setActiveAudioDevice(activeAudioDevice);
                             }
                             break;
 
+                        //VIDEO DETAILS
                         case "activeVideoPlaybackTime":
                             String activeVideoPlaybackTime = jsonObject.getString("activeVideoPlaybackTime");
                             station.videoController.updateVideoPlaybackTime(activeVideoPlaybackTime);
                             break;
 
-                        case "activeVideoFile":
-                            String activeVideoFile = jsonObject.getString("activeVideoFile");
+                        case "ActiveVideoFile":
+                            String activeVideoFile = jsonObject.getString("ActiveVideoFile");
                             if (Helpers.isNullOrEmpty(activeVideoFile)) {
                                 break;
                             }

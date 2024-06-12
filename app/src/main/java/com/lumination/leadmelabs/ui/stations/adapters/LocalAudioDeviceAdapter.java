@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.stations.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

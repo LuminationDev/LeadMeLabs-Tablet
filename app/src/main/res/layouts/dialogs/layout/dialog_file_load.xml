@@ -103,6 +103,21 @@
 
             <com.google.android.material.button.MaterialButton
                 app:layout_flexShrink="0"
+                android:id="@+id/refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/white"
+                android:elevation="0dp"
+                app:cornerRadius="2dp"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/blue"
+                android:textAllCaps="false"
+                android:text="Refresh"/>
+
+            <com.google.android.material.button.MaterialButton
+                app:layout_flexShrink="0"
                 android:id="@+id/load_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

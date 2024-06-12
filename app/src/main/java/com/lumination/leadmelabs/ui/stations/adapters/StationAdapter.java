@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.stations.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +19,9 @@ import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
+import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.unique.snowHydro.stations.StationSingleNestedFragment;
 import com.segment.analytics.Properties;
 
@@ -86,9 +89,12 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                 type = type != null ? type : "application";
 
                 boolean hasLocalApplication = type.equals("application") && station.applicationController.hasApplicationInstalled(mViewModel.getSelectedApplicationId());
-                boolean hasLocalVideo = type.equals("video") && station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue());
 
-                if (hasLocalApplication || hasLocalVideo) {
+                boolean hasLocalVideoAndPlayer = type.equals("video")
+                        && station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())
+                        && station.applicationController.findApplicationByName(StationSelectionPageFragment.videoPlayerSelection) != null;
+
+                if (hasLocalApplication || hasLocalVideoAndPlayer) {
                     finalResult.setOnClickListener(v -> {
                         station.selected = !station.selected;
                         mViewModel.updateStationById(station.id, station);
@@ -150,14 +156,16 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     }
 
     /**
-     * Detect if any stations do not have the selected video.
+     * Detect if any stations do not have the selected video and selected video player.
      * @return A boolean representing if the Video exists.
      */
     public boolean isVideoOnAll() {
         for (Station station : stationList) {
-            if(!station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())){
+            if(!station.fileController.hasLocalVideo(mViewModel.getSelectedVideo().getValue())
+                    || station.applicationController.findApplicationByName(StationSelectionPageFragment.videoPlayerSelection) == null)
+            {
                 return false;
-            };
+            }
         }
 
         return true;

@@ -5,4 +5,7 @@
     <string name="unknown_error_please_save_manually">Unknown error, please save manually</string>
     <string name="file_must_be_selected">A file must be selected.</string>
     <string name="unable_to_load_station_details">Unable to load Station details.</string>
+    <string name="playback">Playback</string>
+    <string name="open_brush">Open Brush</string>
+    <string name="guides">Guides</string>
 </resources>

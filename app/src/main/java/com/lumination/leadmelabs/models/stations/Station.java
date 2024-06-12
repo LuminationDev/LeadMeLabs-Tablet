@@ -13,7 +13,9 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.CardStationBinding;
 import com.lumination.leadmelabs.databinding.CardStationContentBinding;
 import com.lumination.leadmelabs.databinding.CardStationVrBinding;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
+import com.lumination.leadmelabs.interfaces.StringCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
@@ -303,27 +305,78 @@ public class Station implements Cloneable {
 
     /**
      * Checks if a video player is active in the station and loads the current video.
-     * If the video player is not active, it opens the video player application and loads the video.
+     * If the video player is not active, it opens the supplied video player application and
+     * loads the video.
      * @param currentVideo The current video to be loaded.
      * @return A boolean of if the video was active.
      */
-    public boolean checkForVideoPlayer(Video currentVideo) {
-        // Add an on click listener to the image if the video player is active
+    public boolean checkForVideoPlayer(Video currentVideo, boolean notifyUser, String videoPlayer) {
         Application current = applicationController.findCurrentApplication();
         if (!(current instanceof EmbeddedApplication)) { // Video player is not open
-            openApplicationAndSendMessage(Constants.VIDEO_PLAYER_NAME, () -> videoController.loadTrigger(currentVideo.getName()));
+            openApplicationAndSendMessage(videoPlayer, notifyUser, () -> videoController.loadTrigger(currentVideo.getName()));
             return false;
         }
         else {
             String subtype = current.HasCategory();
-            if (subtype.equals(Constants.VideoPlayer)) {
+            if (subtype.equals(Constants.VideoPlayer) || subtype.equals(Constants.VideoPlayerVr)) {
                 videoController.loadTrigger(currentVideo.getName());
                 return true;
             } else { //Video player is not open
-                openApplicationAndSendMessage(Constants.VIDEO_PLAYER_NAME, () -> videoController.loadTrigger(currentVideo.getName()));
+                openApplicationAndSendMessage(videoPlayer, notifyUser, () -> videoController.loadTrigger(currentVideo.getName()));
                 return false;
             }
         }
+    }
+
+    /**
+     * Checks if a video player is active in the station and loads the current video if there is one.
+     * If a video player is not active, it opens the video player selection dialog.
+     * @param currentVideo The current video to be loaded.
+     * @param videoLaunched A callback if the user has selected a video player to use.
+     */
+    public void checkForVideoPlayer(Video currentVideo, BooleanCallbackInterface videoLaunched) {
+        Application current = applicationController.findCurrentApplication();
+        if (!(current instanceof EmbeddedApplication)) { // Video player is not open
+            videoPlayerSelection(currentVideo, videoLaunched);
+        }
+        else {
+            String subtype = current.HasCategory();
+            if (subtype.equals(Constants.VideoPlayer) || subtype.equals(Constants.VideoPlayerVr)) {
+                videoController.loadTrigger(currentVideo.getName());
+                videoLaunched.callback(true);
+            } else { //Video player is not open
+                videoPlayerSelection(currentVideo, videoLaunched);
+            }
+        }
+    }
+
+    /**
+     * Check what video players are installed (if any) and prompt the user to select which one they
+     * would like to use.
+     * @param video A video object that is to be viewed.
+     */
+    private void videoPlayerSelection(Video video, BooleanCallbackInterface videoLaunched) {
+        //Check if any of the video players are installed first
+        Application regularVideoPlayer = applicationController.findApplicationByName(Constants.VIDEO_PLAYER_NAME);
+        Application vrVideoPlayer = applicationController.findApplicationByName(Constants.VR_VIDEO_PLAYER_NAME);
+
+        //Give the user the option of the regular or vr video player - monitor the selection with
+        //the callback below.
+        StringCallbackInterface selectionCallback = result -> {
+            switch (result) {
+                case Constants.VR_VIDEO_PLAYER_NAME:
+                case Constants.VIDEO_PLAYER_NAME:
+                    openApplicationAndSendMessage(result, true, () -> videoController.loadTrigger(video.getName()));
+                    videoLaunched.callback(true);
+                    break;
+
+                case "":
+                default:
+                    videoLaunched.callback(false);
+                    break;
+            }
+        };
+        DialogManager.showVideoPlayerOptions(video, regularVideoPlayer != null, vrVideoPlayer != null, selectionCallback);
     }
 
     /**
@@ -332,7 +385,7 @@ public class Station implements Cloneable {
      * @param applicationName The application that is going to be launched.
      * @param callback The callback to be executed after opening the application.
      */
-    public void openApplicationAndSendMessage(String applicationName, IApplicationLoadedCallback callback) {
+    public void openApplicationAndSendMessage(String applicationName, boolean notifyUser, IApplicationLoadedCallback callback) {
         //Collect the application Id from the application list
         Application application = applicationController.findApplicationByName(applicationName);
 
@@ -345,6 +398,11 @@ public class Station implements Cloneable {
             throw new RuntimeException(e);
         }
         NetworkService.sendMessage("Station," + getId(), "Experience", message.toString());
+
+        if (notifyUser) {
+            int[] id = new int[]{getId()};
+            DialogManager.awaitStationApplicationLaunch(id, application.getName(), false);
+        }
 
         //Set a watching to check the stations gameName
         startPeriodicChecks(applicationName, callback);
