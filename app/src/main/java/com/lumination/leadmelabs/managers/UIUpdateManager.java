@@ -705,7 +705,8 @@ public class UIUpdateManager {
                     break;
 
                 case "activeVideoFile":
-                    station.videoController.setActiveVideo(value);
+                    Video video = station.fileController.findVideoById(value);
+                    station.videoController.setActiveVideo(video);
                     break;
 
                 case "videoPlayerDetails":
@@ -713,7 +714,11 @@ public class UIUpdateManager {
                     break;
 
                 case "videoFiles":
-                    station.videoController.setVideos(value);
+                    station.fileController.setFiles("Videos", value);
+                    break;
+
+                case "localFiles":
+                    station.fileController.setFiles("LocalFiles", value);
                     break;
 
                 case "details":
@@ -948,6 +953,7 @@ public class UIUpdateManager {
                     String key = keys.next();
 
                     switch (key) {
+                        //GENERIC DETAILS
                         case "headsetType":
                             String headsetType = jsonObject.getString("headsetType");
                             if (station instanceof VrStation) {
@@ -1027,28 +1033,30 @@ public class UIUpdateManager {
                             station.audioController.setMuted(Boolean.parseBoolean(muted));
                             break;
 
-                        case "activeAudioDevice":
-                            String activeAudioDevice = jsonObject.getString("activeAudioDevice");
+                        case "ActiveAudioDevice":
+                            String activeAudioDevice = jsonObject.getString("ActiveAudioDevice");
                             LocalAudioDevice active = station.audioController.getActiveAudioDevice();
                             if (active == null || !active.getName().equals(activeAudioDevice)) {
                                 station.audioController.setActiveAudioDevice(activeAudioDevice);
                             }
                             break;
 
+                        //VIDEO DETAILS
                         case "activeVideoPlaybackTime":
                             String activeVideoPlaybackTime = jsonObject.getString("activeVideoPlaybackTime");
                             station.videoController.updateVideoPlaybackTime(activeVideoPlaybackTime);
                             break;
 
-                        case "activeVideoFile":
-                            String activeVideoFile = jsonObject.getString("activeVideoFile");
+                        case "ActiveVideoFile":
+                            String activeVideoFile = jsonObject.getString("ActiveVideoFile");
                             if (Helpers.isNullOrEmpty(activeVideoFile)) {
                                 break;
                             }
 
-                            Video video = station.videoController.getActiveVideoFile();
-                            if (video == null || !video.getId().equals(activeVideoFile)) {
-                                station.videoController.setActiveVideo(activeVideoFile);
+                            Video currentVideo = station.videoController.getActiveVideoFile();
+                            if (currentVideo == null || !currentVideo.getId().equals(activeVideoFile)) {
+                                Video video = station.fileController.findVideoById(activeVideoFile);
+                                station.videoController.setActiveVideo(video);
                             }
                             break;
 
@@ -1085,60 +1093,92 @@ public class UIUpdateManager {
                             String videoFiles = jsonObject.getString("videoFiles");
                             String videosRaw = station.videoController.getRawVideos();
                             if (!videoFiles.equals(videosRaw)) {
-                                station.videoController.setVideos(videoFiles);
+                                station.fileController.setFiles("Videos", videoFiles);
+                            }
+                            break;
+
+                        case "localFiles":
+                            String localFiles = jsonObject.getString("localFiles");
+                            String localRaw = station.fileController.getRawFiles();
+                            if (!localFiles.equals(localRaw)) {
+                                station.fileController.setFiles("LocalFiles", localFiles);
                             }
                             break;
 
                         //DEVICE STATUSES
                         case "thirdPartyHeadsetTracking":
                             if (station instanceof VrStation) {
-                                ((VrStation) station).thirdPartyHeadsetTracking = jsonObject.getString("thirdPartyHeadsetTracking");
+                                String deviceStatus = jsonObject.getString("thirdPartyHeadsetTracking");
+                                if (!deviceStatus.equals(((VrStation) station).thirdPartyHeadsetTracking)) {
+                                    ((VrStation) station).thirdPartyHeadsetTracking = deviceStatus;
+                                }
                             }
                             break;
 
                         case "openVRHeadsetTracking":
                             if (station instanceof VrStation) {
-                                ((VrStation) station).openVRHeadsetTracking = jsonObject.getString("openVRHeadsetTracking");
+                                String deviceStatus = jsonObject.getString("openVRHeadsetTracking");
+                                if (!deviceStatus.equals(((VrStation) station).openVRHeadsetTracking)) {
+                                    ((VrStation) station).openVRHeadsetTracking = deviceStatus;
+                                }
                             }
                             break;
 
                         case "leftControllerTracking":
                             if (station instanceof VrStation) {
-                                ((VrStation) station).leftControllerTracking = jsonObject.getString("leftControllerTracking");
+                                String deviceStatus = jsonObject.getString("leftControllerTracking");
+                                if (!deviceStatus.equals(((VrStation) station).leftControllerTracking)) {
+                                    ((VrStation) station).leftControllerTracking = deviceStatus;
+                                }
                             }
                             break;
 
                         case "leftControllerBattery":
                             if (station instanceof VrStation) {
-                                String leftControllerBattery = jsonObject.getString("leftControllerBattery");
-                                ((VrStation) station).leftControllerBattery = Integer.parseInt(leftControllerBattery);
+                                String deviceStatus = jsonObject.getString("leftControllerBattery");
+                                int batteryLevel = Integer.parseInt(deviceStatus);
+                                if (batteryLevel != ((VrStation) station).leftControllerBattery) {
+                                    ((VrStation) station).leftControllerBattery = batteryLevel;
+                                }
                             }
                             break;
 
                         case "rightControllerTracking":
                             if (station instanceof VrStation) {
-                                ((VrStation) station).rightControllerTracking = jsonObject.getString("rightControllerTracking");
+                                String deviceStatus = jsonObject.getString("rightControllerTracking");
+                                if (!deviceStatus.equals(((VrStation) station).rightControllerTracking)) {
+                                    ((VrStation) station).rightControllerTracking = deviceStatus;
+                                }
                             }
                             break;
 
                         case "rightControllerBattery":
                             if (station instanceof VrStation) {
-                                String rightControllerBattery = jsonObject.getString("rightControllerBattery");
-                                ((VrStation) station).rightControllerBattery = Integer.parseInt(rightControllerBattery);
+                                String deviceStatus = jsonObject.getString("rightControllerBattery");
+                                int batteryLevel = Integer.parseInt(deviceStatus);
+                                if (batteryLevel != ((VrStation) station).rightControllerBattery) {
+                                    ((VrStation) station).rightControllerBattery = batteryLevel;
+                                }
                             }
                             break;
 
                         case "baseStationsActive":
                             if (station instanceof VrStation) {
-                                String baseStationsActive = jsonObject.getString("baseStationsActive");
-                                ((VrStation) station).baseStationsActive = Integer.parseInt(baseStationsActive);
+                                String deviceStatus = jsonObject.getString("baseStationsActive");
+                                int baseStationsActive = Integer.parseInt(deviceStatus);
+                                if (baseStationsActive != ((VrStation) station).baseStationsActive) {
+                                    ((VrStation) station).baseStationsActive = baseStationsActive;
+                                }
                             }
                             break;
 
                         case "baseStationsTotal":
                             if (station instanceof VrStation) {
-                                String baseStationsTotal = jsonObject.getString("baseStationsTotal");
-                                ((VrStation) station).baseStationsTotal = Integer.parseInt(baseStationsTotal);
+                                String deviceStatus = jsonObject.getString("baseStationsTotal");
+                                int baseStationsTotal = Integer.parseInt(deviceStatus);
+                                if (baseStationsTotal != ((VrStation) station).baseStationsTotal) {
+                                    ((VrStation) station).baseStationsTotal = baseStationsTotal;
+                                }
                             }
                             break;
                         case "trackersActive":

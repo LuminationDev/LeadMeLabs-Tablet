@@ -1,10 +1,11 @@
-package com.lumination.leadmelabs.ui.stations.controllers;
+package com.lumination.leadmelabs.models.stations.controllers;
 
 import android.util.Log;
 
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
+import com.lumination.leadmelabs.models.VrOption;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
@@ -19,7 +20,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.sentry.Sentry;
@@ -66,6 +66,7 @@ public class VideoController {
         List<Video> videos = new ArrayList<>();
 
         try {
+            videosRaw = jsonData;
             JSONArray devices = new JSONArray(jsonData);
 
             for (int i = 0; i < devices.length(); i++) {
@@ -146,13 +147,21 @@ public class VideoController {
             Boolean repeat = settingsJson.optBoolean("isRepeat", true);
             String state = settingsJson.optString("videoState", "");
 
-            //Values below are not required just yet
+            //Values below are not required yet
             //Boolean muted = settingsJson.optBoolean("isMuted", false);
             //Boolean fullScreen = settingsJson.optBoolean("fullScreen", true);
+
+            //VR video values
+            String scene = settingsJson.optString("scene", "");
+            String projection = settingsJson.optString("projection", "");
 
             //Set the individual values
             this.setVideoPlaybackRepeat(repeat);
             this.setVideoPlaybackState(state);
+
+            //Set the VR values
+            this.setActiveScene(scene);
+            this.setActiveProjection(projection);
         } catch (JSONException e) {
             Sentry.captureException(e);
         }
@@ -198,10 +207,10 @@ public class VideoController {
     /**
      * Sets the currently active video based on its unique identifier.
      *
-     * @param id The unique identifier of the video to set as active.
+     * @param video The video to set as active.
      */
-    public void setActiveVideo(String id) {
-        activeVideoFile = findVideoById(id);
+    public void setActiveVideo(Video video) {
+        activeVideoFile = video;
     }
 
     /**
@@ -276,22 +285,6 @@ public class VideoController {
 
     public Boolean getVideoPlaybackRepeat() {
         return this.playbackRepeat;
-    }
-
-    /**
-     * Detect if a particular station has a video on it
-     * @param checkVideo A Video object to check for.
-     * @return A boolean if the a video exists.
-     */
-    public Boolean hasLocalVideo(Video checkVideo) {
-        if (checkVideo == null) return false;
-
-        for (Video video:this.videos) {
-            if (Objects.equals(video.getId(), checkVideo.getId())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     //region Triggers
@@ -382,6 +375,57 @@ public class VideoController {
         properties.put("name", trigger);
 
         Segment.trackEvent(SegmentConstants.Video_Playback_Control, properties);
+    }
+    //endregion
+
+    //region VR Video
+    private String activeScene;
+    private String activeProjection;
+
+    public void setActiveScene(String scene) {
+        this.activeScene = scene;
+    }
+
+    public String getActiveScene() {
+        return this.activeScene;
+    }
+
+    public void setActiveProjection(String projection) {
+        this.activeProjection = projection;
+    }
+
+    public String getActiveProjection() {
+        return this.activeProjection;
+    }
+
+    /**
+     * Depending on the VR scene, collect the associated projections that are allowed.
+     * @param scene A string of the currently active scene.
+     * @return A list of VrOptions that the scene can handle.
+     */
+    public List<VrOption> getProjectionOptions(String scene) {
+        List<VrOption> projections = new ArrayList<>();
+        switch (scene) {
+            case "180":
+                projections.add(new VrOption("MONO", "Monoscopic", "projection,VR180,MONO"));
+                projections.add(new VrOption("OU", "Over Under", "projection,VR180,OU"));
+                projections.add(new VrOption("SBS", "Side By Side", "projection,VR180,SBS"));
+                break;
+
+            case "360":
+                projections.add(new VrOption("MONO", "Monoscopic", "projection,VR360,MONO"));
+                projections.add(new VrOption("OU", "Over Under", "projection,VR360,OU"));
+                projections.add(new VrOption("SBS", "Side By Side", "projection,VR360,SBS"));
+                projections.add(new VrOption("EAC", "EAC", "projection,VR360,EAC"));
+                projections.add(new VrOption("EAC3D", "EAC 3D", "projection,VR360,EAC3D"));
+                break;
+
+            case "Flat screen":
+            default:
+                break;
+        }
+
+        return projections;
     }
     //endregion
 

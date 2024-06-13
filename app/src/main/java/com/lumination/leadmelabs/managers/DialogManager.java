@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -38,6 +39,8 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.interfaces.StringCallbackInterface;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
@@ -52,7 +55,7 @@ import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -1391,6 +1394,80 @@ public class DialogManager {
     }
 
     /**
+     * Prompt the user to select between the two video players available on a Station. Only show the
+     * player selection if it is installed.
+     * @param video A video object that is to be viewed.
+     * @param isRegularPlayerInstalled A boolean of if the regular video player is installed.
+     * @param isVrPlayerInstalled A boolean of if the VR video player is installed.
+     * @param callbackInterface A string callback which returns the video player's name or nothing.
+     */
+    public static void showVideoPlayerOptions(Video video, boolean isRegularPlayerInstalled, boolean isVrPlayerInstalled, StringCallbackInterface callbackInterface) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_video_selection, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        String contentText = getVideoContentText(isRegularPlayerInstalled, isVrPlayerInstalled);
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        TextView videoNameView = basicDialogView.findViewById(R.id.video_name_text);
+        videoNameView.setText(String.format("Name: %s", video.getName()));
+
+        TextView videoTypeView = basicDialogView.findViewById(R.id.video_type_text);
+        videoTypeView.setText(String.format("Type: %s", video.getVideoType()));
+
+        Button regularVideoButton = basicDialogView.findViewById(R.id.regular_video_button);
+        if (isRegularPlayerInstalled) {
+            regularVideoButton.setVisibility(View.VISIBLE);
+            regularVideoButton.setOnClickListener(w -> {
+                callbackInterface.callback(Constants.VIDEO_PLAYER_NAME);
+                basicDialog.dismiss();
+            });
+        }
+
+        Button vrVideoButton = basicDialogView.findViewById(R.id.vr_video_button);
+        if (isVrPlayerInstalled) {
+            vrVideoButton.setVisibility(View.VISIBLE);
+            vrVideoButton.setOnClickListener(w -> {
+                callbackInterface.callback(Constants.VR_VIDEO_PLAYER_NAME);
+                basicDialog.dismiss();
+            });
+        }
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            callbackInterface.callback("");
+            basicDialog.dismiss();
+        });
+
+        basicDialog.show();
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 780);
+        }
+    }
+
+    /**
+     * Generate the content text to display to a user when selecting a video player based on what
+     * is currently installed.
+     * @param isRegularPlayerInstalled A boolean of if the regular video player is installed.
+     * @param isVrPlayerInstalled A boolean of if the VR video player is installed.
+     * @return A string to set as the content text of a dialog.
+     */
+    @NonNull
+    private static String getVideoContentText(boolean isRegularPlayerInstalled, boolean isVrPlayerInstalled) {
+        String contentText;
+        if (isRegularPlayerInstalled && isVrPlayerInstalled) {
+            contentText = "Please select a video player to view the selected content.";
+        } else if (isRegularPlayerInstalled) {
+            contentText = "No VR video player detected, regular video player only.";
+        } else if (isVrPlayerInstalled) {
+            contentText = "No regular video player detected, VR video player only.";
+        } else {
+            contentText = "No LeadMe video players detected.";
+        }
+        return contentText;
+    }
+
+    /**
      * Display a list of buttons that represent the different options for the currently loaded
      * experience.
      */
@@ -1424,7 +1501,7 @@ public class DialogManager {
         }
     }
 
-    //region Tracking
+    //region tracking
     private static final String segmentClassification = "Dialog";
 
     private static void trackSettingChanged(String name) {

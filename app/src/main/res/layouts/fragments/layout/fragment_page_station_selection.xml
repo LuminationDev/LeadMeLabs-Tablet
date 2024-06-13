@@ -222,33 +222,61 @@
 
                         <com.google.android.flexbox.FlexboxLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            app:flexDirection="column"
+                            app:justifyContent="flex_end"
+                            app:alignContent="flex_end">
 
-                            <Button
-                                android:id="@+id/cancel_button"
+                            <com.google.android.flexbox.FlexboxLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:backgroundTint="@color/white"
-                                android:letterSpacing="0.02"
-                                android:paddingHorizontal="40dp"
-                                android:paddingVertical="10dp"
-                                android:text="Cancel"
-                                android:textAllCaps="false"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                android:layout_height="wrap_content">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/select_stations"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:backgroundTint="@color/blue"
-                                android:letterSpacing="0.02"
-                                android:paddingHorizontal="50dp"
-                                android:paddingVertical="10dp"
-                                android:text="Play"
-                                android:textAllCaps="false"
-                                android:textSize="16sp" />
+                                <Button
+                                    android:id="@+id/cancel_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:backgroundTint="@color/white"
+                                    android:letterSpacing="0.02"
+                                    android:paddingHorizontal="40dp"
+                                    android:paddingVertical="10dp"
+                                    android:text="Cancel"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/select_stations"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/blue"
+                                    android:letterSpacing="0.02"
+                                    android:paddingHorizontal="50dp"
+                                    android:paddingVertical="10dp"
+                                    android:text="Play"
+                                    android:textAllCaps="false"
+                                    android:textSize="16sp" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <Button
+                                    android:id="@+id/video_player_button"
+                                    android:visibility="gone"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/blue"
+                                    android:letterSpacing="0.02"
+                                    android:paddingHorizontal="40dp"
+                                    android:paddingVertical="10dp"
+                                    android:text="Select a Video Player"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp" />
+
+                            </com.google.android.flexbox.FlexboxLayout>
                         </com.google.android.flexbox.FlexboxLayout>
 
                     </com.google.android.flexbox.FlexboxLayout>
@@ -267,7 +295,7 @@
                 android:background="@drawable/bg_warning_yellow_rounded"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:alignItems="center"
                 app:justifyContent="center">
 

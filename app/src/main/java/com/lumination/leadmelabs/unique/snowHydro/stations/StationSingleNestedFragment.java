@@ -50,7 +50,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.LocalAudioDeviceAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -123,7 +123,7 @@ public class StationSingleNestedFragment extends Fragment {
                 // Set the adapter for backdrops
                 GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
                 localBackdropAdapter = new BackdropAdapter(getContext(), true);
-                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                 backdropGridView.setAdapter(localBackdropAdapter);
             }
         }
@@ -439,11 +439,11 @@ public class StationSingleNestedFragment extends Fragment {
                 if (primary.nestedStations.contains(station.getId())) {
                     binding.setSelectedNestedStation(primary.getFirstNestedStationOrNull());
                     if (BackdropFragment.localBackdropAdapter != null) {
-                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
                     }
                     if (localBackdropAdapter != null) {
-                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         localBackdropAdapter.notifyDataSetChanged();
 
                         //Update the sections visibility

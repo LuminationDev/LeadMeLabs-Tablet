@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations.controllers;
+package com.lumination.leadmelabs.models.stations.controllers;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

@@ -32,6 +32,7 @@
     <string name="shutting_down">Shutting Down</string>
     <string name="cancel_shutdown">Cancel shutdown?</string>
     <string name="invalid_url">Invalid URL. Please check and try again.</string>
+    <string name="invalid_file_name">Invalid file name. The name cannot contain any of the following: \, /, :, *, ?, ", &lt;, &gt;, |.</string>
     <string name="cancel_10">Cancel (10)</string>
     <string name="exit_theatre">Exit theatre mode?</string>
     <string name="exit_current_theatre_mode">\" is currently in theatre mode. Are you sure you want to exit theatre mode?\"</string>

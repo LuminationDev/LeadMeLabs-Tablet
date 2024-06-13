@@ -22,8 +22,9 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:paddingHorizontal="20dp"
+            android:paddingTop="10dp"
+            android:paddingHorizontal="10dp"
+            app:layout_flexGrow="1"
             app:alignItems="center"
             app:flexDirection="column">
 
@@ -31,17 +32,61 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 app:alignItems="center"
                 app:justifyContent="space_between"
                 app:flexDirection="row">
 
+                <!-- Scene selection -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/vr_scene_container"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:justifyContent="center"
+                    app:alignItems="center">
+
+                    <Spinner
+                        android:id="@+id/vr_scene_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="25dp"
+                        app:layout_flexShrink="0"
+                        android:background="@drawable/spinner_vr_station_background"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView"
+                    android:layout_width="275dp"
                     android:layout_height="wrap_content"
                     android:text="@{selectedStation.videoController.currentVideoName, default=`No source set`}"
                     android:textSize="16sp"
                     android:textColor="@color/black"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:scrollHorizontally="true"/>
+
+                <!-- Projection selection -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/vr_projection_container"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:justifyContent="center"
+                    app:alignItems="center">
+
+                    <Spinner
+                        android:id="@+id/vr_projection_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="25dp"
+                        app:layout_flexShrink="0"
+                        android:background="@drawable/spinner_vr_projection_background"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
 
             </com.google.android.flexbox.FlexboxLayout>
 
@@ -49,6 +94,7 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
                 app:alignItems="center"
                 app:justifyContent="space_between"
                 app:flexDirection="row">
@@ -138,16 +184,15 @@
         <!-- Row for slider and current time text -->
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
             android:background="@drawable/bg_gray_bottom_curved"
-            app:layout_flexGrow="1"
             app:alignItems="center"
             app:flexDirection="row">
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/station_video_slider"
+                android:id="@+id/station_vr_video_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:stepSize="1.0"

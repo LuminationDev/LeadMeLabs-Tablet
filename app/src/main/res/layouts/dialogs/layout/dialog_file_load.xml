@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:flexDirection="column"
+    app:justifyContent="space_between"
+    android:layout_width="match_parent"
+    android:padding="20dp"
+    android:layout_height="match_parent">
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flexDirection="column">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load file"
+            android:textColor="@color/black"
+            android:textSize="30sp">
+        </TextView>
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="Select a file from the list below">
+        </TextView>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <!--Local files associated with the Station-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/local_files"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginVertical="20dp"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <TextView
+        android:id="@+id/selectedItemTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Selected Item: None"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/error_text"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:text="Unknown Error"/>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_flexShrink="0"
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:elevation="0dp"
+            app:cornerRadius="2dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/red"
+            android:textAllCaps="false"
+            android:text="Delete"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:justifyContent="flex_end">
+
+            <com.google.android.material.button.MaterialButton
+                app:layout_flexShrink="0"
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:elevation="0dp"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                android:textColor="@color/blue_darkest"
+                app:cornerRadius="2dp"
+                android:backgroundTint="@android:color/white"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/blue_darkest"
+                android:textAllCaps="false"
+                android:text="Cancel"/>
+
+            <com.google.android.material.button.MaterialButton
+                app:layout_flexShrink="0"
+                android:id="@+id/refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/white"
+                android:elevation="0dp"
+                app:cornerRadius="2dp"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/blue"
+                android:textAllCaps="false"
+                android:text="Refresh"/>
+
+            <com.google.android.material.button.MaterialButton
+                app:layout_flexShrink="0"
+                android:id="@+id/load_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:elevation="0dp"
+                app:cornerRadius="2dp"
+                app:rippleColor="@color/grey"
+                android:stateListAnimator="@null"
+                app:backgroundTint="@color/blue_darkest"
+                android:textAllCaps="false"
+                android:text="Load"/>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</com.google.android.flexbox.FlexboxLayout>

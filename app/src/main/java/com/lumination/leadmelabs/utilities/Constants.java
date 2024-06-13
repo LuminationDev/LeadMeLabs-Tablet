@@ -74,9 +74,15 @@ public class Constants {
     public static final String Invalid = "invalid";
     public static final String ShareCode = "shareCode";
     public static final String VideoPlayer = "videoPlayer";
+    public static final String VideoPlayerVr = "videoPlayerVr";
+    public static final String OpenBrush = "openBrush";
 
+
+    //File Category constants
+    public static final String OPEN_BRUSH_FILE = "OpenBrush";
 
     //Embedded Application Constants
+    public static final String VR_VIDEO_PLAYER_NAME = "VR Video Player";
     public static final String VIDEO_PLAYER_NAME = "Video Player";
     public static final String VIDEO_TYPE_NORMAL = "Normal";
     public static final String VIDEO_TYPE_VR = "Vr";
