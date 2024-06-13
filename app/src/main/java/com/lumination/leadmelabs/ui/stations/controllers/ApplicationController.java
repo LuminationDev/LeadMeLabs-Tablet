@@ -84,7 +84,7 @@ public class ApplicationController {
             }
         } else {
             Sentry.captureMessage(
-                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                     + ": ApplicationController - applications not sent in JSON format.");
         }
     }

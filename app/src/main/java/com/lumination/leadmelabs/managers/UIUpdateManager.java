@@ -789,7 +789,7 @@ public class UIUpdateManager {
                 case "Headset":
                     if(validateLength(values.length, 3)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update Headset, not a valid argument - " + value);
                         return;
                     }
@@ -800,7 +800,7 @@ public class UIUpdateManager {
                 case "Controller":
                     if(validateLength(values.length, 3)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update Controller, not a valid argument - " + value);
                         return;
                     }
@@ -811,7 +811,7 @@ public class UIUpdateManager {
                 case "BaseStation":
                     if(validateLength(values.length, 2)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update BaseStation, not a valid argument - " + value);
                         return;
                     }
@@ -821,7 +821,7 @@ public class UIUpdateManager {
                 case "Tracker":
                     if(validateLength(values.length, 2)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                         + ": Update Tracker, not a valid argument - " + value);
                         return;
                     }
