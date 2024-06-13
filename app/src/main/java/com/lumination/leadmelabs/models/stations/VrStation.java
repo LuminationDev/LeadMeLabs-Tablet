@@ -470,11 +470,11 @@ public class VrStation extends Station {
 
         if (selectedStation.trackersActive < selectedStation.trackersTotal) {
             //Station is on - active base stations less than 2
-            imageView.setImageResource(R.drawable.vr_base_station_lost);
+            imageView.setImageResource(R.drawable.vr_tracker_lost);
 
         } else {
             //Station is on - active base stations greater than 2 and an experience is running.
-            imageView.setImageResource(R.drawable.vr_base_station_active);
+            imageView.setImageResource(R.drawable.vr_tracker_active);
         }
         imageView.setVisibility(View.VISIBLE);
 
