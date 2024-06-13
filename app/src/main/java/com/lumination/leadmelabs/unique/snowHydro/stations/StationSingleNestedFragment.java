@@ -296,7 +296,7 @@ public class StationSingleNestedFragment extends Fragment {
             String joinedStations = Interlinking.collectNestedStations(station, String.class);
 
             if (station.isOff()) {
-                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
+                station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down

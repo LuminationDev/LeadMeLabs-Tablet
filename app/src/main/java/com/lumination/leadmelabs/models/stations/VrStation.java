@@ -642,7 +642,7 @@ public class VrStation extends Station {
         }
 
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 textView.post(() -> {

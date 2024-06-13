@@ -951,9 +951,20 @@ public class DialogManager {
                 return;
             }
 
-            SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
-            encryptionDialog.dismiss();
-            trackSettingChanged("Encryption Key");
+            BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
+                    encryptionDialog.dismiss();
+                    trackSettingChanged("Encryption Key");
+                }
+            };
+
+            DialogManager.createConfirmationDialog(
+                    "Confirm encryption change", "WARNING! This is essential for communication with the rest of the Lab. Are you sure you want to change this?",
+                    confirmShutdownCallback,
+                    "Cancel",
+                    "Confirm",
+                    false);
         });
 
         Button closeDialog = view.findViewById(R.id.close_dialog);

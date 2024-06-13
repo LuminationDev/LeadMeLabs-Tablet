@@ -314,7 +314,7 @@ public class StationsViewModel extends ViewModel {
 
         String finalStatus = status;
         MainActivity.runOnUI(() -> {
-            station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
+            station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
             station.setStatus(finalStatus);
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
         });

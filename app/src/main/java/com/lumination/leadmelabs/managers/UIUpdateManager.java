@@ -980,6 +980,15 @@ public class UIUpdateManager {
                         case "status":
                             String status = jsonObject.getString("status");
                             if (!status.equals(station.getStatus())) {
+                                if(status.equals(StatusHandler.ON)) { station.statusHandler.cancelStatusCheck(); }
+                                if(status.equals(StatusHandler.OFF)) {
+                                    if (station instanceof VrStation) {
+                                        VrStation vrStation = (VrStation) station; //safe cast
+                                        vrStation.initiateVRDevices();
+                                    }
+                                    station.setState("");
+                                }
+
                                 station.setStatus(status);
                             }
                             break;
