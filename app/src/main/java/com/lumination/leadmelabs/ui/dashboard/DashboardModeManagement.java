@@ -1,7 +1,5 @@
 package com.lumination.leadmelabs.ui.dashboard;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModelProviders;
 
 import com.lumination.leadmelabs.MainActivity;
@@ -12,6 +10,7 @@ import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.appliance.controllers.SceneController;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
@@ -28,6 +27,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
+import io.sentry.Sentry;
 
 /**
  * A class dedicated to managing the tracking of the mode that is being set.
@@ -58,7 +59,8 @@ public class DashboardModeManagement {
             //Mode buttons disabled until all computers turn on - backup reset is 3 minutes (same as power status check)
             case Constants.VR_MODE:
             case Constants.SHOWCASE_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
+//                backupDelay = 3 * 60 * 1000; //3 minutes
+                backupDelay = 5000; //3 minutes
                 waitForStations("Scene", sceneName, room, "On", active);
                 break;
 
@@ -90,14 +92,17 @@ public class DashboardModeManagement {
                 break;
 
             case Constants.BASIC_OFF_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
+//                backupDelay = 3 * 60 * 1000; //3 minutes
+                backupDelay = 5000; //3 minutes
                 waitForStations("Backup", sceneName, room,"Off", active);
                 break;
 
             //No Station actions, wait for 5 seconds before unlocking scenes
             case Constants.BASIC_MODE:
                 backupDelay = 5 * 1000;
-                break;
+                //This does not require a backup timer - no sentry report
+                createModeResetTimer(backupDelay, active, room, false);
+                return;
 
             default:
                 return;
@@ -271,6 +276,12 @@ public class DashboardModeManagement {
             @Override
             public void run() {
                 cancelModeTimers(mode, room);
+
+                if (isBackupTimer) {
+                    Sentry.captureMessage(
+                            ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                                    + ": scene control time out - " + mode);
+                }
             }
         };
 
@@ -337,8 +348,6 @@ public class DashboardModeManagement {
      * otherwise they will hang when completing.
      */
     public static void forceCancelAllTimers() {
-        Log.e("FORCE CANCEL", "Appliance list is re-written, force cancel any timers");
-
         //Clear all the timers and timer tasks
         cancelAll(modeTimers);
         cancelAll(modeTasks);

@@ -127,6 +127,8 @@ public class FirebaseManager {
      */
     public static void checkForNotifications() {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
+        if (SettingsFragment.mViewModel == null) return;
+
         LiveData<String> labLocationData = SettingsFragment.mViewModel.getLabLocation();
         if (labLocationData == null) return;
 

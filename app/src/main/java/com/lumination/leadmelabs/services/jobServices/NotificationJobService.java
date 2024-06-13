@@ -51,20 +51,25 @@ public class NotificationJobService extends JobService {
     public boolean onStartJob(final JobParameters params) {
         Log.d(TAG, "Performing Job");
 
-        long currentTimeMillis = System.currentTimeMillis();
-        if (currentTimeMillis - lastRunTimestamp >= ONE_HOUR_MILLIS) {
-            /* executing a task synchronously */
-            FirebaseManager.checkForNotifications();
-            lastRunTimestamp = 0;
-        } else {
-            Log.e(TAG, "Job has been snoozed");
-        }
+        try {
+            long currentTimeMillis = System.currentTimeMillis();
+            if (currentTimeMillis - lastRunTimestamp >= ONE_HOUR_MILLIS) {
+                /* executing a task synchronously */
+                FirebaseManager.checkForNotifications();
+                lastRunTimestamp = 0;
+            } else {
+                Log.e(TAG, "Job has been snoozed");
+            }
 
-        /* condition for finishing it */
-        if (false) { //no finish condition as of yet
-            // To finish a periodic JobService,
-            // you must cancel it, so it will not be scheduled more.
-            NotificationJobService.cancel(this);
+            /* condition for finishing it */
+            if (false) { //no finish condition as of yet
+                // To finish a periodic JobService,
+                // you must cancel it, so it will not be scheduled more.
+                NotificationJobService.cancel(this);
+            }
+        }
+        catch (Exception e) {
+            Log.e("NotificationJobSerivce", "Life cycle not ready");
         }
 
         // false when it is synchronous.

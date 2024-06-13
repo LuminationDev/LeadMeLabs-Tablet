@@ -2,4 +2,7 @@
 <resources>
     <string name="quick_actions">Quick Actions</string>
     <string name="active_novastar_preset">active novastar preset</string>
+    <string name="encryption_warning">WARNING! This is essential for communication with the rest of the Lab. Altering this will disrupt all operations until all other devices are updated accordingly.</string>
+    <string name="enter_encryption_key">Enter encryption key…</string>
+    <string name="set_the_encryption_key">Set the encryption key</string>
 </resources>

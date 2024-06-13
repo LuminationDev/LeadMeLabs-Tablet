@@ -36,7 +36,7 @@ public class QaManager {
 
             default:
                 Sentry.captureMessage(
-                        ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                        ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": handleQaUpdate, not a valid action - " + action);
         }
     }
