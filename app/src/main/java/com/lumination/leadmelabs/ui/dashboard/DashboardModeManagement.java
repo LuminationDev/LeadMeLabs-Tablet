@@ -59,14 +59,11 @@ public class DashboardModeManagement {
             //Mode buttons disabled until all computers turn on - backup reset is 3 minutes (same as power status check)
             case Constants.VR_MODE:
             case Constants.SHOWCASE_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Scene", sceneName, room, "On", active);
                 break;
 
             //Mode buttons disabled until all computers turn on, initial delay of 30 seconds as the Stations turn off - backup reset is 4 minutes
             case Constants.RESTART_MODE:
-                backupDelay = 4 * 60 * 1000; //4 minutes
-
                 //Wait 30 seconds before starting the check, ensuring the Stations are already 'Off'
                 MainActivity.UIHandler.postDelayed(() -> waitForStations("Room", "", "", "On", active), 30000);
                 SceneController.handeActivatingScene(null, true);
@@ -74,24 +71,20 @@ public class DashboardModeManagement {
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 2 minutes
             case Constants.SHUTDOWN_MODE:
-                backupDelay = 2 * 60 * 1000; //2 minutes
                 waitForStations("Room", "", room,"Off", active);
                 SceneController.handeActivatingScene(null, true);
                 break;
 
             //Mode buttons disabled for 1 minute after all the computer's statuses go to off - backup reset is 3 minutes
             case Constants.CLASSROOM_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Scene", sceneName,room,"Off", active);
                 break;
 
             case Constants.BASIC_ON_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Backup", sceneName, room,"On", active);
                 break;
 
             case Constants.BASIC_OFF_MODE:
-                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Backup", sceneName, room,"Off", active);
                 break;
 
@@ -105,6 +98,7 @@ public class DashboardModeManagement {
             default:
                 return;
         }
+        backupDelay = 90 * 1000; //90 seconds
 
         //Create a backup timer that cancels all tasks in case something has gone wrong
         createModeResetTimer(backupDelay, active, room, true);
