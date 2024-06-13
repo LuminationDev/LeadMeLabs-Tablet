@@ -59,8 +59,7 @@ public class DashboardModeManagement {
             //Mode buttons disabled until all computers turn on - backup reset is 3 minutes (same as power status check)
             case Constants.VR_MODE:
             case Constants.SHOWCASE_MODE:
-//                backupDelay = 3 * 60 * 1000; //3 minutes
-                backupDelay = 5000; //3 minutes
+                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Scene", sceneName, room, "On", active);
                 break;
 
@@ -92,8 +91,7 @@ public class DashboardModeManagement {
                 break;
 
             case Constants.BASIC_OFF_MODE:
-//                backupDelay = 3 * 60 * 1000; //3 minutes
-                backupDelay = 5000; //3 minutes
+                backupDelay = 3 * 60 * 1000; //3 minutes
                 waitForStations("Backup", sceneName, room,"Off", active);
                 break;
 
