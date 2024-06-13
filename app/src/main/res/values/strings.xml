@@ -123,6 +123,7 @@
     <string name="restarting">Restarting</string>
     <string name="cancel_restart">Cancel restart?</string>
     <string name="base_station">Base Station</string>
+    <string name="tracker">Tracker</string>
     <string name="vr_controller">VR Controller</string>
     <string name="vive_icon">Vive Icon</string>
     <string name="openvr_icon">OpenVR icon</string>

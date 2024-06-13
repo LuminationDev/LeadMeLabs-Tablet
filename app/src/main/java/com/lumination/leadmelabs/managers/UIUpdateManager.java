@@ -499,6 +499,8 @@ public class UIUpdateManager {
                     vrStation.rightControllerBattery = devices.optInt("rightControllerBattery", vrStation.rightControllerBattery);
                     vrStation.baseStationsActive = devices.optInt("baseStationsActive", vrStation.baseStationsActive);
                     vrStation.baseStationsTotal = devices.optInt("baseStationsTotal", vrStation.baseStationsTotal);
+                    vrStation.trackersActive = devices.optInt("trackersActive", vrStation.trackersActive);
+                    vrStation.trackersTotal = devices.optInt("trackersTotal", vrStation.trackersTotal);
                 }
 
                 MainActivity.runOnUI(() -> stationsViewModel.updateStationById(Integer.parseInt(key), vrStation));
@@ -792,7 +794,7 @@ public class UIUpdateManager {
                 case "Headset":
                     if(validateLength(values.length, 3)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update Headset, not a valid argument - " + value);
                         return;
                     }
@@ -803,7 +805,7 @@ public class UIUpdateManager {
                 case "Controller":
                     if(validateLength(values.length, 3)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update Controller, not a valid argument - " + value);
                         return;
                     }
@@ -814,12 +816,22 @@ public class UIUpdateManager {
                 case "BaseStation":
                     if(validateLength(values.length, 2)) {
                         Sentry.captureMessage(
-                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation()
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
                                 + ": Update BaseStation, not a valid argument - " + value);
                         return;
                     }
 
                     updateBaseStations(vrStation, values[0], values[1]);
+                    break;
+                case "Tracker":
+                    if(validateLength(values.length, 2)) {
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                                        + ": Update Tracker, not a valid argument - " + value);
+                        return;
+                    }
+
+                    updateTrackers(vrStation, values[0], values[1]);
                     break;
             }
 
@@ -858,6 +870,11 @@ public class UIUpdateManager {
     private static void updateBaseStations(VrStation station, String active, String total) {
         station.baseStationsActive = Integer.parseInt(active);
         station.baseStationsTotal = Integer.parseInt(total);
+    }
+
+    private static void updateTrackers(VrStation station, String active, String total) {
+        station.trackersActive = Integer.parseInt(active);
+        station.trackersTotal = Integer.parseInt(total);
     }
 
     private static Boolean validateLength(int length, int limit) {
@@ -1162,6 +1179,19 @@ public class UIUpdateManager {
                                 if (baseStationsTotal != ((VrStation) station).baseStationsTotal) {
                                     ((VrStation) station).baseStationsTotal = baseStationsTotal;
                                 }
+                            }
+                            break;
+                        case "trackersActive":
+                            if (station instanceof VrStation) {
+                                String trackersActive = jsonObject.getString("trackersActive");
+                                ((VrStation) station).trackersActive = Integer.parseInt(trackersActive);
+                            }
+                            break;
+
+                        case "trackersTotal":
+                            if (station instanceof VrStation) {
+                                String trackersTotal = jsonObject.getString("trackersTotal");
+                                ((VrStation) station).trackersTotal = Integer.parseInt(trackersTotal);
                             }
                             break;
 

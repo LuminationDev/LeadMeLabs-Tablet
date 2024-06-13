@@ -946,10 +946,18 @@ public class DialogManager {
 
         Button encryptionKeyConfirmButton = view.findViewById(R.id.encryption_key_confirm);
         encryptionKeyConfirmButton.setOnClickListener(v -> {
+            if (Helpers.isNullOrEmpty(newKey.getText().toString().trim())) {
+                Toast.makeText(context, "Encryption is blank. Are you sure you want to change it?", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
             encryptionDialog.dismiss();
             trackSettingChanged("Encryption Key");
         });
+
+        Button closeDialog = view.findViewById(R.id.close_dialog);
+        closeDialog.setOnClickListener(v -> encryptionDialog.dismiss());
 
         encryptionDialog.show();
     }
