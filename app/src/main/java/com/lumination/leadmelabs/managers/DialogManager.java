@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -266,7 +267,7 @@ public class DialogManager {
 
                 } catch (IOException e) {
                     Sentry.captureException(e);
-                    e.printStackTrace();
+                    Log.e("DialogManager", e.toString());
                     MainActivity.runOnUI(() -> {
                         successText.setVisibility(View.GONE);
                         errorText.setText("Something went wrong, please try again or visit https://lumination.com.au/help-support/ to lodge a ticket.");
@@ -277,7 +278,7 @@ public class DialogManager {
                     segmentProperties.put("classification", HelpPageFragment.segmentClassification);
                     Segment.trackEvent(SegmentConstants.Submit_Ticket_Failed, segmentProperties);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e("DialogManager", e.toString());
                     Sentry.captureException(e);
                     MainActivity.runOnUI(() -> {
                         successText.setVisibility(View.GONE);

@@ -3,7 +3,7 @@ package com.lumination.leadmelabs.utilities;
 public class Constants {
     //Action namespace Constants
     public static final String MESSAGE_TYPE = "MessageType";
-    public static final String LAB_LOCATION = "LabLocation";
+    public static final String ENVIRONMENT = "Environment";
     public static final String STATIONS = "Stations";
     public static final String APPLIANCES = "Appliances";
     public static final String STATION = "Station";

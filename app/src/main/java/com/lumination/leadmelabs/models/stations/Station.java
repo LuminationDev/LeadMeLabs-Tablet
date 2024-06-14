@@ -1,5 +1,6 @@
 package com.lumination.leadmelabs.models.stations;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -162,7 +163,7 @@ public class Station implements Cloneable {
         try {
             clonedStation = (Station) super.clone();
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            Log.e("Station", e.toString());
         }
 
         assert clonedStation != null;
