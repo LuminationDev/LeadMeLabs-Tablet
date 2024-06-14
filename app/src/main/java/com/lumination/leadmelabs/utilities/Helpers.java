@@ -94,22 +94,24 @@ public class Helpers {
      */
     public static void SetOptionImage(String name, ImageView imageView, View view) {
         int temp;
-
-        //TODO change these for Snowy (Working with Thebarton lab currently)
         switch (name.trim()) {
-            case "PC + SB Dual":
+            case "Station Grid":
                 temp = R.drawable.snowy_layouts_vr_stations_grid;
                 break;
 
-            case "PC Only":
+            case "VRPC Vertical":
                 temp = R.drawable.snowy_layouts_vr_stations_vertical;
                 break;
 
-            case "Presentation":
+            case "Showcase":
                 temp = R.drawable.snowy_layouts_presentation;
                 break;
 
-            case "Townhall":
+            case "Feature":
+                temp = R.drawable.snowy_layouts_feature;
+                break;
+
+            case "Fullscreen":
                 temp = R.drawable.snowy_layouts_fullscreen;
                 break;
 
