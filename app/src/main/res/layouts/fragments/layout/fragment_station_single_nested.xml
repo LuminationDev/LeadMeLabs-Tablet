@@ -269,14 +269,21 @@
                             <!--BACKDROP SECTION (Default visibility)-->
                             <include
                                 android:id="@+id/backdrop_section"
-                                layout="@layout/section_backdrops" />
+                                layout="@layout/control_module_backdrop" />
 
                             <!--CONDENSED VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
                             <include
                                 android:id="@+id/video_controls"
                                 android:visibility="gone"
-                                layout="@layout/section_video_controls"
+                                layout="@layout/control_module_video"
                                 app:selectedStation="@{selectedStation}"/>
+
+                            <!--OPEN BRUSH CONTROLLER SECTION-->
+                            <include
+                                android:id="@+id/open_brush_controls"
+                                layout="@layout/control_module_open_brush"
+                                app:selectedStation="@{selectedStation}"
+                                android:visibility="gone"/>
 
                             <!--CHANGE OPTIONS (When other controls are present)-->
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
@@ -126,6 +127,11 @@ public class FirebaseManager {
      */
     public static void checkForNotifications() {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
+        if (SettingsFragment.mViewModel == null) return;
+
+        LiveData<String> labLocationData = SettingsFragment.mViewModel.getLabLocation();
+        if (labLocationData == null) return;
+
         String labLocation = SettingsFragment.mViewModel.getLabLocation().getValue();
         if (labLocation == null) return;
 

@@ -241,7 +241,21 @@
                             <!--VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
                             <include
                                 android:id="@+id/video_controls"
-                                layout="@layout/section_video_controls"
+                                layout="@layout/control_module_video"
+                                app:selectedStation="@{selectedStation}"
+                                android:visibility="gone"/>
+
+                            <!--VR VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
+                            <include
+                                android:id="@+id/video_vr_controls"
+                                layout="@layout/control_module_video_vr"
+                                app:selectedStation="@{selectedStation}"
+                                android:visibility="gone"/>
+
+                            <!--OPEN BRUSH CONTROLLER SECTION-->
+                            <include
+                                android:id="@+id/open_brush_controls"
+                                layout="@layout/control_module_open_brush"
                                 app:selectedStation="@{selectedStation}"
                                 android:visibility="gone"/>
 

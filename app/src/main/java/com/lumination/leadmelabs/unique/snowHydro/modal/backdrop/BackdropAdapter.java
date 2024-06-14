@@ -16,6 +16,7 @@ import com.lumination.leadmelabs.databinding.CardBackdropSmallBinding;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class BackdropAdapter extends BaseAdapter {
             binding.setVariable(BR.selectedNestedStation, nestedStation);
             view.setOnClickListener(v -> {
                 if (nestedStation != null) {
-                    nestedStation.checkForVideoPlayer(currentVideo);
+                    nestedStation.checkForVideoPlayer(currentVideo, true, Constants.VIDEO_PLAYER_NAME);
                 }
             });
         }

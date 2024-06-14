@@ -18,14 +18,14 @@
 
         <!--Empty state-->
         <TextView
-            android:visibility="@{selectedNestedStation.videoController.getVideosOfType(`Backdrop`).size() == 0 ? View.VISIBLE : View.GONE, default=visible}"
+            android:visibility="@{selectedNestedStation.fileController.getVideosOfType(`Backdrop`).size() == 0 ? View.VISIBLE : View.GONE, default=visible}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No backdrops detected..." />
 
         <GridView
             android:id="@+id/backdrop_grid"
-            android:visibility="@{selectedNestedStation.videoController.getVideosOfType(`Backdrop`).size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+            android:visibility="@{selectedNestedStation.fileController.getVideosOfType(`Backdrop`).size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

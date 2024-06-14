@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationApplicationDetailsBinding;
@@ -101,8 +102,8 @@ public class ApplicationDetailsFragment extends Fragment {
         // Set up tags
         LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
-        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
-        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+        FlexboxLayout complexityView = binding.getRoot().findViewById(R.id.complexity_container);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, complexityView, currentApplication);
     }
 
     public void confirmLaunchGame(Application selectedApplication) {

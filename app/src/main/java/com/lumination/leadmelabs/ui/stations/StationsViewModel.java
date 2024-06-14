@@ -229,7 +229,7 @@ public class StationsViewModel extends ViewModel {
 
         //Only add applications with a unique id
         return stations.getValue().stream()
-                .flatMap(station -> station.videoController.videos.stream())
+                .flatMap(station -> station.fileController.videos.stream())
                 .filter(video -> idSet.add(video.getId()))
                 .distinct()
                 .sorted((video, video2) -> video.getName().compareToIgnoreCase(video2.getName()))
@@ -250,7 +250,7 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
                 if(SettingsFragment.checkLockedRooms(station.room)) {
-                    list = new ArrayList<>(station.videoController.videos);
+                    list = new ArrayList<>(station.fileController.videos);
                     list.sort((video, video2) -> video.getName().compareToIgnoreCase(video2.getName()));
                 }
             }
@@ -314,7 +314,7 @@ public class StationsViewModel extends ViewModel {
 
         String finalStatus = status;
         MainActivity.runOnUI(() -> {
-            station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
+            station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
             station.setStatus(finalStatus);
             StationsFragment.mViewModel.updateStationById(Integer.parseInt(id), station);
         });

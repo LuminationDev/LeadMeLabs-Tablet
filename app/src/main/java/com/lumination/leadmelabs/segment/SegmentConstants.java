@@ -13,8 +13,9 @@ public class SegmentConstants {
     //Segment Lab Events
     public static String Event_Lab_VR_Mode = "VR Mode";
     public static String Event_Lab_Classroom_Mode = "Classroom Mode";
-    public static String Event_Lab_Presentation_Mode = "Presentation Mode";
+    public static String Event_Lab_Showcase_Mode = "Showcase Mode";
     public static String Event_Lab_Restart = "Restart";
+    public static String Event_Lab_Shutdown = "Shutdown";
     public static String Event_Lab_Identify = "Identify";
 
     //Segment Station Events
@@ -24,6 +25,7 @@ public class SegmentConstants {
 
     public static String VR_Device_Touch = "VR Device Touch";
     public static String Video_Playback_Control = "Video Playback Control";
+    public static String Open_Brush_Control = "Open Brush Control";
     public static String Station_Volume_Control = "Station Volume Control";
     public static String Station_Mute = "Station Mute";
     public static String Open_Configure_SteamCMD = "Open Configure SteamCMD";
@@ -70,6 +72,9 @@ public class SegmentConstants {
     public static String Event_Tablet_Low_Battery = "Low Battery";
     public static String Event_Tablet_Flat_Battery = "Flat Battery";
 
+    //Segment Scene Events
+    public static String Event_Disabled_Scene_Selected = "Disabled Scene Selected";
+
     //Segment Crash Events
 
     //Segment Settings Page
@@ -95,6 +100,7 @@ public class SegmentConstants {
     //Segment Network
     public static String Network_Outage = "Network Outage";
     public static String Network_Touch = "Network Touch";
+
 
     public static String Appliances_Refreshed = "Appliances Refreshed";
 

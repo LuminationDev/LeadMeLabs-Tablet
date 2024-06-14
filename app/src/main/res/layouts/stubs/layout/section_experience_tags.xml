@@ -13,7 +13,7 @@
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_maxWidth="250dp"
+        app:layout_maxWidth="200dp"
         android:background="@drawable/tag_outline_curved"
         android:paddingVertical="5dp"
         android:paddingEnd="5dp"
@@ -50,21 +50,35 @@
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/complexity_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_maxWidth="250dp"
+        android:background="@drawable/tag_outline_curved"
+        android:paddingVertical="5dp"
+        android:paddingEnd="5dp"
+        app:flexDirection="row"
+        app:alignItems="center">
 
         <ImageView
+            android:id="@+id/complexity_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/filter_icon_year_level"
+            android:src="@drawable/grey_difficulty_simple"
+            android:layout_marginStart="8dp"
+            app:layout_flexShrink="0"
             android:contentDescription="year level icon"/>
 
         <TextView
-            android:id="@+id/yearLevel"
+            android:id="@+id/complexity_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="3dp"
+            android:paddingStart="1dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_horizontal"
             android:paddingEnd="0dp"
+            android:textSize="11sp"
             android:text="All"/>
 
     </com.google.android.flexbox.FlexboxLayout>

@@ -38,6 +38,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> showHiddenStations;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
+    private MutableLiveData<Boolean> sceneTimers;
     private MutableLiveData<Boolean> supportMode;
     private MutableLiveData<Date> supportModeEnabledTime;
     private MutableLiveData<Boolean> additionalExitPrompts;
@@ -200,6 +201,29 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("enable_analytics_collection", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("enable_analytics_collection", value);
+        editor.apply();
+    }
+
+    /**
+     * Check to see if the user has disabled scene timer. This value represents if the user has opted
+     * out of wait for scenes to finish.
+     */
+    public LiveData<Boolean> getSceneTimer() {
+        if (sceneTimers == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("scene_timers", Context.MODE_PRIVATE);
+            sceneTimers = new MutableLiveData<>(sharedPreferences.getBoolean("scene_timers", true));
+        }
+        return sceneTimers;
+    }
+
+    /**
+     * Set whether analytics can be collected or not.
+     */
+    public void setSceneTimer(Boolean value) {
+        sceneTimers.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("scene_timers", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("scene_timers", value);
         editor.apply();
     }
 

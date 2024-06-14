@@ -50,7 +50,7 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.LocalAudioDeviceAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -123,7 +123,7 @@ public class StationSingleNestedFragment extends Fragment {
                 // Set the adapter for backdrops
                 GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
                 localBackdropAdapter = new BackdropAdapter(getContext(), true);
-                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                 backdropGridView.setAdapter(localBackdropAdapter);
             }
         }
@@ -175,7 +175,7 @@ public class StationSingleNestedFragment extends Fragment {
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
-                String subtype = current.subtype.optString("category", "");
+                String subtype = current.HasCategory();
                 if (subtype.equals(Constants.VideoPlayer)) {
                     bundle.putString("library", "videos");
                     SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
@@ -296,7 +296,7 @@ public class StationSingleNestedFragment extends Fragment {
             String joinedStations = Interlinking.collectNestedStations(station, String.class);
 
             if (station.isOff()) {
-                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
+                station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
@@ -439,11 +439,11 @@ public class StationSingleNestedFragment extends Fragment {
                 if (primary.nestedStations.contains(station.getId())) {
                     binding.setSelectedNestedStation(primary.getFirstNestedStationOrNull());
                     if (BackdropFragment.localBackdropAdapter != null) {
-                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
                     }
                     if (localBackdropAdapter != null) {
-                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         localBackdropAdapter.notifyDataSetChanged();
 
                         //Update the sections visibility
@@ -595,7 +595,7 @@ public class StationSingleNestedFragment extends Fragment {
             resetLayout(view);
             return;
         }
-        String subtype = current.subtype.optString("category", "");
+        String subtype = current.HasCategory();
         if (subtype.equals(Constants.VideoPlayer)) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
@@ -624,7 +624,7 @@ public class StationSingleNestedFragment extends Fragment {
             return;
         }
 
-        String subtype = current.subtype.optString("category", "");
+        String subtype = current.HasCategory();
         if (subtype.isEmpty()) {
             resetLayout(view);
             return;

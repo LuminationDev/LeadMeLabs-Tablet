@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.services.jobServices.NotificationJobService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.LibraryViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -35,6 +36,7 @@ import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
+import com.lumination.leadmelabs.ui.dashboard.DashboardViewModel;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
@@ -243,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
     private void preloadViewModels() {
         RoomFragment.mViewModel = ViewModelProviders.of(this).get(RoomViewModel.class);
         SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        DashboardFragment.mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         SnowyHydroStationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
@@ -347,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
         String address = sharedPreferences.getString("nuc_address", "");
 
-        if(!address.equals("")) {
+        if(!address.isEmpty()) {
             NetworkService.setNUCAddress(address);
         }
     }

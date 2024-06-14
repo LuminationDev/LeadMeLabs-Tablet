@@ -15,8 +15,8 @@ android {
         applicationId "com.lumination.leadmelabs"
         minSdk 28
         targetSdk 34
-        versionCode 45
-        versionName "1.32"
+        versionCode 46
+        versionName "1.33"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,6 +42,7 @@ android {
         main {
             res.srcDirs = ['src/main/res/layouts/alerts',
                            'src/main/res/layouts/cards',
+                           'src/main/res/layouts/controls',
                            'src/main/res/layouts/dialogs',
                            'src/main/res/layouts/fragments',
                            'src/main/res/layouts/items',

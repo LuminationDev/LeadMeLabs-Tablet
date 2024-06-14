@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -38,23 +39,26 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.interfaces.StringCallbackInterface;
+import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.Adapters.GlobalAdapter;
 import com.lumination.leadmelabs.ui.library.application.Adapters.LevelAdapter;
-import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.RoomAdapter;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 import com.segment.analytics.Properties;
@@ -581,7 +585,7 @@ public class DialogManager {
                     if (confirmationResult) {
                         endSession(stationAdapter.stationList);
                         Properties segmentProperties = new Properties();
-                        segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                        segmentProperties.put("classification", DashboardFragment.segmentClassification);
                         Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
                     }
                 };
@@ -596,7 +600,7 @@ public class DialogManager {
             } else {
                 endSession(stationAdapter.stationList);
                 Properties segmentProperties = new Properties();
-                segmentProperties.put("classification", DashboardPageFragment.segmentClassification);
+                segmentProperties.put("classification", DashboardFragment.segmentClassification);
                 Segment.trackEvent(SegmentConstants.End_Session_On_Select, segmentProperties);
             }
 
@@ -755,6 +759,12 @@ public class DialogManager {
             @Override
             public void onFinish() {
                 confirmDialog.dismiss();
+                DashboardFragment.getInstance().dashboardModeManagement.changeModeButtonAvailability(
+                        "",
+                        "",
+                        type.equals("Shutdown") ? Constants.SHUTDOWN_MODE : Constants.RESTART_MODE
+                );
+
                 //Start a power check for all stations
                 if (type.equals("Restart")) {
                     WakeById("Restarting", stationIds); //Wake any computers that are already off
@@ -835,7 +845,7 @@ public class DialogManager {
         EditText newAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_button);
         setAddress.setOnClickListener(v -> {
-            if (newAddress.getText().toString().trim().length() > 0) {
+            if (!newAddress.getText().toString().trim().isEmpty()) {
                 SettingsFragment.mViewModel.setNucAddress(newAddress.getText().toString().trim());
                 nucDialog.dismiss();
                 trackSettingChanged("NUC IP Address");
@@ -936,10 +946,29 @@ public class DialogManager {
 
         Button encryptionKeyConfirmButton = view.findViewById(R.id.encryption_key_confirm);
         encryptionKeyConfirmButton.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
-            encryptionDialog.dismiss();
-            trackSettingChanged("Encryption Key");
+            if (Helpers.isNullOrEmpty(newKey.getText().toString().trim())) {
+                Toast.makeText(context, "Encryption is blank. Are you sure you want to change it?", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            BooleanCallbackInterface confirmShutdownCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    SettingsFragment.mViewModel.setEncryptionKey(newKey.getText().toString().trim());
+                    encryptionDialog.dismiss();
+                    trackSettingChanged("Encryption Key");
+                }
+            };
+
+            DialogManager.createConfirmationDialog(
+                    "Confirm encryption change", "WARNING! This is essential for communication with the rest of the Lab. Are you sure you want to change this?",
+                    confirmShutdownCallback,
+                    "Cancel",
+                    "Confirm",
+                    false);
         });
+
+        Button closeDialog = view.findViewById(R.id.close_dialog);
+        closeDialog.setOnClickListener(v -> encryptionDialog.dismiss());
 
         encryptionDialog.show();
     }
@@ -1018,7 +1047,7 @@ public class DialogManager {
         TextView preview = view.findViewById(R.id.locked_room_preview);
         preview.setText(
                 SettingsFragment.mViewModel.getLockedRooms().getValue() == null ||
-                SettingsFragment.mViewModel.getLockedRooms().getValue().size() == 0 ?
+                        SettingsFragment.mViewModel.getLockedRooms().getValue().isEmpty() ?
                         "None" :
                         String.join(", ", SettingsFragment.mViewModel.getLockedRooms().getValue()));
 
@@ -1214,7 +1243,7 @@ public class DialogManager {
     public static void gameLaunchedOnStation(int stationId) {
         if (gameLaunchStationIds != null) {
             gameLaunchStationIds.removeIf(id -> id == stationId);
-            if (gameLaunchStationIds.size() == 0) {
+            if (gameLaunchStationIds.isEmpty()) {
                 if (gameLaunchDialog != null) {
                     gameLaunchDialog.dismiss();
                 }
@@ -1255,7 +1284,7 @@ public class DialogManager {
     public static void sessionEndedOnStation(int stationId) {
         if (endSessionStationIds != null) {
             endSessionStationIds.removeIf(id -> id == stationId);
-            if (endSessionStationIds.size() == 0) {
+            if (endSessionStationIds.isEmpty()) {
                 if (endSessionDialog != null) {
                     endSessionDialog.dismiss();
                 }
@@ -1305,7 +1334,7 @@ public class DialogManager {
     public static void vrSystemRestartedOnStation(int stationId) {
         if (restartVRSystemStationIds != null) {
             restartVRSystemStationIds.removeIf(id -> id == stationId);
-            if (restartVRSystemStationIds.size() == 0) {
+            if (restartVRSystemStationIds.isEmpty()) {
                 if (restartVRSystemDialog != null) {
                     restartVRSystemDialog.dismiss();
                 }
@@ -1376,6 +1405,80 @@ public class DialogManager {
     }
 
     /**
+     * Prompt the user to select between the two video players available on a Station. Only show the
+     * player selection if it is installed.
+     * @param video A video object that is to be viewed.
+     * @param isRegularPlayerInstalled A boolean of if the regular video player is installed.
+     * @param isVrPlayerInstalled A boolean of if the VR video player is installed.
+     * @param callbackInterface A string callback which returns the video player's name or nothing.
+     */
+    public static void showVideoPlayerOptions(Video video, boolean isRegularPlayerInstalled, boolean isVrPlayerInstalled, StringCallbackInterface callbackInterface) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_video_selection, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
+
+        String contentText = getVideoContentText(isRegularPlayerInstalled, isVrPlayerInstalled);
+        TextView contentView = basicDialogView.findViewById(R.id.content_text);
+        contentView.setText(contentText);
+
+        TextView videoNameView = basicDialogView.findViewById(R.id.video_name_text);
+        videoNameView.setText(String.format("Name: %s", video.getName()));
+
+        TextView videoTypeView = basicDialogView.findViewById(R.id.video_type_text);
+        videoTypeView.setText(String.format("Type: %s", video.getVideoType()));
+
+        Button regularVideoButton = basicDialogView.findViewById(R.id.regular_video_button);
+        if (isRegularPlayerInstalled) {
+            regularVideoButton.setVisibility(View.VISIBLE);
+            regularVideoButton.setOnClickListener(w -> {
+                callbackInterface.callback(Constants.VIDEO_PLAYER_NAME);
+                basicDialog.dismiss();
+            });
+        }
+
+        Button vrVideoButton = basicDialogView.findViewById(R.id.vr_video_button);
+        if (isVrPlayerInstalled) {
+            vrVideoButton.setVisibility(View.VISIBLE);
+            vrVideoButton.setOnClickListener(w -> {
+                callbackInterface.callback(Constants.VR_VIDEO_PLAYER_NAME);
+                basicDialog.dismiss();
+            });
+        }
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> {
+            callbackInterface.callback("");
+            basicDialog.dismiss();
+        });
+
+        basicDialog.show();
+        if (basicDialog.getWindow() != null) {
+            basicDialog.getWindow().setLayout(680, 780);
+        }
+    }
+
+    /**
+     * Generate the content text to display to a user when selecting a video player based on what
+     * is currently installed.
+     * @param isRegularPlayerInstalled A boolean of if the regular video player is installed.
+     * @param isVrPlayerInstalled A boolean of if the VR video player is installed.
+     * @return A string to set as the content text of a dialog.
+     */
+    @NonNull
+    private static String getVideoContentText(boolean isRegularPlayerInstalled, boolean isVrPlayerInstalled) {
+        String contentText;
+        if (isRegularPlayerInstalled && isVrPlayerInstalled) {
+            contentText = "Please select a video player to view the selected content.";
+        } else if (isRegularPlayerInstalled) {
+            contentText = "No VR video player detected, regular video player only.";
+        } else if (isVrPlayerInstalled) {
+            contentText = "No regular video player detected, VR video player only.";
+        } else {
+            contentText = "No LeadMe video players detected.";
+        }
+        return contentText;
+    }
+
+    /**
      * Display a list of buttons that represent the different options for the currently loaded
      * experience.
      */
@@ -1409,7 +1512,7 @@ public class DialogManager {
         }
     }
 
-    //region Tracking
+    //region tracking
     private static final String segmentClassification = "Dialog";
 
     private static void trackSettingChanged(String name) {
