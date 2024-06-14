@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.qa;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +38,7 @@ public class QaCheck {
             jsonObject.put("_passedStatus", passedStatus);
             jsonObject.put("_message", message);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("QaCheck", e.toString());
         }
         return jsonObject;
     }

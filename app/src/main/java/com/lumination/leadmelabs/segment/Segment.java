@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.segment;
 
+import android.util.Log;
+
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.segment.classes.SegmentEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentSessionEvent;
@@ -187,7 +189,7 @@ public class Segment {
             // Parse the dateString back into a Date object
             sessionStart = dateFormat.parse(newSessionStart);
         } catch (ParseException e) {
-            e.printStackTrace(); // Handle parsing exception
+            Log.e("Segment", e.toString()); // Handle parsing exception
         }
     }
 

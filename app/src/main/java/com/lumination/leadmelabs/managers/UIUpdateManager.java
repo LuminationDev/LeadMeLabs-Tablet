@@ -85,8 +85,8 @@ public class UIUpdateManager {
                 case Constants.MESSAGE_TYPE:
                     handleMessageTypeUpdate(additionalData);
                     break;
-                case Constants.LAB_LOCATION:
-                    handleLabLocationUpdate(additionalData);
+                case Constants.ENVIRONMENT:
+                    handleEnvironmentUpdate(additionalData);
                     break;
                 case Constants.STATIONS:
                     handleStationsUpdate(additionalData);
@@ -159,15 +159,16 @@ public class UIUpdateManager {
     }
 
     /**
-     * Handles the update for LabLocation action namespace.
-     * This method processes updates related to laboratory locations.
+     * Handles the update for an environment detail change.
+     * This method processes updates related to details that may be updated remotely from the
+     * realtime database or NUC.
      *
      * @param additionalData The additional data associated with the update.
      */
-    private static void handleLabLocationUpdate(String additionalData) throws JSONException {
+    private static void handleEnvironmentUpdate(String additionalData) throws JSONException {
         JSONObject details = new JSONObject(additionalData);
-        String location = details.optString("location", "Unknown");
 
+        String location = details.optString("location", "Unknown");
         if (location.equals("Unknown")) {
             Sentry.captureMessage("Both the Tablet and NUC location is not set. NUC address is: " + SettingsFragment.mViewModel.getNucAddress());
             return;

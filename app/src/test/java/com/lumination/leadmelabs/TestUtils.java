@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -45,7 +47,7 @@ public class TestUtils {
             HttpResponse response = httpclient.execute(new HttpGet(URL));
             statusLine = response.getStatusLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("TestUtils", e.toString());
         }
 
         assert statusLine != null;

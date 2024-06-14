@@ -76,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
     public static boolean reconnectionIgnored = false;
     public static boolean isAppInForeground = false;
 
-    public static boolean isNucUtf8 = true;
-    public static boolean isNucJsonEnabled = false;
+    //TODO these can be removed in the next update
+    public static boolean isNucUtf8 = false;
+    public static boolean isNucJsonEnabled = true;
+    //TODO
 
     static ScheduledExecutorService scheduler;
 
@@ -364,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e("MainActivity", e.toString());
         }
         return null;
     }
