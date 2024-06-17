@@ -43,7 +43,7 @@ public class SceneController {
      */
     public static void sceneTransition(String status, String id, View finalResult) {
         // just turned on - scene timers turned off
-        if (latestOn.contains(id) && Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue())) {
+        if (latestOn.contains(id) && (Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue()) || DashboardFragment.getInstance() == null)) {
             finalResult.setBackground(ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.transition_appliance_grey_to_blue, null));
             TransitionDrawable transition = (TransitionDrawable) finalResult.getBackground();
             transition.startTransition(fadeTime);
@@ -145,7 +145,7 @@ public class SceneController {
         if (currentList == null) return;
 
         //Check if the scene timers are on in the settings
-        boolean sceneTimers =  Boolean.TRUE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue());
+        boolean sceneTimers = Boolean.TRUE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue()) && DashboardFragment.getInstance() != null;
 
         //Collect information about the scene
         SceneInfo info = collectSceneInfo(scene, sceneTimers ? Constants.LOADING : Constants.ACTIVE);
