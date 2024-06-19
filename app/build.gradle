@@ -15,8 +15,8 @@ android {
         applicationId "com.lumination.leadmelabs"
         minSdk 28
         targetSdk 34
-        versionCode 48
-        versionName "1.35"
+        versionCode 49
+        versionName "1.36"
         
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
