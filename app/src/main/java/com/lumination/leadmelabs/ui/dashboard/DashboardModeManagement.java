@@ -47,7 +47,7 @@ public class DashboardModeManagement {
      */
     public void changeModeButtonAvailability(String sceneName, String room, String active) {
         //Check if scene timers is enable in settings (defaults to 'On')
-        if (Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue())) {
+        if (Boolean.FALSE.equals(SettingsFragment.mViewModel.getSceneTimer().getValue()) || DashboardFragment.getInstance() == null) {
             return;
         }
 
