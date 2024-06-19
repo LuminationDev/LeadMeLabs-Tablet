@@ -2,7 +2,8 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.view.View;
 
-import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import androidx.databinding.ViewDataBinding;
+
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.utilities.Constants;
 
@@ -17,7 +18,7 @@ public class HDMIStrategy extends ExtendedApplianceCardStrategy {
         super(isSceneCard);
     }
 
-    public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+    public <T extends ViewDataBinding> void trigger(T binding, Appliance appliance, View finalResult) {
         super.trigger(binding, appliance, finalResult);
         if (appliance.options != null) {
             for (int i = 0; i < appliance.options.size(); i++) {
