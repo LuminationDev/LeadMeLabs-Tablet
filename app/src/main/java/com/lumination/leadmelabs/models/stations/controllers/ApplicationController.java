@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.models.applications.information.Information;
 import com.lumination.leadmelabs.models.applications.information.InformationConstants;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
+import com.lumination.leadmelabs.utilities.Helpers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,6 +76,7 @@ public class ApplicationController {
      */
     private void setApplications(Object applications) {
         if (applications == null) return;
+        if (Helpers.isNullOrEmpty(applications.toString())) return;
 
         if (applications instanceof JSONArray) {
             try {
@@ -85,7 +87,7 @@ public class ApplicationController {
         } else {
             Sentry.captureMessage(
                     ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
-                    + ": ApplicationController - applications not sent in JSON format.");
+                    + ": ApplicationController - applications not sent in JSON format: " + applications);
         }
     }
 
