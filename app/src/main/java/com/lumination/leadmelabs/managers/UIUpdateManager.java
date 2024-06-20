@@ -573,16 +573,26 @@ public class UIUpdateManager {
     }
 
     //Simplify the functions below to a generic one
-    private static void updateStations(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
+    private static void updateStations(String jsonString) {
+        if (jsonString.isEmpty()) {
+            return;
+        }
 
-        MainActivity.UIHandler.postDelayed(() -> {
-            try {
-                ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStations(json);
-            } catch (JSONException e) {
-                Log.e(TAG, e.toString());
-            }
-        }, 500);
+        try {
+            JSONArray json = new JSONArray(jsonString);
+
+            MainActivity.UIHandler.postDelayed(() -> {
+                try {
+                    ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setStations(json);
+                } catch (JSONException e) {
+                    Log.e(TAG, e.toString());
+                }
+            }, 500);
+        } catch (JSONException e) {
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                            + ": UIUpdateManager - updateStations - " + e);
+        }
     }
 
     private static void updateStation(String stationId, String attribute, String value) {
@@ -669,11 +679,17 @@ public class UIUpdateManager {
                     break;
 
                 case "installedJsonApplications":
+                    if (value.isEmpty()) {
+                        break;
+                    }
+
                     try {
                         JSONArray jsonArray = new JSONArray(value);
                         station.applicationController.setApplicationsFromJson(jsonArray);
                     } catch (JSONException e) {
-                        Sentry.captureException(e);
+                        Sentry.captureMessage(
+                                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                                        + ": UIUpdateManager - updateStation (installedJsonApplications) - " + e);
                     }
                     break;
 
@@ -882,16 +898,26 @@ public class UIUpdateManager {
         return length < limit;
     }
 
-    private static void updateAppliances(String jsonString) throws JSONException {
-        JSONArray json = new JSONArray(jsonString);
+    private static void updateAppliances(String jsonString) {
+        if (jsonString.isEmpty()) {
+            return;
+        }
 
-        MainActivity.runOnUI(() -> {
-            try {
-                ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setAppliances(json);
-            } catch (JSONException e) {
-                Log.e(TAG, e.toString());
-            }
-        });
+        try {
+            JSONArray json = new JSONArray(jsonString);
+
+            MainActivity.runOnUI(() -> {
+                try {
+                    ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).setAppliances(json);
+                } catch (JSONException e) {
+                    Log.e(TAG, e.toString());
+                }
+            });
+        } catch (JSONException e) {
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                            + ": UIUpdateManager - updateAppliances (installedJsonApplications) - " + e);
+        }
     }
 
     /**
@@ -1077,7 +1103,11 @@ public class UIUpdateManager {
 
                         //LISTS
                         case "installedJsonApplications":
-                            String installedJsonApplications = jsonObject.getString("installedJsonApplications");
+                            String installedJsonApplications = jsonObject.optString("installedJsonApplications", "");
+                            if (installedJsonApplications.isEmpty()) {
+                                break;
+                            }
+
                             if (installedJsonApplications.equals(station.applicationController.applicationsRaw)) {
                                 break;
                             }
@@ -1087,12 +1117,18 @@ public class UIUpdateManager {
                                 JSONArray jsonArray = new JSONArray(installedJsonApplications);
                                 station.applicationController.setApplicationsFromJson(jsonArray);
                             } catch (JSONException e) {
-                                Sentry.captureException(e);
+                                Sentry.captureMessage(
+                                        ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                                                + ": UIUpdateManager - handleStationState (installedJsonApplications) - " + e);
                             }
                             break;
 
                         case "audioDevices":
-                            String audioDevices = jsonObject.getString("audioDevices");
+                            String audioDevices = jsonObject.optString("audioDevices", "");
+                            if (audioDevices.isEmpty()) {
+                                break;
+                            }
+
                             String currentDevices = station.audioController.getRawAudioDevices();
                             if (!audioDevices.equals(currentDevices)) {
                                 station.audioController.setAudioDevices(audioDevices);
@@ -1100,7 +1136,11 @@ public class UIUpdateManager {
                             break;
 
                         case "videoFiles":
-                            String videoFiles = jsonObject.getString("videoFiles");
+                            String videoFiles = jsonObject.optString("videoFiles", "");
+                            if (videoFiles.isEmpty()) {
+                                break;
+                            }
+
                             String videosRaw = station.videoController.getRawVideos();
                             if (!videoFiles.equals(videosRaw)) {
                                 station.fileController.setFiles("Videos", videoFiles);

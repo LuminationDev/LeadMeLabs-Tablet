@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.lumination.leadmelabs.models.LocalFile;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
@@ -202,7 +204,9 @@ public class FileController {
             //Check for missing thumbnails
             ImageManager.CheckLocalVideoCache(devices);
         } catch (JSONException e) {
-            Sentry.captureException(e);
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                            + ": FileController - setVideos - " + e);
         }
     }
 

@@ -41,18 +41,13 @@ public class StationFactory {
             state = "Not set";
         }
 
-        //BACKWARDS COMPATIBILITY - check for the JsonArray or the back string of applications
         String installedApplications = stationJson.optString("installedJsonApplications", "");
-        Object applications;
+        Object applications = null;
         try {
             if (!installedApplications.isEmpty()) {
                 applications = new JSONArray(installedApplications);
-            } else {
-                applications = stationJson.optString("installedApplications", "");
             }
-        } catch (JSONException e) {
-            applications = stationJson.optString("installedApplications", "");
-        }
+        } catch (JSONException ignored) {}
 
         String mode = stationJson.optString("mode", "vr").toLowerCase();
         switch (mode) {
