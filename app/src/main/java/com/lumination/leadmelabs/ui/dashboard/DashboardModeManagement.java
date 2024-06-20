@@ -196,7 +196,10 @@ public class DashboardModeManagement {
 
                     if (matchingAppliances.isEmpty()) {
                         matchingAppliances = DashboardFragment.getInstance().searchForBackupSceneTrigger(appliances, sceneName, targetStatus);
-                        SceneController.handleBackupScene(matchingAppliances.get(0));
+
+                        if (!matchingAppliances.isEmpty()) {
+                            SceneController.handleBackupScene(matchingAppliances.get(0));
+                        }
                     }
 
                     if (!matchingAppliances.isEmpty()) {
