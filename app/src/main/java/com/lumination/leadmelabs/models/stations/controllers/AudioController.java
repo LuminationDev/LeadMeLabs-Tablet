@@ -5,12 +5,15 @@ import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
 import com.lumination.leadmelabs.models.stations.Station;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,7 +171,9 @@ public class AudioController {
             this.audioDevices = audioDevices;
 
         } catch (JSONException e) {
-            Sentry.captureException(e);
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                            + ": AudioController - setAudioDevices - " + e);
         }
     }
 

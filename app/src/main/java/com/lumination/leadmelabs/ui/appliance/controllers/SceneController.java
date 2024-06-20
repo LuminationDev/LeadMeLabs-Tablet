@@ -22,6 +22,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ public class SceneController {
     /**
      * Track what scenes are being activated.
      */
-    private static final Map<String, String> activatingScenes = new HashMap<>();
+    private static final Map<String, String> activatingScenes = Collections.synchronizedMap(new HashMap<>());
 
     public static ArrayList<String> latestOn = new ArrayList<>();
     public static ArrayList<String> latestOff = new ArrayList<>();

@@ -2,6 +2,8 @@ package com.lumination.leadmelabs.models.stations.controllers;
 
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.models.Video;
@@ -9,6 +11,7 @@ import com.lumination.leadmelabs.models.VrOption;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.segment.analytics.Properties;
@@ -89,7 +92,9 @@ public class VideoController {
             //Check for missing thumbnails
             ImageManager.CheckLocalVideoCache(devices);
         } catch (JSONException e) {
-            Sentry.captureException(e);
+            Sentry.captureMessage(
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getLabLocation().getValue()
+                            + ": VideoController - setVideos - " + e);
         }
     }
 
