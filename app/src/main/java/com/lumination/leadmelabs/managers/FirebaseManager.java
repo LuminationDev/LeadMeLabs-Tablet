@@ -148,7 +148,6 @@ public class FirebaseManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot acknowledgmentSnapshot : dataSnapshot.getChildren()) {
-                    Log.e("ACK", "V: " + acknowledgmentSnapshot.getKey());
                     acknowledgements.add(acknowledgmentSnapshot.getKey());
                 }
 
