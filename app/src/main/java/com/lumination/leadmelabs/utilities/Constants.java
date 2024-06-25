@@ -108,4 +108,11 @@ public class Constants {
     public static final String OFFLINE = "Offline";
     public static final String NO_INTERNET = "No internet";
     public static final String ONLINE = "Online";
+
+    //Notification
+    public static final String ALERT = "Alert";
+    public static final String EMERGENCY = "Emergency";
+
+    public static final String STATUS_ACCEPTED = "Accepted";
+    public static final String STATUS_SKIPPED = "Skipped";
 }

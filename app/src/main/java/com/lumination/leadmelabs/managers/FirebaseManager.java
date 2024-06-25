@@ -19,13 +19,15 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Notification;
 import com.lumination.leadmelabs.notifications.NotificationManager;
 import com.lumination.leadmelabs.services.jobServices.NotificationJobService;
+import com.lumination.leadmelabs.ui.pages.NotificationPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -120,10 +122,10 @@ public class FirebaseManager {
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(enabled);
     }
 
-    private static final ArrayList<String> acknowledgements = new ArrayList<>();
+    private static final HashSet<String> acknowledgements = new HashSet<>();
 
     /**
-     * Check if there are any new notifications on Firebase.
+     * Check for current acknowledgements on Firebase before calling for any notification data.
      */
     public static void checkForNotifications() {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -135,14 +137,23 @@ public class FirebaseManager {
         String labLocation = SettingsFragment.mViewModel.getLabLocation().getValue();
         if (labLocation == null) return;
 
+        //Reset the notification page in case a user is currently viewing it.
+        if (NotificationPageFragment.mViewModel != null) {
+            NotificationPageFragment.mViewModel.setCurrentPage(1);
+        }
+
         // Fetch the acknowledgements first
         DatabaseReference acknowledgmentsRef = db.getReference(String.format("lab_notifications/acknowledgements/%s", labLocation));
         acknowledgmentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot acknowledgmentSnapshot : dataSnapshot.getChildren()) {
+                    Log.e("ACK", "V: " + acknowledgmentSnapshot.getKey());
                     acknowledgements.add(acknowledgmentSnapshot.getKey());
                 }
+
+                //Only after acknowledgements have been collected do we check for data.
+                checkForNotificationData(db);
             }
 
             @Override
@@ -151,12 +162,20 @@ public class FirebaseManager {
                 Log.w("DatabaseError", "loadPost:onCancelled", databaseError.toException());
             }
         });
+    }
 
-        // Fetch the data once
+    /**
+     * Check if there are any new notifications on Firebase.
+     */
+    private static void checkForNotificationData(FirebaseDatabase db) {
         DatabaseReference notificationsRef = db.getReference("lab_notifications/notifications");
+        // Fetch the data once
         notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Clear any saved past notifications
+                NotificationPageFragment.mViewModel.clearNotifications();
+
                 for (DataSnapshot notificationSnapshot : dataSnapshot.getChildren()) {
                     // Get the key of the current child - check if the message has already been acknowledged
                     String key = notificationSnapshot.getKey();
@@ -164,16 +183,26 @@ public class FirebaseManager {
                     // Get the Notification object
                     Notification notification = notificationSnapshot.getValue(Notification.class);
                     if (notification != null) {
-                        if (!needToAcknowledge(key, notification.get_timeStamp())) return;
+                        notification.setKey(key);
+
+                        //Add the notification to the 'past' notifications list
+                        boolean acknowledgementRequired = needToAcknowledge(key, notification.get_timeStamp());
+                        notification.setStatus(acknowledgementRequired ? Constants.STATUS_SKIPPED : Constants.STATUS_ACCEPTED);
+                        NotificationPageFragment.mViewModel.addNotification(notification);
+
+                        //If the notification has already been acknowledged do not show the popup by default
+                        if (!acknowledgementRequired) {
+                            continue;
+                        }
                         String urgency = notification.getUrgency();
 
                         switch (urgency) {
-                            case "Alert":
+                            case Constants.ALERT:
                                 createAlertNotification(notification);
                                 break;
 
-                            case "Emergency":
-                                createEmergencyNotification(key, notification);
+                            case Constants.EMERGENCY:
+                                createEmergencyNotification(key, notification, false);
                                 break;
 
                             default:
@@ -181,6 +210,8 @@ public class FirebaseManager {
                         }
                     }
                 }
+
+                NotificationPageFragment.refreshData();
             }
 
             @Override
@@ -222,28 +253,29 @@ public class FirebaseManager {
      * Create an emergency notification.
      * @param notification A notification object created from the retrieved firebase data.
      */
-    private static void createEmergencyNotification(String key, Notification notification) {
+    public static void createEmergencyNotification(String key, Notification notification, boolean canCancel) {
         BooleanCallbackInterface acknowledgmentCallback = confirmationResult -> {
             if (confirmationResult) {
                 acknowledgeNotification(key);
-            } else {
+            } else if (!canCancel) { //Only snooze if the notification is auto-prompted, not manually viewed from the notifications page
                 //Set the timestamp to check against for snoozing.
                 NotificationJobService.lastRunTimestamp = System.currentTimeMillis();
                 NotificationManager.trackNotificationSnoozed(notification.getTitle());
             }
         };
 
-        NotificationManager.createEmergencyNotificationDialog(notification, acknowledgmentCallback);
+        NotificationManager.createEmergencyNotificationDialog(notification, acknowledgmentCallback, canCancel);
     }
 
     /**
      * A notification has been acknowledged, record this in the firebase database.
      * @param key A string of the firebase UUID associated with the notification being acknowledged.
      */
-    private static void acknowledgeNotification(String key) {
+    public static void acknowledgeNotification(String key) {
         String labLocation = SettingsFragment.mViewModel.getLabLocation().getValue();
         if (labLocation == null) return;
 
+        NotificationPageFragment.refreshData();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference acknowledgmentsRef = database.getReference("lab_notifications/acknowledgements/" + labLocation);
 

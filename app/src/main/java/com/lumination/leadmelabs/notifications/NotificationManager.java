@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +17,8 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Notification;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.ui.pages.NotificationPageFragment;
+import com.lumination.leadmelabs.utilities.Constants;
 import com.segment.analytics.Properties;
 
 public class NotificationManager {
@@ -63,27 +66,35 @@ public class NotificationManager {
      * It also tracks the notification as acknowledged or dismissed accordingly.
      * @param notification The Notification object containing the information to display in the dialog.
      * @param booleanCallbackInterface The callback interface to handle user actions (acknowledge or snooze).
+     * @param canCancel A boolean of it the user can cancel of close the notification without an action associated with it.
      */
-    public static void createEmergencyNotificationDialog(Notification notification, BooleanCallbackInterface booleanCallbackInterface) {
+    public static void createEmergencyNotificationDialog(Notification notification, BooleanCallbackInterface booleanCallbackInterface, boolean canCancel) {
         View notificationDialogView = setupBasicNotification(notification, R.layout.dialog_notification_emergency);
         if (notificationDialogView == null) return;
 
         AlertDialog confirmationDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertNotificationTheme).setView(notificationDialogView).create();
-        confirmationDialog.setCancelable(false);
-        confirmationDialog.setCanceledOnTouchOutside(false);
+        confirmationDialog.setCancelable(canCancel);
+        confirmationDialog.setCanceledOnTouchOutside(canCancel);
 
         FlexboxLayout acknowledgeButton = notificationDialogView.findViewById(R.id.acknowledge_dialog);
         acknowledgeButton.setOnClickListener(w -> {
             booleanCallbackInterface.callback(true);
             confirmationDialog.dismiss();
+            NotificationPageFragment.mViewModel.updateNotification(notification.getTitle(), notification.get_timeStamp(), Constants.STATUS_ACCEPTED);
             trackNotificationAcknowledged(notification.getTitle());
         });
 
         FlexboxLayout snoozeButton = notificationDialogView.findViewById(R.id.snooze_dialog);
+        if (canCancel) {
+            TextView snoozeText = notificationDialogView.findViewById(R.id.snooze_text);
+            snoozeText.setText(R.string.close);
+        }
         snoozeButton.setOnClickListener(w -> {
-            booleanCallbackInterface.callback(false);
+            if (!canCancel) {
+                booleanCallbackInterface.callback(false);
+                trackNotificationDismissed(notification.getTitle());
+            }
             confirmationDialog.dismiss();
-            trackNotificationDismissed(notification.getTitle());
         });
 
         confirmationDialog.show();

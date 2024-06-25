@@ -52,6 +52,15 @@ public class DashboardPageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Open the notifications page
+        FlexboxLayout notificationButton = view.findViewById(R.id.notification_button);
+        notificationButton.setOnClickListener(v -> {
+            SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+            if (fragment == null) return;
+
+            fragment.loadFragment(NotificationPageFragment.class, "notification", null);
+        });
+
         //Refresh the data from the nuc
         FlexboxLayout refresh = view.findViewById(R.id.refresh_button);
         refresh.setOnClickListener(v -> {
