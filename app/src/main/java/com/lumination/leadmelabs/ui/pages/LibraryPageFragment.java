@@ -272,9 +272,7 @@ public class LibraryPageFragment extends Fragment {
 
         // Dismiss the keyboard if selecting anywhere on the library page
         LinearLayout libraryArea = view.findViewById(R.id.libraryArea);
-        libraryArea.setOnClickListener(v -> {
-            dismissKeyboard(searchInput);
-        });
+        libraryArea.setOnClickListener(v -> dismissKeyboard(searchInput));
 
         // Switch between the different sub libraries
         FlexboxLayout vrButton = view.findViewById(R.id.view_vr_button);

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="notification"
+            type="com.lumination.leadmelabs.notifications.NotificationViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/notificationArea"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <LinearLayout
+            android:layout_marginTop="59dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--Title Bar & Search-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="row"
+                    app:justifyContent="space_between">
+
+                    <!--Page title-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="column">
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:flexDirection="row">
+
+                            <TextView
+                                android:id="@+id/libraryTitle"
+                                style="@style/HeadingTitle"
+                                android:text="@string/notifications"
+                                android:textSize="32sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <TextView
+                            android:id="@+id/selectedStation"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="@string/previously_received_alerts_and_updates"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row"
+                        app:justifyContent="space_between">
+
+                        <!--Refresh Button-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:id="@+id/refresh_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:background="@drawable/light_gray_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:alignItems="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:contentDescription="@string/refresh_icon"
+                                android:src="@drawable/icon_refresh"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/refresh"
+                                android:textColor="@color/black"
+                                android:textFontWeight="600"
+                                android:textSize="13sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <!--Help Button-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:id="@+id/help_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:background="@drawable/light_gray_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:alignItems="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:contentDescription="@string/help_icon"
+                                android:src="@drawable/icon_help"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/help"
+                                android:textColor="@color/black"
+                                android:textFontWeight="600"
+                                android:textSize="13sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <!--Search input-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            app:flexDirection="row">
+
+                            <EditText
+                                android:id="@+id/search_input"
+                                android:layout_width="250dp"
+                                android:layout_height="50dp"
+                                android:autofillHints="0"
+                                android:background="@drawable/ripple_white_rounded_border_thin"
+                                android:clickable="true"
+                                android:drawableStart="@drawable/icon_search"
+                                android:drawablePadding="10dp"
+                                android:focusableInTouchMode="true"
+                                android:gravity="center_vertical"
+                                android:hint="@string/search"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text"
+                                android:paddingStart="15dp"
+                                android:paddingTop="2dp"
+                                android:paddingEnd="2dp"
+                                android:textColorHint="@color/grey_hint"
+                                android:textSize="15sp"/>
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--Past notifications-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/bg_white_curved_border"
+                app:flexDirection="column">
+
+                <!--Title bar-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:background="@drawable/bg_gray_top_curved_border"
+                    app:flexDirection="row">
+
+                    <TextView
+                        android:layout_width="525dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/notifications"/>
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status"/>
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!--Notification list-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    app:flexDirection="row"
+                    app:justifyContent="center"
+                    app:alignItems="center">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:visibility="@{notification.viewableNotifications.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:visibility="@{notification.viewableNotifications.size() > 0 ? View.GONE : View.VISIBLE, default=visible}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:text="@string/no_past_notifications_found"/>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!--Page control-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_white_bottom_curved_border"
+                    android:padding="20dp"
+                    app:flexDirection="row"
+                    app:alignItems="center"
+                    app:justifyContent="space_between">
+
+                    <!--Previous Button-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/previous_page_btn"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{notification.currentPage == 1 ? View.INVISIBLE : View.VISIBLE, default=invisible}"
+                        android:padding="10dp"
+                        android:background="@drawable/backdrop_ripple_white_rounded_border_gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{() -> notification.loadPreviousPage()}"
+                        app:alignItems="center"
+                        app:justifyContent="center">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginEnd="10dp"
+                            android:contentDescription="@string/previous_arrow"
+                            android:src="@drawable/notification_arrow"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/previous"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <!--Page numbers-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:text="@{`Page ` + notification.currentPage + ` of ` + notification.pages, default=`Page 1 of 1`}"/>
+
+                    <!--Next Button-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/next_page_btn"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{notification.currentPage == notification.pages ? View.INVISIBLE : View.VISIBLE, default=visible}"
+                        android:padding="10dp"
+                        android:background="@drawable/backdrop_ripple_white_rounded_border_gray"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{() -> notification.loadNextPage()}"
+                        app:alignItems="center"
+                        app:justifyContent="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:text="@string/next"
+                            android:textColor="@color/black"
+                            android:textFontWeight="600"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:rotation="180"
+                            android:contentDescription="@string/next_arrow"
+                            android:src="@drawable/notification_arrow" />
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/system_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</layout>

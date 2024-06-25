@@ -22,6 +22,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.notifications.NotificationViewModel;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.services.jobServices.NotificationJobService;
@@ -37,13 +38,12 @@ import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
 import com.lumination.leadmelabs.ui.dashboard.DashboardViewModel;
+import com.lumination.leadmelabs.ui.pages.NotificationPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
-import com.lumination.leadmelabs.ui.sessionControls.SessionControlsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
@@ -259,9 +259,9 @@ public class MainActivity extends AppCompatActivity {
         VideoLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);
         ApplianceFragment.mViewModel = ViewModelProviders.of(this).get(ApplianceViewModel.class);
-        SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
         SubMenuFragment.mViewModel = ViewModelProviders.of(this).get(SubMenuViewModel.class);
         SideMenuFragment.mViewModel = ViewModelProviders.of(this).get(SideMenuViewModel.class);
+        NotificationPageFragment.mViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
     }
 
     /**
@@ -273,7 +273,6 @@ public class MainActivity extends AppCompatActivity {
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();
-        SessionControlsFragment.mViewModel.getInfo();
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
         SettingsFragment.mViewModel.getHideStationControls();
