@@ -241,6 +241,9 @@ public class NetworkService extends Service {
         String ipAddress = null;
 
         try {
+            if (MainActivity.getInstance() == null) {
+                return null;
+            }
             WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
             ipAddress = InetAddress.getByAddress(
                     ByteBuffer
