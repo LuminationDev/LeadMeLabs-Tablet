@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ActivityManager;
+import android.app.ForegroundServiceStartNotAllowedException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -61,6 +63,8 @@ import com.lumination.leadmelabs.utilities.Helpers;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import io.sentry.Sentry;
 
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
@@ -316,7 +320,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "startService: ");
 
         Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
-        startForegroundService(network_intent);
+        try {
+            startForegroundService(network_intent);
+        } catch (Exception e) {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) && e instanceof ForegroundServiceStartNotAllowedException) {
+                Sentry.captureException(e);
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
