@@ -1021,7 +1021,11 @@ public class UIUpdateManager {
                             break;
 
                         case "gameName":
-                            String gameName = jsonObject.getString("gameName");
+                            String gameName = jsonObject.optString("gameName", "");
+                            if (!gameName.isEmpty() && !gameName.equals("No session running")) {
+                                DialogManager.gameLaunchedOnStation(station.id);
+                            }
+
                             if (gameName.equals(station.applicationController.getExperienceName())) {
                                 break;
                             }
@@ -1036,10 +1040,6 @@ public class UIUpdateManager {
                             //Do no notify if the station is in another room
                             if(!SettingsFragment.checkLockedRooms(station.room)) {
                                 return;
-                            }
-
-                            if (!gameName.isEmpty() && !gameName.equals("No session running")) {
-                                DialogManager.gameLaunchedOnStation(station.id);
                             }
                             break;
 
