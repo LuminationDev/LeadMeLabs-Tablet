@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="keyboard"
+            type="com.lumination.leadmelabs.ui.keyboard.KeyboardViewModel" />
+    </data>
+
+    <!--Row #0 - Numbers & Symbols-->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:flexDirection="row"
+        app:justifyContent="space_between">
+
+        <!--1-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `!` : `1`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `!` : `1`, default=1}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--2-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `@` : `2`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `@` : `2`, default=2}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--3-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `#` : `3`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `#` : `3`, default=3}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--4-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `$` : `4`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `$` : `4`, default=4}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--5-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `Percent` : `5`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `%` : `5`, default=5}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--6-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `Caret` : `6`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `^` : `6`, default=6}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--7-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `&amp;` : `7`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `&amp;` : `7`, default=7}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--8-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `*` : `8`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `*` : `8`, default=8}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--9-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `BracketLeft` : `9`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `(` : `9`, default=9}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--0-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `BracketRight` : `0`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `)` : `0`, default=0}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--'-'-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `_` : `-`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `_` : `-`, default=`-`}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--=-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardLetterStyle"
+            android:onClick="@{() -> keyboard.simulateKeyboardKey(keyboard.capsLock || keyboard.shift ? `Plus` : `=`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@{keyboard.capsLock || keyboard.shift ? `+` : `=`, default=`=`}" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--Backspace-->
+        <com.google.android.flexbox.FlexboxLayout
+            style="@style/KeyboardControlStyle"
+            android:layout_width="100dp"
+            android:layout_marginEnd="0dp"
+            android:onClick="@{() -> keyboard.simulateKeyboardControl(`Backspace`)}"
+            app:alignItems="center"
+            app:justifyContent="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@string/backspace" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

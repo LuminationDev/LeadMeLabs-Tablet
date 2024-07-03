@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="keyboard"
+            type="com.lumination.leadmelabs.ui.keyboard.KeyboardViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="1100dp"
+        android:layout_height="700dp"
+        android:background="@drawable/modal_background_curved"
+        android:paddingVertical="20dp"
+        android:paddingHorizontal="30dp"
+        app:flexDirection="column"
+        app:alignItems="center">
+
+        <!--Mouse-->
+        <include layout="@layout/section_keyboard_row_mouse" app:keyboard="@{keyboard}"/>
+
+        <!--Keyboard-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:flexDirection="column">
+
+            <!--Row #0 - Numbers & Symbols-->
+            <include layout="@layout/section_keyboard_row_numbers" app:keyboard="@{keyboard}"/>
+
+            <!--Row #1 - Letters-->
+            <include layout="@layout/section_keyboard_row_first" app:keyboard="@{keyboard}"/>
+
+            <!--Row #2 - Letters-->
+            <include layout="@layout/section_keyboard_row_second" app:keyboard="@{keyboard}"/>
+
+            <!--Row #3 - Letters-->
+            <include layout="@layout/section_keyboard_row_third" app:keyboard="@{keyboard}"/>
+
+            <!--Row #4 - Controls-->
+            <include layout="@layout/section_keyboard_row_fourth" app:keyboard="@{keyboard}"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

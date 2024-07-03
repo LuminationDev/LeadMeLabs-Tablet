@@ -29,6 +29,8 @@ import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
+import com.lumination.leadmelabs.ui.keyboard.KeyboardViewModel;
+import com.lumination.leadmelabs.ui.keyboard.ModalKeyboardFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.LibraryViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -262,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
         SubMenuFragment.mViewModel = ViewModelProviders.of(this).get(SubMenuViewModel.class);
         SideMenuFragment.mViewModel = ViewModelProviders.of(this).get(SideMenuViewModel.class);
+        ModalKeyboardFragment.mViewModel = ViewModelProviders.of(this).get(KeyboardViewModel.class);
     }
 
     /**

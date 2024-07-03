@@ -41,6 +41,7 @@ import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.keyboard.ModalKeyboardFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -143,6 +144,12 @@ public class StationSingleFragment extends Fragment {
                 put("content_id", "steam_vr_errors");
             }};
             FirebaseManager.logAnalyticEvent("select_content", analyticsAttributes);
+        });
+
+        FlexboxLayout keyboard = view.findViewById(R.id.keyboard_button);
+        keyboard.setOnClickListener(v -> {
+            ModalKeyboardFragment modalFragment = new ModalKeyboardFragment();
+            modalFragment.show(MainActivity.getInstance().getSupportFragmentManager(), "modalKeyboardFragmentTag");
         });
 
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="keyboard"
+            type="com.lumination.leadmelabs.ui.keyboard.KeyboardViewModel" />
+    </data>
+
+    <!--Sensitivity & Mouse-->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:flexDirection="column"
+        app:justifyContent="space_between">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="row"
+            app:justifyContent="space_between">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mouse_sensitivity"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="13sp" />
+
+                <SeekBar
+                    android:id="@+id/sensitivity_seekbar"
+                    android:layout_width="600dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:max="500"
+                    android:min="50"
+                    android:progress="100"/>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--Close model-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/close_button"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/ripple_white_rounded"
+                android:clickable="true"
+                android:focusable="true"
+                app:flexDirection="row"
+                app:alignItems="center"
+                app:justifyContent="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_close_gray"
+                    android:contentDescription="@string/close" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--Trackpad & Mouse clicks-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexDirection="row"
+            app:justifyContent="space_around"
+            app:alignItems="center">
+
+            <!--Left click-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/left_click_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/ripple_white"
+                android:clickable="true"
+                android:focusable="true"
+                app:alignItems="center">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/keyboard_click_left"
+                    app:flexDirection="row"
+                    app:justifyContent="center"
+                    app:alignItems="center"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/left_click"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="13sp" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <View
+                android:id="@+id/trackpad_view"
+                android:layout_width="400dp"
+                android:layout_height="300dp"
+                android:background="#CCCCCC" />
+
+            <!--Right click-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/right_click_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@drawable/ripple_white"
+                android:clickable="true"
+                android:focusable="true"
+                app:alignItems="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="@string/right_click"
+                    android:textColor="@color/black"
+                    android:textFontWeight="600"
+                    android:textSize="13sp" />
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/keyboard_click_right"
+                    app:flexDirection="row"
+                    app:justifyContent="center"
+                    app:alignItems="center"
+                    android:visibility="visible"/>
+
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

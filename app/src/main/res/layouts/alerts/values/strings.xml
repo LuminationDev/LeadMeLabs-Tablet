@@ -11,4 +11,14 @@
     <string name="encryption_warning">WARNING! This is essential for communication with the rest of the Lab. Altering this will disrupt all operations until all other devices are updated accordingly.</string>
     <string name="enter_encryption_key">Enter encryption key…</string>
     <string name="set_the_encryption_key">Set the encryption key</string>
+    <string name="backspace">Backspace</string>
+    <string name="windows">Windows</string>
+    <string name="space">Space</string>
+    <string name="arrow_icon">arrow icon</string>
+    <string name="task_manager">Task Manager</string>
+    <string name="tab">Tab</string>
+    <string name="shift">Shift</string>
+    <string name="mouse_sensitivity">Mouse Sensitivity</string>
+    <string name="left_click">Left Click</string>
+    <string name="right_click">Right Click</string>
 </resources>
