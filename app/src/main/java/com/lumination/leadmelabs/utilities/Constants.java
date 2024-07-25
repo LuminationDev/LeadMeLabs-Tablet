@@ -11,6 +11,7 @@ public class Constants {
     public static final String AUTOMATION = "Automation";
     public static final String SEGMENT = "Segment";
     public static final String QA = "QA";
+    public static final String IDLE_MODE = "IdleMode";
 
 
     //Room Constants

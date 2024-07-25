@@ -90,6 +90,7 @@
     <string name="hide_station_controls">Hide station controls</string>
     <string name="allow_analytics">Allow analytics</string>
     <string name="support_mode">Support mode</string>
+    <string name="idle_mode">Idle mode</string>
     <string name="all_computers_off">All stations in this room are currently turned off.</string>
     <string name="reconnection_failed">Reconnection attempt failed. Try again or contact your IT department.</string>
     <string name="oh_no">Oh no!</string>

@@ -40,6 +40,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> enableAnalyticsCollection;
     private MutableLiveData<Boolean> sceneTimers;
     private MutableLiveData<Boolean> supportMode;
+    private MutableLiveData<Boolean> idleMode;
     private MutableLiveData<Date> supportModeEnabledTime;
     private MutableLiveData<Boolean> additionalExitPrompts;
     private MutableLiveData<Boolean> internalTraffic;
@@ -224,6 +225,22 @@ public class SettingsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("scene_timers", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("scene_timers", value);
+        editor.apply();
+    }
+
+    public LiveData<Boolean> getIdleMode() {
+        if (idleMode == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("idle_mode", Context.MODE_PRIVATE);
+            idleMode = new MutableLiveData<>(sharedPreferences.getBoolean("idle_mode", false));
+        }
+        return idleMode;
+    }
+
+    public void setIdleMode(Boolean value) {
+        idleMode.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("idle_mode", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("idle_mode", value);
         editor.apply();
     }
 
