@@ -32,6 +32,7 @@
     <string name="shutting_down">Shutting Down</string>
     <string name="cancel_shutdown">Cancel shutdown?</string>
     <string name="invalid_url">Invalid URL. Please check and try again.</string>
+    <string name="invalid_file_name">Invalid file name. The name cannot contain any of the following: \, /, :, *, ?, ", &lt;, &gt;, |.</string>
     <string name="cancel_10">Cancel (10)</string>
     <string name="exit_theatre">Exit theatre mode?</string>
     <string name="exit_current_theatre_mode">\" is currently in theatre mode. Are you sure you want to exit theatre mode?\"</string>
@@ -93,7 +94,7 @@
     <string name="reconnection_failed">Reconnection attempt failed. Try again or contact your IT department.</string>
     <string name="oh_no">Oh no!</string>
     <string name="shut_down_space">Shut Down</string>
-    <string name="shut_down_stations">Shut down stations</string>
+    <string name="shut_down_stations">Turn off stations</string>
     <string name="restart_space">Restart Lab</string>
     <string name="restart_stations">Reboot stations</string>
     <string name="cancel_reboot">Cancel reboot</string>
@@ -122,6 +123,7 @@
     <string name="restarting">Restarting</string>
     <string name="cancel_restart">Cancel restart?</string>
     <string name="base_station">Base Station</string>
+    <string name="tracker">Tracker</string>
     <string name="vr_controller">VR Controller</string>
     <string name="vive_icon">Vive Icon</string>
     <string name="openvr_icon">OpenVR icon</string>

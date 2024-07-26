@@ -32,7 +32,9 @@ import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.Option;
 import com.lumination.leadmelabs.models.Video;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
@@ -41,13 +43,14 @@ import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.help.HelpPageFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
-import com.lumination.leadmelabs.ui.stations.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.LocalAudioDeviceAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -67,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * This class is designed specifically for the Snowy Hydro project. The single page handles a
@@ -119,7 +123,7 @@ public class StationSingleNestedFragment extends Fragment {
                 // Set the adapter for backdrops
                 GridView backdropGridView = view.findViewById(R.id.backdrop_grid);
                 localBackdropAdapter = new BackdropAdapter(getContext(), true);
-                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                localBackdropAdapter.backdropList = (ArrayList<Video>) nestedStation.fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                 backdropGridView.setAdapter(localBackdropAdapter);
             }
         }
@@ -171,7 +175,7 @@ public class StationSingleNestedFragment extends Fragment {
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
-                String subtype = current.subtype.optString("category", "");
+                String subtype = current.HasCategory();
                 if (subtype.equals(Constants.VideoPlayer)) {
                     bundle.putString("library", "videos");
                     SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
@@ -292,7 +296,7 @@ public class StationSingleNestedFragment extends Fragment {
             String joinedStations = Interlinking.collectNestedStations(station, String.class);
 
             if (station.isOff()) {
-                station.statusHandler.powerStatusCheck(station.getId(),3 * 1000 * 60);
+                station.statusHandler.powerStatusCheck(station.getId(), 3 * 60 * 1000);
 
                 //value hardcoded to 2 as per the CBUS requirements - only ever turns the station on
                 //additionalData break down
@@ -435,11 +439,11 @@ public class StationSingleNestedFragment extends Fragment {
                 if (primary.nestedStations.contains(station.getId())) {
                     binding.setSelectedNestedStation(primary.getFirstNestedStationOrNull());
                     if (BackdropFragment.localBackdropAdapter != null) {
-                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        BackdropFragment.localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         BackdropFragment.localBackdropAdapter.notifyDataSetChanged();
                     }
                     if (localBackdropAdapter != null) {
-                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().videoController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
+                        localBackdropAdapter.backdropList = (ArrayList<Video>) primary.getFirstNestedStationOrNull().fileController.getVideosOfType(Constants.VIDEO_TYPE_BACKDROP);
                         localBackdropAdapter.notifyDataSetChanged();
 
                         //Update the sections visibility
@@ -552,8 +556,35 @@ public class StationSingleNestedFragment extends Fragment {
      */
     private void updateExperienceImage(View view, Station station) {
         if (Helpers.isNullOrEmpty(station.applicationController.getExperienceType()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceId()) || Helpers.isNullOrEmpty(station.applicationController.getExperienceName())) {
-            ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
-            experienceControlImage.setImageDrawable(null);
+            ImageView experienceControlImage = view.findViewById(R.id.novastar_image);
+
+            Appliance ledWall = null;
+
+            List<Appliance> allAppliances = ApplianceFragment.mViewModel.getAppliances().getValue();
+            if (allAppliances == null) return;
+
+            //NOTE: Currently there is only ever 1 instance of a LED wall.
+            for (Appliance appliance : allAppliances) {
+                if (appliance.matchesDisplayCategory(Constants.LED_WALLS)) {
+                    ledWall = appliance;
+                    break;
+                }
+            }
+
+            if (ledWall == null) {
+                experienceControlImage.setImageDrawable(null);
+                return;
+            }
+
+            for (Option option : ledWall.options) {
+                if (Objects.equals(option.id, ledWall.value)) {
+                    Helpers.SetOptionImage(option.getName(), view.findViewById(R.id.novastar_image), view);
+                    return;
+                }
+            }
+
+            //Backup for when options have not loaded yet
+            Helpers.SetOptionImage("", view.findViewById(R.id.novastar_image), view);
         } else {
             Helpers.setExperienceImage(station.applicationController.getExperienceType(), station.applicationController.getExperienceName(), station.applicationController.getExperienceId(), view);
         }
@@ -564,7 +595,7 @@ public class StationSingleNestedFragment extends Fragment {
             resetLayout(view);
             return;
         }
-        String subtype = current.subtype.optString("category", "");
+        String subtype = current.HasCategory();
         if (subtype.equals(Constants.VideoPlayer)) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
@@ -593,7 +624,7 @@ public class StationSingleNestedFragment extends Fragment {
             return;
         }
 
-        String subtype = current.subtype.optString("category", "");
+        String subtype = current.HasCategory();
         if (subtype.isEmpty()) {
             resetLayout(view);
             return;

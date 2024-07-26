@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.services;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -49,25 +51,25 @@ public class EncryptionHelper {
                 encrypted += encrypt32(plainText.substring(i, i + substringLength), passPhrase);
             } catch (NoSuchAlgorithmException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (InvalidKeySpecException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (NoSuchPaddingException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (InvalidAlgorithmParameterException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (InvalidKeyException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (IllegalBlockSizeException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             } catch (BadPaddingException e) {
                 Sentry.captureException(e);
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
             }
         }
 
@@ -111,7 +113,7 @@ public class EncryptionHelper {
             try {
                 decrypted += EncryptionHelper.decrypt108(cipherText.substring(i, i + substringLength), passPhrase);
             } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
+                Log.e("EncryptionHelper", e.toString());
                 Sentry.captureException(e);
             }
         }
@@ -165,7 +167,7 @@ public class EncryptionHelper {
         }
         catch (Exception e) {
             Sentry.captureException(e);
-            e.printStackTrace();
+            Log.e("EncryptionHelper", e.toString());
         }
 
         return "";
@@ -201,7 +203,7 @@ public class EncryptionHelper {
         }
         catch (Exception e) {
             Sentry.captureException(e);
-            e.printStackTrace();
+            Log.e("EncryptionHelper", e.toString());
         }
 
         return "";

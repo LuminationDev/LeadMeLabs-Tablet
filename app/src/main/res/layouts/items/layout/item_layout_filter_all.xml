@@ -22,7 +22,7 @@
             android:layout_margin="5dp"
             android:paddingStart="0dp"
             android:paddingEnd="-5dp"
-            android:background="@{library.subjectFilters.size() == 0 ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_gray_rounded}"
+            android:background="@{library.filters.size() == 0 ? @drawable/ripple_gray_rounded : @drawable/ripple_white_rounded, default=@drawable/ripple_gray_rounded}"
             app:alignItems="center"
             app:flexDirection="row">
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:checked="@{library.subjectFilters.size() == 0}"
+                android:checked="@{library.filters.size() == 0}"
                 android:background="@null"/>
 
         </com.google.android.flexbox.FlexboxLayout>

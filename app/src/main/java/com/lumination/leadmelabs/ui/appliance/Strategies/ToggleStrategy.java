@@ -2,6 +2,7 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.view.View;
 
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.MutableLiveData;
 
 import com.lumination.leadmelabs.R;
@@ -12,7 +13,7 @@ import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
 import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.appliance.ApplianceController;
+import com.lumination.leadmelabs.ui.appliance.controllers.ApplianceController;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.segment.analytics.Properties;
@@ -24,12 +25,12 @@ import java.util.HashMap;
  */
 public class ToggleStrategy extends AbstractApplianceStrategy {
     @Override
-    public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
-        String type = "appliance";
+    public <T extends ViewDataBinding> void trigger(T binding, Appliance appliance, View finalResult) {
+        CardApplianceBinding cardBinding = (CardApplianceBinding) binding;
         String value;
 
         if(ApplianceViewModel.activeApplianceList.containsKey(appliance.id)) {
-            binding.setStatus(new MutableLiveData<>(Constants.INACTIVE));
+            cardBinding.setStatus(new MutableLiveData<>(Constants.INACTIVE));
             ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_blue_to_grey);
             value = "0";
             if (appliance.type.equals(Constants.SPLICERS)) {
@@ -37,7 +38,7 @@ public class ToggleStrategy extends AbstractApplianceStrategy {
             }
             ApplianceViewModel.activeApplianceList.remove(appliance.id);
         } else {
-            binding.setStatus(new MutableLiveData<>(Constants.ACTIVE));
+            cardBinding.setStatus(new MutableLiveData<>(Constants.ACTIVE));
             ApplianceController.applianceTransition(finalResult, R.drawable.transition_appliance_grey_to_blue);
             value = Constants.APPLIANCE_ON_VALUE;
             if (appliance.type.equals(Constants.LED)) {

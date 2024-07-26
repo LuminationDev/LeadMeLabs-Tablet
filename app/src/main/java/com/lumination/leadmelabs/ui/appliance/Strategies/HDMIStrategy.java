@@ -2,9 +2,9 @@ package com.lumination.leadmelabs.ui.appliance.Strategies;
 
 import android.view.View;
 
-import com.lumination.leadmelabs.databinding.CardApplianceBinding;
+import androidx.databinding.ViewDataBinding;
+
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.ui.appliance.ExtendedApplianceCard;
 import com.lumination.leadmelabs.utilities.Constants;
 
 /**
@@ -13,12 +13,12 @@ import com.lumination.leadmelabs.utilities.Constants;
  * onto that. Create an on touch listener on the background page to remove both the Card
  * and background view when not clicking the Card.
  */
-public class HDMIStrategy extends ExtendedApplianceCard {
+public class HDMIStrategy extends ExtendedApplianceCardStrategy {
     public HDMIStrategy(boolean isSceneCard) {
         super(isSceneCard);
     }
 
-    public void trigger(CardApplianceBinding binding, Appliance appliance, View finalResult) {
+    public <T extends ViewDataBinding> void trigger(T binding, Appliance appliance, View finalResult) {
         super.trigger(binding, appliance, finalResult);
         if (appliance.options != null) {
             for (int i = 0; i < appliance.options.size(); i++) {

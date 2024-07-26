@@ -7,34 +7,66 @@
     android:layout_width="match_parent"
     android:padding="20dp"
     android:layout_height="match_parent">
+
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:flexDirection="column">
+
         <TextView
             android:id="@+id/heading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set the encryption key"
+            android:text="@string/set_the_encryption_key"
             android:textColor="@color/black"
-            android:textSize="30sp">
-        </TextView>
+            android:textSize="30sp"/>
+
     </com.google.android.flexbox.FlexboxLayout>
 
     <EditText
         android:id="@+id/encryption_key_input"
         android:layout_width="300dp"
+        android:autofillHints=""
         android:backgroundTint="@color/blue_darkest"
         android:foregroundTint="@color/blue_darkest"
         android:layout_height="wrap_content"
-        android:hint="Enter encryption key...">
-    </EditText>
+        android:hint="@string/enter_encryption_key"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/warning_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:text="@string/encryption_warning"
+        android:textColor="@color/red"
+        android:textSize="15sp"/>
 
     <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
-        app:justifyContent="flex_end"
+        app:justifyContent="space_between"
         android:layout_marginTop="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/close_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:elevation="0dp"
+            android:gravity="center"
+            android:stateListAnimator="@null"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/blue"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="0dp"
+            app:layout_flexShrink="0"
+            app:rippleColor="@color/grey"
+            app:strokeColor="@color/blue"
+            android:letterSpacing="0.02"
+            app:strokeWidth="2dp" />
+
         <com.google.android.material.button.MaterialButton
             app:layout_flexShrink="0"
             android:id="@+id/encryption_key_confirm"

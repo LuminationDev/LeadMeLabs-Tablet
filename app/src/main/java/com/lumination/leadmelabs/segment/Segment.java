@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.segment;
 
+import android.util.Log;
+
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.segment.classes.SegmentEvent;
 import com.lumination.leadmelabs.segment.classes.SegmentSessionEvent;
@@ -187,7 +189,7 @@ public class Segment {
             // Parse the dateString back into a Date object
             sessionStart = dateFormat.parse(newSessionStart);
         } catch (ParseException e) {
-            e.printStackTrace(); // Handle parsing exception
+            Log.e("Segment", e.toString()); // Handle parsing exception
         }
     }
 
@@ -197,9 +199,7 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
-        if (supportMode) {
-            return;
-        }
+        properties.put("support_mode", supportMode);
 
         if (!isIdSet) return;
 
@@ -212,13 +212,12 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
-        if (supportMode) {
-            return;
-        }
+        Properties properties = new Properties();
+        properties.put("support_mode", supportMode);
 
         if (!isIdSet) return;
 
-        Analytics.with(MainActivity.getInstance().getBaseContext()).screen(name);
+        Analytics.with(MainActivity.getInstance().getBaseContext()).screen(name, properties);
     }
 
     /**
@@ -231,14 +230,13 @@ public class Segment {
         if(Boolean.FALSE.equals(SettingsFragment.mViewModel.getAnalyticsEnabled().getValue())) {
             return;
         }
-        if (supportMode) {
-            return;
-        }
+        Properties properties = details.toProperties();
+        properties.put("support_mode", supportMode);
 
         if (!isIdSet) return;
 
         Analytics.with(MainActivity.getInstance().getBaseContext())
-                .track(details.getEvent(), details.toProperties());
+                .track(details.getEvent(), properties);
     }
 
     public static void setSupportMode(boolean newValue) {

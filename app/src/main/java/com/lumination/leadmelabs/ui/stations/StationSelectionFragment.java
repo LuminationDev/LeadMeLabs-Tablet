@@ -18,10 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.stations.Station;
-import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.segment.analytics.Properties;
+import com.lumination.leadmelabs.ui.stations.adapters.StationAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,6 +141,11 @@ public class StationSelectionFragment extends Fragment {
             container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_mustard_rounded));
             top.setText(R.string.all_computers_off);
             playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.grey_medium));
+
+        } else if (type.equals("video")) { //Video player not installed on some Station
+            container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_warning_yellow_rounded));
+            top.setText(String.format("The %s is not installed on some stations.", StationSelectionPageFragment.videoPlayerSelection));
+            playBtn.setBackgroundColor(ContextCompat.getColor(MainActivity.getInstance(), R.color.blue));
 
         } else { //Application not installed on some Station
             container.setBackground(ContextCompat.getDrawable(MainActivity.getInstance(), R.drawable.bg_warning_yellow_rounded));

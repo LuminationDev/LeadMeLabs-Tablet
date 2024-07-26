@@ -15,7 +15,7 @@ public class LibraryViewModel extends ViewModel {
     private MutableLiveData<String> libraryTitle = new MutableLiveData<>("VR Library");
     private MutableLiveData<String> currentSearch = new MutableLiveData<>("");
     private MutableLiveData<String> libraryType = new MutableLiveData<>("vr_experiences");
-    private MutableLiveData<ArrayList<String>> subjectFilters = new MutableLiveData<>(new ArrayList<>());
+    private MutableLiveData<ArrayList<String>> filters = new MutableLiveData<>(new ArrayList<>());
 
     public MutableLiveData<String> getLibraryTitle() {
         if (libraryTitle == null) {
@@ -50,19 +50,19 @@ public class LibraryViewModel extends ViewModel {
         this.libraryType.setValue(libraryType);
     }
 
-    public MutableLiveData<ArrayList<String>> getSubjectFilters() {
-        if (subjectFilters == null) {
-            subjectFilters = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<ArrayList<String>> getFilters() {
+        if (filters == null) {
+            filters = new MutableLiveData<>(new ArrayList<>());
         }
-        return subjectFilters;
+        return filters;
     }
 
-    public void setSubjectFilters(ArrayList<String> subjectFilters) {
-        this.subjectFilters.setValue(subjectFilters);
+    public void setFilters(ArrayList<String> filters) {
+        this.filters.setValue(filters);
     }
 
     public void toggleFilter(String filter) {
-        ArrayList<String> filters = this.subjectFilters.getValue();
+        ArrayList<String> filters = this.filters.getValue();
 
         Properties properties = new Properties();
         properties.put("classification", "Filter");
@@ -76,7 +76,7 @@ public class LibraryViewModel extends ViewModel {
             Segment.trackEvent(SegmentConstants.Filter_Added, properties);
         }
 
-        setSubjectFilters(filters);
+        setFilters(filters);
     }
 
     /**
@@ -87,9 +87,9 @@ public class LibraryViewModel extends ViewModel {
         properties.put("classification", "Filter");
         Segment.trackEvent(SegmentConstants.Filters_Reset, properties);
 
-        List<String> currentFilters = this.subjectFilters.getValue();
+        List<String> currentFilters = this.filters.getValue();
         if (currentFilters != null && !currentFilters.isEmpty()) {
-            setSubjectFilters(new ArrayList<>());
+            setFilters(new ArrayList<>());
         }
     }
 }

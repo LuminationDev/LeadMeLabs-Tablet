@@ -31,6 +31,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.LocalAudioDevice;
+import com.lumination.leadmelabs.models.VrOption;
 import com.lumination.leadmelabs.models.applications.EmbeddedApplication;
 import com.lumination.leadmelabs.models.stations.Station;
 import com.lumination.leadmelabs.models.stations.handlers.StatusHandler;
@@ -46,6 +47,8 @@ import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragme
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.adapters.LocalAudioDeviceAdapter;
+import com.lumination.leadmelabs.ui.stations.adapters.VrVideoOptionAdapter;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.Identifier;
@@ -71,6 +74,7 @@ public class StationSingleFragment extends Fragment {
     public static FragmentManager childManager;
 
     private LocalAudioDeviceAdapter audioDeviceAdapter;
+
     //Control how often idle mode can be clicked
     private boolean recentlyIdled = false;
 
@@ -101,70 +105,11 @@ public class StationSingleFragment extends Fragment {
             inflateVRDevicesLayout();
         }
 
-        //region VideoControl
-        Slider stationVideoSlider = view.findViewById(R.id.station_video_slider);
+        //Setup all video components
+        setupVideoSliders(view, newlySelectedStation);
 
-        // Set custom label formatter
-        stationVideoSlider.setLabelFormatter(value -> {
-            // Format the hint string as "xx:xx" (minutes:seconds)
-            int minutes = (int) value / 60;
-            int seconds = (int) value % 60;
-            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        });
-
-        stationVideoSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
-            @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) {
-                Station selectedStation = binding.getSelectedStation();
-                selectedStation.videoController.setSliderTracking(true);
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
-                Station selectedStation = binding.getSelectedStation();
-                selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
-                selectedStation.videoController.setSliderTracking(false);
-                Properties segmentProperties = new Properties();
-                segmentProperties.put("name", "time_slider");
-                trackStationEvent(SegmentConstants.Video_Playback_Control, segmentProperties);
-            }
-        });
-
-        stationVideoSlider.addOnChangeListener((slider, value, fromUser) -> {
-            Station selectedStation = binding.getSelectedStation();
-            selectedStation.videoController.setSliderValue((int) slider.getValue());
-        });
-        //endregion
-
-        //region AudioControl
-        Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
-        stationVolumeSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
-            @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
-                Station selectedStation = binding.getSelectedStation();
-                selectedStation.audioController.setVolume((int) slider.getValue());
-                selectedStation.audioController.volume = (int) slider.getValue();
-                mViewModel.updateStationById(selectedStation.id, selectedStation);
-
-                //backwards compat - remove this after next update
-                int currentVolume = ((long) selectedStation.audioController.audioDevices.size() == 0) ? selectedStation.audioController.volume : selectedStation.audioController.getVolume();
-                NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
-                System.out.println(slider.getValue());
-                trackStationEvent(SegmentConstants.Station_Volume_Control);
-            }
-        });
-
-        if (newlySelectedStation != null) {
-            setupAudioSpinner(view, newlySelectedStation);
-            setupMuteButton(view);
-            updateLayout(view, newlySelectedStation);
-        }
-        //endregion
+        //Setup all audio components
+        setupAudioSlider(view, newlySelectedStation);
 
         //region Button Setup
         // Open the help (guide) modals
@@ -232,14 +177,16 @@ public class StationSingleFragment extends Fragment {
             // Open the video library as default if the video player is active
             Application current = binding.getSelectedStation().applicationController.findCurrentApplication();
             if ((current instanceof EmbeddedApplication)) {
-                String subtype = current.subtype.optString("category", "");
-                if (subtype.equals(Constants.VideoPlayer)) {
-                    bundle.putString("library", "videos");
-                    SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
-                    if (fragment == null) return;
-
-                    fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
+                if (current.subtype != null) {
+                    String subtype = current.HasCategory();
+                    if (subtype.equals(Constants.VideoPlayer)) {
+                        bundle.putString("library", "videos");
+                    }
                 }
+                SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
+                if (fragment == null) return;
+
+                fragment.loadFragment(LibraryPageFragment.class, "session", bundle);
                 return;
             }
 
@@ -551,8 +498,205 @@ public class StationSingleFragment extends Fragment {
             binding.setSelectedStation(station);
             updateExperienceImage(view, station);
             setupAudioSpinner(view, station);
+            //setupVrSpinners(view, station);
             updateLayout(view, station);
         });
+    }
+
+    //region VideoControl
+    /**
+     * Setup the slider that is used to both show the current time of a video that is playing and
+     * also allow the user to change the time of the video. There is one for the video player and
+     * another for the vr player.
+     * @param view The parent view containing the slider.
+     */
+    private void setupVideoSliders(View view, Station station) {
+        Slider stationVideoSlider = view.findViewById(R.id.station_video_slider);
+        setupVideoSlider(stationVideoSlider);
+
+        Slider stationVrVideoSlider = view.findViewById(R.id.station_vr_video_slider);
+        setupVideoSlider(stationVrVideoSlider);
+
+        if (station != null) {
+            setupVrSpinners(view, station);
+        }
+    }
+
+    /**
+     * Attach the label formatter and change listeners to the supplied slider.
+     * @param slider A slider element to add listeners to.
+     */
+    private void setupVideoSlider(Slider slider) {
+        // Set custom label formatter
+        slider.setLabelFormatter(value -> {
+            // Format the hint string as "xx:xx" (minutes:seconds)
+            int minutes = (int) value / 60;
+            int seconds = (int) value % 60;
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        });
+
+        slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setSliderTracking(true);
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.videoController.setVideoPlaybackTime((int) slider.getValue());
+                selectedStation.videoController.setSliderTracking(false);
+                Properties segmentProperties = new Properties();
+                segmentProperties.put("name", "time_slider");
+                trackStationEvent(SegmentConstants.Video_Playback_Control, segmentProperties);
+            }
+        });
+
+        slider.addOnChangeListener((slide, value, fromUser) -> {
+            Station selectedStation = binding.getSelectedStation();
+            selectedStation.videoController.setSliderValue((int) slide.getValue());
+        });
+    }
+
+    /**
+     * Setup the two different VR spinners, one that handles the current scene (flat, 180 or 360) and
+     * one that handles the projection type (Mono, EAC, Side by Side, etc..) The projections depend
+     * on what the currently active scene is.
+     * @param view The parent view containing the slider.
+     * @param station The selected station.
+     */
+    private void setupVrSpinners(View view, Station station) {
+        //This list is always the same
+        List<VrOption> scenes = new ArrayList<>();
+        scenes.add(new VrOption("FlatScreen", "Flat Screen", "scene,FlatScreen"));
+        scenes.add(new VrOption("VR180", "180", "scene,VR180"));
+        scenes.add(new VrOption("VR360", "360", "scene,VR360"));
+        setupSpinner(view, station, "scene", scenes, view.findViewById(R.id.vr_scene_spinner), view.findViewById(R.id.vr_scene_container));
+
+        //The projection adapter depends on what scene is currently active
+        String scene = station.videoController.getActiveScene() != null ? station.videoController.getActiveScene() : scenes.get(0).getName();
+        List<VrOption> projections = station.videoController.getProjectionOptions(scene);
+        setupSpinner(view, station, "projection", projections, view.findViewById(R.id.vr_projection_spinner), view.findViewById(R.id.vr_projection_container));
+    }
+
+    /**
+     * Sets up a spinner with options for VR video settings.
+     * @param view The parent view.
+     * @param station The station associated with the VR video settings.
+     * @param type The type of VR video settings (e.g., "scene" or "projection").
+     * @param options The list of VR options to populate the spinner.
+     * @param spinner The spinner view to populate.
+     * @param spinnerContainer The container view for the spinner.
+     */
+    private void setupSpinner(View view, Station station, String type, List<VrOption> options, Spinner spinner, FlexboxLayout spinnerContainer) {
+        VrVideoOptionAdapter adapter = new VrVideoOptionAdapter(getContext(), options);
+
+        spinnerContainer.setOnClickListener(v -> spinner.performClick());
+
+        // Set the custom adapter to the Spinner
+        spinner.setAdapter(adapter);
+
+        // Set the selected to the active (if it exists)
+        int position = 0;  // Initialize with a value that indicates item not found
+        String activeId = null;
+        if (type.equals("scene")) {
+            activeId = station.videoController.getActiveScene();
+        } else if (type.equals("projection")) {
+            activeId = station.videoController.getActiveProjection();
+        }
+
+        if (activeId != null) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                VrOption device = adapter.getItem(i);
+
+                if (device != null && device.getId().equals(activeId)) {
+                    position = i;
+                    break;
+                }
+            }
+        }
+
+        // Do not attempt to set the listeners if there is nothing to attach them to
+        if (adapter.getCount() == 0) return;
+
+        final boolean[] initialSetup = {true};
+
+        // Set the selection if the item was found
+        spinner.setSelection(position);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                VrOption selectedValue = (VrOption) parentView.getItemAtPosition(position);
+
+                if (initialSetup[0]) {
+                    initialSetup[0] = false;
+
+                    if (type.equals("scene")) {
+                        updateProjectionOptions(view, station, selectedValue.getName());
+                    }
+                    return;
+                }
+
+                if (type.equals("scene")) {
+                    station.videoController.setActiveScene(selectedValue.getName());
+                    updateProjectionOptions(view, station, selectedValue.getName());
+                } else {
+                    station.videoController.setActiveProjection(selectedValue.getName());
+                }
+
+                station.videoController.trigger(selectedValue.getTrigger());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {}
+        });
+    }
+
+    /**
+     * Update the projection options to match the current scene.
+     * @param view The parent view.
+     * @param station The station associated with the VR video settings.
+     * @param scene The type of scene (180, 360, FlatScreen.
+     */
+    private void updateProjectionOptions(View view, Station station, String scene) {
+        setupSpinner(view, station,
+                "projection",
+                station.videoController.getProjectionOptions(scene),
+                view.findViewById(R.id.vr_projection_spinner),
+                view.findViewById(R.id.vr_projection_container));
+    }
+    //endregion
+
+    //region AudioControl
+    private void setupAudioSlider(View view, Station station) {
+        Slider stationVolumeSlider = view.findViewById(R.id.station_volume_slider);
+        stationVolumeSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                Station selectedStation = binding.getSelectedStation();
+                selectedStation.audioController.setVolume((int) slider.getValue());
+                selectedStation.audioController.volume = (int) slider.getValue();
+                mViewModel.updateStationById(selectedStation.id, selectedStation);
+
+                //backwards compat - remove this after next update
+                int currentVolume = ((long) selectedStation.audioController.audioDevices.size() == 0) ? selectedStation.audioController.volume : selectedStation.audioController.getVolume();
+                NetworkService.sendMessage("Station," + selectedStation.id, "Station", "SetValue:volume:" + currentVolume);
+                System.out.println(slider.getValue());
+                trackStationEvent(SegmentConstants.Station_Volume_Control);
+            }
+        });
+
+        if (station != null) {
+            setupAudioSpinner(view, station);
+            setupMuteButton(view);
+            updateLayout(view, station);
+        }
     }
 
     private void setupMuteButton(View view) {
@@ -641,6 +785,7 @@ public class StationSingleFragment extends Fragment {
         }
         return names;
     }
+    //endregion
 
     //region Layout Control
     /**
@@ -689,8 +834,9 @@ public class StationSingleFragment extends Fragment {
             resetLayout(view);
             return;
         }
-        String subtype = current.subtype.optString("category", "");
-        if (subtype.equals(Constants.VideoPlayer)) {
+
+        String subtype = current.HasCategory();
+        if (subtype.equals(Constants.VideoPlayer) || subtype.equals(Constants.VideoPlayerVr)) {
             ImageView experienceControlImage = view.findViewById(R.id.placeholder_image);
             experienceControlImage.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
@@ -717,26 +863,57 @@ public class StationSingleFragment extends Fragment {
             return;
         }
 
-        String subtype = current.subtype.optString("category", "");
-        if (subtype.isEmpty()) {
+        String subtype = current.HasCategory();
+        if (subtype.isEmpty() || subtype.equals("none")) {
             resetLayout(view);
             return;
         }
 
-        if (subtype.equals(Constants.ShareCode)) {
-            Log.e("STATION", "SHARE CODE LAYOUT");
-        }
-        else if (subtype.equals(Constants.VideoPlayer)) {
-            TextView controlTitle = view.findViewById(R.id.custom_controls_title);
-            controlTitle.setText("Playback");
+        TextView controlTitle;
+        FlexboxLayout guides;
+        FlexboxLayout controls;
 
-            FlexboxLayout guides = view.findViewById(R.id.guide_section);
-            guides.setVisibility(View.GONE);
+        switch (subtype) {
+            case Constants.ShareCode:
+                Log.e("STATION", "SHARE CODE LAYOUT");
+                break;
 
-            FlexboxLayout controls = view.findViewById(R.id.video_controls);
-            controls.setVisibility(View.VISIBLE);
-        } else {
-            resetLayout(view);
+            case Constants.VideoPlayer:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText(R.string.playback);
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.video_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            case Constants.VideoPlayerVr:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText(R.string.playback);
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.video_vr_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            case Constants.OpenBrush:
+                controlTitle = view.findViewById(R.id.custom_controls_title);
+                controlTitle.setText(R.string.open_brush);
+
+                guides = view.findViewById(R.id.guide_section);
+                guides.setVisibility(View.GONE);
+
+                controls = view.findViewById(R.id.open_brush_controls);
+                controls.setVisibility(View.VISIBLE);
+                break;
+
+            default:
+                resetLayout(view);
+                break;
         }
     }
 
@@ -746,13 +923,21 @@ public class StationSingleFragment extends Fragment {
     private void resetLayout(View view) {
         //Reset the control title
         TextView controlTitle = view.findViewById(R.id.custom_controls_title);
-        controlTitle.setText("Guides");
+        controlTitle.setText(R.string.guides);
 
         //Reset the video controls
-        FlexboxLayout controls = view.findViewById(R.id.video_controls);
-        controls.setVisibility(View.GONE);
+        FlexboxLayout videoControls = view.findViewById(R.id.video_controls);
+        videoControls.setVisibility(View.GONE);
+
+        //Reset the video vr controls
+        FlexboxLayout videoVrControls = view.findViewById(R.id.video_vr_controls);
+        videoVrControls.setVisibility(View.GONE);
 
         //Reset the share code controls
+
+        //Reset the open brush controls
+        FlexboxLayout openBrush = view.findViewById(R.id.open_brush_controls);
+        openBrush.setVisibility(View.GONE);
 
         //Reset the guide section
         FlexboxLayout guides = view.findViewById(R.id.guide_section);
@@ -790,6 +975,7 @@ public class StationSingleFragment extends Fragment {
         }
     }
 
+    //region Segment Tracking
     private void trackExperienceEvent(String eventConstant) {
         Station selectedStation = binding.getSelectedStation();
 
@@ -821,4 +1007,5 @@ public class StationSingleFragment extends Fragment {
 
         Segment.trackEvent(eventConstant, properties);
     }
+    //endregion
 }

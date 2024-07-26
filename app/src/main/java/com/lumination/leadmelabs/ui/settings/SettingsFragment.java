@@ -147,6 +147,18 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        //The toggle for turning scene timers on and off
+        FlexboxLayout enableSceneTimersLayout = view.findViewById(R.id.scene_limiter_mode);
+        SwitchCompat enableSceneTimersToggle = view.findViewById(R.id.scene_limiter_mode_toggle);
+        enableSceneTimersToggle.setChecked(Boolean.TRUE.equals(mViewModel.getSceneTimer().getValue()));
+        enableSceneTimersLayout.setOnClickListener(v ->
+                enableSceneTimersToggle.setChecked(!enableSceneTimersToggle.isChecked())
+        );
+        enableSceneTimersToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setSceneTimer(isChecked);
+            this.trackSettingChanged("Scene timers", String.valueOf(isChecked));
+        });
+
         FlexboxLayout supportModeLayout = view.findViewById(R.id.support_mode);
         SwitchCompat supportModeToggle = view.findViewById(R.id.support_mode_toggle);
         supportModeToggle.setChecked(Boolean.TRUE.equals(mViewModel.getSupportMode().getValue()));

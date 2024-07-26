@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="400dp"
+        android:layout_height="180dp"
+        android:background="@drawable/bg_white_curved"
+        app:alignItems="center"
+        app:flexDirection="column">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingHorizontal="20dp"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <!-- Row for source -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignItems="center"
+                app:justifyContent="space_between"
+                app:flexDirection="row">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{selectedStation.openBrushController.currentFileName, default=`No file loaded`}"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:gravity="center"/>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!-- Row for buttons -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignItems="center"
+                app:justifyContent="space_between"
+                app:flexDirection="row">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:padding="0dp"
+                    android:onClick="@{() -> selectedStation.openBrushController.newSketchTrigger()}"
+                    android:backgroundTint="@color/grey_light"
+                    app:strokeColor="#B9C0D4"
+                    app:strokeWidth="2dp"
+                    app:iconTint="@color/black"
+                    app:iconGravity="textStart"
+                    app:cornerRadius="10dp"
+                    app:iconPadding="0dp"
+                    app:iconSize="30dp"
+                    app:icon="@drawable/open_brush_new"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:padding="0dp"
+                    android:onClick="@{() -> selectedStation.openBrushController.saveFile()}"
+                    android:backgroundTint="@color/grey_light"
+                    app:strokeColor="#B9C0D4"
+                    app:strokeWidth="2dp"
+                    app:iconTint="@color/black"
+                    app:iconGravity="textStart"
+                    app:cornerRadius="10dp"
+                    app:iconPadding="-3dp"
+                    app:iconSize="30dp"
+                    app:icon="@drawable/open_brush_save"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:padding="0dp"
+                    android:onClick="@{() -> selectedStation.openBrushController.loadFile()}"
+                    android:backgroundTint="@color/grey_light"
+                    app:strokeColor="#B9C0D4"
+                    app:strokeWidth="2dp"
+                    app:iconTint="@color/black"
+                    app:iconGravity="textStart"
+                    app:cornerRadius="10dp"
+                    app:iconPadding="-3dp"
+                    app:iconSize="30dp"
+                    app:icon="@drawable/open_brush_load"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:padding="0dp"
+                    android:onClick="@{() -> selectedStation.openBrushController.reloadTrigger()}"
+                    android:backgroundTint="@color/red_light"
+                    app:strokeColor="#B9C0D4"
+                    app:strokeWidth="2dp"
+                    app:iconTint="@color/black"
+                    app:iconGravity="textStart"
+                    app:cornerRadius="10dp"
+                    app:iconPadding="-3dp"
+                    app:iconSize="30dp"
+                    app:icon="@drawable/open_brush_reload"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!-- Row for undo and redo an action -->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="5dp"
+            android:background="@drawable/bg_gray_bottom_curved"
+            app:layout_flexGrow="1"
+            app:alignItems="center"
+            app:flexDirection="row"
+            app:justifyContent="space_around">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:padding="0dp"
+                android:onClick="@{() -> selectedStation.openBrushController.undoTrigger()}"
+                android:backgroundTint="@color/grey_light"
+                app:strokeColor="#B9C0D4"
+                app:strokeWidth="2dp"
+                app:iconTint="@color/black"
+                app:iconGravity="textStart"
+                app:cornerRadius="10dp"
+                app:iconPadding="-3dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/open_brush_undo"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:padding="0dp"
+                android:onClick="@{() -> selectedStation.openBrushController.redoTrigger()}"
+                android:backgroundTint="@color/grey_light"
+                app:strokeColor="#B9C0D4"
+                app:strokeWidth="2dp"
+                app:iconTint="@color/black"
+                app:iconGravity="textStart"
+                app:cornerRadius="10dp"
+                app:iconPadding="-3dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/open_brush_redo"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:padding="0dp"
+                android:onClick="@{() -> selectedStation.openBrushController.centerTrigger()}"
+                android:backgroundTint="@color/grey_light"
+                app:strokeColor="#B9C0D4"
+                app:strokeWidth="2dp"
+                app:iconTint="@color/black"
+                app:iconGravity="textStart"
+                app:cornerRadius="10dp"
+                app:iconPadding="-3dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/open_brush_center"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:padding="0dp"
+                android:onClick="@{() -> selectedStation.openBrushController.clearTrigger()}"
+                android:backgroundTint="@color/red_light"
+                app:strokeColor="#B9C0D4"
+                app:strokeWidth="2dp"
+                app:iconTint="@color/black"
+                app:iconGravity="textStart"
+                app:cornerRadius="10dp"
+                app:iconPadding="-3dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/open_brush_clear"/>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

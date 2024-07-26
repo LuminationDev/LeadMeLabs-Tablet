@@ -28,6 +28,7 @@ import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentPageStationSelectionBinding;
 import com.lumination.leadmelabs.interfaces.IApplicationLoadedCallback;
+import com.lumination.leadmelabs.interfaces.StringCallbackInterface;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.applications.information.TagUtils;
 import com.lumination.leadmelabs.segment.Segment;
@@ -63,6 +64,7 @@ public class StationSelectionPageFragment extends Fragment {
     public static FragmentManager childManager;
     public static StationsViewModel mViewModel;
     public static StationSelectionPageFragment instance;
+    public static String videoPlayerSelection = "";
     public static StationSelectionPageFragment getInstance() { return instance; }
     private EditText[] editTexts;
 
@@ -75,6 +77,7 @@ public class StationSelectionPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_station_selection, container, false);
         childManager = getChildFragmentManager();
         binding = DataBindingUtil.bind(view);
+        videoPlayerSelection = ""; //reset on each load
 
         mViewModel = new ViewModelProvider(requireActivity()).get(StationsViewModel.class);
         ArrayList<Station> stations = (ArrayList<Station>) mViewModel.getStations().getValue();
@@ -102,11 +105,11 @@ public class StationSelectionPageFragment extends Fragment {
         }
         mViewModel.setSelectionType(selectionType);
 
-        loadFragments();
-        setupButtons(view);
+        setupButtons(view, selectionType);
 
         switch (selectionType) {
             case "application":
+                loadFragments();
                 setupApplicationSelection(view);
                 break;
 
@@ -172,8 +175,51 @@ public class StationSelectionPageFragment extends Fragment {
         // Set up tags
         LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
-        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
-        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+        FlexboxLayout complexityView = binding.getRoot().findViewById(R.id.complexity_container);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, complexityView, currentApplication);
+    }
+
+    /**
+     * Prompt the suer to select what video player they want to launch the selected video on. Until
+     * a valid selection is made do not allow them to progress any further with the launch.
+     * @param view The parent view where the information will be displayed.
+     * @param selectedVideo A Video object of the currently select video.
+     */
+    private void videoPlayerSelection(View view, Video selectedVideo) {
+        //Give the user the option of the regular or vr video player - monitor the selection with
+        //the callback below.
+        StringCallbackInterface selectionCallback = result -> {
+            videoPlayerSelection = result;
+
+            CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
+            Button playButton = view.findViewById(R.id.select_stations);
+
+            if (Helpers.isNullOrEmpty(result)) {
+                playButton.setVisibility(View.INVISIBLE);
+                selectCheckbox.setEnabled(false);
+            } else {
+                playButton.setVisibility(View.VISIBLE);
+                selectCheckbox.setEnabled(true);
+                selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
+                    ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
+                    if (stations == null) return;
+
+                    stations = new ArrayList<>(stations);
+                    for (Station station : stations) {
+                        if (!station.isOff() && station.fileController.hasLocalVideo(selectedVideo) && (station.applicationController.findApplicationByName(result) != null)) {
+                            station.selected = checked;
+                            mViewModel.updateStationById(station.id, station);
+                        }
+                    }
+                    Properties properties = new Properties();
+                    properties.put("tab", "videos");
+                    trackStationSelectionEvent(SegmentConstants.Select_All_Stations, properties);
+                });
+            }
+
+            loadFragments();
+        };
+        DialogManager.showVideoPlayerOptions(selectedVideo, true, true, selectionCallback);
     }
 
     private void setupVideoSelection(View view) {
@@ -181,25 +227,11 @@ public class StationSelectionPageFragment extends Fragment {
         Video selectedVideo = mViewModel.getSelectedVideo().getValue();
         binding.setSelectedVideo(selectedVideo);
 
-        CheckBox selectCheckbox = view.findViewById(R.id.select_all_checkbox);
-        selectCheckbox.setOnCheckedChangeListener((checkboxView, checked) -> {
-            ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
-            if (stations == null) return;
-
-            stations = new ArrayList<>(stations);
-            for (Station station:stations) {
-                if (!station.isOff() && station.videoController.hasLocalVideo(selectedVideo)) {
-                    station.selected = checked;
-                    mViewModel.updateStationById(station.id, station);
-                }
-            }
-            Properties properties = new Properties();
-            properties.put("tab", "videos");
-            trackStationSelectionEvent(SegmentConstants.Select_All_Stations, properties);
-        });
+        //Ask what video player to use
+        videoPlayerSelection(view, selectedVideo);
     }
 
-    private void setupButtons(View view) {
+    private void setupButtons(View view, String selectionType) {
         FlexboxLayout helpButton = view.findViewById(R.id.help_button);
         helpButton.setOnClickListener(v -> {
             SideMenuFragment fragment = ((SideMenuFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.side_menu));
@@ -218,6 +250,12 @@ public class StationSelectionPageFragment extends Fragment {
             trackStationSelectionEvent(SegmentConstants.Cancel_Select_Station);
         });
 
+        if (selectionType.equals("video")) {
+            Button videoPlayerButton = view.findViewById(R.id.video_player_button);
+            videoPlayerButton.setVisibility(View.VISIBLE);
+            videoPlayerButton.setOnClickListener(v -> setupVideoSelection(view));
+        }
+
         Button playButton = view.findViewById(R.id.select_stations);
         playButton.setOnClickListener(v -> {
             int[] selectedIds = mViewModel.getSelectedStationIds();
@@ -225,6 +263,9 @@ public class StationSelectionPageFragment extends Fragment {
                 performAction(selectedIds);
             }
         });
+        if (selectionType.equals("video")) {
+            playButton.setVisibility(View.INVISIBLE);
+        }
 
         View identifyStations = view.findViewById(R.id.identify_button);
         identifyStations.setOnClickListener(v -> {
@@ -317,7 +358,7 @@ public class StationSelectionPageFragment extends Fragment {
         Video selectedVideo = binding.getSelectedVideo();
         ArrayList<Integer> modifiedSelectedIds = new ArrayList<>();
 
-        //TODO create a sync toggle
+        //TODO in the future create a sync toggle
         //Check if sync has been enabled
         boolean sync = false;
 
@@ -328,7 +369,7 @@ public class StationSelectionPageFragment extends Fragment {
             for (int id: selectedIds) {
                 Station station = mViewModel.getStationById(id);
                 //Check if the video player is active
-                if (!station.applicationController.getExperienceName().equals(Constants.VIDEO_PLAYER_NAME)) {
+                if (!station.applicationController.getExperienceName().equals(videoPlayerSelection)) {
                     modifiedSelectedIds.add(station.getId());
                 }
             }
@@ -343,11 +384,11 @@ public class StationSelectionPageFragment extends Fragment {
             }
 
             //Start a check and once all the Stations have the video player opened send the source
-            startPeriodicChecks(modifiedSelectedIds, Constants.VIDEO_PLAYER_NAME, () -> NetworkService.sendMessage("Station," +stationIds,"Experience", message.toString()));
+            startPeriodicChecks(modifiedSelectedIds, videoPlayerSelection, () -> NetworkService.sendMessage("Station," +stationIds,"Experience", message.toString()));
         } else {
             for (int id: selectedIds) {
                 Station station = mViewModel.getStationById(id);
-                boolean ready = station.checkForVideoPlayer(selectedVideo);
+                boolean ready = station.checkForVideoPlayer(selectedVideo, false, videoPlayerSelection);
 
                 //If the video player was not ready.
                 if (!ready) {
@@ -376,7 +417,8 @@ public class StationSelectionPageFragment extends Fragment {
             segmentProperties.put("length", selectedVideo.getLength());
             Segment.trackEvent(SegmentConstants.Launch_Video, segmentProperties);
         }
-        DialogManager.awaitStationApplicationLaunch(selectedIdsArray, mViewModel.getSelectedApplicationByName(Constants.VIDEO_PLAYER_NAME), false);
+
+        DialogManager.awaitStationApplicationLaunch(selectedIdsArray, mViewModel.getSelectedApplicationByName(videoPlayerSelection), false);
     }
 
     /**

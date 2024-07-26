@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ActivityManager;
+import android.app.ForegroundServiceStartNotAllowedException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,11 +24,14 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
+import com.lumination.leadmelabs.notifications.NotificationViewModel;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.services.jobServices.NotificationJobService;
 import com.lumination.leadmelabs.services.jobServices.UpdateJobService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
+import com.lumination.leadmelabs.ui.dashboard.DashboardFragment;
 import com.lumination.leadmelabs.ui.pages.LibraryPageFragment;
 import com.lumination.leadmelabs.ui.library.LibraryViewModel;
 import com.lumination.leadmelabs.ui.library.application.ApplicationLibraryFragment;
@@ -34,13 +39,13 @@ import com.lumination.leadmelabs.ui.library.video.VideoLibraryFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.logo.LogoViewModel;
 import com.lumination.leadmelabs.ui.pages.ControlPageFragment;
+import com.lumination.leadmelabs.ui.dashboard.DashboardViewModel;
+import com.lumination.leadmelabs.ui.pages.NotificationPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.room.RoomViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
-import com.lumination.leadmelabs.ui.sessionControls.SessionControlsFragment;
-import com.lumination.leadmelabs.ui.sessionControls.SessionControlsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
@@ -59,6 +64,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.sentry.Sentry;
+
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "MainActivity";
 
@@ -73,8 +80,10 @@ public class MainActivity extends AppCompatActivity {
     public static boolean reconnectionIgnored = false;
     public static boolean isAppInForeground = false;
 
-    public static boolean isNucUtf8 = true;
-    public static boolean isNucJsonEnabled = false;
+    //TODO these can be removed in the next update
+    public static boolean isNucUtf8 = false;
+    public static boolean isNucJsonEnabled = true;
+    //TODO
 
     static ScheduledExecutorService scheduler;
 
@@ -110,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         preloadData();
         Segment.initialise(); //This needs to be after preloading the view models
 
-        FirebaseManager.validateLicenseKey();
+//        FirebaseManager.validateLicenseKey();
         scheduleJobs();
 
         if (savedInstanceState == null) {
@@ -128,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void scheduleJobs() {
 //        LicenseJobService.schedule(this);
+        NotificationJobService.schedule(this);
         UpdateJobService.schedule(this);
     }
 
@@ -241,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
     private void preloadViewModels() {
         RoomFragment.mViewModel = ViewModelProviders.of(this).get(RoomViewModel.class);
         SettingsFragment.mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        DashboardFragment.mViewModel = ViewModelProviders.of(this).get(DashboardViewModel.class);
         StationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         SnowyHydroStationsFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         StationSelectionPageFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
@@ -252,9 +263,9 @@ public class MainActivity extends AppCompatActivity {
         VideoLibraryFragment.mViewModel = ViewModelProviders.of(this).get(StationsViewModel.class);
         LogoFragment.mViewModel = ViewModelProviders.of(this).get(LogoViewModel.class);
         ApplianceFragment.mViewModel = ViewModelProviders.of(this).get(ApplianceViewModel.class);
-        SessionControlsFragment.mViewModel = ViewModelProviders.of(this).get(SessionControlsViewModel.class);
         SubMenuFragment.mViewModel = ViewModelProviders.of(this).get(SubMenuViewModel.class);
         SideMenuFragment.mViewModel = ViewModelProviders.of(this).get(SideMenuViewModel.class);
+        NotificationPageFragment.mViewModel = ViewModelProviders.of(this).get(NotificationViewModel.class);
     }
 
     /**
@@ -266,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
         StationsFragment.mViewModel.getStations();
         ApplianceFragment.mViewModel.getAppliances();
         ApplianceFragment.mViewModel.getActiveAppliances();
-        SessionControlsFragment.mViewModel.getInfo();
         SubMenuFragment.mViewModel.getSelectedPage();
         SideMenuFragment.mViewModel.getSelectedIcon();
         SettingsFragment.mViewModel.getHideStationControls();
@@ -310,7 +320,15 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "startService: ");
 
         Intent network_intent = new Intent(getApplicationContext(), NetworkService.class);
-        startForegroundService(network_intent);
+        try {
+            startForegroundService(network_intent);
+        } catch (Exception e) {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) && e instanceof ForegroundServiceStartNotAllowedException) {
+                Sentry.captureException(e);
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -345,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("nuc_address", Context.MODE_PRIVATE);
         String address = sharedPreferences.getString("nuc_address", "");
 
-        if(!address.equals("")) {
+        if(!address.isEmpty()) {
             NetworkService.setNUCAddress(address);
         }
     }
@@ -359,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e("MainActivity", e.toString());
         }
         return null;
     }

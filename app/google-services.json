@@ -2,6 +2,7 @@
   "project_info": {
     "project_number": "676443233497",
     "project_id": "leadme-labs",
+    "firebase_url": "https://leadme-labs-default-rtdb.asia-southeast1.firebasedatabase.app",
     "storage_bucket": "leadme-labs.appspot.com"
   },
   "client": [

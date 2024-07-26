@@ -36,6 +36,9 @@ public class VrStation extends Station {
     public int baseStationsActive;
     public int baseStationsTotal;
 
+    public int trackersActive;
+    public int trackersTotal;
+
     //Track the animation of the dots for Awaiting headset connection
     private Timer timer;
     int dotsCount = 0;
@@ -69,6 +72,8 @@ public class VrStation extends Station {
         this.rightControllerBattery = 0;
         this.baseStationsActive = 0;
         this.baseStationsTotal = 0;
+        this.trackersActive = 0;
+        this.trackersTotal = 0;
     }
 
     public String getControllerTracking(String controllerType) {
@@ -271,7 +276,7 @@ public class VrStation extends Station {
         int batteryValue = selectedStation.getControllerBattery(controllerType);
 
         if(isStatusOff || isControllerConnected || batteryValue == 0 || tracking) {
-            imageView.setImageResource(R.drawable.battery_unknown);
+            imageView.setImageResource(R.drawable.vr_battery_unknown);
             return;
         }
 
@@ -282,13 +287,13 @@ public class VrStation extends Station {
 
         //Set the battery status image colour (relates to battery value, below 15 is getting low)
         if(batteryValue > 50) {
-            imageView.setImageResource(R.drawable.battery_full);
+            imageView.setImageResource(R.drawable.vr_battery_full);
         } else if (batteryValue > 15)  {
-            imageView.setImageResource(R.drawable.battery_two_bar);
+            imageView.setImageResource(R.drawable.vr_battery_two_bar);
         } else if (batteryValue > 5)  {
-            imageView.setImageResource(R.drawable.battery_one_bar);
+            imageView.setImageResource(R.drawable.vr_battery_one_bar);
         } else if (batteryValue > 0)  {
-            imageView.setImageResource(R.drawable.battery_empty);
+            imageView.setImageResource(R.drawable.vr_battery_empty);
             selectedStation.handleIconAnimation(true, imageView, selectedStation, controllerType + "Battery");
         }
     }
@@ -410,6 +415,70 @@ public class VrStation extends Station {
         }
 
         selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, "BaseStation");
+    }
+
+    /**
+     * Data binding to update the tracker's active total text visibility and value.
+     */
+    @BindingAdapter("trackerText")
+    public static void setTrackerVisibilityAndText(TextView textView, VrStation selectedStation) {
+        if (selectedStation == null) return;
+
+        String headsetTracking = selectedStation.openVRHeadsetTracking;
+
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        boolean isIdle = selectedStation.statusHandler.isStationIdle();
+        boolean lessThanOne = selectedStation.baseStationsActive == 0;
+        //Headset is not tracking or has not been initiated
+        boolean tracking = (headsetTracking.equals("Lost") || headsetTracking.equals("Off"));
+        int visibility = isStatusOff || isIdle || lessThanOne || tracking ? View.INVISIBLE : View.VISIBLE;
+        textView.setVisibility(visibility);
+
+        String active = String.valueOf(selectedStation.trackersActive);
+
+        // Set the text colour on the active status
+        int color;
+        if (selectedStation.baseStationsActive < 1) {
+            textView.setVisibility(View.GONE);
+        } else {
+            textView.setVisibility(View.VISIBLE);
+            color = ContextCompat.getColor(MainActivity.getInstance(), R.color.green);
+            textView.setTextColor(color);
+        }
+        textView.setText(active);
+    }
+
+    /**
+     * Data binding to update the Base Station's image view source.
+     */
+    @BindingAdapter("tracker")
+    public static void setTrackerImage(ImageView imageView, VrStation selectedStation) {
+        if (selectedStation == null) return;
+
+        boolean isStatusOff = selectedStation.statusHandler.isStationOffOrChanging();
+        if (isStatusOff) {
+            //Station is off - no base stations expected
+            imageView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (selectedStation.trackersActive < 1) {
+            // Don't show unless we have active ones, only for users instructed to use them
+            imageView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (selectedStation.trackersActive < selectedStation.trackersTotal) {
+            //Station is on - active base stations less than 2
+            imageView.setImageResource(R.drawable.vr_tracker_lost);
+
+        } else {
+            //Station is on - active base stations greater than 2 and an experience is running.
+            imageView.setImageResource(R.drawable.vr_tracker_active);
+        }
+        imageView.setVisibility(View.VISIBLE);
+
+        selectedStation.handleIconAnimation(selectedStation.animationFlag, imageView, selectedStation, "Trackers");
     }
 
     /**
@@ -573,7 +642,7 @@ public class VrStation extends Station {
         }
 
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 textView.post(() -> {

@@ -44,6 +44,7 @@ import com.segment.analytics.Properties;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.sentry.Sentry;
@@ -115,7 +116,7 @@ public class LibraryPageFragment extends Fragment {
         setupFilter(view);
         setupButtons(view);
 
-        mViewModel.getSubjectFilters().observe(getViewLifecycleOwner(), filters -> {
+        mViewModel.getFilters().observe(getViewLifecycleOwner(), filters -> {
             String currentSearch = mViewModel.getCurrentSearch().getValue();
             libraryInterface.performSearch(currentSearch);
         });
@@ -166,7 +167,7 @@ public class LibraryPageFragment extends Fragment {
                         if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
                             onLoadType = "videos";
                         }
-                        if (station.videoController.videos.isEmpty()) {
+                        if (station.fileController.videos.isEmpty()) {
                             onLoadType = "vr_experiences";
                         }
                         break;
@@ -174,7 +175,7 @@ public class LibraryPageFragment extends Fragment {
                         if (station.applicationController.getAllApplicationsByType(false).isEmpty()) {
                             onLoadType = "videos";
                         }
-                        if (station.videoController.videos.isEmpty()) {
+                        if (station.fileController.videos.isEmpty()) {
                             onLoadType = "vr_experiences";
                         }
                         break;
@@ -191,16 +192,16 @@ public class LibraryPageFragment extends Fragment {
      */
     private void setupLibraryTags(String stationName) {
         if (stationName == null) {
-            binding.setHasVideos(StationsFragment.mViewModel.getAllVideos().size() > 0);
-            binding.setHasRegularApplications(StationsFragment.mViewModel.getAllApplicationsByType(false).size() > 0);
-            binding.setHasVrApplications(StationsFragment.mViewModel.getAllApplicationsByType(true).size() > 0);
+            binding.setHasVideos(!StationsFragment.mViewModel.getAllVideos().isEmpty());
+            binding.setHasRegularApplications(!StationsFragment.mViewModel.getAllApplicationsByType(false).isEmpty());
+            binding.setHasVrApplications(!StationsFragment.mViewModel.getAllApplicationsByType(true).isEmpty());
         } else {
             //Get the current station
             Station station = StationsFragment.mViewModel.getSelectedStation().getValue();
             if (station != null) {
-                binding.setHasVideos(station.videoController.videos.size() > 0);
-                binding.setHasRegularApplications(station.applicationController.getAllApplicationsByType(false).size() > 0);
-                binding.setHasVrApplications(station.applicationController.getAllApplicationsByType(true).size() > 0);
+                binding.setHasVideos(!station.fileController.videos.isEmpty());
+                binding.setHasRegularApplications(!station.applicationController.getAllApplicationsByType(false).isEmpty());
+                binding.setHasVrApplications(!station.applicationController.getAllApplicationsByType(true).isEmpty());
             }
         }
     }
@@ -208,7 +209,7 @@ public class LibraryPageFragment extends Fragment {
     private void setupFilter(View view) {
         // Setup the filter dropdown
         Spinner customSpinner = view.findViewById(R.id.subject_filter_spinner);
-        List<String> data = new ArrayList<>(TagConstants.ALL_FILTERS);
+        HashMap<String, ArrayList<String>> data = new HashMap<>(TagConstants.ALL_FILTERS);
         LibrarySubjectFilterAdapter adapter = new LibrarySubjectFilterAdapter(getContext(), data, getViewLifecycleOwner());
         customSpinner.setAdapter(adapter);
 
@@ -271,9 +272,7 @@ public class LibraryPageFragment extends Fragment {
 
         // Dismiss the keyboard if selecting anywhere on the library page
         LinearLayout libraryArea = view.findViewById(R.id.libraryArea);
-        libraryArea.setOnClickListener(v -> {
-            dismissKeyboard(searchInput);
-        });
+        libraryArea.setOnClickListener(v -> dismissKeyboard(searchInput));
 
         // Switch between the different sub libraries
         FlexboxLayout vrButton = view.findViewById(R.id.view_vr_button);

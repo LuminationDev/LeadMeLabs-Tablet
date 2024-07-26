@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationShareCodeBinding;
@@ -135,8 +136,8 @@ public class ApplicationShareCodeFragment extends Fragment {
         // Set up tags
         LinearLayout tagsContainer = binding.getRoot().findViewById(R.id.tagsContainer);
         TextView subtagsTextView = binding.getRoot().findViewById(R.id.subTags);
-        TextView yearLevelTextView = binding.getRoot().findViewById(R.id.yearLevel);
-        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, yearLevelTextView, currentApplication);
+        FlexboxLayout complexityView = binding.getRoot().findViewById(R.id.complexity_container);
+        TagUtils.setupTags(getContext(), tagsContainer, subtagsTextView, complexityView, currentApplication);
     }
 
     public void confirmLaunchGame(Application selectedApplication) {
@@ -242,7 +243,10 @@ public class ApplicationShareCodeFragment extends Fragment {
                 combinedText.append(editText.getText().toString());
             }
 
-            //TODO put in validation for share code length of Thinglink etc...
+            if (combinedText.length() != 6) {
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Invalid Share Code", Toast.LENGTH_SHORT).show();
+                return Constants.Invalid;
+            }
 
             return combinedText.toString();
         }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/current_session_box"
+        android:layout_width="400dp"
+        android:layout_height="204dp"
+        android:background="@drawable/bg_white_curved"
+        android:clipToOutline="true"
+        app:alignItems="center"
+        app:flexDirection="column">
+
+        <ImageView
+            android:id="@+id/novastar_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/active_novastar_preset"
+            android:scaleType="fitXY"
+            android:clipToOutline="true"
+            android:visibility="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? View.GONE : View.VISIBLE}" />
+
+
+        <FrameLayout
+            android:layout_margin="20dp"
+            android:layout_width="360dp"
+            android:layout_height="164dp"
+            android:visibility="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? View.VISIBLE : View.GONE, default=gone}">
+
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                android:contentDescription="@string/experience_preview"
+                android:visibility="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? View.VISIBLE : View.GONE, default=gone}" />
+
+            <LinearLayout
+                android:id="@+id/progress_spinner_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progress_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!--TODO this is completely hidden until required in the future-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{stations.selectedApplication.details == null ? View.GONE : View.GONE, default=gone}"
+            app:flexDirection="row"
+            app:justifyContent="space_between">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/control_experience"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blue"
+                android:letterSpacing="0.02"
+                android:text="@string/control_experience"
+                app:icon="@drawable/ic_control_experience"
+                app:iconSize="20dp"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

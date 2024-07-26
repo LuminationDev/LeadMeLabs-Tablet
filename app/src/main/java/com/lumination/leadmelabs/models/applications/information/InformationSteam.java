@@ -23,7 +23,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.MATHS, TagConstants.SCIENCE)),
                 new ArrayList<>(Collections.singletonList(TagConstants.GEOGRAPHY)),
                 new ArrayList<>(Arrays.asList("exploration", "geography", "countries", "international", "world", "tourism", "satellite", "maps", "travel", "landmarks")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("348250", googleEarth);
 
@@ -33,7 +34,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.PAINTING, TagConstants.DIGITAL_ART)),
                 new ArrayList<>(Arrays.asList("drawing", "sketching", "sculpting", "concept", "animation", "modeling", "illustration", "design", "colourful", "artistic", "creativity")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("327140", tiltBrush);
 
@@ -43,7 +45,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.SPORTS, TagConstants.GAMES)),
                 new ArrayList<>(Arrays.asList("baseball", "basketball", "bowling", "boxing", "archery", "tennis", "pool", "golf", "esports", "athletics", "competition", "training", "motion", "team", "fitness", "exercise", "workout", "activity", "movement")),
-                new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1514840", allInOneSportsVr);
 
@@ -53,7 +56,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.ANCIENT_EGYPT)),
                 new ArrayList<>(Arrays.asList("pyramids", "tombs", "mummification", "afterlife", "egyptian", "construction", "mythology", "archaeology", "puzzles", "civilization", "queen")),
-                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("861400", nefertari);
 
@@ -63,7 +67,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.LITERATURE, TagConstants.BOOK_STUDIES)),
                 new ArrayList<>(Arrays.asList("novel", "wonderland", "story", "adventure", "fantasy", "rabbit", "curiosity", "journey", "whimsical", "magical", "surreal")),
-                new ArrayList<>(Arrays.asList(14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1424190", curiousAlice);
 
@@ -73,7 +78,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ENVIRONMENT)),
                 new ArrayList<>(Arrays.asList("cleanup", "recycling", "waste", "environment", "garbage", "management", "disposal", "sustainability", "eco-friendly", "hygiene")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("1029110", trashTime);
 
@@ -83,7 +89,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.DANCE)),
                 new ArrayList<>(Arrays.asList("dance", "music", "breakdance", "rhythm", "movement", "aerobics", "gymnastics", "activity", "exercise", "motion")),
-                new ArrayList<>(Arrays.asList(12, 13))
+                new ArrayList<>(Arrays.asList(12, 13)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1494670", spaceDanceHarmony);
 
@@ -93,7 +100,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.BUSINESS)),
                 new ArrayList<>(Arrays.asList("building", "construction", "creativity", "design", "architecture", "shapes", "imagination", "structure", "puzzle", "play")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("533970", blocks);
 
@@ -103,7 +111,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.SAFETY, TagConstants.FIRST_AID)),
                 new ArrayList<>(Arrays.asList("disaster", "earthquake", "simulation", "emergency", "preparedness", "safety", "tremor", "catastrophe", "quake", "destruction")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("607590", earthquakeSimulator);
 
@@ -113,7 +122,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.CULTURAL_STUDIES)),
                 new ArrayList<>(Arrays.asList("story", "journey", "relationship", "connection", "intimacy", "narrative", "culture", "family", "immigration", "racism", "exploration")),
-                new ArrayList<>(Arrays.asList(12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1245640", bookOfDistance);
 
@@ -123,7 +133,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ENVIRONMENT, TagConstants.BUSINESS)),
                 new ArrayList<>(Arrays.asList("city", "skyline", "skyscraper", "urban", "metropolis", "architecture", "construction", "simulation", "development", "management")),
-                new ArrayList<>(Arrays.asList(12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("629040", skytropolis);
 
@@ -133,7 +144,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.ENVIRONMENT, TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Collections.singletonList(TagConstants.WORLD_BUILDING)),
                 new ArrayList<>(Arrays.asList("town", "miniature", "tiny", "simulation", "building", "community", "urban", "city", "village", "infrastructure")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("653930", tinyTownVr);
 
@@ -143,7 +155,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.LANGUAGES)),
                 new ArrayList<>(Arrays.asList(TagConstants.CONVERSATIONAL, TagConstants.VOCABULARY)),
                 new ArrayList<>(Arrays.asList("communication", "vocabulary", "phrases", "immersion", "conversation", "culture", "English", "Spanish", "German", "French", "Italian", "Arabic", "Russian", "Korean", "Japanese", "Chinese")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1141930", mondly);
 
@@ -153,7 +166,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ENGINEERING, TagConstants.PUZZLES)),
                 new ArrayList<>(Arrays.asList("gadgets", "contraptions", "building", "creativity", "engineering", "invention", "physics", "puzzles", "construction", "design")),
-                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("746560", gadgeteer);
 
@@ -163,7 +177,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HISTORY)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("museum", "art", "curator", "gallery", "exhibition", "history", "culture", "curation", "exploration", "storytelling")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1532110", curatours);
 
@@ -173,7 +188,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOMETRY, TagConstants.PERSPECTIVE)),
                 new ArrayList<>(Arrays.asList("mathematics", "geometry", "algebra", "calculus", "education", "learning", "visualization", "problem-solving", "tools", "equations")),
-                new ArrayList<>(Arrays.asList(14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(14, 15, 16, 17)),
+                TagConstants.COMPLEX
         );
         dataMap.put("880270", geoGebra);
 
@@ -183,7 +199,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.SCULPTING, TagConstants.VISUAL_ARTS)),
                 new ArrayList<>(Arrays.asList("sculpting", "creativity", "artistic", "modeling", "3d", "design", "virtual", "clay", "sculpture", "creation")),
-                new ArrayList<>(Arrays.asList(12, 13, 14))
+                new ArrayList<>(Arrays.asList(12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("418520", sculptrVr);
 
@@ -193,7 +210,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.PAINTING)),
                 new ArrayList<>(Arrays.asList("art", "museum", "painting", "leonardo", "davinci", "masterpiece", "portrait", "renaissance", "smile", "enigmatic")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("1172310", monaLisa);
 
@@ -203,7 +221,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ASTRONOMY, TagConstants.SPACE_STATION)),
                 new ArrayList<>(Arrays.asList("space", "astronaut", "exploration", "astronomy", "zero-g", "orbit", "station", "spacewalk", "ISS", "cosmos")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("512270", homeSpacewalk);
 
@@ -213,7 +232,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.HUMAN_ANATOMY)),
                 new ArrayList<>(Arrays.asList("biology", "cell", "anatomy", "blood", "cells", "heart", "body", "human", "micro", "cellular", "exploration", "molecular")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1308470", journeyCell);
 
@@ -223,7 +243,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("art", "michelangelo", "fresco", "ceiling", "chapel", "renaissance", "masterpiece", "creation", "divine", "religious")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1165850", sistineCeiling);
 
@@ -233,7 +254,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.SCIENCE)),
                 new ArrayList<>(Collections.singletonList(TagConstants.FARMING)),
                 new ArrayList<>(Arrays.asList("farming", "agriculture", "crops", "rural", "countryside", "harvest", "tractor", "field", "planting", "growth")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("612030", harvestSimulator);
 
@@ -243,7 +265,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.WORLD_WAR_TWO)),
                 new ArrayList<>(Arrays.asList("history", "ww2", "world war", "germany", "bombing", "blitz", "war", "air raid", "destruction", "historical")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("513490", berlinBlitz);
 
@@ -253,7 +276,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.INTERACTIVE_STORY, TagConstants.FAMILY)),
                 new ArrayList<>(Arrays.asList("story", "narrative", "ocean", "love", "journey", "adventure", "animation", "family")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("476540", googleSpotlightPearl);
 
@@ -263,7 +287,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("art", "museum", "painting", "sculpture", "gallery", "masterpiece", "exhibition", "history", "culture", "virtual")),
-                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("515020", museumOfFineArt);
 
@@ -273,7 +298,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.VINCENT_VAN_GOGH)),
                 new ArrayList<>(Arrays.asList("art", "van gogh", "painting", "cafe", "night", "impressionism", "masterpiece", "surreal", "post-impressionism", "colour")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("482390", nightCafe);
 
@@ -283,7 +309,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ENVIRONMENT)),
                 new ArrayList<>(Arrays.asList("jungle", "amazon", "rainforest", "exploration", "wildlife", "adventure", "nature", "ecosystem", "conservation", "biodiversity")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("570540", amazonOdyssey);
 
@@ -293,7 +320,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOMETRY, TagConstants.MEASUREMENTS)),
                 new ArrayList<>(Arrays.asList("puzzle", "logic", "geometry", "shapes", "3d", "design", "spatial", "brain-teaser", "challenge", "construction")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("878620", neotrieVr);
 
@@ -303,7 +331,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.TEAM_SPORTS, TagConstants.AUSTRALIA)),
                 new ArrayList<>(Arrays.asList("sports", "australia", "rugby", "cricket", "football", "aussie", "athletic", "competition", "AFL", "basketball", "cricket")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("508250", aussieSports);
 
@@ -313,7 +342,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.ANIMALS)),
                 new ArrayList<>(Arrays.asList("biology", "dissection", "education", "anatomy", "science", "frog", "learning", "simulation", "lab", "exploration")),
-                new ArrayList<>(Arrays.asList(14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1046910", dissectionFrog);
 
@@ -323,7 +353,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ARCHITECTURE)),
                 new ArrayList<>(Arrays.asList("architecture", "design", "virtual", "collaboration", "building", "construction", "planning", "visualization", "creativity", "teamwork")),
-                new ArrayList<>(Arrays.asList(14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(14, 15, 16, 17)),
+                TagConstants.COMPLEX
         );
         dataMap.put("1053760", arkio);
 
@@ -333,7 +364,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.HASS, TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.CAVE_PAINTINGS)),
                 new ArrayList<>(Arrays.asList("prehistoric", "cave", "art", "history", "ancient", "painting", "discovery", "archaeology", "culture", "civilization")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1236560", dawnOfArt);
 
@@ -343,7 +375,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.HASS)),
                 new ArrayList<>(Collections.singletonList(TagConstants.MARINE_BIOLOGY)),
                 new ArrayList<>(Arrays.asList("ocean", "underwater", "marine", "wildlife", "exploration", "diving", "sharks", "coral", "ecosystem", "aquatic")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("422760", oceanRift);
 
@@ -353,7 +386,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.ASTRONOMY, TagConstants.PLANETS)),
                 new ArrayList<>(Arrays.asList("space", "astronomy", "planets", "exploration", "universe", "celestial", "science", "educational", "galaxy", "orbit")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1379970", solarSystemVr);
 
@@ -363,7 +397,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.MATHS)),
                 new ArrayList<>(Arrays.asList(TagConstants.STATISTICS, TagConstants.GEOMETRY)),
                 new ArrayList<>(Arrays.asList("statistics", "visualisation", "calculus", "geometry", "equations", "physics", "utility", "vector")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.COMPLEX
         );
         dataMap.put("547280", calcflow);
 
@@ -373,7 +408,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Collections.singletonList(TagConstants.ELECTRONICS)),
                 new ArrayList<>(Arrays.asList("circuit", "electricity", "electronics", "puzzle", "logic", "engineering", "problem-solving", "technology", "wires", "capacitor")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("970800", shortCircuitVr);
 
@@ -383,7 +419,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.ART_STUDIES, TagConstants.MUSEUM)),
                 new ArrayList<>(Arrays.asList("art", "painting", "museum", "gallery", "masterpiece", "history", "culture", "exploration", "classics")),
-                new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1511090", greatPaintings);
 
@@ -393,7 +430,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.SCIENCE, TagConstants.DESIGN_TECH, TagConstants.ARTS, TagConstants.HASS)),
                 new ArrayList<>(),
                 new ArrayList<>(Arrays.asList("education", "virtual", "learning", "interactive", "immersive", "classroom", "training", "simulation", "technology", "experience")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14)),
+                TagConstants.SIMPLE
         );
         dataMap.put("542170", edmersiv);
 
@@ -403,7 +441,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.HISTORY, TagConstants.ROMAN_EMPIRE)),
                 new ArrayList<>(Arrays.asList("history", "rome", "ancient", "colosseum", "arena", "gladiator", "architecture", "spectacle", "roman", "italy")),
-                new ArrayList<>(Arrays.asList(10, 11, 12))
+                new ArrayList<>(Arrays.asList(10, 11, 12)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1614850", colosseumVr);
 
@@ -413,7 +452,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.CHEMISTRY, TagConstants.MOLECULES)),
                 new ArrayList<>(Arrays.asList("materials", "physics", "chemistry", "properties", "molecules", "atoms", "electrons", "neutrons", "protons", "experiments", "oxygen", "hydrogen", "elements", "periodic table")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("1564310", materialsVr);
 
@@ -423,7 +463,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HEALTH_PE)),
                 new ArrayList<>(Arrays.asList(TagConstants.SPORTS, TagConstants.CRICKET)),
                 new ArrayList<>(Arrays.asList("cricket", "sports", "game", "bat", "ball", "pitch", "stadium", "competition", "immersive", "training", "Australia", "India", "ashes", "exercise", "activity")),
-                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("957070", ibCricket);
 
@@ -433,7 +474,8 @@ public class InformationSteam {
                 new ArrayList<>(Arrays.asList(TagConstants.DESIGN_TECH, TagConstants.MATHS, TagConstants.SCIENCE)),
                 new ArrayList<>(),
                 new ArrayList<>(Arrays.asList("robotics", "engineering", "technology", "simulation", "innovation", "programming", "automation")),
-                new ArrayList<>(Arrays.asList(15, 16, 17))
+                new ArrayList<>(Arrays.asList(15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("1774930", roboticsVr);
 
@@ -443,7 +485,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.BIOLOGY, TagConstants.HUMAN_ANATOMY)),
                 new ArrayList<>(Arrays.asList("biology", "cell", "anatomy", "micro", "cellular", "exploration", "molecular", "human", "blood")),
-                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("451980", insideTheCell);
 
@@ -453,7 +496,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.DESIGN_TECH)),
                 new ArrayList<>(Arrays.asList(TagConstants.PUZZLES, TagConstants.PROBLEM_SOLVING)),
                 new ArrayList<>(Arrays.asList("escape", "puzzle", "room", "adventure", "challenge", "mystery", "exploration", "logic", "strategy")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.COMPLEX
         );
         dataMap.put("812610", escapeArchitect);
 
@@ -463,7 +507,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOGRAPHY, TagConstants.TRAVEL)),
                 new ArrayList<>(Arrays.asList("travel", "adventure", "exploration", "journey", "destination", "globe-trotting", "tourism", "experience", "discovery")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1462520", brinkTraveler);
 
@@ -473,7 +518,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.HASS)),
                 new ArrayList<>(Arrays.asList(TagConstants.GEOGRAPHY, TagConstants.NATURE)),
                 new ArrayList<>(Arrays.asList("nature", "hiking", "relaxation", "scenery", "environment", "wildlife", "exploration", "meditation", "peaceful")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.SIMPLE
         );
         dataMap.put("587580", natureTreksVr);
 
@@ -483,7 +529,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ARTS)),
                 new ArrayList<>(Arrays.asList(TagConstants.MUSIC, TagConstants.COMPOSITION)),
                 new ArrayList<>(Arrays.asList("music", "rhythm", "dance", "aerobics", "motion", "exercise", "artistic", "performance", "creativity")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("572630", lyraVr);
 
@@ -493,7 +540,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.ENGLISH)),
                 new ArrayList<>(Arrays.asList(TagConstants.PUBLIC_SPEAKING, TagConstants.COMMUNICATION)),
                 new ArrayList<>(Arrays.asList("presentation", "training", "communication", "demonstration", "public", "speaking", "cue cards", "speech")),
-                new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(11, 12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("1282770", virtualPresenter);
 
@@ -503,7 +551,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.CHEMISTRY, TagConstants.GAMES)),
                 new ArrayList<>(Arrays.asList("chemistry", "science", "lab", "experimentation", "virtual", "competition", "teamwork", "discovery", "game show")),
-                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17))
+                new ArrayList<>(Arrays.asList(13, 14, 15, 16, 17)),
+                TagConstants.INTERMEDIATE
         );
         dataMap.put("696760", holoLabChampions);
 
@@ -513,7 +562,8 @@ public class InformationSteam {
                 new ArrayList<>(Collections.singletonList(TagConstants.SCIENCE)),
                 new ArrayList<>(Arrays.asList(TagConstants.PLANETS, TagConstants.ASTRONOMY)),
                 new ArrayList<>(Arrays.asList("space", "mars", "exploration", "planet", "rover", "red planet", "science", "astronomy", "discovery", "mission")),
-                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15))
+                new ArrayList<>(Arrays.asList(10, 11, 12, 13, 14, 15)),
+                TagConstants.SIMPLE
         );
         dataMap.put("465150", marsOdyssey);
     }

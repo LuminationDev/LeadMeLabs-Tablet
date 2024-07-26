@@ -4,9 +4,11 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.applications.Application;
 
@@ -43,7 +45,7 @@ public class TagUtils {
      * @param subTagsTextView       The TextView to display sub-tags.
      * @param currentApplication    The Application object containing tag information.
      */
-    public static void setupTags(Context context, LinearLayout tagsContainer, TextView subTagsTextView, TextView yearLevelTextView, Application currentApplication) {
+    public static void setupTags(Context context, LinearLayout tagsContainer, TextView subTagsTextView, FlexboxLayout complexityView, Application currentApplication) {
 
         // Setup main tags
         setupMainTags(context, tagsContainer, currentApplication.getInformation().getTags());
@@ -51,8 +53,7 @@ public class TagUtils {
         // Setup sub-tags
         setupSubTags(subTagsTextView, currentApplication.getInformation().getSubTags());
 
-        // Setup year level
-        setupYearLevels(yearLevelTextView, currentApplication.getInformation().getYearLevels("australia"));
+        setupComplexity(complexityView, currentApplication.getInformation().getComplexity());
     }
 
     /**
@@ -122,12 +123,24 @@ public class TagUtils {
         }
     }
 
-    /**
-     *
-     * @param yearLevelTextView
-     * @param yearLevels
-     */
-    private static void setupYearLevels(TextView yearLevelTextView, String yearLevels) {
-        yearLevelTextView.setText(yearLevels);
+    private static void setupComplexity(FlexboxLayout complexityView, String complexity) {
+        if (complexity == null || complexity.isEmpty()) {
+            complexityView.setVisibility(View.GONE);
+            return;
+        }
+        TextView complexityText = complexityView.findViewById(R.id.complexity_level);
+        ImageView complexityIcon = complexityView.findViewById(R.id.complexity_icon);
+        complexityText.setText(complexity);
+        switch (complexity) {
+            case TagConstants.SIMPLE:
+                complexityIcon.setImageResource(R.drawable.grey_difficulty_simple);
+                break;
+            case TagConstants.INTERMEDIATE:
+                complexityIcon.setImageResource(R.drawable.grey_difficulty_intermediate);
+                break;
+            case TagConstants.COMPLEX:
+                complexityIcon.setImageResource(R.drawable.grey_difficulty_advanced);
+                break;
+        }
     }
 }

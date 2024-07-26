@@ -20,10 +20,8 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.ImageManager;
 import com.lumination.leadmelabs.managers.UIUpdateManager;
-import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.ui.appliance.ApplianceViewModel;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Helpers;
 
 import androidx.core.app.NotificationCompat;
@@ -88,23 +86,23 @@ public class NetworkService extends Service {
      */
     public static void setNUCAddress(String ipaddress) {
         NUCAddress = ipaddress;
-        NetworkService.sendMessage("NUC", "Connect", "Connect");
-        NetworkService.sendMessage("NUC", "CanAcknowledge", "");
-        NetworkService.sendMessage("NUC", "MessageType", "Android:Unicode");
-        NetworkService.sendMessage("NUC", "MessageType", "Android:Json");
+
+        //Get the lab location - viewModels may not have been initialised yet so use the shared preferences
+        SharedPreferences sharedPreferences = MainActivity.getInstance().getApplication().getSharedPreferences("lab_location", Context.MODE_PRIVATE);
+        String location = sharedPreferences.getString("lab_location", null);
 
         JSONObject message = new JSONObject();
         try {
-            message.put("Action", "Request");
+            JSONObject segment = new JSONObject();
+            segment.put("Action", "Request");
+
+            message.put("LabLocation", location);
+            message.put("Version", Helpers.getAppVersion());
+            message.put("Segment", segment);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        NetworkService.sendMessage("NUC", "Segment", message.toString());
-
-        //Ask for the lab location if not already set.
-        if (!Segment.getIsIdSet()) {
-            NetworkService.sendMessage("NUC", "LabLocation", "");
-        }
+        NetworkService.sendMessage("NUC", "Connect", message.toString());
     }
 
     /**
@@ -140,7 +138,7 @@ public class NetworkService extends Service {
         String message = "Android:" + destination + ":" + actionNamespace + ":" + additionalData; // add the source and destination at the front
 
         Log.d(TAG, "Going to send: " + message);
-        if (getEncryptionKey().length() == 0) {
+        if (getEncryptionKey().isEmpty()) {
             DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
@@ -192,7 +190,7 @@ public class NetworkService extends Service {
 
                 Log.d(TAG, "Message sent closing socket");
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("NetworkService", e.toString());
             }
         });
     }
@@ -232,7 +230,6 @@ public class NetworkService extends Service {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error creating ServerSocket: ", e);
-                e.printStackTrace();
             }
         });
     }
@@ -244,6 +241,9 @@ public class NetworkService extends Service {
         String ipAddress = null;
 
         try {
+            if (MainActivity.getInstance() == null) {
+                return null;
+            }
             WifiManager wm = (WifiManager) MainActivity.getInstance().getSystemService(Context.WIFI_SERVICE);
             ipAddress = InetAddress.getByAddress(
                     ByteBuffer
@@ -254,7 +254,7 @@ public class NetworkService extends Service {
             ).getHostAddress();
         } catch (UnknownHostException e) {
             Sentry.captureException(e);
-            e.printStackTrace();
+            Log.e("NetworkService", e.toString());
         }
 
         return ipAddress;
@@ -303,7 +303,7 @@ public class NetworkService extends Service {
 
         }  catch (IOException e) {
             Log.e(TAG, "Unable to process client request");
-            e.printStackTrace();
+            Log.e("NetworkService", e.toString());
         }
     }
 
@@ -336,7 +336,7 @@ public class NetworkService extends Service {
         String message = byteArrayOutputStream.toString();
         String unencryptedMessage = message;
 
-        if (getEncryptionKey().length() == 0) {
+        if (getEncryptionKey().isEmpty()) {
             DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
@@ -434,7 +434,7 @@ public class NetworkService extends Service {
             try {
                 mServerSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("NetworkService", e.toString());
             } finally {
                 serverThreadPool.shutdown();
             }
