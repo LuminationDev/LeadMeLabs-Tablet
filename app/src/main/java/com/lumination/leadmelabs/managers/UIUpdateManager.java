@@ -113,6 +113,9 @@ public class UIUpdateManager {
                 case Constants.QA:
                     QaManager.handleQaUpdate(additionalData);
                     break;
+                case Constants.IDLE_MODE:
+                    ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).setIdleMode(additionalData.equals("On"));
+                    break;
                 default:
                     break;
             }

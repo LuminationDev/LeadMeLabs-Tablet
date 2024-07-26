@@ -14,13 +14,18 @@
         <variable
             name="stations"
             type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
     </data>
 
-    <GridLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="3">
+        app:flexWrap="wrap"
+        app:justifyContent="space_between"
+        app:flexDirection="row">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/new_session_button"
@@ -50,20 +55,20 @@
             android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
             app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
 
-        <!--TODO not for current release-->
-        <!--Only visible for VrStation instances-->
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/idle_mode"-->
-<!--            style="@style/StationSingleButton"-->
-<!--            android:visibility="@{(selectedStation instanceof VrStation) ? View.VISIBLE : View.GONE}"-->
-<!--            android:drawableTop="@{selectedStation.statusHandler.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"-->
-<!--            android:text="@{selectedStation.statusHandler.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"-->
-<!--            app:stationIdleMode="@{selectedStation}"/>-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/idle_mode"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:visibility="@{((selectedStation instanceof VrStation) &amp;&amp; settings.idleMode) ? View.VISIBLE : View.GONE, default=gone}"
+            android:drawableTop="@{selectedStation.statusHandler.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"
+            android:text="@{selectedStation.statusHandler.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"
+            app:stationIdleMode="@{selectedStation}"/>
 
-        <!--TODO only for current release-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/identify_button"
             style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:visibility="@{((selectedStation instanceof VrStation) &amp;&amp; settings.idleMode) ? View.GONE : View.VISIBLE}"
             android:backgroundTint="@{selectedStation.statusHandler.stationOffOrChanging ? @color/grey_card : @color/blue_darkest}"
             android:drawableTop="@{selectedStation.statusHandler.stationOffOrChanging ? @drawable/session_identify_off : @drawable/session_identify}"
             android:text="@string/identify_station_lower"
@@ -72,6 +77,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/station_restart_vr"
             style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
             android:backgroundTint="@{selectedStation.isOn ? @color/orange : @color/grey_card}"
             android:drawableTop="@drawable/session_vr_restart"
             android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
@@ -103,6 +109,6 @@
             android:text="Configure SteamCMD"
             app:rippleColor="@color/grey_card" />
 
-    </GridLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 
 </layout>

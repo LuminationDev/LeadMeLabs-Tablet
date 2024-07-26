@@ -488,6 +488,35 @@
                         android:layout_width="wrap_content"
                         android:checked="@{settings.supportMode}"/>
                 </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/idle_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/card_ripple_white_rounded"
+                    app:alignItems="center"
+                    app:justifyContent="space_between"
+                    android:layout_marginBottom="15dp">
+
+                    <TextView
+                        android:padding="15dp"
+                        app:layout_flexShrink="0"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        android:text="@string/idle_mode"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/idle_mode_toggle"
+                        app:thumbTint="@color/blue"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:checked="@{settings.idleMode}"/>
+                </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
     </com.google.android.flexbox.FlexboxLayout>

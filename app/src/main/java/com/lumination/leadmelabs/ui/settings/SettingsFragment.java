@@ -24,6 +24,7 @@ import com.lumination.leadmelabs.databinding.FragmentSettingsBinding;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.segment.analytics.Properties;
 
@@ -168,6 +169,19 @@ public class SettingsFragment extends Fragment {
         supportModeToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             mViewModel.setSupportMode(isChecked);
         });
+
+        FlexboxLayout idleModeLayout = view.findViewById(R.id.idle_mode);
+        SwitchCompat idleModeToggle = view.findViewById(R.id.idle_mode_toggle);
+        idleModeToggle.setChecked(Boolean.TRUE.equals(mViewModel.getIdleMode().getValue()));
+        idleModeLayout.setOnClickListener(v ->
+                idleModeToggle.setChecked(!idleModeToggle.isChecked())
+        );
+        idleModeToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            mViewModel.setIdleMode(isChecked);
+            this.trackSettingChanged("Idle Mode", String.valueOf(isChecked));
+            NetworkService.sendMessage("NUC", "IdleMode", isChecked ? "On" : "Off");
+        });
+
 
         //The toggle for turning exit prompts on and off
         FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
