@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.models.stations.VrStation;
 import com.lumination.leadmelabs.qa.QaManager;
 import com.lumination.leadmelabs.segment.Segment;
 import com.lumination.leadmelabs.segment.SegmentConstants;
+import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
@@ -33,6 +34,9 @@ import org.json.JSONObject;
 
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -414,6 +418,26 @@ public class UIUpdateManager {
                 put("station_id", String.valueOf(station.id));
             }};
             FirebaseManager.logAnalyticEvent("restart_failed", analyticsAttributes);
+        }
+
+        if (additionalData.startsWith("UnacceptedEulas")) {
+
+            String[] split = additionalData.split(":", 2);
+            String[] eulas = split[1].split(",");
+
+            // create eula dialog
+            BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    NetworkService.sendMessage("Station," + String.valueOf(station.getId()), "Station", "AcceptEulas");
+                }
+            };
+
+            MainActivity.runOnUI(() -> {
+                ArrayList<String> al = new ArrayList<String>();
+                Collections.addAll(al, eulas);
+                DialogManager.createEulaDialog(al, station);
+            });
+
         }
     }
 

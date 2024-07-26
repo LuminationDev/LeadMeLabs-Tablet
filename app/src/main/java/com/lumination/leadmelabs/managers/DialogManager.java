@@ -10,6 +10,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.text.Editable;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
@@ -21,7 +22,9 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +62,7 @@ import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.adapters.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
+import com.lumination.leadmelabs.ui.stations.UnacceptedEulasAdapter;
 import com.lumination.leadmelabs.utilities.Constants;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
@@ -74,6 +78,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import io.sentry.Sentry;
@@ -492,6 +497,105 @@ public class DialogManager {
             basicDialog.getWindow().setLayout(680, 680);
         }
         trackDialogShown("Update");
+    }
+
+    public static void createEulaDialog(ArrayList<String> eulas, Station station) {
+        View eulaDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_unaccepted_eulas, null);
+        AlertDialog eulaDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(eulaDialogView).create();
+
+        TextView eulaDetailText = eulaDialogView.findViewById(R.id.eula_detail_text);
+        eulaDetailText.setText(String.format("Before you can open the following VR experiences on Station %s you will need to accept their EULA agreements", String.valueOf(station.getId())));
+
+        MaterialButton automaticallyConfirm = eulaDialogView.findViewById(R.id.automatically_confirm);
+        automaticallyConfirm.setText(Html.fromHtml("<i>(Experimental)</i> <b>Automatically confirm</b>"));
+        automaticallyConfirm.setOnClickListener(l -> {
+            NetworkService.sendMessage("Station," + String.valueOf(station.getId()), "Station", "AcceptEulas");
+            eulaDialog.dismiss();
+        });
+        MaterialButton manuallyConfirm = eulaDialogView.findViewById(R.id.manually_confirm);
+        manuallyConfirm.setText(Html.fromHtml("<b>Manually confirm</b>"));
+        manuallyConfirm.setOnClickListener(l -> {
+            ArrayList<DialogManager.ImageCarouselItem> imageCarouselItems = new ArrayList<>();
+            imageCarouselItems.add(new DialogManager.ImageCarouselItem(R.drawable.img, "Open Steam", "Grab the keyboard and open Steam"));
+            imageCarouselItems.add(new DialogManager.ImageCarouselItem(R.drawable.img, "Launch experience", "Find the experience and click launch"));
+            imageCarouselItems.add(new DialogManager.ImageCarouselItem(R.drawable.img, "Read and accept EULA", "Read the EULA and click confirm if you agree"));
+            imageCarouselItems.add(new DialogManager.ImageCarouselItem(R.drawable.img, "Close and repeat", "Close the experience and repeat as needed"));
+            DialogManager.createImageCarouselDialog(imageCarouselItems);
+        });
+        MaterialButton closeDialog = eulaDialogView.findViewById(R.id.close_dialog);
+        closeDialog.setText(Html.fromHtml("<b>I do not agree</b>"));
+
+        UnacceptedEulasAdapter unacceptedEulasAdapter = new UnacceptedEulasAdapter(eulaDialogView.getContext(), eulas);
+        ListView listView = eulaDialogView.findViewById(R.id.eula_listview);
+        listView.setAdapter(unacceptedEulasAdapter);
+        eulaDialog.show();
+        if (eulaDialog.getWindow() != null) {
+            eulaDialog.getWindow().setLayout(680, 650 + (50 * eulas.size()));
+        }
+    }
+
+    public static class ImageCarouselItem {
+        public int imageId;
+        public String heading;
+        public String body;
+
+        public ImageCarouselItem(int imageId, String heading, String body) {
+            this.imageId = imageId;
+            this.heading = heading;
+            this.body = body;
+        }
+    }
+    public static void createImageCarouselDialog(ArrayList<ImageCarouselItem> items) {
+        AtomicInteger index = new AtomicInteger();
+        View confirmationDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_image_carousel, null);
+        AlertDialog confirmationDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogTheme).setView(confirmationDialogView).create();
+        if (items.isEmpty()) {
+            return;
+        }
+        TextView heading = confirmationDialogView.findViewById(R.id.header_text);
+        TextView body = confirmationDialogView.findViewById(R.id.body_text);
+        heading.setText(items.get(0).heading);
+        body.setText(items.get(0).body);
+        ImageView imageView = confirmationDialogView.findViewById(R.id.image_view);
+        imageView.setImageResource(items.get(0).imageId);
+
+        FlexboxLayout container = confirmationDialogView.findViewById(R.id.page_selection_container);
+
+        for (int i = 0; i < items.size(); i++) {
+            ImageView template = new ImageView(confirmationDialogView.getContext());
+            template.setImageResource(R.drawable.light_grey_circle);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(15, 15);
+            layoutParams.setMargins(5, 0, 5, 0);
+            template.setLayoutParams(layoutParams);
+            container.addView(template);
+        }
+        ((ImageView) (container.getChildAt(0))).setImageResource(R.drawable.dark_blue_circle);
+
+        MaterialButton skipButton = confirmationDialogView.findViewById(R.id.skip_button);
+        skipButton.setOnClickListener(l -> {
+            confirmationDialog.dismiss();
+        });
+        MaterialButton nextButton = confirmationDialogView.findViewById(R.id.next_button);
+        nextButton.setOnClickListener(l -> {
+            if (index.get() == items.size() - 1) {
+                confirmationDialog.dismiss();
+                return;
+            }
+            if (index.get() == items.size() - 2) {
+                nextButton.setText("Close");
+            }
+            index.getAndIncrement();
+            ((ImageView) (container.getChildAt(index.get()))).setImageResource(R.drawable.dark_blue_circle);
+            ((ImageView) (container.getChildAt(index.get() - 1))).setImageResource(R.drawable.light_grey_circle);
+            heading.setText(items.get(index.get()).heading);
+            body.setText(items.get(index.get()).body);
+            imageView.setImageResource(items.get(index.get()).imageId);
+        });
+
+        confirmationDialog.show();
+        if (confirmationDialog.getWindow() != null) {
+            confirmationDialog.getWindow().setLayout(680, 680);
+        }
     }
 
     /**
