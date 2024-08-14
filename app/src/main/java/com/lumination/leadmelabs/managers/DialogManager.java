@@ -679,6 +679,7 @@ public class DialogManager {
         recyclerView.setLayoutManager(new GridLayoutManager(endSessionDialog.getContext(), 3));
 
         BasicStationSelectionAdapter stationAdapter = new BasicStationSelectionAdapter();
+        stationAdapter.setHasStableIds(true);
         stations = Helpers.cloneStationList(stations);
         stationAdapter.stationList = stations;
         recyclerView.setAdapter(stationAdapter);
@@ -721,6 +722,10 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> endSessionDialog.dismiss());
 
         endSessionDialog.show();
+
+        if (endSessionDialog.getWindow() != null) {
+            endSessionDialog.getWindow().setLayout(1100, 1000);
+        }
     }
 
     /**

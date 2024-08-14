@@ -48,7 +48,6 @@ public class BasicStationSelectionAdapter extends RecyclerView.Adapter<BasicStat
     @NonNull
     @Override
     public StationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.setHasStableIds(true);
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         CardStationBinding binding = CardStationBinding.inflate(layoutInflater, parent, false);
         return new BasicStationSelectionAdapter.StationViewHolder(binding);

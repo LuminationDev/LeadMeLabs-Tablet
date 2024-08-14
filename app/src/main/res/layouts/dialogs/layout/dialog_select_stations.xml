@@ -34,18 +34,29 @@
                 android:textColor="@color/black" />
         </com.google.android.flexbox.FlexboxLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stations_list"
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="2dp"
-            android:paddingVertical="20dp"
-            tools:listitem="@layout/card_station_vr" />
+            android:paddingStart="15dp"
+            android:paddingEnd="0dp"
+            app:layout_maxHeight="450dp"
+            app:flexDirection="column"
+            app:justifyContent="center">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stations_list"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="2dp"
+                android:paddingVertical="20dp"
+                tools:listitem="@layout/card_station_vr" />
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:padding="20dp"
             app:justifyContent="flex_end">
 
