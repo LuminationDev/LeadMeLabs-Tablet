@@ -246,6 +246,7 @@ public class DialogManager {
                             successText.setVisibility(View.VISIBLE);
                         });
                         NetworkService.sendMessage("Station,All", "CommandLine", "UploadLogFile");
+                        NetworkService.sendMessage("NUC", "CommandLine", "UploadLogFile");
 
                         Properties segmentProperties = new Properties();
                         segmentProperties.put("classification", HelpPageFragment.segmentClassification);
