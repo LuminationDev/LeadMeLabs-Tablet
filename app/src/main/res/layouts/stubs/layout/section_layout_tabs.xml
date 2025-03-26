@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp">
+
+        <!--Layout or Backdrops switch buttons-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:justifyContent="space_between">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/view_layouts_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="layout icon"
+                        android:src="@{stations.layoutTab.equals(`layouts`) ? @drawable/layout_active : @drawable/layout_inactive, default=@drawable/layout_inactive}"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/layouts_tab_title"
+                        android:textColor="@{stations.layoutTab.equals(`layouts`) ? @color/blue_darkest : @color/text, default=@color/text}"
+                        android:textFontWeight="600"
+                        android:textSize="14sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:visibility="@{stations.layoutTab.equals(`layouts`) ? View.VISIBLE : View.INVISIBLE, default=invisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="2.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/blue"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/view_backdrops_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="backdrop icon"
+                        android:src="@{stations.layoutTab.equals(`backdrops`) ? @drawable/backdrop_active : @drawable/backdrop_inactive, default=@drawable/backdrop_inactive}"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/backdrops_tab_title"
+                        android:textColor="@{stations.layoutTab.equals(`backdrops`) ? @color/blue_darkest : @color/text, default=@color/text}"
+                        android:textFontWeight="600"
+                        android:textSize="14sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:visibility="@{stations.layoutTab.equals(`backdrops`) ? View.VISIBLE : View.INVISIBLE, default=invisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="2.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/blue"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

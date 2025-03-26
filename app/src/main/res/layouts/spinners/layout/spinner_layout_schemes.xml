@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="280dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="15dp">
+
+        <Spinner
+            android:visibility="invisible"
+            android:id="@+id/layout_schemes_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownVerticalOffset="50dp"
+            android:dropDownWidth="280dp"
+            android:popupBackground="@drawable/bg_white_curved"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/layout_schemes_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:padding="15dp"
+            android:background="@drawable/card_ripple_white_rounded"
+            app:alignItems="center">
+            <TextView
+                style="@style/SettingsText"
+                android:text="@{(settings.tabletLayoutScheme == null || settings.tabletLayoutScheme.length() == 0) ? `Select a layout` : (settings.tabletLayoutScheme + ` layout`), default=`Select a layout`}"
+                app:drawableRightCompat="@drawable/icon_menu_right" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </FrameLayout>
+
+</layout>

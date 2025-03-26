@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="selectedApplication"
+            type="com.lumination.leadmelabs.models.applications.Application" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+    </data>
+
+    <!-- Section - Share code -->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/card_sky_border_blue"
+        app:layout_flexGrow="1"
+        app:flexDirection="row">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:flexDirection="column"
+            app:layout_flexBasisPercent="35%"
+            app:layout_flexGrow="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="20dp"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#1849A9"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="Share Code:"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#1849A9"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="Enter your 6-digit \nshare code here:"/>
+
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:flexDirection="column"
+            app:layout_flexBasisPercent="65%"
+            app:layout_flexGrow="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingEnd="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                tools:ignore="RtlSymmetry">
+
+                <EditText
+                    android:id="@+id/et1"
+                    style="@style/ShareCodeEditText"
+                    android:background="@drawable/share_input_start"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <EditText
+                    android:id="@+id/et2"
+                    style="@style/ShareCodeEditText"
+                    android:layout_marginHorizontal="5dp"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <EditText
+                    android:id="@+id/et3"
+                    style="@style/ShareCodeEditText"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="90dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/black_dash" />
+
+                <EditText
+                    android:id="@+id/et4"
+                    style="@style/ShareCodeEditText"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <EditText
+                    android:id="@+id/et5"
+                    style="@style/ShareCodeEditText"
+                    android:layout_marginHorizontal="5dp"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+                <EditText
+                    android:id="@+id/et6"
+                    style="@style/ShareCodeEditText"
+                    android:background="@drawable/share_input_end"
+                    android:autofillHints=""
+                    tools:ignore="LabelFor" />
+
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

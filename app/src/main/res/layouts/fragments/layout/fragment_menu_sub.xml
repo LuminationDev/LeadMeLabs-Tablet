@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel" />
+        <variable
+            name="subMenu"
+            type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/side_menu_fragment"
+        style="@style/SubMenuContainer"
+        android:paddingVertical="40dp"
+        app:flexDirection="column">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/side_menu_options"
+            android:layout_width="match_parent"
+            android:paddingTop="30dp"
+            android:layout_height="500dp"
+            app:flexDirection="column"
+            app:alignItems="flex_start"
+            app:justifyContent="space_around">
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

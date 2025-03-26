@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="510dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_curved"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        app:alignItems="center"
+        app:flexDirection="row">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_mute"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/icon_volume"
+            android:textColor="@color/black"
+            android:background="@drawable/bg_transparent"
+            android:enabled="@{selectedStation.status.equals(`On`)}"
+            android:layoutDirection="rtl"
+            app:rippleColor="@color/grey_card"
+            app:layout_flexShrink="0"
+            app:iconSize="30dp"
+            app:iconTint="@{selectedStation.status.equals(`On`) ? @color/grey_titles : @color/grey}"
+            app:iconGravity="top"
+            app:stationMuted="@{selectedStation}"/>
+
+        <!--Grow the slider layout if the Station is not in VR mode as the Headset audio icon will not exist-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_curved"
+            app:layout_flexGrow="1"
+            app:alignItems="center"
+            app:flexDirection="row">
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/station_volume_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stepSize="1.0"
+                android:valueFrom="0.0"
+                android:valueTo="100.0"
+                app:haloColor="@color/blue"
+                app:thumbColor="@color/white"
+                app:thumbRadius="7dp"
+                app:thumbStrokeColor="#3A3A3A"
+                app:thumbStrokeWidth="2dp"
+                app:tickColorActive="#3A3A3A"
+                app:tickColorInactive="@color/grey"
+                app:trackColorActive="#3A3A3A"
+                app:trackColorInactive="@color/grey"
+                app:stationVolume="@{selectedStation}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:background="@drawable/bg_border_gray"
+            app:alignItems="center"
+            app:flexDirection="row">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/headset_volume_select"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/icon_volume"
+                android:visibility="@{selectedStation instanceof VrStation ? View.VISIBLE : View.GONE}"
+                app:cornerRadius="8dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/small_headset"
+                app:iconGravity="textStart"
+                app:iconPadding="1.5dp"
+                android:gravity="center"
+                android:elevation="0dp"
+                android:translationZ="0dp"
+                android:stateListAnimator="@null"
+                app:headsetAudioDevice="@{selectedStation}"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/projector_volume_select"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/icon_volume"
+                app:cornerRadius="8dp"
+                app:iconSize="30dp"
+                app:icon="@drawable/small_projector"
+                app:iconGravity="textStart"
+                app:iconPadding="1.5dp"
+                android:gravity="center"
+                android:elevation="0dp"
+                android:translationZ="0dp"
+                android:stateListAnimator="@null"
+                app:projectorAudioDevice="@{selectedStation}"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/audio_spinner_container"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:justifyContent="center"
+                app:alignItems="center">
+
+                <Spinner
+                    android:id="@+id/audio_spinner"
+                    android:layout_width="36dp"
+                    android:layout_height="9dp"
+                    android:padding="25dp"
+                    app:layout_flexShrink="0"
+                    android:background="@drawable/three_dots"
+                    android:visibility="@{selectedStation.audioController.activeAudioDevice != null ? View.VISIBLE : View.GONE}"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SideMenuContainer">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/blue_dark</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="SideMenuIcon">
+        <item name="android:layout_width">110dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:paddingVertical">2dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">30dp</item>
+        <item name="flexDirection">column</item>
+        <item name="alignItems">center</item>
+        <item name="justifyContent">center</item>
+    </style>
+
+    <style name="SideMenuImage">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingHorizontal">10dp</item>
+    </style>
+
+    <style name="SideMenuLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SubMenuContainer">
+        <item name="android:layout_width">120dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="SubMenuLabel">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+    </style>
+
+    <style name="ActionCard">
+        <item name="android:layout_width">230dp</item>
+        <item name="android:layout_height">88dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/card_ripple_gray</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+
+    <style name="WhiteActionCard">
+        <item name="android:layout_width">230dp</item>
+        <item name="android:layout_height">88dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/ripple_white_rounded_border_thin</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+
+    <style name="StationCard">
+        <item name="android:layout_height">138dp</item>
+        <item name="android:layout_width">203dp</item>
+        <item name="android:background">@color/grey_station</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="flexDirection">column</item>
+        <item name="android:elevation">3dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_marginHorizontal">9dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+
+    <style name="StationsContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ScenesContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">50dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="LogoContainer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="RoomContainer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginBottom">50dp</item>
+        <item name="android:background">@drawable/card_ripple_white_rooms</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="RoomButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginEnd">25dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="NucContainer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginLeft">250dp</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <style name="LogoImage">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:layout_marginRight">17dp</item>
+        <item name="android:src">@drawable/ic_logo</item>
+    </style>
+
+    <style name="LogoImageWhite">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">26dp</item>
+        <item name="android:layout_marginRight">17dp</item>
+        <item name="android:src">@drawable/ic_leadme_labs_logo_white</item>
+    </style>
+
+    <style name="SessionContainer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_marginEnd">50dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="SessionText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">50dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#1599F3</item>
+    </style>
+
+    <style name="ApplianceContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">80dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">50dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="PageTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">43dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">100dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HeadingTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">-.02</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ApplianceCardContainer">
+        <item name="android:layout_height">170dp</item>
+        <item name="android:layout_width">180dp</item>
+        <item name="android:background">@drawable/bg_station_card_blue</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
+
+    <style name="ApplianceBlindCardContainer">
+        <item name="android:layout_height">170dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
+
+    <style name="BlindButton">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:bottomLeftRadius">100dp</item>
+        <item name="android:topLeftRadius">100dp</item>
+        <item name="android:topRightRadius">100dp</item>
+        <item name="android:bottomRightRadius">100dp</item>
+        <item name="rippleColor">@color/grey_medium</item>
+    </style>
+
+    <style name="SettingsItemContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+
+    <style name="SettingsText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="DefaultContainer">
+    </style>
+
+    <style name="StationSingleButton">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">150dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="rippleColor">@color/blue</item>
+        <item name="backgroundTint">@color/blue_darkest</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_marginTop">-5dp</item>
+        <item name="android:letterSpacing">.02</item>
+    </style>
+
+    <style name="ExperienceDetailsDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_details_curved</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_alertdialog_curved</item>
+    </style>
+
+    <style name="AlertDialogVernTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_alertdialog_vern</item>
+    </style>
+
+    <style name="AlertNotificationTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/bg_alert_notification_curved</item>
+    </style>
+
+    <style name="CurvedDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/modal_background_curved</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="HelpCardGuides">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="flexDirection">row</item>
+        <item name="android:background">@drawable/ripple_help</item>
+        <item name="alignItems">center</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:layout_marginVertical">15dp</item>
+    </style>
+
+    <style name="HelpCardQuestions">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="flexDirection">row</item>
+        <item name="android:background">@drawable/ripple_help</item>
+        <item name="alignItems">center</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+    <style name="HelpCardIconQuestions">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="layout_flexShrink">0</item>
+    </style>
+    <style name="HelpCardIcon">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="layout_flexShrink">0</item>
+    </style>
+    <style name="HelpCardBody">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="flexDirection">column</item>
+    </style>
+    <style name="HelpCardBodyTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="HelpCardBodyText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="SpinnerTheme" parent="android:Widget.Spinner">
+        <item name="android:background">@drawable/bg_spinner</item>
+    </style>
+    <style name="ShareCodeEditText">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">90dp</item>
+        <item name="android:background">@drawable/share_input_middle</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:digits">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</item>
+    </style>
+</resources>

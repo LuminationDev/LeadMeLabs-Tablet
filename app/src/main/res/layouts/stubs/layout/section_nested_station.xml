@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.ContentStation"/>
+        <variable
+            name="selectedNestedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <!-- NESTED STATIONS layout content -->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="510dp"
+        android:layout_height="120dp"
+        android:background="@drawable/bg_white_curved"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        app:alignItems="center"
+        app:justifyContent="space_between"
+        app:layout_flexGrow="1"
+        app:flexDirection="row">
+
+        <!--Nested Stations (Currently only ever 1)-->
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Access individual control of the floor projectors here:"
+            android:textColor="@color/black"
+            android:textSize="13sp"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/nested_station_button"
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/backdrop_ripple_white_rounded_border_gray"
+            app:alignItems="center">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexDirection="row"
+                app:alignItems="center">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_radio_blue"
+                    android:layout_marginEnd="15dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/projector_white"
+                        android:contentDescription="projector"/>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column">
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        app:flexDirection="row"
+                        app:justifyContent="space_between">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{selectedNestedStation != null ? selectedNestedStation.name : `No Nested Station`, default=`Floor System`}"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{selectedNestedStation != null ? selectedNestedStation.status : `N/A`, default=`OFF`}"
+                            android:textAllCaps="true"
+                            android:textFontWeight="600"
+                            android:textColor="@color/blue"/>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{!selectedNestedStation.stateHandler.hasState() ? View.VISIBLE : View.GONE}"
+                        android:text="@{selectedNestedStation != null ? selectedNestedStation.state : `N/A`, default=`Control individually`}"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{selectedNestedStation.stateHandler.hasState() ? View.GONE : View.VISIBLE}"
+                        app:stationState="@{selectedNestedStation}"
+                        android:textSize="11sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

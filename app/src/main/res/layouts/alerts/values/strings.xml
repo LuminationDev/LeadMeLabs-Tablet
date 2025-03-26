@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="active_novastar_preset">active novastar preset</string>
+    <string name="unknown_error_please_save_manually">Unknown error, please save manually</string>
+    <string name="file_must_be_selected">A file must be selected.</string>
+    <string name="unable_to_load_station_details">Unable to load Station details.</string>
+    <string name="playback">Playback</string>
+    <string name="open_brush">Open Brush</string>
+    <string name="guides">Guides</string>
+    <string name="encryption_warning">WARNING! This is essential for communication with the rest of the Lab. Altering this will disrupt all operations until all other devices are updated accordingly.</string>
+    <string name="enter_encryption_key">Enter encryption key…</string>
+    <string name="set_the_encryption_key">Set the encryption key</string>
+    <string name="notifications">Notifications</string>
+    <string name="previously_received_alerts_and_updates">View all previously received alerts and updates.</string>
+    <string name="refresh_icon">refresh_icon</string>
+    <string name="help_icon">help_icon</string>
+    <string name="help">Help</string>
+    <string name="status">Status</string>
+    <string name="date">Date</string>
+    <string name="no_past_notifications_found">No past notifications found...</string>
+    <string name="previous_arrow">previous_arrow</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="next_arrow">next_arrow</string>
+    <string name="show_notification">Show notification</string>
+</resources>

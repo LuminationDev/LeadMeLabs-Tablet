@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="library"
+            type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
+        <variable
+            name="hasVideos"
+            type="Boolean" />
+        <variable
+            name="hasRegularApplications"
+            type="Boolean" />
+        <variable
+            name="hasVrApplications"
+            type="Boolean" />
+    </data>
+
+    <!--If there are two or more categories available show the tabs-->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="@{(hasVideos ? 1 : 0) + (hasRegularApplications ? 1 : 0) + (hasVrApplications ? 1 : 0) >= 2 ? View.VISIBLE : View.INVISIBLE, default=visible}">
+
+        <!--VR or Video switch buttons-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{hasVrApplications ? View.VISIBLE : View.GONE, default=visible}"
+            app:justifyContent="space_between">
+
+            <!--VR Applications-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/view_vr_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="vr icon"
+                        android:src="@{library.libraryType.equals(`vr_experiences`) ? @drawable/library_active_vr : @drawable/library_inactive_vr, default=@drawable/library_inactive_vr}"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VR Experiences"
+                        android:textColor="@{library.libraryType.equals(`vr_experiences`) ? @color/blue_darkest : @color/text, default=@color/text}"
+                        android:textFontWeight="600"
+                        android:textSize="14sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:visibility="@{library.libraryType.equals(`vr_experiences`) ? View.VISIBLE : View.INVISIBLE, default=invisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/blue_darkest"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--Regular Applications-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:visibility="@{hasRegularApplications ? View.VISIBLE : View.GONE, default=visible}"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/view_applications_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="applications icon"
+                        android:src="@{library.libraryType.equals(`applications`) ? @drawable/library_active_applications : @drawable/library_inactive_applications, default=@drawable/library_inactive_applications}"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Applications"
+                        android:textColor="@{library.libraryType.equals(`applications`) ? @color/blue_darkest : @color/text, default=@color/text}"
+                        android:textFontWeight="600"
+                        android:textSize="14sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:visibility="@{library.libraryType.equals(`applications`) ? View.VISIBLE : View.INVISIBLE, default=invisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/blue_darkest"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <!--Videos-->
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:visibility="@{hasVideos ? View.VISIBLE : View.GONE, default=visible}"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/view_video_button"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="video icon"
+                        android:src="@{library.libraryType.equals(`videos`) ? @drawable/library_active_video_recorder : @drawable/library_inactive_video_recorder, default=@drawable/library_inactive_video_recorder}"
+                        android:layout_marginEnd="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Videos"
+                        android:textColor="@{library.libraryType.equals(`videos`) ? @color/blue_darkest : @color/text, default=@color/text}"
+                        android:textFontWeight="600"
+                        android:textSize="14sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:visibility="@{library.libraryType.equals(`videos`) ? View.VISIBLE : View.INVISIBLE, default=invisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/blue_darkest"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

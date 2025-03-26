@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:flexDirection="column"
+    app:justifyContent="space_between"
+    android:layout_width="match_parent"
+    android:padding="20dp"
+    android:layout_height="match_parent">
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flexDirection="column">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Launch URL"
+            android:textColor="@color/black"
+            android:textSize="30sp">
+        </TextView>
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Please enter the URL you would like to launch">
+        </TextView>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/url_input"
+            android:layout_width="match_parent"
+            android:backgroundTint="@color/blue_darkest"
+            android:foregroundTint="@color/blue_darkest"
+            android:layout_height="wrap_content"
+            android:hint="Enter URL...">
+        </EditText>
+        <TextView
+            android:id="@+id/error_text"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:text="Unknown Error"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:justifyContent="flex_end"
+        android:layout_marginTop="20dp">
+        <com.google.android.material.button.MaterialButton
+            app:layout_flexShrink="0"
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:elevation="0dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            android:textColor="@color/blue_darkest"
+            app:cornerRadius="2dp"
+            android:backgroundTint="@android:color/white"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/blue_darkest"
+            android:textAllCaps="false"
+            android:text="Cancel"/>
+
+        <com.google.android.material.button.MaterialButton
+            app:layout_flexShrink="0"
+            android:id="@+id/submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:elevation="0dp"
+            app:cornerRadius="2dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/blue_darkest"
+            android:textAllCaps="false"
+            android:text="Submit"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</com.google.android.flexbox.FlexboxLayout>

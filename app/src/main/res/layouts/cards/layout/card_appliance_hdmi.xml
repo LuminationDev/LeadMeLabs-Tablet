@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:flexDirection="row">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/appliance_expanded_card"
+            style="@style/ApplianceBlindCardContainer"
+            android:layout_margin="10dp"
+            android:background="@drawable/transition_appliance_none_to_blue"
+            app:alignItems="flex_start"
+            app:flexDirection="row"
+            app:justifyContent="space_between">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="400dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="100dp"
+                app:flexDirection="column">
+
+                <ImageView
+                    android:id="@+id/icon_appliance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/icon_appliance_source_1"
+                    android:contentDescription="@string/scene_icon" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/appliance_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Name"
+                        android:textColor="@color/appliance_title"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/appliance_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Close"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="100dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between" />
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

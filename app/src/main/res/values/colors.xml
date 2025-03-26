@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="mustard">#F3B964</color>
+    <color name="orange">#FDA627</color>
+    <color name="orange_light">#f4be73</color>
+    <color name="red">#EE7878</color>
+    <color name="red_light">#EA9A9A</color>
+    <color name="red_lightest">#F0B3B3</color>
+
+    <color name="green_light">#7AC19E</color>
+    <color name="green">#48BB83</color>
+    <color name="green_medium">#067647</color>
+    <color name="green_dark">#14AE63</color>
+
+    <color name="blue_card">#2668D8</color>
+    <color name="blue_transparent">#301599F3</color>
+    <color name="blue_even_lighter">#D1E0FF</color>
+    <color name="blue_lightest">#64bcf7</color>
+    <color name="blue_light">#5e91ef</color>
+    <color name="blue">#1599F3</color>
+    <color name="blue_dark">#3676EB</color>
+    <color name="blue_darkest">#2668D8</color>
+    <color name="blue_navy">#193C77</color>
+
+    <color name="grey_light">#F7F8FA</color>
+    <color name="grey">#ECE9E9</color>
+    <color name="grey_medium">#AFB7CB</color>
+    <color name="grey_dark">#667085</color>
+    <color name="grey_card">#8B919B</color>
+    <color name="grey_hint">#C4C4C4</color>
+    <color name="grey_titles">#3A3A3A</color>
+    <color name="grey_station">#DEE1EB</color>
+
+    <color name="text">#808080</color>
+    <color name="text_dark">#344054</color>
+
+    <color name="light_blue">#DEE1EB</color>
+    <color name="light_blue_ripple">#CBD2EA</color>
+
+    <color name="appliance_title">#FAFAFA</color>
+    <color name="appliance_on">#FFFFFFFF</color>
+    <color name="appliance_off">#D0D0D0</color>
+
+    <color name="white_transparent">#00FFFFFF</color>
+</resources>

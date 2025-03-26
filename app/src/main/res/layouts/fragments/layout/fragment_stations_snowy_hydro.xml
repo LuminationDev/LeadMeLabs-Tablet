@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.lumination.leadmelabs.models.stations.Station" />
+        <import type="android.view.View"/>
+        <variable
+            name="stationsAvailable"
+            type="java.lang.Boolean" />
+        <variable
+            name="stationsLoaded"
+            type="java.lang.Boolean" />
+    </data>
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/stations_fragment"
+        style="@style/StationsContainer"
+        android:paddingTop="5dp"
+        android:paddingBottom="20dp"
+        tools:context=".ui.stations.StationsFragment"
+        app:flexDirection="column">
+
+        <TextView
+            android:visibility="@{stationsAvailable ? View.GONE : View.VISIBLE, default=visible}"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_titles"
+            android:text="Station Control"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:visibility="@{stationsAvailable ? View.GONE : View.VISIBLE, default=visible}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:justifyContent="center">
+            <TextView
+                android:padding="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{stationsLoaded ? `No stations in selected room` : `Stations loading...`}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:visibility="@{stationsAvailable ? View.VISIBLE : View.GONE, default=gone}"
+            android:id="@+id/multi_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:paddingHorizontal="10dp"
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@color/blue"
+            android:fadeScrollbars="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

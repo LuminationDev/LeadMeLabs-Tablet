@@ -1,0 +1,128 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+}
+
+def keyStorePropertiesFile = rootProject.file("keystore.properties")
+def keyStoreProperties = new Properties()
+keyStoreProperties.load(new FileInputStream(keyStorePropertiesFile))
+
+android {
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.lumination.leadmelabs"
+        minSdk 28
+        targetSdk 34
+        versionCode 53
+        versionName "1.40"
+        
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keyStoreProperties['releaseKeyAlias']
+            keyPassword keyStoreProperties['releaseKeyPassword']
+            storeFile keyStoreProperties['releaseKeyStore'] ? file(keyStoreProperties['releaseKeyStore']) : null
+            storePassword keyStoreProperties['releaseStorePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res/layouts/alerts',
+                           'src/main/res/layouts/cards',
+                           'src/main/res/layouts/controls',
+                           'src/main/res/layouts/dialogs',
+                           'src/main/res/layouts/fragments',
+                           'src/main/res/layouts/items',
+                           'src/main/res/layouts/modals',
+                           'src/main/res/layouts/pages',
+                           'src/main/res/layouts/spinners',
+                           'src/main/res/layouts/stubs',
+                           'src/main/res/layouts/utils',
+                           'src/main/res/layouts',
+                           'src/main/res',
+            ]
+        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    namespace 'com.lumination.leadmelabs'
+}
+
+dependencies {
+    configurations.implementation {
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    }
+
+    //For segment integration
+    implementation 'com.segment.analytics.android:analytics:4.11.3'
+
+    implementation 'com.google.android.play:app-update:2.1.0'
+
+    //For firebase
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-database:20.0.5'
+
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'androidx.test.ext:junit:1.1.5'
+    implementation 'io.sentry:sentry-android:6.5.0'
+
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.lifecycle:viewmodel:1.1.1'
+
+    //Steam guard key input
+    implementation ('com.alimuzaffar.lib:pinentryedittext:2.0.6') {
+        // Exclude is only needed if you already have
+        // androidx.appcompat as a dependency in your app.
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+    }
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.7.3'
+    testImplementation 'org.mockito:mockito-core:3.0.0'
+    testImplementation 'org.apache.httpcomponents:httpcore:4.4.16'
+    testImplementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    debugImplementation 'androidx.fragment:fragment-testing:1.6.2'
+}

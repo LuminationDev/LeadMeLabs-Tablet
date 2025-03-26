@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+
+        <variable
+            name="settings"
+            type="com.lumination.leadmelabs.ui.settings.SettingsViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:flexWrap="wrap"
+        app:justifyContent="space_between"
+        app:flexDirection="row">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/new_session_button"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@{selectedStation.statusHandler.stationOffOrChanging ? @color/grey_card : @color/blue_darkest}"
+            android:drawableTop="@drawable/session_new"
+            android:text="@string/new_session_lower"
+            android:enabled="@{selectedStation.statusHandler.stationOnOrIdle}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_restart_session"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
+            android:drawableTop="@drawable/session_restart"
+            android:text="@string/restart_session_lower"
+            android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+            app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_end_session"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) || selectedStation.applicationController.experienceName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
+            android:drawableTop="@drawable/session_end"
+            android:text="@string/end_session_lower"
+            android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+            app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/idle_mode"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:visibility="@{((selectedStation instanceof VrStation) &amp;&amp; settings.idleMode) ? View.VISIBLE : View.GONE, default=gone}"
+            android:drawableTop="@{selectedStation.statusHandler.isStationIdle ? @drawable/idle_mode_wake : @drawable/idle_mode_enable, default=@drawable/idle_mode_wake}"
+            android:text="@{selectedStation.statusHandler.isStationIdle ? `Exit Idle Mode` : `Enter Idle Mode`, default=`Enter Idle Mode`}"
+            app:stationIdleMode="@{selectedStation}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/identify_button"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:visibility="@{((selectedStation instanceof VrStation) &amp;&amp; settings.idleMode) ? View.GONE : View.VISIBLE}"
+            android:backgroundTint="@{selectedStation.statusHandler.stationOffOrChanging ? @color/grey_card : @color/blue_darkest}"
+            android:drawableTop="@{selectedStation.statusHandler.stationOffOrChanging ? @drawable/session_identify_off : @drawable/session_identify}"
+            android:text="@string/identify_station_lower"
+            android:enabled="@{selectedStation.statusHandler.stationOnOrIdle}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/station_restart_vr"
+            style="@style/StationSingleButton"
+            android:layout_marginEnd="30dp"
+            android:backgroundTint="@{selectedStation.isOn ? @color/orange : @color/grey_card}"
+            android:drawableTop="@drawable/session_vr_restart"
+            android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
+            android:enabled="@{selectedStation.isOn}"
+            app:rippleColor="@{selectedStation.isOn ? @color/orange_light : @color/grey_card}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shutdown_station"
+            style="@style/StationSingleButton"
+            android:backgroundTint="@{selectedStation.isOff ? @color/green : (selectedStation.statusHandler.stationOnOrIdle ? @color/red : @color/orange)}"
+            android:drawableTop="@drawable/session_shutdown"
+            android:text="@{selectedStation.isOff ? `Power On Station` : (selectedStation.statusHandler.stationOnOrIdle ? `Shut Down Station` : `Turning On`)}"
+            android:visibility="visible"
+            app:rippleColor="@{selectedStation.isOff ? @color/green_light : (selectedStation.isOn ? @color/red_light : @color/orange_light)}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/enter_url"
+            style="@style/StationSingleButton"
+            android:visibility="gone"
+            android:drawableTop="@drawable/ic_launch_website"
+            android:text="@string/launch_website_lower" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/configure_steamcmd"
+            style="@style/StationSingleButton"
+            android:visibility="@{selectedStation.requiresSteamGuard ? View.VISIBLE : View.GONE}"
+            android:drawableTop="@drawable/session_restart"
+            android:backgroundTint="@color/red"
+            android:text="Configure SteamCMD"
+            app:rippleColor="@color/grey_card" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

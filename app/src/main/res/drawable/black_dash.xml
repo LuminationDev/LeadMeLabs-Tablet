@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="line">
+
+    <!-- Width and color of the line -->
+    <stroke
+        android:width="4dp"
+        android:color="#000000" /> <!-- Black color -->
+
+    <!-- Length and gap of the dash -->
+    <stroke
+        android:dashWidth="8dp"/> <!-- Length of the gap -->
+
+</shape>

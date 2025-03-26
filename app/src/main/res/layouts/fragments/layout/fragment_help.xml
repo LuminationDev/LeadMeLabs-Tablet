@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.lumination.leadmelabs.models.applications.Application" />
+        <import type="android.view.View"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <TextView
+            style="@style/PageTitle"
+            android:text="@string/help_title" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/help_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="75dp"
+            app:flexDirection="column"
+            android:paddingVertical="20dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="40dp"
+            tools:context=".ui.help.HelpPageFragment">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+                <TextView
+                    style="@style/HeadingTitle"
+                    android:text="Help"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Troubleshoot or contact support."
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:flexDirection="row">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column"
+                    app:layout_flexBasisPercent="0%"
+                    app:layout_flexGrow="1"
+                    app:layout_flexShrink="0"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="Key Questions"
+                        android:textSize="16sp" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/headset_is_blank"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_vr_headset">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Headset is blank"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="The headset is showing a blank screen" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/controller_issues"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/vr_controller_black">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Controller connectivity"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="I'm having issues with the controller connection" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/steam_vr_errors"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_steam">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="SteamVR Errors"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="I'm getting SteamVR error messages when launching an experience" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/headset_connection"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_no_internet">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Headset Connection Issues"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="A station says 'awaiting headset connection'." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/vr_library"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_vr_headset">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="VR Library"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="My VR library is empty, or my experience isn't showing up." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/server_connection"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_server_connection">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Server Connection"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="I keep getting a 'lost connection to the server' message." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/room_automations"
+                        style="@style/HelpCardQuestions">
+                        <ImageView
+                            style="@style/HelpCardIconQuestions"
+                            android:src="@drawable/help_remote">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Room Automations"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="The room automations don't trigger when I select them." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column"
+                    app:layout_flexBasisPercent="0%"
+                    app:layout_flexGrow="1"
+                    android:paddingStart="10dp"
+                    app:layout_flexShrink="0">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Helpful Guides"
+                        android:textSize="16sp" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/quickstart_guide"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/labs_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Quickstart Guide"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="How do I set up the Learning Lab?" />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/lesson_plans"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/labs_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Lesson Plans"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Access to courses, teaching resources and guides." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/update_details"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/leadme_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="LeadMe Labs 1.19 Update"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Details of the latest LeadMe Labs update." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/knowledge_bank"
+                        style="@style/HelpCardGuides">
+                        <ImageView
+                            style="@style/HelpCardIcon"
+                            android:src="@drawable/lumination_logo">
+                        </ImageView>
+                        <com.google.android.flexbox.FlexboxLayout
+                            style="@style/HelpCardBody">
+                            <TextView
+                                style="@style/HelpCardBodyTitle"
+                                android:text="Knowledge Bank"/>
+                            <TextView
+                                style="@style/HelpCardBodyText"
+                                android:text="Visit Lumination's online Knowledge Bank for further help." />
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/submit_ticket_online"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:background="@drawable/card_ripple_white"
+                        app:flexDirection="row"
+                        android:layout_marginTop="10dp"
+                        android:padding="20dp">
+                        <ImageView
+                            app:layout_flexShrink="0"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/vern_out_of_charge">
+                        </ImageView>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:flexDirection="column"
+                            app:justifyContent="center"
+                            app:alignItems="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textSize="16sp"
+                                android:textFontWeight="600"
+                                android:text="Still having trouble with your issue?"/>
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/submit_ticket_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                app:flexDirection="column"
+                                app:justifyContent="center"
+                                app:alignItems="center"
+                                android:background="@drawable/ripple_blue_rounded"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="10dp">
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:textSize="18dp"
+                                    android:textColor="@color/white"
+                                    android:text="Submit an IT support ticket"/>
+                            </com.google.android.flexbox.FlexboxLayout>
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/submit_ticket_offline"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_ripple_white"
+                        app:flexDirection="row"
+                        android:layout_marginTop="10dp"
+                        android:padding="20dp">
+                        <ImageView
+                            app:layout_flexShrink="0"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/vern_out_of_charge">
+                        </ImageView>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:flexDirection="column"
+                            app:justifyContent="center"
+                            app:alignItems="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textSize="16sp"
+                                android:textFontWeight="600"
+                                android:text="Still having trouble with your issue?"/>
+
+                            <TextView
+                                android:id="@+id/submit_ticket_offline_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:textSize="18dp"
+                                android:text="Visit help.lumination.com.au to submit a support ticket"/>
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <RelativeLayout
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/system_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</layout>

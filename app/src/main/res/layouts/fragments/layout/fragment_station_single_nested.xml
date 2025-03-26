@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.ContentStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+
+        <variable
+            name="selectedNestedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+
+        <import type="com.lumination.leadmelabs.ui.stations.StationsViewModel"/>
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <LinearLayout
+            android:id="@+id/libraryArea"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    style="@style/PageTitle"
+                    android:text="@string/manage_station_title"/>
+            </LinearLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/station_single_fragment"
+                style="@style/StationsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="40dp"
+                app:flexDirection="column"
+                tools:context=".ui.stations.StationsFragment">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column"
+                    app:layout_flexShrink="0">
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="20dp"
+                        app:justifyContent="space_between">
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="30dp"
+                            app:flexDirection="column"
+                            app:layout_flexShrink="0">
+
+                            <TextView
+                                style="@style/HeadingTitle"
+                                android:text="@{selectedStation.name, default=Station}"
+                                android:textSize="32sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/individually_control_a_station"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <!--Identify Button-->
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/identify_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:background="@drawable/light_gray_ripple"
+                                android:clickable="true"
+                                android:focusable="true"
+                                app:alignItems="center">
+
+                                <com.google.android.flexbox.FlexboxLayout
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:background="@drawable/identify_ripple_grey_small"
+                                    app:flexDirection="row"
+                                    app:justifyContent="center"
+                                    app:alignItems="center"
+                                    android:visibility="visible"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Identify"
+                                    android:textColor="@color/black"
+                                    android:textFontWeight="600"
+                                    android:textSize="13sp" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                            <!--Help Button-->
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/help_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:background="@drawable/light_gray_ripple"
+                                android:clickable="true"
+                                android:focusable="true"
+                                app:alignItems="center">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:contentDescription="help_icon"
+                                    android:src="@drawable/icon_help"
+                                    android:layout_marginEnd="10dp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Help"
+                                    android:textColor="@color/black"
+                                    android:textFontWeight="600"
+                                    android:textSize="13sp" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row">
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="45dp"
+                            app:flexDirection="column"
+                            app:layout_flexShrink="0">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:drawablePadding="5dp"
+                                android:gravity="start|center_vertical"
+                                android:text="@string/current_session"
+                                android:textColor="@color/text_dark"
+                                android:textFontWeight="600" />
+
+                            <!--STATION CURRENT SESSION-->
+                            <include
+                                layout="@layout/section_station_single_nested_current_session"
+                                app:selectedStation="@{selectedStation}"
+                                app:stations="@{stations}"/>
+
+                            <!--STATION STATUS SECTION-->
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/station_status_box"
+                                android:layout_width="400dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginBottom="30dp"
+                                android:background="@drawable/bg_white_curved"
+                                android:paddingStart="20dp"
+                                android:paddingEnd="10dp"
+                                android:paddingVertical="20dp"
+                                app:alignItems="center"
+                                app:flexDirection="row">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:contentDescription="@string/alert_area"
+                                    android:src="@drawable/icon_alert"
+                                    android:textColor="@color/black"
+                                    android:visibility="@{selectedStation.stateHandler.isNotResponding() ? View.VISIBLE : View.GONE}"
+                                    app:layout_flexShrink="0" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:text="@string/station_status_title"
+                                    android:textColor="@color/black"
+                                    android:textFontWeight="600" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="@{!selectedStation.stateHandler.hasState() ? View.VISIBLE : View.GONE}"
+                                    android:text="@{selectedStation.status}"
+                                    android:textFontWeight="600" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="@{selectedStation.stateHandler.hasState() ? View.GONE : View.VISIBLE}"
+                                    app:stationState="@{selectedStation}"
+                                    android:textFontWeight="600" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:layout_width="400dp"
+                                android:layout_height="match_parent"
+                                android:paddingHorizontal="10dp"
+                                android:layout_marginBottom="10dp"
+                                app:flexDirection="row"
+                                app:justifyContent="space_between">
+
+                                <TextView
+                                    android:id="@+id/custom_controls_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawablePadding="5dp"
+                                    android:gravity="start|center_vertical"
+                                    android:text="Backdrop"
+                                    android:textColor="@color/text_dark"
+                                    android:textFontWeight="600" />
+
+                                <com.google.android.flexbox.FlexboxLayout
+                                    android:id="@+id/open_modal_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/light_gray_ripple"
+                                    android:paddingHorizontal="10dp"
+                                    android:clickable="true"
+                                    android:focusable="true">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawablePadding="5dp"
+                                        android:gravity="start|center_vertical"
+                                        android:text="See more"
+                                        android:textColor="@color/blue_dark"
+                                        android:textFontWeight="600" />
+                                </com.google.android.flexbox.FlexboxLayout>
+
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                            <!--BACKDROP SECTION (Default visibility)-->
+                            <include
+                                android:id="@+id/backdrop_section"
+                                layout="@layout/control_module_backdrop" />
+
+                            <!--CONDENSED VIDEO CONTROLLER SECTION (Only visible when a video player is running)-->
+                            <include
+                                android:id="@+id/video_controls"
+                                android:visibility="gone"
+                                layout="@layout/control_module_video"
+                                app:selectedStation="@{selectedStation}"/>
+
+                            <!--OPEN BRUSH CONTROLLER SECTION-->
+                            <include
+                                android:id="@+id/open_brush_controls"
+                                layout="@layout/control_module_open_brush"
+                                app:selectedStation="@{selectedStation}"
+                                android:visibility="gone"/>
+
+                            <!--CHANGE OPTIONS (When other controls are present)-->
+
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:flexDirection="column">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:drawablePadding="5dp"
+                                android:gravity="start|center_vertical"
+                                android:text="Floor System"
+                                android:textColor="@color/text_dark"
+                                android:textFontWeight="600" />
+
+                            <!-- NESTED STATIONS -->
+                            <include
+                                layout="@layout/section_nested_station"
+                                app:selectedNestedStation="@{selectedNestedStation}"/>
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="20dp"
+                                app:flexDirection="row"
+                                app:layout_flexGrow="1">
+
+                                <!--AUDIO DEVICES SECTION-->
+                                <include
+                                    layout="@layout/section_audio_devices"
+                                    app:selectedStation="@{selectedStation}" />
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                            <!--STATION CONTROLS-->
+                            <GridLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:columnCount="3"
+                                android:rowCount="3">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/new_session_button"
+                                    style="@style/StationSingleButton"
+                                    android:layout_marginEnd="30dp"
+                                    android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/blue_darkest}"
+                                    android:drawableTop="@drawable/session_new"
+                                    android:text="@string/new_session_lower"
+                                    android:enabled="@{selectedStation.status.equals(`On`)}"/>
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/station_restart_session"
+                                    style="@style/StationSingleButton"
+                                    android:layout_marginEnd="30dp"
+                                    android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue_darkest : @color/grey_card}"
+                                    android:drawableTop="@drawable/session_restart"
+                                    android:text="@string/restart_session_lower"
+                                    android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+                                    app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/station_end_session"
+                                    style="@style/StationSingleButton"
+                                    android:backgroundTint="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) || selectedStation.applicationController.experienceName.equals(`Awaiting headset connection...`) ? @color/blue_darkest : @color/grey_card}"
+                                    android:drawableTop="@drawable/session_end"
+                                    android:text="@string/end_session_lower"
+                                    android:enabled="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0)}"
+                                    app:rippleColor="@{(selectedStation.applicationController.experienceId != null &amp;&amp; selectedStation.applicationController.experienceId.length() > 0) ? @color/blue : @color/grey_card}" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/change_layout"
+                                    style="@style/StationSingleButton"
+                                    android:backgroundTint="@color/blue_darkest"
+                                    android:drawableTop="@drawable/layout_white"
+                                    android:text="@string/change_layout"/>
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/station_restart_vr"
+                                    style="@style/StationSingleButton"
+                                    android:backgroundTint="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange}"
+                                    android:drawableTop="@drawable/session_vr_restart"
+                                    android:text="@{selectedStation instanceof VrStation ? @string/restart_vr_system : `Restart System`}"
+                                    android:enabled="@{selectedStation.status.equals(`On`)}"
+                                    app:rippleColor="@{selectedStation.status.equals(`Off`) || selectedStation.status.equals(`Turning on`) ? @color/grey_card : @color/orange_light}" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/shutdown_station"
+                                    style="@style/StationSingleButton"
+                                    android:backgroundTint="@{selectedStation.status.equals(`Off`) ? @color/green : (selectedStation.status.equals(`On`) ? @color/red : @color/orange)}"
+                                    android:drawableTop="@drawable/session_shutdown"
+                                    android:text="@{selectedStation.status.equals(`Off`) ? `Power On Station` : (selectedStation.status.equals(`On`) ? `Shut Down Station` : `Turning On`)}"
+                                    android:visibility="visible"
+                                    app:rippleColor="@{selectedStation.status.equals(`Off`) ? @color/green_light : (selectedStation.status.equals(`On`) ? @color/red_light : @color/orange_light)}" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/enter_url"
+                                    style="@style/StationSingleButton"
+                                    android:visibility="gone"
+                                    android:drawableTop="@drawable/ic_launch_website"
+                                    android:text="@string/launch_website_lower" />
+
+                            </GridLayout>
+                        </com.google.android.flexbox.FlexboxLayout>
+                    </com.google.android.flexbox.FlexboxLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/system_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</layout>

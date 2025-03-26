@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="video"
+            type="com.lumination.leadmelabs.models.Video" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:clipToOutline="true"
+        android:background="@drawable/card_white_border_gray"
+        android:elevation="10dp">
+
+        <FrameLayout
+            android:layout_width="325dp"
+            android:layout_height="153dp">
+
+            <ImageView
+                android:id="@+id/placeholder_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/experience_preview"
+                android:background="@drawable/image_background"
+                android:scaleType="fitXY"
+                android:clipToOutline="true" />
+
+            <LinearLayout
+                android:id="@+id/progress_spinner_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progress_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="2dp"
+            app:flexDirection="column">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:text="@{video.name, default=``}"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:flexDirection="row"
+                app:justifyContent="space_between"
+                app:alignItems="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/video_watch_button"
+                    android:layout_width="wrap_content"
+                    app:strokeColor="@color/blue"
+                    app:strokeWidth="2dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blue"
+                    app:backgroundTint="@color/white"
+                    android:elevation="0dp"
+                    android:gravity="center"
+                    app:rippleColor="@color/grey"
+                    android:stateListAnimator="@null"
+                    android:backgroundTint="@android:color/white"
+                    android:textAllCaps="false"
+                    android:text="Watch"/>
+
+                <ImageView
+                    android:visibility="@{video.videoType.equals(`Vr`) ? View.VISIBLE : View.GONE, default=gone}"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="Vr icon"
+                    android:src="@drawable/vr_headset_gray"/>
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </LinearLayout>
+
+</layout>

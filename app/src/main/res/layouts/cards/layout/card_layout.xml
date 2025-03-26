@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.utilities.Helpers"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+        <variable
+            name="selectedNestedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+        <variable
+            name="option"
+            type="com.lumination.leadmelabs.models.Option" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="260dp"
+        android:layout_height="170dp"
+        android:background="@drawable/backdrop_ripple_white_rounded_border_gray"
+        android:clickable="true"
+        android:focusable="true"
+        app:justifyContent="flex_start"
+        app:flexDirection="column"
+        app:alignItems="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--TODO Workout how to check what layout is active...-->
+            <FrameLayout
+                android:layout_width="260dp"
+                android:layout_height="120dp">
+
+                <ImageView
+                    android:id="@+id/placeholder_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/experience_preview"
+                    android:background="@drawable/image_background"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"/>
+
+                <LinearLayout
+                    android:id="@+id/progress_spinner_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:id="@+id/progress_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </FrameLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="20dp"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{Helpers.capitalizeFirstLetter(option.name), default=Sample}"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
+
+                <!--TODO Workout how to check what layout is active...-->
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:visibility="invisible"
+                    android:src="@drawable/check_active"
+                    android:contentDescription="check"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>

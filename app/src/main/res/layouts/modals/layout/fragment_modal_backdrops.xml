@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+
+        <variable
+            name="selectedNestedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--Empty state-->
+        <TextView
+            android:visibility="@{selectedNestedStation.fileController.getVideosOfType(`Backdrop`).size() == 0 ? View.VISIBLE : View.GONE, default=visible}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No backdrops detected..." />
+
+        <GridView
+            android:id="@+id/backdrop_grid"
+            android:visibility="@{selectedNestedStation.fileController.getVideosOfType(`Backdrop`).size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fadeScrollbars="false"
+            android:horizontalSpacing="20dp"
+            android:numColumns="3"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarThumbVertical="@color/blue"
+            android:scrollbarTrackVertical="@color/grey_medium"
+            android:smoothScrollbar="true"
+            android:verticalSpacing="30dp"
+            tools:listitem="@layout/card_backdrop" />
+    </RelativeLayout>
+</layout>

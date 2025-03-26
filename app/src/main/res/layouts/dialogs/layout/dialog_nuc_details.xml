@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.flexbox.FlexboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:flexDirection="column"
+    app:justifyContent="space_between"
+    android:layout_width="match_parent"
+    android:padding="20dp"
+    android:layout_height="match_parent">
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:flexDirection="column">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NUC Details"
+            android:textColor="@color/black"
+            android:textSize="30sp">
+        </TextView>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/content_ip_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:text="Current NUC IP Address: ">
+            </TextView>
+            <TextView
+                android:id="@+id/nuc_ip_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="">
+            </TextView>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/content_mac_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textFontWeight="600"
+                android:text="Current NUC MAC Address: ">
+            </TextView>
+            <TextView
+                android:id="@+id/nuc_mac_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="}">
+            </TextView>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:flexDirection="column"
+        app:alignItems="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manually enter the MAC address of the NUC">
+        </TextView>
+        <EditText
+            android:id="@+id/nuc_address_input"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="xx-xx-xx-xx-xx-xx">
+        </EditText>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/set_nuc_mac_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:elevation="0dp"
+            app:cornerRadius="2dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/blue_darkest"
+            android:textAllCaps="false"
+            android:text="Update"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:flexDirection="column"
+        app:alignItems="center"
+        app:justifyContent="center">
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="140dp"
+            android:layout_marginVertical="10dp"
+            android:background="@color/grey"
+            app:flexDirection="column"
+            app:alignItems="center"
+            app:justifyContent="center"/>
+        <TextView
+            android:layout_marginTop="-27dp"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="15dp"
+            android:background="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:alignItems="center"
+        app:flexDirection="column">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send a commnd to turn on the NUC">
+        </TextView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/wake_nuc_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:elevation="0dp"
+            app:cornerRadius="2dp"
+            app:rippleColor="@color/grey"
+            android:stateListAnimator="@null"
+            app:backgroundTint="@color/blue_darkest"
+            android:textAllCaps="false"
+            android:text="Wake"/>
+    </com.google.android.flexbox.FlexboxLayout>
+</com.google.android.flexbox.FlexboxLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <data>
+        <import type="com.lumination.leadmelabs.utilities.Constants" />
+        <import type="com.lumination.leadmelabs.models.Appliance" />
+        <variable
+            name="appliance"
+            type="com.lumination.leadmelabs.models.Appliance" />
+
+        <variable
+            name="status"
+            type="androidx.lifecycle.MutableLiveData&lt;String&gt;" />
+
+        <variable
+            name="icon"
+            type="androidx.lifecycle.MutableLiveData&lt;Integer&gt;" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/appliance_card"
+            style="@style/ApplianceCardContainer"
+            android:background="@drawable/transition_appliance_grey_to_blue"
+            app:flexDirection="column"
+            app:alignItems="flex_start"
+            app:justifyContent="space_between"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/scene_icon"
+                app:imageResource="@{icon}" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/appliance_title"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="@{appliance.name, default=Scene_Example}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:text="@{status.equals(Constants.ACTIVE) ? appliance.getLabelForIndex(0) : (status.equals(Constants.INACTIVE) ? appliance.getLabelForIndex(1) : appliance.getLabelForIndex(2)), default=`Loading`}"/>
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </RelativeLayout>
+</layout>

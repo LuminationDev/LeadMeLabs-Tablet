@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="library"
+            type="com.lumination.leadmelabs.ui.library.LibraryViewModel" />
+        <variable
+            name="stations"
+            type="com.lumination.leadmelabs.ui.stations.StationsViewModel" />
+        <variable
+            name="hasVideos"
+            type="Boolean" />
+        <variable
+            name="hasRegularApplications"
+            type="Boolean" />
+        <variable
+            name="hasVrApplications"
+            type="Boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <LinearLayout
+            android:id="@+id/libraryArea"
+            android:layout_marginTop="59dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                app:flexDirection="column">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="row"
+                    app:justifyContent="space_between">
+
+                    <!--Library Title and Station number (if applicable)-->
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row">
+
+                        <TextView
+                            android:id="@+id/libraryTitle"
+                            style="@style/HeadingTitle"
+                            android:text="@{library.libraryTitle, default=@string/vr_library}"
+                            android:textSize="32sp" />
+
+                        <TextView
+                            android:id="@+id/selectedStation"
+                            style="@style/HeadingTitle"
+                            android:textSize="32sp" />
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row"
+                        app:justifyContent="space_between">
+
+                        <!--Refresh Button-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:id="@+id/refresh_experiences_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:background="@drawable/light_gray_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:alignItems="center">
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:contentDescription="refresh_icon"
+                                android:src="@drawable/icon_refresh"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Refresh"
+                                android:textColor="@color/black"
+                                android:textFontWeight="600"
+                                android:textSize="13sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                        <!--Help Button-->
+                        <com.google.android.flexbox.FlexboxLayout
+                            android:id="@+id/help_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:background="@drawable/light_gray_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:alignItems="center">
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:contentDescription="help_icon"
+                                android:src="@drawable/icon_help"
+                                android:layout_marginEnd="10dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Help"
+                                android:textColor="@color/black"
+                                android:textFontWeight="600"
+                                android:textSize="13sp" />
+                        </com.google.android.flexbox.FlexboxLayout>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="20dp"
+                    app:flexDirection="row"
+                    app:justifyContent="space_between"
+                    app:alignItems="center">
+
+                    <!--LIBRARY TAB SECTION-->
+                    <include
+                        layout="@layout/section_library_tabs"
+                        app:library="@{library}"
+                        app:hasVideos="@{hasVideos}"
+                        app:hasRegularApplications="@{hasRegularApplications}"
+                        app:hasVrApplications="@{hasVrApplications}"/>
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:flexDirection="row">
+
+                        <EditText
+                            android:id="@+id/search_input"
+                            android:layout_width="250dp"
+                            android:layout_height="50dp"
+                            android:layout_marginEnd="10dp"
+                            android:autofillHints="0"
+                            android:background="@drawable/ripple_white_rounded_border_thin"
+                            android:clickable="true"
+                            android:drawableStart="@drawable/icon_search"
+                            android:drawablePadding="10dp"
+                            android:focusableInTouchMode="true"
+                            android:gravity="center_vertical"
+                            android:hint="@string/search"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:paddingStart="15dp"
+                            android:paddingTop="2dp"
+                            android:paddingEnd="2dp"
+                            android:textColorHint="@color/grey_hint"
+                            android:textSize="15sp"/>
+
+                        <!-- Include the custom spinner layout -->
+                        <include
+                            layout="@layout/spinner_subject_filter"
+                            android:layout_width="250dp"
+                            android:layout_height="50dp"
+                            app:library="@{library}"/>
+
+                    </com.google.android.flexbox.FlexboxLayout>
+
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <RelativeLayout
+                android:id="@+id/sub_library"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/system_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</layout>

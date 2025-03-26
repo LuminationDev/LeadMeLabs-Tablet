@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="58dp"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            app:justifyContent="space_between"
+            app:alignItems="center"
+            app:flexDirection="row">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexDirection="column">
+
+                <TextView
+                    style="@style/HeadingTitle"
+                    android:id="@+id/welcome_message"
+                    android:text="Welcome!"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:id="@+id/date_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday 26th April 2022"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!--Refresh Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/refresh_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/icon_refresh"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Refresh"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!--Notification Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/notification_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/dashboard_notifications"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!--Identify Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/identify_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/identify_ripple_grey_small"
+                        app:flexDirection="row"
+                        app:justifyContent="center"
+                        app:alignItems="center"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Identify"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <!--Help Button-->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/help_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@drawable/light_gray_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:alignItems="center">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="help_icon"
+                        android:src="@drawable/icon_help"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Help"
+                        android:textColor="@color/black"
+                        android:textFontWeight="600"
+                        android:textSize="13sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <RelativeLayout
+            android:id="@+id/dashboard_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/system_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.models.stations.VrStation"/>
+        <import type="com.lumination.leadmelabs.models.stations.Station"/>
+
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.Station" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/layout_empty_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No layouts detected..." />
+
+        <GridView
+            android:id="@+id/layout_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fadeScrollbars="false"
+            android:horizontalSpacing="20dp"
+            android:numColumns="3"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarThumbVertical="@color/blue"
+            android:scrollbarTrackVertical="@color/grey_medium"
+            android:smoothScrollbar="true"
+            android:verticalSpacing="30dp"
+            tools:listitem="@layout/card_layout" />
+
+    </RelativeLayout>
+</layout>

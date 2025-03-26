@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appliance_fragment"
+    tools:context=".ui.appliance.ApplianceFragment">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.ui.appliance.ApplianceFragment"/>
+        <variable
+            name="appliances"
+            type="com.lumination.leadmelabs.ui.appliance.ApplianceFragment"/>
+
+        <import type="com.lumination.leadmelabs.ui.room.RoomFragment"/>
+        <variable
+            name="room"
+            type="com.lumination.leadmelabs.ui.room.RoomFragment"/>
+
+        <import type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment"/>
+        <variable
+            name="subMenu"
+            type="com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment"/>
+    </data>
+
+    <LinearLayout
+        style="@style/ApplianceContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/HeadingTitle"
+            android:id="@+id/appliance_title"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/appliance_default_title"
+            android:textSize="32sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="@{appliances.applianceCount > 0 ? View.GONE : View.VISIBLE}">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="440dp"
+                android:layout_height="345dp"
+                android:layout_gravity="center"
+                android:elevation="1dp"
+                android:background="@drawable/bg_white_no_appliance_curved"
+                app:flexDirection="column"
+                app:alignItems="center"
+                app:justifyContent="flex_end">
+
+                <ImageView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:contentDescription="@string/room_icon"
+                    app:imageResource="@{subMenu.currentIcon}"/>
+
+                <TextView
+                    android:id="@+id/warning_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:textAlignment="center"
+                    android:text="@{`There are no ` + appliances.type + (room.currentType.equals(`All`) ? ` currently loaded` : ` in ` + room.currentType) + `.`}"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/switch_to_all"
+                    android:layout_width="208dp"
+                    android:layout_height="60dp"
+                    android:layout_marginBottom="44dp"
+                    android:text="@string/switch_room"
+                    android:textAllCaps="false"
+                    android:enabled="@{!(appliances.applianceCount == 0 &amp;&amp; room.currentType.equals(`All`))}"
+                    android:backgroundTint="@{(appliances.applianceCount == 0 &amp;&amp; room.currentType.equals(`All`)) ? @color/grey : @color/blue}"
+                    android:letterSpacing="-0.001"
+                    app:cornerRadius="100dp"
+                    app:rippleColor="@color/white"/>
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+
+
+        <!--Used when only one room is visible-->
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/appliance_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="20dp"
+            tools:listitem="@layout/card_appliance"
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@color/blue"
+            android:fadeScrollbars="false"
+            android:visibility="gone"/>
+
+        <!--Used when all rooms are visible-->
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/multi_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:scrollbars="vertical"
+            android:scrollbarThumbVertical="@color/blue"
+            android:fadeScrollbars="false"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</layout>

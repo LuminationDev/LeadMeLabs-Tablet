@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.lumination.leadmelabs.utilities.Constants"/>
+        <variable
+            name="selectedStation"
+            type="com.lumination.leadmelabs.models.stations.VrStation" />
+    </data>
+
+    <!-- VR DEVICES layout content -->
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/vr_devices_section"
+        android:layout_width="510dp"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_white_curved"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        app:alignItems="center"
+        app:justifyContent="space_between"
+        app:layout_flexGrow="1"
+        app:flexDirection="row">
+
+        <!--HEADSET CONNECTION-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/headset_connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/icon_volume"
+                app:headset="@{selectedStation}"
+                app:layout_flexShrink="0"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:contentDescription="@string/openvr_icon"
+                app:headsetStatus="@{selectedStation}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--LEFT CONTROLLER-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/left_controller_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/vr_controller"
+                app:station="@{selectedStation}"
+                app:controllerType="@{`Left`}"
+                app:layout_flexShrink="0" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textSize="16sp"
+                android:textFontWeight="600"
+                app:station="@{selectedStation}"
+                app:controllerType="@{`Left`}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--RIGHT CONTROLLER-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/right_controller_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/vr_controller"
+                app:station="@{selectedStation}"
+                app:controllerType="@{`Right`}"
+                app:layout_flexShrink="0" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:textSize="16sp"
+                android:textFontWeight="600"
+                app:station="@{selectedStation}"
+                app:controllerType="@{`Right`}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--BASE STATIONS-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:visibility="@{selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_BUSINESS_STREAMING) || selectedStation.headsetType.equals(Constants.HEADSET_TYPE_VIVE_FOCUS_3) ? View.GONE : View.VISIBLE, default=invisible}"
+            android:id="@+id/base_station_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/base_station"
+                app:baseStation="@{selectedStation}"
+                app:layout_flexShrink="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textFontWeight="600"
+                app:baseStationText="@{selectedStation}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--BASE STATIONS-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:visibility="@{selectedStation.trackersActive > 0 ? View.VISIBLE : View.GONE, default=gone}"
+            android:id="@+id/tracker_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/tracker"
+                app:tracker="@{selectedStation}"
+                app:layout_flexShrink="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textFontWeight="600"
+                app:trackerText="@{selectedStation}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--VIVE CONNECTION-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/vive_connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/icon_volume"
+                app:station="@{selectedStation}"
+                app:headsetManagerType="@{`Vive`}"
+                app:layout_flexShrink="0" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:contentDescription="@string/vive_icon"
+                app:station="@{selectedStation}"
+                app:headsetManagerIssue="@{`Vive`}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--OPENVR CONNECTION-->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/openvr_connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:alignItems="center"
+            app:flexDirection="column">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/icon_volume"
+                app:station="@{selectedStation}"
+                app:headsetManagerType="@{`OpenVR`}"
+                app:layout_flexShrink="0" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:contentDescription="@string/openvr_icon"
+                app:station="@{selectedStation}"
+                app:headsetManagerIssue="@{`OpenVR`}"/>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+</layout>
